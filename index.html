@@ -78,19 +78,20 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;fle
 .opt{background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:10px 8px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:46px;overflow-wrap:anywhere;box-shadow:0 3px 8px rgba(0,0,0,.04);transition:transform .1s, box-shadow .1s}
 .opt:active{transform:scale(.985);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 
-/* RGB ефект для правильної кнопки */
+/* RGB геймерська анімація для правильної кнопки */
 @keyframes rgbGlow {
-  0% { border-color: #ff0000; box-shadow: 0 0 12px rgba(255,0,0,0.6); }
-  33% { border-color: #00ff00; box-shadow: 0 0 12px rgba(0,255,0,0.6); }
-  66% { border-color: #0000ff; box-shadow: 0 0 12px rgba(0,0,255,0.6); }
-  100% { border-color: #ff0000; box-shadow: 0 0 12px rgba(255,0,0,0.6); }
+  0%   { border-color: #ff0000; box-shadow: 0 0 14px #ff0000; }
+  33%  { border-color: #00ff00; box-shadow: 0 0 14px #00ff00; }
+  66%  { border-color: #0000ff; box-shadow: 0 0 14px #0000ff; }
+  100% { border-color: #ff0000; box-shadow: 0 0 14px #ff0000; }
 }
 
 .opt.correct {
-  animation: rgbGlow 1.5s infinite linear;
+  animation: rgbGlow 1.2s infinite linear;
+  background: var(--ok-bg) !important;
   color: var(--fg);
-  background: var(--ok-bg);
   font-weight: 750;
+  border-width: 2px;
 }
 
 .opt.incorrect{border-color:var(--bad);color:var(--bad);background:var(--bad-bg);box-shadow:0 3px 10px rgba(217,61,74,.15)}
