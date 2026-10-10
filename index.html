@@ -77,7 +77,22 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;fle
 .opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .opt{background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:10px 8px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:46px;overflow-wrap:anywhere;box-shadow:0 3px 8px rgba(0,0,0,.04);transition:transform .1s, box-shadow .1s}
 .opt:active{transform:scale(.985);box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.opt.correct{border-color:var(--ok);color:var(--ok);background:var(--ok-bg);box-shadow:0 3px 10px rgba(31,138,83,.15)}
+
+/* RGB ефект для правильної кнопки */
+@keyframes rgbGlow {
+  0% { border-color: #ff0000; box-shadow: 0 0 12px rgba(255,0,0,0.6); }
+  33% { border-color: #00ff00; box-shadow: 0 0 12px rgba(0,255,0,0.6); }
+  66% { border-color: #0000ff; box-shadow: 0 0 12px rgba(0,0,255,0.6); }
+  100% { border-color: #ff0000; box-shadow: 0 0 12px rgba(255,0,0,0.6); }
+}
+
+.opt.correct {
+  animation: rgbGlow 1.5s infinite linear;
+  color: var(--fg);
+  background: var(--ok-bg);
+  font-weight: 750;
+}
+
 .opt.incorrect{border-color:var(--bad);color:var(--bad);background:var(--bad-bg);box-shadow:0 3px 10px rgba(217,61,74,.15)}
 .opt:disabled{cursor:default}
 .swatch{width:12px;height:12px;border-radius:50%;border:1px solid var(--line);flex-shrink:0}
@@ -176,7 +191,7 @@ footer strong{color:var(--fg);font-weight:750}
   
   <footer>
     <span id="footText"></span>
-    <span>Розробник <strong>Данило ГЕМБАРСЬКИЙ</strong></span>
+    <span>Danylo Hembarskyi • All rights reserved</span>
   </footer>
 </main>
 
@@ -242,7 +257,10 @@ const DATA={
   ["v_hebben","hebben","to have","avoir","мати","يملك / لديه","🤲","Ik heb een vraag.","У мене є запитання."],
   ["v_wonen","wonen","to live / reside","habiter","жити / мешкати","يسكن / يعيش","🏡","Ik woon in België.","Я живу в Бельгії."],
   ["v_spreken","spreken","to speak","parler","говорити / розмовляти","يتحدث / يتكلم","🗣️","Ik spreek Nederlands.","Я розмовляю нідерландською."],
-  ["v_werken","werken","to work","travailler","працювати","يعمل","💼","Hij werkt vandaag.","Він сьогодні працює."]
+  ["v_werken","werken","to work","travailler","працювати","يعمل","💼","Hij werkt vandaag.","Він сьогодні працює."],
+  ["v_doen_1","ik doe","I do","je fais","я роблю","أنا أفعل","🛠️","Ik doe de deur open.","Я відчиняю двері."],
+  ["v_doen_2","jij doet","you do","tu fais","ти робиш","أنت تفعل","👉","Wat doe jij heute?","Що ти робиш?"],
+  ["v_doen_3","hij doet","he does","il fait","він робить","هو يفعل","👨","Hij doet zijn best.","Він робить усе можливе."]
  ]),
  dehet:R([
   ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
@@ -257,15 +275,17 @@ const DATA={
   ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"]
  ]),
  questions:R([
-  ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is dit?","Що це?"],
-  ["q_wie","wie","who","qui","хто","مَن","🙋‍♂️","Wie is de leraar?","Хто вчитель?"],
+  ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is this?","Що це?"],
+  ["q_wie","wie","who","qui","хто","مَن","🙋‍♂️","Wie komt morgen?","Хто прийде завтра?"],
+  ["q_wie_2","wie woont hier?","who lives here?","qui habite ici?","хто тут живе?","من يسكن هنا؟","🏠","Wie woont hier in de buurt?","Хто тут живе поблизу?"],
+  ["q_wie_3","wie werkt in Amsterdam","who works in Amsterdam","qui travaille à Amsterdam","хто працює в Амстердамі","من يعمل في أمستردام","💼","Wie werkt in Amsterdam?","Хто працює в Амстердамі?"],
   ["q_waar","waar","where","où","де","أين","📍","Waar is het toilet?","Де туалет?"],
   ["q_wanneer","wanneer","when","quand","коли","متى","⏰","Wanneer is de pauze?","Коли перерва?"],
   ["q_waarom","waarom","why","pourquoi","чому","لماذا","🤔","Waarom leer je Nederlands?","Чому ти вчиш нідерландську?"],
   ["q_hoe","hoe","how","comment","як","كيف","💬","Hoe heet je?","Як тебе звати?"],
   ["q_hoeveel","hoeveel","how much / how many","combien","скільки","كم","🔢","Hoeveel kost dit?","Скільки це коштує?"],
   ["q_hoelaat","hoe laat","what time","quelle heure","котра година","كم الساعة","🕒","Hoe laat is het?","Котра година?"],
-  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is dit?","Який це колір?"]
+  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is this?","Який це колір?"]
  ]),
  cvo:R([
   ["cvo_1","de cursist","student","l'étudiant","слухач курсів / учень","طالب في الدورة","🎓","Ik ben een cursist.","Я слухач курсів."],
@@ -332,7 +352,7 @@ const DATA={
   ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
   ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
   ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
- ])
+ })
 };
 
 const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="#20243A" stroke-opacity=".35" stroke-width="3"/></svg>';
@@ -353,7 +373,8 @@ Object.assign(DATA,{
   ["phr_13", "nee", "no", "non", "ні", "لا", "❌", "Nee, dank u.", "Ні, дякую."],
   ["phr_14", "welkom", "welcome", "bienvenue", "ласкаво просимо", "أهلًا وسهلًا", "🤗", "Welkom in België!", "Ласкаво просимо до Бельгії!"],
   ["phr_15", "ik begrijp het niet", "I don't understand", "je ne comprends pas", "я не розумію", "لا أفهم", "🤷", "Sorry, ik begrijp het niet.", "Вибач, я не розумію."],
-  ["phr_16", "kunt u dat herhalen?", "can you repeat that?", "pouvez-vous répéter ?", "чи можете повторити?", "هل يمكنك أن تكرر ذلك؟", "🔁", "Kunt u dat herhalen, alstublieft?", "Чи можете Ви повторити, будь ласка?"]
+  ["phr_16", "kunt u dat herhalen?", "can you repeat that?", "pouvez-vous répéter ?", "чи можете повторити?", "هل يمكنك أن تكرر ذلك؟", "🔁", "Kunt u dat herhalen, alstublieft?", "Чи можете Ви повторити, будь ласка?"],
+  ["phr_17", "leuk je te ontmoeten", "nice to meet you", "enchanté", "приємно познайомитися", "سررت بلقائك", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"]
  ]),
  numbers:R([
   ["num_1", "nul", "0 · zero", "0 · zéro", "0 · нуль", "0 · صفر", "0️⃣", "Het is nul graden.", "Нуль градусів."],
@@ -445,7 +466,15 @@ Object.assign(DATA,{
   ["adj_16", "moe", "tired", "fatigué", "втомлений", "متعب", "😴", "Ik ben moe.", "Я втомлений."],
   ["adj_17", "ziek", "ill / sick", "malade", "хворий", "مريض", "🤒", "Hij is ziek.", "Він хворий."],
   ["adj_18", "open", "open", "ouvert", "відчинений", "مفتوح", "🔓", "De winkel is open.", "Магазин відчинений."],
-  ["adj_19", "dicht", "closed", "fermé", "зачинений", "مغلق", "🔒", "De apotheek is dicht.", "Аптека зачинена."]
+  ["adj_19", "dicht", "closed", "fermé", "зачинений", "مغلق", "🔒", "De apotheek is dicht.", "Аптека зачинена."],
+  ["adj_20", "aardig", "kind / nice", "aimable", "добрий / привітний", "لطيف", "😊", "Zij is erg aardig.", "Вона дуже добра."],
+  ["adj_21", "vriendelijk", "friendly", "amical", "дружелюбний", "ودي", "🤝", "De mensen hier zijn vriendelijk.", "Люди тут дружелюбні."],
+  ["adj_22", "lief", "sweet", "gentil", "милий", "حلو / لطيف", "❤️", "Wat een lief kind!", "Яка мила дитина!"],
+  ["adj_23", "eerlijk", "honest", "honnête", "чесний", "صادق", "🤝", "Hij is een eerlijke man.", "Він чесна людина."],
+  ["adj_24", "geduldig", "patient", "patient", "терплячий", "صبور", "⏳", "We moeten geduldig zijn.", "Ми маємо бути терплячими."],
+  ["adj_25", "rustig", "quiet / calm", "calme", "спокійний", "هادئ", "🌿", "Ik woon in een rustige buurt.", "Я живу в спокійному районі."],
+  ["adj_26", "slim", "smart", "intelligent", "розумний", "ذكي", "💡", "Dat is een slim idee.", "Це розумна ідея."],
+  ["adj_27", "behulpzaam", "helpful", "serviable", "готовий допомогти", "متعاون", "🤲", "De buurman is erg behulpzaam.", "Сусід дуже готовий допомогти."]
  ]),
  home:R([
   ["hom_1", "de keuken", "kitchen", "la cuisine", "кухня", "المطبخ", "🍳", "Ik kook in de keuken.", "Я готую на кухні."],
@@ -460,7 +489,11 @@ Object.assign(DATA,{
   ["hom_10", "de koelkast", "fridge", "le réfrigérateur", "холодильник", "الثلاجة", "🧊", "De melk staat in de koelkast.", "Молоко стоїть у холодильнику."],
   ["hom_11", "de lamp", "lamp", "la lampe", "лампа", "المصباح", "💡", "Doe de lamp aan.", "Увімкни лампу."],
   ["hom_12", "de sleutel", "key", "la clé", "ключ", "المفتاح", "🔑", "Waar is mijn sleutel?", "Де мій ключ?"],
-  ["hom_13", "het appartement", "apartment", "l'appartement", "квартира", "الشقة", "🏢", "Ons appartement is klein.", "Наша квартира маленька."]
+  ["hom_13", "het appartement", "apartment", "l'appartement", "квартира", "الشقة", "🏢", "Ons appartement is klein.", "Наша квартира маленька."],
+  ["hom_14", "de buurman", "neighbor (male)", "le voisin", "сусід", "جار", "👨", "Mijn buurman is vriendelijk.", "Мій сусід дружелюбний."],
+  ["hom_15", "de buurvrouw", "neighbor (female)", "la voisine", "сусідка", "جارة", "👩", "De buurvrouw helpt mij.", "Сусідка допомагає мені."],
+  ["hom_16", "de buren", "neighbors", "les voisins", "сусіди", "الجيران", "🧑‍🤝‍🧑", "Onشاء de buren zijn aardig.", "Наші сусіди добрі."],
+  ["hom_17", "de buurt", "neighborhood", "le quartier", "район", "حي", "🏘️", "Ik woon in een gezellige buurt.", "Я живу в затишному районі."]
  ]),
  body:R([
   ["bod_1", "het hoofd", "head", "la tête", "голова", "الرأس", "👤", "Mijn hoofd doet pijn.", "У мене болить голова."],
@@ -501,7 +534,7 @@ Object.assign(DATA,{
  ]),
  city:R([
   ["cit_1", "de winkel", "shop", "le magasin", "магазин", "المتجر", "🏪", "De winkel is open.", "Магазин відчинений."],
-  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرماركت", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
+  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرмаркет", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
   ["cit_3", "de bakkerij", "bakery", "la boulangerie", "пекарня", "المخبز", "🥖", "Het brood komt van de bakkerij.", "Хліб з пекарні."],
   ["cit_4", "het restaurant", "restaurant", "le restaurant", "ресторан", "المطعم", "🍽️", "Wij eten in een restaurant.", "Ми їмо в ресторані."],
   ["cit_5", "het ziekenhuis", "hospital", "l'hôpital", "лікарня", "المستشفى", "🏥", "Het ziekenhuis is dichtbij.", "Лікарня поруч."],
@@ -895,7 +928,9 @@ const SENT=[
  ["waarom|ben|je|boos","QVSR","Чому ти злий?","Why are you angry?","Pourquoi es-tu fâché ?","لماذا أنت غاضب؟","bent"],
  ["waar|ga|je|heen","QVSR","Куди ти йдеш?","Where are you going?","Où vas-tu ?","إلى أين تذهب؟","gaat"],
  ["wanneer|ben|je|jarig","QVSR","Коли в тебе день народження?","When is your birthday?","Quand est ton anniversaire ?","متى عيد ميلادك؟","bent"],
- ["waarom|doe|je|dat","QVSR","Чому ти це робиш?","Why are you doing that?","Pourquoi fais-tu ça ?","لماذا تفعل ذلك؟","doet"]
+ ["waarom|doe|je|dat","QVSR","Чому ти це робиш?","Why are you doing that?","Pourquoi fais-tu ça ?","لماذا تفعل ذلك؟","doet"],
+ ["wie|woont|hier","QVS","Хто тут живе?","Who lives here?","Qui habite ici ?","من يسكن هنا؟"],
+ ["wie|werkt|in Amsterdam","QVSR","Хто працює в Амстердамі?","Who works in Amsterdam?","Qui travaille à Amsterdam ?","من يعمل في أمستردام؟","werkt"]
 ].map(r=>({q:r[0].split("|"),roles:r[1],uk:r[2],en:r[3],fr:r[4],ar:r[5],x:r[6],again:false}));
 let bAudio=false,bs=null;
 const sentence=s=>{const t=s.q.join(" ");return t[0].toUpperCase()+t.slice(1)+"?"};
