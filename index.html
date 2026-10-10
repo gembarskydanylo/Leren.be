@@ -78,7 +78,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;fle
 .opt{background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:10px 8px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:46px;overflow-wrap:anywhere;box-shadow:0 3px 8px rgba(0,0,0,.04);transition:transform .1s, box-shadow .1s}
 .opt:active{transform:scale(.985);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 
-/* Надійний RGB-ефект для правильної кнопки */
 @keyframes rgbGlow {
   0%   { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
   25%  { border-color: #00e5ff; box-shadow: 0 0 10px #00e5ff; }
@@ -306,7 +305,7 @@ const DATA={
   ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."]
  ]),
  doctor:R([
-  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хвороба."],
+  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хорова."],
   ["doc_2","de pijn","pain","la douleur","біль","الألم","🤕","Ik heb veel pijn.","Мені дуже боляче."],
   ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى / الحرارة","🌡️","Ik heb hoge koorts.","У мене висока температура."],
   ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية",KIT,"De apotheek is dicht.","Аптека зачинена."],
@@ -481,7 +480,7 @@ Object.assign(DATA,{
  ]),
  home:R([
   ["hom_1", "de keuken", "kitchen", "la cuisine", "кухня", "المطبخ", "🍳", "Ik kook in de keuken.", "Я готую на кухні."],
-  ["hom_2", "de slaapkamer", "bedroom", "la chambre", " спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
+  ["hom_2", "de slaapkamer", "bedroom", "la chambre", "спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
   ["hom_3", "de badkamer", "bathroom", "la salle de bain", "ванна кімната", "الحمّام", "🛁", "De badkamer is schoon.", "Ванна кімната чиста."],
   ["hom_4", "de woonkamer", "living room", "le salon", "вітальня", "غرفة المعيشة", "🛋️", "De woonkamer is groot.", "Вітальня велика."],
   ["hom_5", "het toilet", "toilet", "les toilettes", "туалет", "المرحاض", "🚽", "Waar is het toilet?", "Де туалет?"],
@@ -559,7 +558,7 @@ Object.assign(DATA,{
   ["job_7", "de politieagent", "police officer", "le policier", "поліцейський", "الشرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
- ])
+ })
 };
 
 DATA.verbs.items.push(...R([
@@ -1034,7 +1033,11 @@ function start(){
  updateHeader();buildNav();newRound();
 }
 
-window.addEventListener("DOMContentLoaded", start);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", start);
+} else {
+  start();
+}
 </script>
 </body>
 </html>
