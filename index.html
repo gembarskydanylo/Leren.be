@@ -78,20 +78,21 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;fle
 .opt{background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:10px 8px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:46px;overflow-wrap:anywhere;box-shadow:0 3px 8px rgba(0,0,0,.04);transition:transform .1s, box-shadow .1s}
 .opt:active{transform:scale(.985);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 
-/* RGB геймерська анімація для правильної кнопки */
+/* Надійний RGB-ефект для правильної кнопки */
 @keyframes rgbGlow {
-  0%   { border-color: #ff0000; box-shadow: 0 0 14px #ff0000; }
-  33%  { border-color: #00ff00; box-shadow: 0 0 14px #00ff00; }
-  66%  { border-color: #0000ff; box-shadow: 0 0 14px #0000ff; }
-  100% { border-color: #ff0000; box-shadow: 0 0 14px #ff0000; }
+  0%   { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
+  25%  { border-color: #00e5ff; box-shadow: 0 0 10px #00e5ff; }
+  50%  { border-color: #00ff66; box-shadow: 0 0 10px #00ff66; }
+  75%  { border-color: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+  100% { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
 }
 
 .opt.correct {
-  animation: rgbGlow 1.2s infinite linear;
+  animation: rgbGlow 1.5s linear infinite;
   background: var(--ok-bg) !important;
-  color: var(--fg);
-  font-weight: 750;
-  border-width: 2px;
+  color: var(--fg) !important;
+  font-weight: 700;
+  border-width: 2px !important;
 }
 
 .opt.incorrect{border-color:var(--bad);color:var(--bad);background:var(--bad-bg);box-shadow:0 3px 10px rgba(217,61,74,.15)}
@@ -205,7 +206,7 @@ const UI={
  uk:{build:"Складання",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
+  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукты",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
   subs:{phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити"},audioSub:"Послухай і обери переклад"},
  en:{build:"Build",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
@@ -214,7 +215,7 @@ const UI={
   tabs:{phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)"},
   subs:{phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review"},audioSub:"Listen and choose the translation"},
- fr:{build:"Construire",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"Néerlandais • Niveau A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Recommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+ fr:{build:"Construire",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"Néerlandais • Niveau A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)"},
@@ -223,7 +224,7 @@ const UI={
  ar:{build:"تركيب",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"اللغة الهولندية • المستوى A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",light:"الوضع الفاتح",dark:"الوضع الداكن",markKnown:"أعرف هذا",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
-  tabs:{phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت والغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)"},
+  tabs:{phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)"},
   subs:{phrases:"اختر العبارة الصحيحة",questions:"ماذا تعني كلمة الاستفهام هذه؟",pronouns:"اختر ترجمة الضمير",verbs:"اختر ترجمة الفعل",dehet:"اختر أداة التعريف الصحيحة",adjectives:"اختر الترجمة",numbers:"اختر كلمة العدد",time:"اختر الكلمة الصحيحة",clock:"كم الساعة على مدار الساعة؟",months:"اختر الشهر",weather:"الطقس والأيام والوقت",family:"من هذا في العائلة؟",jobs:"اختر المهنة",body:"انظر إلى الأيقونة واختر الكلمة",doctor:"موعد الطبيب والصحة",home:"انظر إلى الأيقونة واختر الكلمة",shop:"السوبرماركت والمنتجات والعبارات",clothes:"انظر إلى الأيقونة واختر الكلمة",colors:"انظر إلى اللون واختر الكلمة",animals:"انظر إلى الأيقونة واختر الكلمة",city:"انظر إلى الأيقونة واختر الكلمة",transport:"المواصلات والاتجاهات",gemeente:"انظر إلى الأيقونة واختر الكلمة",cvo:"انظر إلى الأيقونة واختر الكلمة"},
   modes:{study:"دراسة",quiz:"اختبار",audio:"استماع",review:"مراجعة"},audioSub:"استمع واختر الترجمة"}
 };
@@ -243,6 +244,7 @@ const REG='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label
 
 const KEYS=["id","nl","en","fr","uk","ar","icon","ex_nl","ex_uk","art_nl","art_fr"];
 const R=rows=>({items:rows.map(r=>{const o={};KEYS.forEach((k,i)=>{if(r[i]!==undefined)o[k]=r[i]});return o})});
+
 const DATA={
  pronouns:R([
   ["pro_ik","ik","I","je","я","أنا","👤","Ik ben thuis.","Я вдома."],
@@ -260,7 +262,7 @@ const DATA={
   ["v_spreken","spreken","to speak","parler","говорити / розмовляти","يتحدث / يتكلم","🗣️","Ik spreek Nederlands.","Я розмовляю нідерландською."],
   ["v_werken","werken","to work","travailler","працювати","يعمل","💼","Hij werkt vandaag.","Він сьогодні працює."],
   ["v_doen_1","ik doe","I do","je fais","я роблю","أنا أفعل","🛠️","Ik doe de deur open.","Я відчиняю двері."],
-  ["v_doen_2","jij doet","you do","tu fais","ти робиш","أنت تفعل","👉","Wat doe jij heute?","Що ти робиш?"],
+  ["v_doen_2","jij doet","you do","tu fais","ти робиш","أنت تفعل","👉","Wat doe jij vandaag?","Що ти робиш сьогодні?"],
   ["v_doen_3","hij doet","he does","il fait","він робить","هو يفعل","👨","Hij doet zijn best.","Він робить усе можливе."]
  ]),
  dehet:R([
@@ -270,13 +272,13 @@ const DATA={
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
   ["art_huis","huis","house","maison","будинок","بيت","🏠","Het huis is groot.","Будинок великий.","het","la"],
-  ["art_school","school","school","école","школа","мدرسة","🏫","De school begint om negen uur.","Школа починається о дев'ятій.","de","la"],
+  ["art_school","school","school","école","школа","مدرسة","🏫","De school begint om negen uur.","Школа починається о дев'ятій.","de","la"],
   ["art_auto","auto","car","voiture","автомобіль","سيارة","🚗","De auto is rood.","Автомобіль червоний.","de","la"],
   ["art_raam","raam","window","fenêtre","вікно","نافذة","🪟","Het raam is open.","Вікно відчинене.","het","la"],
   ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"]
  ]),
  questions:R([
-  ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is this?","Що це?"],
+  ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is dit?","Що це?"],
   ["q_wie","wie","who","qui","хто","مَن","🙋‍♂️","Wie komt morgen?","Хто прийде завтра?"],
   ["q_wie_2","wie woont hier?","who lives here?","qui habite ici?","хто тут живе?","من يسكن هنا؟","🏠","Wie woont hier in de buurt?","Хто тут живе поблизу?"],
   ["q_wie_3","wie werkt in Amsterdam","who works in Amsterdam","qui travaille à Amsterdam","хто працює в Амстердамі","من يعمل في أمستردام","💼","Wie werkt in Amsterdam?","Хто працює в Амстердамі?"],
@@ -286,7 +288,7 @@ const DATA={
   ["q_hoe","hoe","how","comment","як","كيف","💬","Hoe heet je?","Як тебе звати?"],
   ["q_hoeveel","hoeveel","how much / how many","combien","скільки","كم","🔢","Hoeveel kost dit?","Скільки це коштує?"],
   ["q_hoelaat","hoe laat","what time","quelle heure","котра година","كم الساعة","🕒","Hoe laat is het?","Котра година?"],
-  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is this?","Який це колір?"]
+  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is dit?","Який це колір?"]
  ]),
  cvo:R([
   ["cvo_1","de cursist","student","l'étudiant","слухач курсів / учень","طالب في الدورة","🎓","Ik ben een cursist.","Я слухач курсів."],
@@ -343,7 +345,7 @@ const DATA={
  ]),
  weather:R([
   ["w_1","de regen","rain","la pluie","дощ","المطر","🌧️","Er komt veel regen vandaag.","Сьогодні буде сильний дощ."],
-  ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
+  ["w_2","de zon","sun","le soleil","сонце","Шمس","☀️","De zon schijnt.","Сонце світить."],
   ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
   ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
   ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅"],
@@ -479,7 +481,7 @@ Object.assign(DATA,{
  ]),
  home:R([
   ["hom_1", "de keuken", "kitchen", "la cuisine", "кухня", "المطبخ", "🍳", "Ik kook in de keuken.", "Я готую на кухні."],
-  ["hom_2", "de slaapkamer", "bedroom", "la chambre", "спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
+  ["hom_2", "de slaapkamer", "bedroom", "la chambre", " спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
   ["hom_3", "de badkamer", "bathroom", "la salle de bain", "ванна кімната", "الحمّام", "🛁", "De badkamer is schoon.", "Ванна кімната чиста."],
   ["hom_4", "de woonkamer", "living room", "le salon", "вітальня", "غرفة المعيشة", "🛋️", "De woonkamer is groot.", "Вітальня велика."],
   ["hom_5", "het toilet", "toilet", "les toilettes", "туалет", "المرحاض", "🚽", "Waar is het toilet?", "Де туалет?"],
@@ -493,7 +495,7 @@ Object.assign(DATA,{
   ["hom_13", "het appartement", "apartment", "l'appartement", "квартира", "الشقة", "🏢", "Ons appartement is klein.", "Наша квартира маленька."],
   ["hom_14", "de buurman", "neighbor (male)", "le voisin", "сусід", "جار", "👨", "Mijn buurman is vriendelijk.", "Мій сусід дружелюбний."],
   ["hom_15", "de buurvrouw", "neighbor (female)", "la voisine", "сусідка", "جارة", "👩", "De buurvrouw helpt mij.", "Сусідка допомагає мені."],
-  ["hom_16", "de buren", "neighbors", "les voisins", "сусіди", "الجيران", "🧑‍🤝‍🧑", "Onشاء de buren zijn aardig.", "Наші сусіди добрі."],
+  ["hom_16", "de buren", "neighbors", "les voisins", "сусіди", "الجيران", "🧑‍🤝‍🧑", "Onze buren zijn aardig.", "Наші сусіди добрі."],
   ["hom_17", "de buurt", "neighborhood", "le quartier", "район", "حي", "🏘️", "Ik woon in een gezellige buurt.", "Я живу в затишному районі."]
  ]),
  body:R([
@@ -557,8 +559,9 @@ Object.assign(DATA,{
   ["job_7", "de politieagent", "police officer", "le policier", "поліцейський", "الشرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
- ]),
-});
+ ])
+};
+
 DATA.verbs.items.push(...R([
   ["vx_1", "komen", "to come", "venir", "приходити", "يأتي", "👋", "Ik kom uit Oekraïne.", "Я з України."],
   ["vx_2", "gaan", "to go", "aller", "іти / їхати", "يذهب", "🚶", "Ik ga naar school.", "Я йду до школи."],
@@ -589,9 +592,6 @@ DATA.verbs.items.push(...R([
   ["vx_27", "heten", "to be called", "s'appeler", "називатися", "اسمه / يُدعى", "🏷️", "Ik heet Anna.", "Мене звати Анна."]
 ]).items);
 
-const XUI={"uk": {"tabs": {"phrases": "Фрази та привітання", "numbers": "Числа", "clock": "Години (Клок)", "family": "Сім'я", "time": "Час", "months": "Місяці", "colors": "Кольори", "adjectives": "Прикметники", "home": "Дім і кімнати", "body": "Тіло", "clothes": "Одяг", "animals": "Тварини", "city": "Місто та місця", "jobs": "Професії"}, "subs": {"phrases": "Обери правильну фразу", "numbers": "Обери слово для числа", "clock": "Котра година на годиннику?", "family": "Хто це в родині?", "time": "Обери правильне слово", "months": "Обери назву місяця", "colors": "Подивись на колір і обери слово", "adjectives": "Обери переклад слова", "home": "Подивись на іконку та обери слово", "body": "Подивись на іконку та обери слово", "clothes": "Подивись на іконку та обери слово", "animals": "Подивись на іконку та обери слово", "city": "Подивись на іконку та обери слово", "jobs": "Подивись на іконку та обери слово"}}, "en": {"tabs": {"phrases": "Phrases & greetings", "numbers": "Numbers", "clock": "Clock (Hours)", "family": "Family", "time": "Time", "months": "Months", "colors": "Colours", "adjectives": "Adjectives", "home": "Home & rooms", "body": "Body", "clothes": "Clothes", "animals": "Animals", "city": "City & places", "jobs": "Jobs"}, "subs": {"phrases": "Choose the right phrase", "numbers": "Choose the word for the number", "clock": "What time is it on the clock?", "family": "Who is this in the family?", "time": "Choose the right word", "months": "Choose the month", "colors": "Look at the colour and choose the word", "adjectives": "Choose the translation", "home": "Look at the icon and choose the word", "body": "Look at the icon and choose the word", "clothes": "Look at the icon and choose the word", "animals": "Look at the icon and choose the word", "city": "Look at the icon and choose the word", "jobs": "Choose the job"}}, "fr": {"tabs": {"phrases": "Phrases & salutations", "numbers": "Nombres", "clock": "Heures", "family": "Famille", "time": "Temps", "months": "Mois", "colors": "Couleurs", "adjectives": "Adjectifs", "home": "Maison & pièces", "body": "Corps", "clothes": "Vêtements", "animals": "Animaux", "city": "Ville & lieux", "jobs": "Métiers"}, "subs": {"phrases": "Choisis la bonne expression", "numbers": "Choisis le mot du nombre", "clock": "Quelle heure est-il sur l'horloge ?", "family": "Qui est-ce dans la famille ?", "time": "Choisis le bon mot", "months": "Choisis le mois", "colors": "Regarde la couleur et choisis le mot", "adjectives": "Choisis la traduction", "home": "Regarde l'icône et choisis le mot", "body": "Regarde l'icône et choisis le mot", "clothes": "Regarde l'icône et choisis le mot", "animals": "Regarde l'icône et choisis le mot", "city": "Regarde l'icône et choisis le mot", "jobs": "Choisis le métier"}}, "ar": {"tabs": {"phrases": "عبارات وتحيات", "numbers": "الأعداد", "clock": "الساعات", "family": "العائلة", "time": "الوقت", "months": "الشهور", "colors": "الألوان", "adjectives": "الصفات", "home": "البيت والغرف", "body": "الجسم", "clothes": "الملابس", "animals": "الحيوانات", "city": "المدينة والأماكن", "jobs": "المهن"}, "subs": {"phrases": "اختر العبارة الصحيحة", "numbers": "اختر كلمة العدد", "clock": "كم الساعة على مدار الساعة؟", "family": "من هذا في العائلة؟", "time": "اختر الكلمة الصحيحة", "months": "اختر الشهر", "colors": "انظر إلى اللون واختر الكلمة", "adjectives": "اختر الترجمة", "home": "انظر إلى الأيقونة واختر الكلمة", "body": "انظر إلى الأيقونة واختر الكلمة", "clothes": "انظر إلى الأيقونة واختر الكلمة", "animals": "انظر إلى الأيقونة واختر الكلمة", "city": "انظر إلى الأيقونة واختر الكلمة", "jobs": "اختر المهنة"}}};
-for(const l in XUI){Object.assign(UI[l].tabs,XUI[l].tabs);Object.assign(UI[l].subs,XUI[l].subs)}
-
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
 function loadNumber(key,fallback){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}catch(e){return fallback}}
 function loadStore(){try{const v=JSON.parse(localStorage.getItem("poly_progress")||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}}
@@ -610,6 +610,7 @@ let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
 const iconBox=ic=>{const d=el("div","icon-box");d.setAttribute("aria-hidden","true");if(ic.startsWith("<svg"))d.innerHTML=ic;else d.textContent=ic;return d};
+
 function saveStore(){
  try{
   localStorage.setItem("poly_progress",JSON.stringify(store));
@@ -635,10 +636,12 @@ const labelFor=(it,lang=targetLang)=>String(it[lang]??it.nl??"");
 const meaningFor=it=>String(it[uiLang]??it.uk??it.nl??"");
 const artOf=it=>tab!=="dehet"?"":targetLang==="nl"?(it.art_nl||""):targetLang==="fr"?(it.art_fr||""):"";
 const shown=it=>(artOf(it)?artOf(it)+" ":"")+labelFor(it);
+
 function stateFor(id){if(!store[id])store[id]={seen:0,correct:0,wrong:0,streak:0,due:0,known:false};if(typeof store[id].streak!=="number")store[id].streak=0;return store[id]}
 const allItems=()=>Object.values(DATA).flatMap(d=>d.items);
 function dueItems(){const now=Date.now();return allItems().filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
 const learnedCount=()=>allItems().filter(x=>stateFor(x.id).known).length;
+
 function updateStats(){
  const u=getUI();
  $("score").textContent="⭐ "+score;
@@ -1030,7 +1033,8 @@ function start(){
  }catch(e){}
  updateHeader();buildNav();newRound();
 }
-start();
+
+window.addEventListener("DOMContentLoaded", start);
 </script>
 </body>
 </html>
