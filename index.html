@@ -4,10 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F2F4F8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>Polyglot Leren — Nederlands A1.1</title>
 <style>
 :root{color-scheme:light;--bg:#F2F4F8;--fg:#1E2238;--mut:#656C85;--card:#FFFFFF;--line:#E2E6F0;--acc:#4657D9;--acc-hover:#3545c4;--ok:#1F8A53;--ok-bg:#EBF7F0;--bad:#D93D4A;--bad-bg:#FDF0F1;--soft:#EBF0FF;--shadow:0 4px 20px rgba(30,34,56,.05);--amb:#B7791F}
@@ -150,6 +146,7 @@ footer strong{color:var(--fg);font-weight:750}
  .card{padding:12px 10px;gap:10px;border-radius:14px}
  .opt{font-size:13px;padding:8px 4px;min-height:42px}
 }
+
 </style>
 </head>
 <body>
@@ -199,7 +196,6 @@ footer strong{color:var(--fg);font-weight:750}
     <span>Danylo Hembarskyi • All rights reserved</span>
   </footer>
 </main>
-
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -209,7 +205,7 @@ const UI={
  uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукты",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
+  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
   subs:{phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити"},audioSub:"Послухай і обери переклад"},
  en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
@@ -270,7 +266,7 @@ const DATA={
  ]),
  dehet:R([
   ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
-  ["art_boek","boek","book","livre","книга","книга","📖","Het boek is open.","Книга відкрита.","het","le"],
+  ["art_boek","boek","book","livre","книга","كتاب","📖","Het boek is open.","Книга відкрита.","het","le"],
   ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","🛂","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
@@ -309,7 +305,7 @@ const DATA={
   ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."]
  ]),
  doctor:R([
-  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хорова."],
+  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хвороба."],
   ["doc_2","de pijn","pain","la douleur","біль","الألم","🤕","Ik heb veel pijn.","Мені дуже боляче."],
   ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى / الحرارة","🌡️","Ik heb hoge koorts.","У мене висока температура."],
   ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية",KIT,"De apotheek is dicht.","Аптека зачинена."],
@@ -348,16 +344,16 @@ const DATA={
  ]),
  weather:R([
   ["w_1","de regen","rain","la pluie","дощ","المطر","🌧️","Er komt veel regen vandaag.","Сьогодні буде сильний дощ."],
-  ["w_2","de zon","sun","le soleil","сонце","Шمس","☀️","De zon schijnt.","Сонце світить."],
+  ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
   ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
   ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
-  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅"],
-  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅"],
-  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅"],
-  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅"],
-  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
-  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
-  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
+  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅","Vandaag is het maandag.","Сьогодні понеділок."],
+  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅","Morgen is het dinsdag.","Завтра вівторок."],
+  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅","Woensdag heb ik les.","У середу в мене урок."],
+  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅","Donderdag ga ik naar de winkel.","У четвер я йду до магазину."],
+  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅","Vrijdag is bijna weekend.","П'ятниця — майже вихідні."],
+  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅","Zaterdag ben ik vrij.","У суботу я вільний."],
+  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅","Zondag rusten wij.","У неділю ми відпочиваємо."]
  ])
 };
 
@@ -396,10 +392,21 @@ Object.assign(DATA,{
   ["num_11", "tien", "10 · ten", "10 · dix", "10 · десять", "10 · عشرة", "🔟", "Tien euro, alstublieft.", "Десять євро, будь ласка."],
   ["num_12", "elf", "11 · eleven", "11 · onze", "11 · одинадцять", "11 · أحد عشر", "🔢", "Er zijn elf studenten.", "Є одинадцять студентів."],
   ["num_13", "twaalf", "12 · twelve", "12 · douze", "12 · дванадцять", "12 · اثنا عشر", "🔢", "Het is twaalf uur.", "Зараз дванадцята година."],
-  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
+
+  ["num_13b", "dertien", "13 · thirteen", "13 · treize", "13 · тринадцять", "13 · ثلاثة عشر", "🔢", "Er zijn dertien stoelen.", "Є тринадцять стільців."],
+  ["num_14b", "veertien", "14 · fourteen", "14 · quatorze", "14 · чотирнадцять", "14 · أربعة عشر", "🔢", "Zij is veertien jaar.", "Їй чотирнадцять років."],  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
+  ["num_16b", "zestien", "16 · sixteen", "16 · seize", "16 · шістнадцять", "16 · ستة عشر", "🔢", "De bus komt om zestien uur.", "Автобус о шістнадцятій."],
+  ["num_17b", "zeventien", "17 · seventeen", "17 · dix-sept", "17 · сімнадцять", "17 · سبعة عشر", "🔢", "Hij is zeventien.", "Йому сімнадцять."],
+  ["num_18b", "achttien", "18 · eighteen", "18 · dix-huit", "18 · вісімнадцять", "18 · ثمانية عشر", "🔢", "Zij is achttien jaar.", "Їй вісімнадцять."],
+  ["num_19b", "negentien", "19 · nineteen", "19 · dix-neuf", "19 · дев'ятнадцять", "19 · تسعة عشر", "🔢", "Het is negentien graden.", "Дев'ятнадцять градусів."],
   ["num_15", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten wachten.", "Чекати двадцять хвилин."],
   ["num_16", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig minuten pauze.", "Тридцять хвилин перерви."],
+  ["num_40", "veertig", "40 · forty", "40 · quarante", "40 · сорок", "40 · أربعون", "🔢", "Ik ben veertig.", "Мені сорок."],
   ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п'ятдесят відсотків."],
+  ["num_60", "zestig", "60 · sixty", "60 · soixante", "60 · шістдесят", "60 · ستون", "🔢", "Een minuut heeft zestig seconden.", "У хвилині шістдесят секунд."],
+  ["num_70", "zeventig", "70 · seventy", "70 · soixante-dix", "70 · сімдесят", "70 · سبعون", "🔢", "Mijn oma is zeventig.", "Моїй бабусі сімдесят."],
+  ["num_80", "tachtig", "80 · eighty", "80 · quatre-vingts", "80 · вісімдесят", "80 · ثمانون", "🔢", "De trein rijdt tachtig kilometer per uur.", "Потяг їде вісімдесят кілометрів на годину."],
+  ["num_90", "negentig", "90 · ninety", "90 · quatre-vingt-dix", "90 · дев'яносто", "90 · تسعون", "🔢", "Het kost negentig euro.", "Це коштує дев'яносто євро."],
   ["num_18", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Het kost honderd euro.", "Це коштує сто євро."]
  ]),
  time:R([
@@ -422,24 +429,23 @@ Object.assign(DATA,{
  clock:R([
   ["clk_1", "het is twaalf uur", "it is twelve o'clock", "il est midi / minuit", "зараз дванадцята година", "الساعة الثانية عشرة", "🕛", "Om twaalf uur lunchen wij.", "О дванадцятій ми обідаємо."],
   ["clk_2", "het is een uur", "it is one o'clock", "il est une heure", "зараз перша година", "الساعة الواحدة", "🕐", "De les begint om een uur.", "Урок починається о першій."],
-  ["clk_3", "het is half twee", "it is half past one (1:30)", "il est une heure et demie", "зараз пів на другу (1:30)", "הוא אחת וחצי / الواحدة والنصف", "🕜", "We vertrekken om half twee.", "Ми вирушаємо о пів на другу."],
+  ["clk_3", "het is half twee", "it is half past one (1:30)", "il est une heure et demie", "зараз пів на другу (1:30)", "الواحدة والنصف", "🕜", "We vertrekken om half twee.", "Ми вирушаємо о пів на другу."],
   ["clk_4", "het is kwart over twee", "it is quarter past two (2:15)", "il est deux heures et quart", "зараз на чверть на третю (2:15)", "الرابعة والربع / وربع", "🕒", "Het is kwart over twee.", "Зараз на чверть на третю."],
   ["clk_5", "het is kwart voor drie", "it is quarter to three (2:45)", "il est trois heures moins le quart", "зараз за чверть третя (2:45)", "إلا ربع", "🕒", "Kom om kwart voor drie.", "Приходь за чверть третя."]
  ]),
  months:R([
-  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️"],
-  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️"],
-  ["mon_3", "maart", "March", "mars", "березень", "مارس", "🌸"],
-  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸"],
-  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸"],
-  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️"],
-  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️"],
-  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️"],
-  ["mon_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂"],
-  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂"],
-  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂"],
-  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️"]
- ]),
+  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️", "Het is januari.", "Зараз січень."],
+  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️", "Februari is koud.", "Лютий холодний."],
+  ["mon_3", "maart", "March", "mars", "березень", "مارس", "🌸", "In maart begint de lente.", "У березні починається весна."],
+  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸", "April heeft dertig dagen.", "У квітні тридцять днів."],
+  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸", "In mei is het warmer.", "У травні тепліше."],
+  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️", "Juni is een zomermaand.", "Червень — літній місяць."],
+  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️", "In juli heb ik vakantie.", "У липні в мене канікули."],
+  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️", "Augustus is heel warm.", "Серпень дуже теплий."],
+  ["mon_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂", "In september begint de school.", "У вересні починається школа."],
+  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂", "Oktober is een herfstmaand.", "Жовтень — осінній місяць."],
+  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂", "In november regent het vaak.", "У листопаді часто дощ."],
+  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️", "December is de laatste maand.", "Грудень — останній місяць."] ]),
  colors:R([
   ["col_1", "rood", "red", "rouge", "червоний", "أحمر", dot("#E5484D"), "De bus is rood.", "Автобус червоний."],
   ["col_2", "blauw", "blue", "bleu", "синій", "أزرق", dot("#3B82F6"), "De lucht is blauw.", "Небо синє."],
@@ -540,7 +546,7 @@ Object.assign(DATA,{
  ]),
  city:R([
   ["cit_1", "de winkel", "shop", "le magasin", "магазин", "المتجر", "🏪", "De winkel is open.", "Магазин відчинений."],
-  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرмаркет", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
+  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرماركت", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
   ["cit_3", "de bakkerij", "bakery", "la boulangerie", "пекарня", "المخبز", "🥖", "Het brood komt van de bakkerij.", "Хліб з пекарні."],
   ["cit_4", "het restaurant", "restaurant", "le restaurant", "ресторан", "المطعم", "🍽️", "Wij eten in een restaurant.", "Ми їмо в ресторані."],
   ["cit_5", "het ziekenhuis", "hospital", "l'hôpital", "лікарня", "المستشفى", "🏥", "Het ziekenhuis is dichtbij.", "Лікарня поруч."],
@@ -564,6 +570,23 @@ Object.assign(DATA,{
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
  ])
 });
+
+
+DATA.family=R([
+  ["fam_1","de moeder","mother","la mère","мама","الأم","👩","Mijn moeder kookt.","Моя мама готує."],
+  ["fam_2","de vader","father","le père","тато","الأب","👨","Mijn vader werkt.","Мій тато працює."],
+  ["fam_3","de ouders","parents","les parents","батьки","الوالدان","👨‍👩‍👧","Mijn ouders wonen hier.","Мої батьки живуть тут."],
+  ["fam_4","de broer","brother","le frère","брат","الأخ","👦","Ik heb een broer.","У мене є брат."],
+  ["fam_5","de zus","sister","la sœur","сестра","الأخت","👧","Mijn zus is aardig.","Моя сестра добра."],
+  ["fam_6","de zoon","son","le fils","син","الابن","🧒","Hun zoon is klein.","Їхній син маленький."],
+  ["fam_7","de dochter","daughter","la fille","дочка","الابنة","👧","Mijn dochter leest.","Моя дочка читає."],
+  ["fam_8","het kind","child","l'enfant","дитина","الطفل","👶","Het kind speelt.","Дитина грається."],
+  ["fam_9","de baby","baby","le bébé","немовля","الرضيع","🍼","De baby slaapt.","Немовля спить."],
+  ["fam_10","de opa","grandfather","le grand-père","дідусь","الجد","👴","Opa woont in de stad.","Дідусь живе в місті."],
+  ["fam_11","de oma","grandmother","la grand-mère","бабуся","الجدة","👵","Oma bakt een taart.","Бабуся пече торт."],
+  ["fam_12","de man","husband","le mari","чоловік","الزوج","👨","Mijn man is thuis.","Мій чоловік вдома."],
+  ["fam_13","de vrouw","wife","la femme","дружина","الزوجة","👩","Mijn vrouw werkt.","Моя дружина працює."]
+]);
 
 DATA.verbs.items.push(...R([
   ["vx_1", "komen", "to come", "venir", "приходити", "يأتي", "👋", "Ik kom uit Oekraïne.", "Я з України."],
@@ -669,6 +692,8 @@ function updateHeader(){
  document.documentElement.lang=uiLang;
  if(uiLang==="ar")document.documentElement.setAttribute("dir","rtl");else document.documentElement.removeAttribute("dir");
  const dark=document.documentElement.dataset.theme==="dark";
+ const meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.setAttribute("content",dark?"#0F111A":"#F2F4F8");
  $("themeToggle").textContent=dark?"☀️":"🌙";
  const themeLabel=dark?(u.light||"Light mode"):(u.dark||"Dark mode");
  $("themeToggle").title=themeLabel;
@@ -1091,14 +1116,6 @@ function updateModeButtons(){
  });
 }
 
-$("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
-$("uiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
-$("themeToggle").addEventListener("click",()=>{
- const n=document.documentElement.dataset.theme==="dark"?"light":"dark";
- document.documentElement.dataset.theme=n;
- try{localStorage.setItem("poly_theme",n)}catch(e){}
- updateHeader();
-});
 
 function start(){
  try{
@@ -1109,20 +1126,23 @@ function start(){
  updateHeader();buildNav();newRound();
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", start);
-} else {
-  start();
+function boot(){
+ const root=document.querySelector("main");
+ if(!root||root.dataset.ready==="1")return;
+ root.dataset.ready="1";
+ $("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
+ $("uiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
+ $("themeToggle").addEventListener("click",()=>{
+  const n=document.documentElement.dataset.theme==="dark"?"light":"dark";
+  document.documentElement.dataset.theme=n;
+  try{localStorage.setItem("poly_theme",n)}catch(err){}
+  updateHeader();
+ });
+ start();
 }
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+else boot();
 
-// Offline/PWA support is available on HTTPS (including GitHub Pages) or localhost.
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js", {scope: "./"}).catch(() => {
-      // The app remains usable online even if offline setup is unavailable.
-    });
-  });
-}
 </script>
 </body>
 </html>
