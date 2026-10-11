@@ -78,7 +78,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;fle
 .opt{background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:10px 8px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:46px;overflow-wrap:anywhere;box-shadow:0 3px 8px rgba(0,0,0,.04);transition:transform .1s, box-shadow .1s}
 .opt:active{transform:scale(.985);box-shadow:0 1px 3px rgba(0,0,0,.04)}
 
-/* Надійний RGB-ефект для правильної кнопки */
 @keyframes rgbGlow {
   0%   { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
   25%  { border-color: #00e5ff; box-shadow: 0 0 10px #00e5ff; }
@@ -203,10 +202,10 @@ const $=id=>document.getElementById(id);
 const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
 
 const UI={
- uk:{build:"Складання",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій тємі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукты",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
+  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
   subs:{phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити"},audioSub:"Послухай і обери переклад"},
  en:{build:"Build",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
@@ -306,7 +305,7 @@ const DATA={
   ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."]
  ]),
  doctor:R([
-  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хвороба."],
+  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хорова."],
   ["doc_2","de pijn","pain","la douleur","біль","الألم","🤕","Ik heb veel pijn.","Мені дуже боляче."],
   ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى / الحرارة","🌡️","Ik heb hoge koorts.","У мене висока температура."],
   ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية",KIT,"De apotheek is dicht.","Аптека зачинена."],
@@ -481,7 +480,7 @@ Object.assign(DATA,{
  ]),
  home:R([
   ["hom_1", "de keuken", "kitchen", "la cuisine", "кухня", "المطبخ", "🍳", "Ik kook in de keuken.", "Я готую на кухні."],
-  ["hom_2", "de slaapkamer", "bedroom", "la chambre", " спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
+  ["hom_2", "de slaapkamer", "bedroom", "la chambre", "спальня", "غرفة النوم", "😴", "De slaapkamer is klein.", "Спальня маленька."],
   ["hom_3", "de badkamer", "bathroom", "la salle de bain", "ванна кімната", "الحمّام", "🛁", "De badkamer is schoon.", "Ванна кімната чиста."],
   ["hom_4", "de woonkamer", "living room", "le salon", "вітальня", "غرفة المعيشة", "🛋️", "De woonkamer is groot.", "Вітальня велика."],
   ["hom_5", "het toilet", "toilet", "les toilettes", "туалет", "المرحاض", "🚽", "Waar is het toilet?", "Де туалет?"],
@@ -559,7 +558,7 @@ Object.assign(DATA,{
   ["job_7", "de politieagent", "police officer", "le policier", "поліцейський", "الشرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
- ])
+ })
 };
 
 DATA.verbs.items.push(...R([
@@ -1034,7 +1033,11 @@ function start(){
  updateHeader();buildNav();newRound();
 }
 
-window.addEventListener("DOMContentLoaded", start);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", start);
+} else {
+  start();
+}
 </script>
 </body>
 </html>
