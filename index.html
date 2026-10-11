@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LCJ9JHWQ85"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LCJ9JHWQ85');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F2F4F8">
@@ -215,7 +206,7 @@ const $=id=>document.getElementById(id);
 const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
 
 const UI={
- uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій тéмі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
   tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
@@ -298,12 +289,12 @@ const DATA={
   ["q_wanneer","wanneer","when","quand","коли","متى","⏰","Wanneer is de pauze?","Коли перерва?"],
   ["q_waarom","waarom","why","pourquoi","чому","لماذا","🤔","Waarom leer je Nederlands?","Чому ти вчиш нідерландську?"],
   ["q_hoe","hoe","how","comment","як","كيف","💬","Hoe heet je?","Як тебе звати?"],
-  ["q_hoeveel","hoeveel","how much / how many","combien","скільки","كم","🔢","Hoeveel kost this?","Скільки це коштує?"],
+  ["q_hoeveel","hoeveel","how much / how many","combien","скільки","كم","🔢","Hoeveel kost dit?","Скільки це коштує?"],
   ["q_hoelaat","hoe laat","what time","quelle heure","котра година","كم الساعة","🕒","Hoe laat is het?","Котра година?"],
-  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is this?","Який це колір?"]
+  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is dit?","Який це колір?"]
  ]),
  cvo:R([
-  ["cvo_1","de cursist","student","l'étudiant","слухач курсів / учень","ط طالب في الدورة","🎓","Ik ben een cursist.","Я слухач курсів."],
+  ["cvo_1","de cursist","student","l'étudiant","слухач курсів / учень","طالب في الدورة","🎓","Ik ben een cursist.","Я слухач курсів."],
   ["cvo_2","de leraar / docent","teacher","le professeur","учитель / викладач","المعلم","👨‍🏫","De leraar spreekt duidelijk.","Учитель говорить чітко."],
   ["cvo_3","het huiswerk","homework","les devoirs","домашнє завдання","الواجب المنزلي","📝","Ik maak mijn huiswerk.","Я роблю домашнє завдання."],
   ["cvo_4","de pauze","break","la pause","перерва","الاستراحة","☕","Het is tijd voor pauze.","Час для перерви."],
@@ -381,7 +372,7 @@ const DATA={
   ["fam_10", "getrouwd", "married", "marié", "одружений", "متزوج", "💍", "Wij zijn getrouwd.", "Ми одружені."],
   ["fam_11", "alleenstaand", "single", "célibataire", "неодружений", "أعزب", "🧍", "Hij is alleenstaand.", "Він неодружений."],
   ["fam_12", "het kind", "child", "l'enfant", "дитина", "الطفل", "🧒", "Het kind speelt buiten.", "Дитина грає надворі."]
- })
+ ])
 };
 
 const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="#20243A" stroke-opacity=".35" stroke-width="3"/></svg>';
@@ -592,7 +583,7 @@ Object.assign(DATA,{
   ["job_7", "de politieagent", "police officer", "le policier", "поліцейський", "الشرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
- })
+ ])
 });
 
 DATA.verbs.items.push(...R([
