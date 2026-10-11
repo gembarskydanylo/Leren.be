@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F2F4F8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>Polyglot Leren — Nederlands A1.1</title>
 <style>
 :root{color-scheme:light;--bg:#F2F4F8;--fg:#1E2238;--mut:#656C85;--card:#FFFFFF;--line:#E2E6F0;--acc:#4657D9;--acc-hover:#3545c4;--ok:#1F8A53;--ok-bg:#EBF7F0;--bad:#D93D4A;--bad-bg:#FDF0F1;--soft:#EBF0FF;--shadow:0 4px 20px rgba(30,34,56,.05);--amb:#B7791F}
@@ -146,7 +150,6 @@ footer strong{color:var(--fg);font-weight:750}
  .card{padding:12px 10px;gap:10px;border-radius:14px}
  .opt{font-size:13px;padding:8px 4px;min-height:42px}
 }
-
 </style>
 </head>
 <body>
@@ -196,6 +199,7 @@ footer strong{color:var(--fg);font-weight:750}
     <span>Danylo Hembarskyi • All rights reserved</span>
   </footer>
 </main>
+
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -347,13 +351,27 @@ const DATA={
   ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
   ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
   ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
-  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅","Vandaag is het maandag.","Сьогодні понеділок."],
-  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅","Morgen is het dinsdag.","Завтра вівторок."],
-  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅","Woensdag heb ik les.","У середу в мене урок."],
-  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅","Donderdag ga ik naar de winkel.","У четвер я йду до магазину."],
-  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅","Vrijdag is bijna weekend.","П'ятниця — майже вихідні."],
-  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅","Zaterdag ben ik vrij.","У суботу я вільний."],
-  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅","Zondag rusten wij.","У неділю ми відпочиваємо."]
+  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅", "Op maandag werk ik.", "У понеділок я працюю."],
+  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅", "Op dinsdag heb ik les.", "У вівторок у мене урок."],
+  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅", "Op woensdag ga ik naar de markt.", "У середу я йду на ринок."],
+  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅", "Op donderdag sport ik.", "У четвер я займаюся спортом."],
+  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅", "Op vrijdag werk ik thuis.", "У п'ятницю я працюю вдома."],
+  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅", "Op zaterdag slaap ik uit.", "У суботу я довше сплю."],
+  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅", "Op zondag bezoek ik mijn familie.", "У неділю я відвідую родину."],
+ ]),
+ family:R([
+  ["fam_1", "de moeder", "mother", "la mère", "мама", "الأم", "👩", "Mijn moeder kookt.", "Моя мама готує."],
+  ["fam_2", "de vader", "father", "le père", "тато", "الأب", "👨", "Mijn vader werkt.", "Мій тато працює."],
+  ["fam_3", "de ouders", "parents", "les parents", "батьки", "الوالدان", "👫", "Mijn ouders wonen in België.", "Мої батьки живуть у Бельгії."],
+  ["fam_4", "de broer", "brother", "le frère", "брат", "الأخ", "👦", "Mijn broer is tien.", "Моєму братові десять."],
+  ["fam_5", "de zus", "sister", "la sœur", "сестра", "الأخت", "👧", "Mijn zus studeert.", "Моя сестра навчається."],
+  ["fam_6", "de zoon", "son", "le fils", "син", "الابن", "👦", "Hun zoon gaat naar school.", "Їхній син ходить до школи."],
+  ["fam_7", "de dochter", "daughter", "la fille", "дочка", "الابنة", "👧", "Onze dochter is drie.", "Нашій дочці три роки."],
+  ["fam_8", "de opa", "grandpa", "le grand-père", "дідусь", "الجد", "👴", "Mijn opa is tachtig.", "Моєму дідусеві вісімдесят."],
+  ["fam_9", "de oma", "grandma", "la grand-mère", "бабуся", "الجدة", "👵", "Oma maakt soep.", "Бабуся готує суп."],
+  ["fam_10", "getrouwd", "married", "marié", "одружений", "متزوج", "💍", "Wij zijn getrouwd.", "Ми одружені."],
+  ["fam_11", "alleenstaand", "single", "célibataire", "неодружений", "أعزب", "🧍", "Hij is alleenstaand.", "Він неодружений."],
+  ["fam_12", "het kind", "child", "l'enfant", "дитина", "الطفل", "🧒", "Het kind speelt buiten.", "Дитина грає надворі."]
  ])
 };
 
@@ -392,21 +410,17 @@ Object.assign(DATA,{
   ["num_11", "tien", "10 · ten", "10 · dix", "10 · десять", "10 · عشرة", "🔟", "Tien euro, alstublieft.", "Десять євро, будь ласка."],
   ["num_12", "elf", "11 · eleven", "11 · onze", "11 · одинадцять", "11 · أحد عشر", "🔢", "Er zijn elf studenten.", "Є одинадцять студентів."],
   ["num_13", "twaalf", "12 · twelve", "12 · douze", "12 · дванадцять", "12 · اثنا عشر", "🔢", "Het is twaalf uur.", "Зараз дванадцята година."],
-
-  ["num_13b", "dertien", "13 · thirteen", "13 · treize", "13 · тринадцять", "13 · ثلاثة عشر", "🔢", "Er zijn dertien stoelen.", "Є тринадцять стільців."],
-  ["num_14b", "veertien", "14 · fourteen", "14 · quatorze", "14 · чотирнадцять", "14 · أربعة عشر", "🔢", "Zij is veertien jaar.", "Їй чотирнадцять років."],  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
-  ["num_16b", "zestien", "16 · sixteen", "16 · seize", "16 · шістнадцять", "16 · ستة عشر", "🔢", "De bus komt om zestien uur.", "Автобус о шістнадцятій."],
-  ["num_17b", "zeventien", "17 · seventeen", "17 · dix-sept", "17 · сімнадцять", "17 · سبعة عشر", "🔢", "Hij is zeventien.", "Йому сімнадцять."],
-  ["num_18b", "achttien", "18 · eighteen", "18 · dix-huit", "18 · вісімнадцять", "18 · ثمانية عشر", "🔢", "Zij is achttien jaar.", "Їй вісімнадцять."],
-  ["num_19b", "negentien", "19 · nineteen", "19 · dix-neuf", "19 · дев'ятнадцять", "19 · تسعة عشر", "🔢", "Het is negentien graden.", "Дев'ятнадцять градусів."],
+  ["num_dertien", "dertien", "thirteen", "treize", "тринадцять", "ثلاثة عشر", "🔢", "Ik heb dertien euro.", "У мене тринадцять євро."],
+  ["num_veertien", "veertien", "fourteen", "quatorze", "чотирнадцять", "أربعة عشر", "🔢", "Zij is veertien jaar.", "Їй чотирнадцять років."],
+  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
   ["num_15", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten wachten.", "Чекати двадцять хвилин."],
   ["num_16", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig minuten pauze.", "Тридцять хвилин перерви."],
-  ["num_40", "veertig", "40 · forty", "40 · quarante", "40 · сорок", "40 · أربعون", "🔢", "Ik ben veertig.", "Мені сорок."],
+  ["num_veertig", "veertig", "forty", "quarante", "сорок", "أربعون", "🔢", "Mijn vader is veertig.", "Моєму татові сорок."],
   ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п'ятдесят відсотків."],
-  ["num_60", "zestig", "60 · sixty", "60 · soixante", "60 · шістдесят", "60 · ستون", "🔢", "Een minuut heeft zestig seconden.", "У хвилині шістдесят секунд."],
-  ["num_70", "zeventig", "70 · seventy", "70 · soixante-dix", "70 · сімдесят", "70 · سبعون", "🔢", "Mijn oma is zeventig.", "Моїй бабусі сімдесят."],
-  ["num_80", "tachtig", "80 · eighty", "80 · quatre-vingts", "80 · вісімдесят", "80 · ثمانون", "🔢", "De trein rijdt tachtig kilometer per uur.", "Потяг їде вісімдесят кілометрів на годину."],
-  ["num_90", "negentig", "90 · ninety", "90 · quatre-vingt-dix", "90 · дев'яносто", "90 · تسعون", "🔢", "Het kost negentig euro.", "Це коштує дев'яносто євро."],
+  ["num_zestig", "zestig", "sixty", "soixante", "шістдесят", "ستون", "🔢", "Een uur heeft zestig minuten.", "У годині шістдесят хвилин."],
+  ["num_zeventig", "zeventig", "seventy", "soixante-dix", "сімдесят", "سبعون", "🔢", "Oma is zeventig jaar.", "Бабусі сімдесят років."],
+  ["num_tachtig", "tachtig", "eighty", "quatre-vingts", "вісімдесят", "ثمانون", "🔢", "Opa is tachtig jaar.", "Дідусеві вісімдесят років."],
+  ["num_negentig", "negentig", "ninety", "quatre-vingt-dix", "дев'яносто", "تسعون", "🔢", "De les duurt negentig minuten.", "Урок триває дев'яносто хвилин."],
   ["num_18", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Het kost honderd euro.", "Це коштує сто євро."]
  ]),
  time:R([
@@ -434,18 +448,19 @@ Object.assign(DATA,{
   ["clk_5", "het is kwart voor drie", "it is quarter to three (2:45)", "il est trois heures moins le quart", "зараз за чверть третя (2:45)", "إلا ربع", "🕒", "Kom om kwart voor drie.", "Приходь за чверть третя."]
  ]),
  months:R([
-  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️", "Het is januari.", "Зараз січень."],
-  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️", "Februari is koud.", "Лютий холодний."],
+  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️", "In januari is het koud.", "У січні холодно."],
+  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️", "In februari regent het veel.", "У лютому часто йде дощ."],
   ["mon_3", "maart", "March", "mars", "березень", "مارس", "🌸", "In maart begint de lente.", "У березні починається весна."],
-  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸", "April heeft dertig dagen.", "У квітні тридцять днів."],
-  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸", "In mei is het warmer.", "У травні тепліше."],
-  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️", "Juni is een zomermaand.", "Червень — літній місяць."],
-  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️", "In juli heb ik vakantie.", "У липні в мене канікули."],
-  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️", "Augustus is heel warm.", "Серпень дуже теплий."],
+  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸", "In april bloeien de bloemen.", "У квітні цвітуть квіти."],
+  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸", "In mei is het mooi weer.", "У травні гарна погода."],
+  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️", "In juni gaan we op vakantie.", "У червні ми їдемо у відпустку."],
+  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️", "In juli is het warm.", "У липні тепло."],
+  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️", "In augustus zwemmen we.", "У серпні ми плаваємо."],
   ["mon_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂", "In september begint de school.", "У вересні починається школа."],
-  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂", "Oktober is een herfstmaand.", "Жовтень — осінній місяць."],
-  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂", "In november regent het vaak.", "У листопаді часто дощ."],
-  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️", "December is de laatste maand.", "Грудень — останній місяць."] ]),
+  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂", "In oktober vallen de bladeren.", "У жовтні опадає листя."],
+  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂", "In november is het grijs.", "У листопаді похмуро."],
+  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️", "In december vieren we Kerstmis.", "У грудні ми святкуємо Різдво."],
+ ]),
  colors:R([
   ["col_1", "rood", "red", "rouge", "червоний", "أحمر", dot("#E5484D"), "De bus is rood.", "Автобус червоний."],
   ["col_2", "blauw", "blue", "bleu", "синій", "أزرق", dot("#3B82F6"), "De lucht is blauw.", "Небо синє."],
@@ -571,23 +586,6 @@ Object.assign(DATA,{
  ])
 });
 
-
-DATA.family=R([
-  ["fam_1","de moeder","mother","la mère","мама","الأم","👩","Mijn moeder kookt.","Моя мама готує."],
-  ["fam_2","de vader","father","le père","тато","الأب","👨","Mijn vader werkt.","Мій тато працює."],
-  ["fam_3","de ouders","parents","les parents","батьки","الوالدان","👨‍👩‍👧","Mijn ouders wonen hier.","Мої батьки живуть тут."],
-  ["fam_4","de broer","brother","le frère","брат","الأخ","👦","Ik heb een broer.","У мене є брат."],
-  ["fam_5","de zus","sister","la sœur","сестра","الأخت","👧","Mijn zus is aardig.","Моя сестра добра."],
-  ["fam_6","de zoon","son","le fils","син","الابن","🧒","Hun zoon is klein.","Їхній син маленький."],
-  ["fam_7","de dochter","daughter","la fille","дочка","الابنة","👧","Mijn dochter leest.","Моя дочка читає."],
-  ["fam_8","het kind","child","l'enfant","дитина","الطفل","👶","Het kind speelt.","Дитина грається."],
-  ["fam_9","de baby","baby","le bébé","немовля","الرضيع","🍼","De baby slaapt.","Немовля спить."],
-  ["fam_10","de opa","grandfather","le grand-père","дідусь","الجد","👴","Opa woont in de stad.","Дідусь живе в місті."],
-  ["fam_11","de oma","grandmother","la grand-mère","бабуся","الجدة","👵","Oma bakt een taart.","Бабуся пече торт."],
-  ["fam_12","de man","husband","le mari","чоловік","الزوج","👨","Mijn man is thuis.","Мій чоловік вдома."],
-  ["fam_13","de vrouw","wife","la femme","дружина","الزوجة","👩","Mijn vrouw werkt.","Моя дружина працює."]
-]);
-
 DATA.verbs.items.push(...R([
   ["vx_1", "komen", "to come", "venir", "приходити", "يأتي", "👋", "Ik kom uit Oekraïne.", "Я з України."],
   ["vx_2", "gaan", "to go", "aller", "іти / їхати", "يذهب", "🚶", "Ik ga naar school.", "Я йду до школи."],
@@ -691,9 +689,8 @@ function updateHeader(){
  $("uiLangPicker").value=uiLang;
  document.documentElement.lang=uiLang;
  if(uiLang==="ar")document.documentElement.setAttribute("dir","rtl");else document.documentElement.removeAttribute("dir");
+ const _tc=document.querySelector('meta[name="theme-color"]');if(_tc)_tc.setAttribute("content",document.documentElement.dataset.theme==="dark"?"#0F111A":"#F2F4F8");
  const dark=document.documentElement.dataset.theme==="dark";
- const meta=document.querySelector('meta[name="theme-color"]');
- if(meta)meta.setAttribute("content",dark?"#0F111A":"#F2F4F8");
  $("themeToggle").textContent=dark?"☀️":"🌙";
  const themeLabel=dark?(u.light||"Light mode"):(u.dark||"Dark mode");
  $("themeToggle").title=themeLabel;
@@ -811,19 +808,22 @@ function makeOptions(cur){
  return shuffle(out);
 }
 
+const NL_NUM={een:1,twee:2,drie:3,vier:4,vijf:5,zes:6,zeven:7,acht:8,negen:9,tien:10,elf:11,twaalf:12};
+function clockAngles(nlText){
+ const t=String(nlText).toLowerCase(),n=w=>NL_NUM[w]||0;
+ let m=t.match(/kwart over (\w+)/);if(m){const h=n(m[1]);return h?[h*30+7.5,90]:null}
+ m=t.match(/kwart voor (\w+)/);if(m){const h=n(m[1]);return h?[(h-1)*30+22.5,270]:null}
+ m=t.match(/half (\w+)/);if(m){const h=n(m[1]);return h?[(h-1)*30+15,180]:null}
+ m=t.match(/(\w+) uur/);if(m){const h=n(m[1]);return h?[(h%12)*30,0]:null}
+ return null;
+}
 function renderClockFace(nlText){
+ const a=clockAngles(nlText);
+ if(!a)return el("div","");
  const wrap=el("div","clock-visual");
  wrap.appendChild(el("div","clock-center"));
- let hAngle=0, mAngle=0;
- if(nlText.includes("twaalf uur")){hAngle=0;mAngle=0;}
- else if(nlText.includes("een uur")){hAngle=30;mAngle=0;}
- else if(nlText.includes("half twee")){hAngle=45;mAngle=180;}
- else if(nlText.includes("kwart over twee")){hAngle=67.5;mAngle=90;}
- else if(nlText.includes("kwart voor drie")){hAngle=82.5;mAngle=270;}
- else{hAngle=0;mAngle=0;}
-
- const handH=el("div","clock-hand-h");handH.style.transform=`rotate(${hAngle}deg)`;
- const handM=el("div","clock-hand-m");handM.style.transform=`rotate(${mAngle}deg)`;
+ const handH=el("div","clock-hand-h");handH.style.transform=`rotate(${a[0]}deg)`;
+ const handM=el("div","clock-hand-m");handM.style.transform=`rotate(${a[1]}deg)`;
  wrap.append(handH,handM);
  return wrap;
 }
@@ -964,7 +964,7 @@ const BUILD_BANK={
   [3,"kun|je|dat|herhalen","QSRV","Можеш повторити це?","Can you repeat that?","Peux-tu répéter cela ?","هل يمكنك إعادة ذلك؟"]
  ],
  grammar:[
-  [1,"waar|woon|je","QVS","Де ти живеш?","Where do you live?","Où habites-tu ?","أين تسكن؟"],
+  [1,"hoe|heet|het","QVS","Як це називається?","What is this called?","Comment ça s'appelle ?","ماذا يسمى هذا؟"],
   [1,"heb|je|een vraag","QVS","У тебе є запитання?","Do you have a question?","As-tu une question ?","هل لديك سؤال؟"],
   [1,"spreek|je|Nederlands","QVS","Ти розмовляєш нідерландською?","Do you speak Dutch?","Parles-tu néerlandais ?","هل تتحدث الهولندية؟"],
   [1,"is|dit|jouw boek","QVS","Це твоя книжка?","Is this your book?","Est-ce ton livre ?","هل هذا كتابك؟"],
@@ -1116,6 +1116,14 @@ function updateModeButtons(){
  });
 }
 
+$("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
+$("uiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
+$("themeToggle").addEventListener("click",()=>{
+ const n=document.documentElement.dataset.theme==="dark"?"light":"dark";
+ document.documentElement.dataset.theme=n;
+ try{localStorage.setItem("poly_theme",n)}catch(e){}
+ updateHeader();
+});
 
 function start(){
  try{
@@ -1126,23 +1134,20 @@ function start(){
  updateHeader();buildNav();newRound();
 }
 
-function boot(){
- const root=document.querySelector("main");
- if(!root||root.dataset.ready==="1")return;
- root.dataset.ready="1";
- $("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
- $("uiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
- $("themeToggle").addEventListener("click",()=>{
-  const n=document.documentElement.dataset.theme==="dark"?"light":"dark";
-  document.documentElement.dataset.theme=n;
-  try{localStorage.setItem("poly_theme",n)}catch(err){}
-  updateHeader();
- });
- start();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", start);
+} else {
+  start();
 }
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-else boot();
 
+// Offline/PWA support is available on HTTPS (including GitHub Pages) or localhost.
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", {scope: "./"}).catch(() => {
+      // The app remains usable online even if offline setup is unavailable.
+    });
+  });
+}
 </script>
 </body>
 </html>
