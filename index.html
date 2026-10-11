@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FFD23F">
+<meta name="theme-color" content="#F2F4F8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Polyglot Leren — Oranje Pop</title>
+<title>Polyglot Leren — Nederlands A1.1</title>
 <style>
 :root{color-scheme:light;--bg:#F2F4F8;--fg:#1E2238;--mut:#656C85;--card:#FFFFFF;--line:#E2E6F0;--acc:#4657D9;--acc-hover:#3545c4;--ok:#1F8A53;--ok-bg:#EBF7F0;--bad:#D93D4A;--bad-bg:#FDF0F1;--soft:#EBF0FF;--shadow:0 4px 20px rgba(30,34,56,.05);--amb:#B7791F}
 :root[data-theme="dark"]{color-scheme:dark;--bg:#0F111A;--fg:#F0F2FA;--mut:#98A0B8;--card:#1A1D2A;--line:#2A2E40;--acc:#7B8BFF;--acc-hover:#93A0FF;--ok:#50D086;--ok-bg:#163324;--bad:#FF737C;--bad-bg:#381C23;--soft:#232845;--shadow:0 4px 20px rgba(0,0,0,.25);--amb:#E5B567}
@@ -151,36 +151,6 @@ footer strong{color:var(--fg);font-weight:750}
  .opt{font-size:13px;padding:8px 4px;min-height:42px}
 }
 </style>
-<style id="theme-oranje">
-.select-group>span{display:none}
-.top-right{flex-wrap:nowrap;gap:6px}.select-group{flex:1 1 0;min-width:0}.lang-select{width:100%;min-width:0;padding:3px 4px}.score-pill{flex:0 0 auto}.theme-btn{flex:0 0 auto}
-.lang-select,.theme-btn{min-height:36px;font-size:12px}
-.nav-cats button,.nav-subs button,.modes-wrapper button{min-height:36px}
-.opt{min-height:50px;font-size:14px}.btn{min-height:44px;font-size:14px}.icon-box{font-size:52px}
-
-:root{--bg:#FFF3E0;--fg:#2A1A0C;--mut:#7A5A3A;--card:#FFFFFF;--line:#F3D3A8;--acc:#C94600;--acc-hover:#A93A00;--ok:#1E8E4E;--ok-bg:#DFF5E6;--bad:#D32F2F;--bad-bg:#FFE3E0;--soft:#FFE2B8;--shadow:0 4px 0 rgba(120,70,10,.12);--amb:#B26A00;--pop:#FF8A1F;--hdr:#FFD23F}
-:root[data-theme="dark"]{--bg:#1D130C;--fg:#FFF1E0;--mut:#D9B38A;--card:#2C1D12;--line:#4D3420;--acc:#FFA64D;--acc-hover:#FFB871;--ok:#5BE08F;--ok-bg:#163A25;--bad:#FF8480;--bad-bg:#40201F;--soft:#4A3015;--shadow:0 4px 0 rgba(0,0,0,.35);--pop:#FFA64D;--hdr:#3A2614}
-body{font-family:ui-rounded,"SF Pro Rounded","Nunito","Varela Round","Trebuchet MS",system-ui,sans-serif;font-size:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-header{background:var(--hdr);border:0;border-radius:20px;box-shadow:0 4px 0 rgba(120,70,10,.25);padding:10px 14px}
-.brand h1{font-size:20px;font-weight:900}
-.lang-select,.theme-btn,.score-pill{background:var(--card);color:var(--fg);border:2px solid var(--line);border-radius:10px;box-shadow:none;font-weight:800}
-.score-pill{font-size:13px}
-.stats-bar,.nav-section,.card{border-radius:20px;border:2px solid var(--line);box-shadow:var(--shadow)}
-.sub-wrapper{border:0;background:transparent;padding:0}.section-label{display:none}
-.nav-cats button,.nav-subs button{border-radius:12px;border:2px solid var(--line);border-bottom-width:4px;font-weight:800;box-shadow:none}
-.nav-cats button[aria-selected="true"],.nav-subs button[aria-selected="true"]{background:var(--pop);border-color:#C96A00;color:#2A1A0C;box-shadow:none}
-.modes-wrapper{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom));width:calc(100% - 16px);max-width:704px;z-index:30;border-radius:20px;background:var(--card);border:2px solid var(--line);box-shadow:0 6px 0 rgba(120,70,10,.15),0 10px 30px rgba(0,0,0,.14);padding:5px}
-.modes-wrapper button{border:0;background:transparent;box-shadow:none;border-radius:14px;min-height:44px;font-weight:800;color:var(--mut)}
-.modes-wrapper button.primary{background:var(--pop);color:#2A1A0C;box-shadow:none}
-.opt{border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;min-height:52px;font-size:15px;font-weight:800;box-shadow:none}
-.opt:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
-.opt.correct{border-color:var(--ok)!important;background:var(--ok-bg)!important}
-.btn,.listen{border-radius:14px;border:2px solid var(--line);border-bottom-width:4px;font-weight:800;box-shadow:none}
-.btn{min-height:46px}.btn.primary{background:var(--pop);border-color:#C96A00;color:#2A1A0C}
-.bar{height:10px;border-radius:10px;background:var(--line)}.bar i{background:var(--pop);border-radius:10px}
-.icon-box{font-size:60px}
-.top-right{flex-wrap:wrap}.select-group{flex:1 1 42%}.score-pill{flex:1 0 auto;text-align:center}
-</style>
 </head>
 <body>
 <main>
@@ -236,25 +206,25 @@ const $=id=>document.getElementById(id);
 const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
 
 const UI={
- uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади речення з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
+  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукты",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
   subs:{phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити"},audioSub:"Послухай і обери переклад"},
- en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the sentence from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
+ en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
   lCat:"Category",lSub:"Subtopic",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
   tabs:{phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)"},
   subs:{phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review"},audioSub:"Listen and choose the translation"},
- fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la phrase avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"Néerlandais • Niveau A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+ fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"Néerlandais • Niveau A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)"},
   subs:{phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l'icône et choisis le mot"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision"},audioSub:"Écoute et choisis la traduction"},
- ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب الجملة من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"اللغة الهولندية • المستوى A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",light:"الوضع الفاتح",dark:"الوضع الداكن",markKnown:"أعرف هذا",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
+ ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"اللغة الهولندية • المستوى A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",light:"الوضع الفاتح",dark:"الوضع الداكن",markKnown:"أعرف هذا",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
   tabs:{phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)"},
@@ -308,17 +278,7 @@ const DATA={
   ["art_school","school","school","école","школа","مدرسة","🏫","De school begint om negen uur.","Школа починається о дев'ятій.","de","la"],
   ["art_auto","auto","car","voiture","автомобіль","سيارة","🚗","De auto is rood.","Автомобіль червоний.","de","la"],
   ["art_raam","raam","window","fenêtre","вікно","نافذة","🪟","Het raam is open.","Вікно відчинене.","het","la"],
-  ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"],
-  ["art_tijd","tijd","time","temps","час","وقت","⏱️","Ik heb geen tijd.","У мене немає часу.","de","le"],
-  ["art_jaar","jaar","year","an","рік","سنة","🎉","Dit jaar is het koud.", "Цього року холодно.", "het","le"],
-  ["art_maan","maan","moon","lune","місяць (на небі)","قمر","🌙","De maan schijnt fel.", "Місяць яскраво світить.", "de","la"],
-  ["art_plein","plein","square","place","площа","ساحة","🏙️","Het plein is groot.", "Площа велика.", "het","la"],
-  ["art_stad","stad","city","ville","місто","مدينة","🌆","Brussel is een grote stad.", "Брюссель — велике місто.", "de","la"],
-  ["art_land","land","country","pays","країна","دولة","🌍","België is een mooi land.", "Бельгія — гарна країна.", "het","le"],
-  ["art_taal","taal","language","langue","мова","لغة","🗣️","Nederlands is een moeilijke taal.", "Нідерландська — складна мова.", "de","la"],
-  ["art_woord","woord","word","mot","слово","كلمة","💬","Schrijf dit woord op.", "Запишіть це слово.", "het","le"],
-  ["art_brief","brief","letter","lettre","лист","رسالة","✉️","Ik krijg een brief.", "Я отримую лист.", "de","le"],
-  ["art_water","water","water","eau","вода","ماء","💧","Het water is koud.", "Вода холодна.", "het","l'"]
+  ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"]
  ]),
  questions:R([
   ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is dit?","Що це?"],
@@ -377,9 +337,7 @@ const DATA={
   ["sh_zout","het zout","salt","le sel","сіль","الملح","🧂","Een beetje zout, alstublieft.","Трохи солі, будь ласка."],
   ["sh_suiker","de suiker","sugar","le sucre","цукор","السكر","🍬","Koffie met suiker.","Кава з цукром."],
   ["sh_koffie","de koffie","coffee","le café","кава","القهوة","☕","Een kopje koffie, aub.","Чашку кави, будь ласка."],
-  ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"],
-  ["sh_fruit","het fruit","fruit","le fruit","фрукти","الفواكه","🍎","Eet elke dag vers fruit.", "Їжте свіжі фрукти щодня."],
-  ["sh_groente","de groente","vegetable","les légumes","овочі","الخضروات","🥦","Groente is gezond.", "Овочі — це корисно."]
+  ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"]
  ]),
  transport:R([
   ["tr_1","het ticket","ticket","le billet","квиток","التذكرة","🎟️","Een ticket naar Brussel, alstublieft.","Квиток до Брюсселя, будь ласка."],
@@ -400,7 +358,7 @@ const DATA={
   ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
   ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
   ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
- })
+ ])
 };
 
 const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="#20243A" stroke-opacity=".35" stroke-width="3"/></svg>';
@@ -438,23 +396,11 @@ Object.assign(DATA,{
   ["num_11", "tien", "10 · ten", "10 · dix", "10 · десять", "10 · عشرة", "🔟", "Tien euro, alstublieft.", "Десять євро, будь ласка."],
   ["num_12", "elf", "11 · eleven", "11 · onze", "11 · одинадцять", "11 · أحد عشر", "🔢", "Er zijn elf studenten.", "Є одинадцять студентів."],
   ["num_13", "twaalf", "12 · twelve", "12 · douze", "12 · дванадцять", "12 · اثنا عشر", "🔢", "Het is twaalf uur.", "Зараз дванадцята година."],
-  ["num_14", "dertien", "13 · thirteen", "13 · treize", "13 · тринадцять", "13 · ثلاثة عشر", "🔢", "Dertien studenten.", "Тринадцять студентів."],
-  ["num_15", "veertien", "14 · fourteen", "14 · quatorze", "14 · чотирнадцять", "14 · أربعة عشر", "🔢", "Veertien dagen.", "Чотирнадцять днів."],
-  ["num_16", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Vijftien euro.", "П'ятнадцять євро."],
-  ["num_17", "zestien", "16 · sixteen", "16 · seize", "16 · шістнадцять", "16 · ستة عشر", "🔢", "Zestien minuten.", "Шістнадцять хвилин."],
-  ["num_18", "zeventien", "17 · seventeen", "17 · dix-sept", "17 · сімнадцять", "17 · سبعة عشر", "🔢", "Zeventien cursists.", "Сімнадцять слухачів."],
-  ["num_19", "achttien", "18 · eighteen", "18 · dix-huit", "18 · вісімнадцять", "18 · ثمانية عشر", "🔢", "Achttien graden.", "Вісімнадцять градусів."],
-  ["num_20", "negentien", "19 · nineteen", "19 · dix-neuf", "19 · дев'ятнадцять", "19 · تسعة عشر", "🔢", "Negentien uur.", "Дев'ятнадцята година."],
-  ["num_21", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten.", "Двадцять хвилин."],
-  ["num_30", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig dagen.", "Тридцять днів."],
-  ["num_40", "veertig", "40 · forty", "40 · quarante", "40 · сорок", "40 · أربعون", "🔢", "Veertig euro.", "Сорок євро."],
-  ["num_50", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent.", "П'ятдесят відсотків."],
-  ["num_60", "zestig", "60 · sixty", "60 · soixante", "60 · шістдесят", "60 · ستون", "🔢", "Zestig seconden.", "Шістдесят секунд."],
-  ["num_70", "zeventig", "70 · seventy", "70 · soixante-dix", "70 · сімдесят", "70 · سبعون", "🔢", "Zeventig kilometer.", "Сімдесят кілометрів."],
-  ["num_80", "tachtig", "80 · eighty", "80 · quatre-vingts", "80 · вісімдесят", "80 · ثمانون", "🔢", "Tachtig jaar.", "Вісімдесят років."],
-  ["num_90", "negentig", "90 · ninety", "90 · quatre-vingt-dix", "90 · дев'яносто", "90 · تسعون", "🔢", "Negentig procent.", "Дев'яносто відсотків."],
-  ["num_100", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Honderd euro.", "Сто євро."],
-  ["num_1000", "duizend", "1000 · one thousand", "1000 · mille", "1000 · тисяча", "1000 · ألف", "🔢", "Duizend meter.", "Тисяча метрів."]
+  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
+  ["num_15", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten wachten.", "Чекати двадцять хвилин."],
+  ["num_16", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig minuten pauze.", "Тридцять хвилин перерви."],
+  ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п'ятдесят відсотків."],
+  ["num_18", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Het kost honderd euro.", "Це коштує сто євро."]
  ]),
  time:R([
   ["tim_1", "vandaag", "today", "aujourd'hui", "сьогодні", "اليوم", "📆", "Vandaag heb ik les.", "Сьогодні в мене урок."],
@@ -616,7 +562,7 @@ Object.assign(DATA,{
   ["job_7", "de politieagent", "police officer", "le policier", "поліцейський", "الشرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
- })
+ ])
 });
 
 DATA.verbs.items.push(...R([
@@ -663,7 +609,6 @@ if(!activeCatObj.tabs.includes(tab)){currentCat=CATEGORIES[0].id;tab=CATEGORIES[
 
 let mode="quiz",deck=[],q=0,right=0,round=1,roundTotal=0,roundBase=0,locked=false,item=null;
 let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore();
-let userResponsePref="all"; // 'all', 'first', 'second'
 
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
@@ -819,20 +764,7 @@ function updateProgress(){
 
 function newRound(){
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
- if(mode==="build"){
-  SENT.forEach(x=>{x.again=false});
-  const maxLevel=buildLevel===1?2:3;
-  let pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);
-  if(userResponsePref!=="all"){
-   pool=pool.filter(x=>x.ansType===userResponsePref);
-  }
-  if(!pool.length) pool=SENT.filter(x=>x.cat===currentCat);
-  const count=buildLevel===1?8:buildLevel===2?10:12;
-  deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);
-  roundBase=roundTotal=deck.length;
-  nextQuestion();
-  return;
- }
+ if(mode==="build"){SENT.forEach(x=>{x.again=false});const maxLevel=buildLevel===1?2:3;const pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);const count=buildLevel===1?8:buildLevel===2?10:12;deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);roundBase=roundTotal=deck.length;nextQuestion();return}
  let list=itemsFor();
  if(mode==="review"){const ids=new Set(list.map(x=>x.id));list=dueItems().filter(x=>ids.has(x.id))}
  if(!list.length){renderEmpty();return}
@@ -993,65 +925,91 @@ function endRound(){
 
 const BUILD_BANK={
  comm:[
-  [1,"hoe|heet|je","QVS","Як тебе звати? (Запитання)","What is your name?","Comment t'appelles-tu ?","ما اسمك؟","misschien","first"],
-  [1,"ik|heet|Danylo","VSR","Мене звати Данило. (Відповідь)","My name is Danylo.","Je m'appelle Danylo.","اسمي دانیلو.","altijd","second"],
-  [1,"waar|woon|je","QVS","Де ти живеш? (Запитання)","Where do you live?","Où habites-tu ?","أين تسكن؟","altijd","first"],
-  [1,"ik|woon|in|Brussel","VSRR","Я живу в Брюсселі. (Відповідь)","I live in Brussels.","J'habite à Bruxelles.","أسكن في بروكسل.","misschien","second"],
-  [1,"hoe|gaat|het","QVS","Як справи? (Запитання)","How are you?","Comment ça va ?","كيف الحال؟","altijd","first"],
-  [1,"het|gaat|goed","VSR","Усе добре. (Відповідь)","It goes well.","Tout va bien.","الأمور تسير بشكل جيد.","misschien","second"],
-  [2,"wat|doe|je|vandaag","QVSR","Що ти сьогодні робиш? (Запитання)","What are you doing today?","Que fais-tu aujourd'hui ?","ماذا تفعل اليوم؟","misschien","first"],
-  [2,"ik|werk|vandaag|thuis","VSRR","Я сьогодні працюю вдома. (Відповідь)","I work at home today.","Je travaille à la maison aujourd'hui.","أعمل في المنزل اليوم.","altijd","second"],
-  [2,"waar|kom|je|vandaan","QVSR","Звідки ти? (Запитання)","Where are you from?","D'où viens-tu ?","من أين أنت؟","altijd","first"],
-  [2,"ik|kom|uit|Oekraïne","VSRR","Я з України. (Відповідь)","I am from Ukraine.","Je viens d'Ukraine.","أنا من أوكرانيا.","misschien","second"],
-  [3,"waarom|leer|je|Nederlands","QVSR","Чому ти вчиш нідерландську? (Запитання)","Why are you learning Dutch?","Pourquoi apprends-tu le néerlandais ?","لماذا تتعلم الهولندية؟","altijd","first"],
-  [3,"ik|leer|Nederlands|voor|mijn werk","QVSRR","Я вчу нідерландську для роботи. (Відповідь)","I'm learning Dutch for work.","J'apprends le néerlandais pour mon travail.","أتعلم الهولندية من أجل عملي.","misschien","second"]
+  [1,"hoe|heet|je","QVS","Як тебе звати?","What is your name?","Comment tu t'appelles ?","ما اسمك؟"],
+  [1,"waar|woon|je","QVS","Де ти живеш?","Where do you live?","Où habites-tu ?","أين تسكن؟"],
+  [1,"hoe|gaat|het","QVS","Як справи?","How are you?","Comment ça va ?","كيف الحال؟"],
+  [1,"waar|ben|je","QVS","Де ти?","Where are you?","Où es-tu ?","أين أنت؟"],
+  [2,"wat|doe|je|vandaag","QVSR","Що ти сьогодні робиш?","What are you doing today?","Que fais-tu aujourd'hui ?","ماذا تفعل اليوم؟"],
+  [2,"waar|kom|je|vandaan","QVSR","Звідки ти?","Where are you from?","D'où viens-tu ?","من أين أنت؟"],
+  [2,"wanneer|begint|de film","QVS","Коли починається фільм?","When does the film start?","Quand commence le film ?","متى يبدأ الفيلم؟"],
+  [2,"wil|je|koffie|drinken","QSRV","Хочеш випити кави?","Would you like to drink coffee?","Veux-tu boire un café ?","هل تريد شرب القهوة؟"],
+  [3,"waarom|leer|je|Nederlands","QVSR","Чому ти вчиш нідерландську?","Why are you learning Dutch?","Pourquoi apprends-tu le néerlandais ?","لماذا تتعلم الهولندية؟"],
+  [3,"hoe laat|spreken|we|morgen af","QVSR","О котрій ми домовляємося завтра?","What time shall we meet tomorrow?","À quelle heure se retrouve-t-on demain ?","في أي ساعة نلتقي غداً؟"],
+  [3,"met wie|ga|je|naar het feest","QVSR","З ким ти йдеш на вечірку?","Who are you going to the party with?","Avec qui vas-tu à la fête ?","مع من ستذهب إلى الحفلة؟"],
+  [3,"kun|je|dat|herhalen","QSRV","Можеш повторити це?","Can you repeat that?","Peux-tu répéter cela ?","هل يمكنك إعادة ذلك؟"]
  ],
  grammar:[
-  [1,"waar|woon|je","QVS","Де ти живеш? (Запитання)","Where do you live?","Où habites-tu ?","أين تسكن؟","altijd","first"],
-  [1,"ik|woon|in|België","VSRR","Я живу в Бельгії. (Відповідь)","I live in Belgium.","J'habite en Belgique.","أنا أعيش في بلجيكا.","misschien","second"],
-  [1,"heb|je|een vraag","QVS","У тебе є питання? (Запитання)","Do you have a question?","As-tu une question ?","هل لديك سؤال؟","altijd","first"],
-  [1,"ja|ik|heb|een|vraag","RVSSR","Так, у мене є питання. (Відповідь)","Yes, I have a question.","Oui, j'ai une question.","نعم، لدي سؤال.","misschien","second"],
-  [2,"waarom|ben|je|te laat","QVSR","Чому ти запізнився? (Запитання)","Why are you late?","Pourquoi es-tu en retard ?","لماذا تأخرت؟","altijd","first"],
-  [2,"de trein|was|te laat","SSR","Потяг запізнився. (Відповідь)","The train was late.","Le train était en retard.","القطار كان متأخراً.","misschien","second"],
-  [2,"wat|doet|hij|op maandag","QVSR","Що він робить у понеділок? (Запитання)","What does he do on Monday?","Que fait-il le lundi ?","ماذا يفعل يوم الاثنين؟","altijd","first"],
-  [2,"hij|werkt|op|maandag","VSRR","Він працює в понеділок. (Відповідь)","He works on Monday.","Il travaille le lundi.","هو يعمل يوم الاثنين.","misschien","second"]
+  [1,"waar|woon|je","QVS","Де ти живеш?","Where do you live?","Où habites-tu ?","أين تسكن؟"],
+  [1,"heb|je|een vraag","QVS","У тебе є запитання?","Do you have a question?","As-tu une question ?","هل لديك سؤال؟"],
+  [1,"spreek|je|Nederlands","QVS","Ти розмовляєш нідерландською?","Do you speak Dutch?","Parles-tu néerlandais ?","هل تتحدث الهولندية؟"],
+  [1,"is|dit|jouw boek","QVS","Це твоя книжка?","Is this your book?","Est-ce ton livre ?","هل هذا كتابك؟"],
+  [2,"waarom|ben|je|te laat","QVSR","Чому ти запізнився?","Why are you late?","Pourquoi es-tu en retard ?","لماذا تأخرت؟"],
+  [2,"wat|doet|hij|op maandag","QVSR","Що він робить у понеділок?","What does he do on Monday?","Que fait-il le lundi ?","ماذا يفعل يوم الاثنين؟"],
+  [2,"hoeveel|kinderen|heb|je","QSVS","Скільки в тебе дітей?","How many children do you have?","Combien d'enfants as-tu ?","كم طفلاً لديك؟"],
+  [2,"waar|staat|de auto","QVS","Де стоїть автомобіль?","Where is the car parked?","Où est garée la voiture ?","أين السيارة؟"],
+  [3,"waarom|heeft|zij|vandaag geen tijd","QVSR","Чому в неї сьогодні немає часу?","Why doesn't she have time today?","Pourquoi n'a-t-elle pas le temps aujourd'hui ?","لماذا ليس لديها وقت اليوم؟"],
+  [3,"hoe laat|moet|ik|bij de dokter zijn","QVSR","О котрій мені треба бути в лікаря?","What time do I need to be at the doctor?","À quelle heure dois-je être chez le médecin ?","في أي ساعة يجب أن أكون عند الطبيب؟"],
+  [3,"waarom|wil|je|in België wonen","QVSR","Чому ти хочеш жити в Бельгії?","Why do you want to live in Belgium?","Pourquoi veux-tu vivre en Belgique ?","لماذا تريد العيش في بلجيكا؟"],
+  [3,"met welke bus|kun|ik|naar het station","QVSR","Яким автобусом я можу дістатися до вокзалу?","Which bus can I take to the station?","Quel bus puis-je prendre pour aller à la gare ?","أي حافلة يمكنني أن أستقل إلى المحطة؟"]
  ],
  nums:[
-  [1,"hoe laat|is|het","QVS","Котра година? (Запитання)","What time is it?","Quelle heure est-il ?","كم الساعة؟","altijd","first"],
-  [1,"het|is|twaalf|uur","VSRR","Зараз дванадцята година. (Відповідь)","It is twelve o'clock.","Il est midi.","الساعة الثانية عشرة.","misschien","second"],
-  [1,"welke dag|is|het vandaag","QVS","Який сьогодні день? (Запитання)","What day is it today?","Quel jour sommes-nous aujourd'hui ?","ما اليوم؟","altijd","first"],
-  [1,"vandaag|is|het|maandag","VSRR","Сьогодні понеділок. (Відповідь)","Today is Monday.","Aujourd'hui c'est lundi.","اليوم هو الاثنين.","misschien","second"],
-  [2,"hoeveel|kost|dit","QVS","Скільки це коштує? (Запитання)","How much does this cost?","Combien coûte ceci ?","كم ثمن هذا؟","altijd","first"],
-  [2,"dit|kost|twintig|euro","VSRR","Це коштує двадцять євро. (Відповідь)","This costs twenty euros.","Cela coûte vingt euros.","هذا يكلف عشرين يورو.","misschien","second"]
+  [1,"hoe laat|is|het","QVS","Котра година?","What time is it?","Quelle heure est-il ?","كم الساعة؟"],
+  [1,"welke dag|is|het vandaag","QVS","Який сьогодні день?","What day is it today?","Quel jour sommes-nous aujourd'hui ?","ما اليوم؟"],
+  [1,"hoeveel|is|twee plus drie","QVS","Скільки буде два плюс три?","What is two plus three?","Combien font deux plus trois ?","كم يساوي اثنان زائد ثلاثة؟"],
+  [1,"wanneer|is|je verjaardag","QVS","Коли твій день народження?","When is your birthday?","Quand est ton anniversaire ?","متى عيد ميلادك؟"],
+  [2,"hoe laat|begint|de les","QVS","О котрій починається урок?","What time does the lesson start?","À quelle heure commence le cours ?","في أي ساعة يبدأ الدرس؟"],
+  [2,"hoeveel|kost|dit kaartje","QVS","Скільки коштує цей квиток?","How much is this ticket?","Combien coûte ce billet ?","كم ثمن هذه التذكرة؟"],
+  [2,"welke maand|komt|na april","QVS","Який місяць іде після квітня?","Which month comes after April?","Quel mois vient après avril ?","أي شهر يأتي بعد أبريل؟"],
+  [2,"hoeveel graden|is|het buiten","QVS","Скільки градусів надворі?","How many degrees is it outside?","Combien de degrés fait-il dehors ?","كم درجة الحرارة في الخارج؟"],
+  [3,"hoe laat|vertrekt|de trein naar Brussel","QVS","О котрій відправляється потяг до Брюсселя?","What time does the train to Brussels leave?","À quelle heure part le train pour Bruxelles ?","في أي ساعة ينطلق القطار إلى بروكسل؟"],
+  [3,"op welke datum|begint|de vakantie","QVS","Якого числа починаються канікули?","On what date does the holiday start?","À quelle date commencent les vacances ?","في أي تاريخ تبدأ العطلة؟"],
+  [3,"hoeveel minuten|duurt|de pauze","QVS","Скільки хвилин триває перерва?","How many minutes does the break last?","Combien de minutes dure la pause ?","كم دقيقة تستمر الاستراحة؟"],
+  [3,"hoe laat|moeten|we|vertrekken","QVSR","О котрій нам потрібно вирушати?","What time do we need to leave?","À quelle heure devons-nous partir ?","في أي ساعة يجب أن نغادر؟"]
  ],
  people:[
-  [1,"hoe heet|je moeder","QS","Як звати твою маму? (Запитання)","What is your mother's name?","Comment s'appelle ta mère ?","ما اسم أمك؟","altijd","first"],
-  [1,"mijn moeder|heet|Anna","VSR","Мою маму звати Анна. (Відповідь)","My mother's name is Anna.","Ma mère s'appelle Anna.","أمي اسمها أنا.","misschien","second"],
-  [1,"hoe oud|is|je broer","QVS","Скільки років твоєму брату? (Запитання)","How old is your brother?","Quel âge a ton frère ?","كم عمر أخيك؟","altijd","first"],
-  [1,"mijn broer|is|twintig|jaar","VSRR","Моєму брату двадцять років. (Відповідь)","My brother is twenty years old.","Mon frère a vingt ans.","أخي عمره عشرون عاماً.","misschien","second"],
-  [2,"waar|werkt|de dokter","QVS","Де працює лікар? (Запитання)","Where does the doctor work?","Où travaille le médecin ?","أين يعمل الطبيب؟","altijd","first"],
-  [2,"de dokter|werkt|in het ziekenhuis","VSRR","Лікар працює в лікарні. (Відповідь)","The doctor works in the hospital.","Le médecin travaille à l'hôpital.","الطبيب يعمل في المستشفى.","misschien","second"]
+  [1,"hoe heet|je moeder","QS","Як звати твою маму?","What is your mother's name?","Comment s'appelle ta mère ?","ما اسم أمك؟"],
+  [1,"hoe oud|is|je broer","QVS","Скільки років твоєму братові?","How old is your brother?","Quel âge a ton frère ?","كم عمر أخيك؟"],
+  [1,"waar|werkt|de dokter","QVS","Де працює лікар?","Where does the doctor work?","Où travaille le médecin ?","أين يعمل الطبيب؟"],
+  [1,"heb|je|pijn","QVS","У тебе щось болить?","Are you in pain?","As-tu mal ?","هل تشعر بالألم؟"],
+  [2,"hoeveel|kinderen|heeft|je zus","QSVS","Скільки дітей у твоєї сестри?","How many children does your sister have?","Combien d'enfants ta sœur a-t-elle ?","كم طفلاً لدى أختك؟"],
+  [2,"wanneer|is|de afspraak","QVS","Коли прийом?","When is the appointment?","Quand est le rendez-vous ?","متى الموعد؟"],
+  [2,"waar|kan|ik|medicijnen kopen","QVSR","Де я можу купити ліки?","Where can I buy medicine?","Où puis-je acheter des médicaments ?","أين يمكنني شراء الدواء؟"],
+  [2,"hoe|voel|je|je vandaag","QVSR","Як ти сьогодні почуваєшся?","How are you feeling today?","Comment te sens-tu aujourd'hui ?","كيف تشعر اليوم؟"],
+  [3,"welke medicijnen|moet|ik|innemen","QVSR","Які ліки мені потрібно приймати?","Which medicines should I take?","Quels médicaments dois-je prendre ?","ما الأدوية التي يجب أن أتناولها؟"],
+  [3,"hoe laat|kan|ik|de dokter spreken","QVSR","О котрій я можу поговорити з лікарем?","What time can I speak to the doctor?","À quelle heure puis-je parler au médecin ?","في أي ساعة يمكنني التحدث إلى الطبيب؟"],
+  [3,"waarom|moet|hij|naar het ziekenhuis","QVSR","Чому йому потрібно до лікарні?","Why does he need to go to hospital?","Pourquoi doit-il aller à l'hôpital ?","لماذا يجب أن يذهب إلى المستشفى؟"],
+  [3,"hoe lang|heeft|zij|al koorts","QVSR","Як довго в неї вже температура?","How long has she had a fever?","Depuis combien de temps a-t-elle de la fièvre ?","منذ متى تعاني من الحمى؟"]
  ],
  home:[
-  [1,"waar|is|de keuken","QVS","Де кухня? (Запитання)","Where is the kitchen?","Où est la cuisine ?","أين المطبخ؟","altijd","first"],
-  [1,"de keuken|is|beneden","VSR","Кухня внизу. (Відповідь)","The kitchen is downstairs.","La cuisine est en bas.","المطبخ في الأسفل.","misschien","second"],
-  [1,"is|het raam|open","QVS","Вікно відкрите? (Запитання)","Is the window open?","La fenêtre est-elle ouverte ?","هل النافذة مفتوحة؟","altijd","first"],
-  [1,"nee|het raam|is|dicht","RVSS","Ні, вікно закрите. (Відповідь)","No, the window is closed.","Non, la fenêtre est fermée.","لا، النافذة مغلقة.","misschien","second"],
-  [2,"hoeveel kamers|heeft|dit huis","QVS","Скільки кімнат у цьому будинку? (Запитання)","How many rooms does this house have?","Combien de pièces cette maison a-t-elle ?","كم غرفة في هذا البيت؟","altijd","first"],
-  [2,"dit huis|heeft|vijf|kamers","VSRR","У цьому будинку п'ять кімнат. (Відповідь)","This house has five rooms.","Cette maison a cinq pièces.","هذا البيت فيه خمس غرف.","misschien","second"]
+  [1,"waar|is|de keuken","QVS","Де кухня?","Where is the kitchen?","Où est la cuisine ?","أين المطبخ؟"],
+  [1,"is|het raam|open","QVS","Вікно відчинене?","Is the window open?","La fenêtre est-elle ouverte ?","هل النافذة مفتوحة؟"],
+  [1,"waar|ligt|de sleutel","QVS","Де лежить ключ?","Where is the key?","Où est la clé ?","أين المفتاح؟"],
+  [1,"welke kleur|heeft|de stoel","QVS","Якого кольору стілець?","What colour is the chair?","De quelle couleur est la chaise ?","ما لون الكرسي؟"],
+  [2,"hoeveel kamers|heeft|jouw huis","QVS","Скільки кімнат у твоєму будинку?","How many rooms does your house have?","Combien de pièces a ta maison ?","كم غرفة في منزلك؟"],
+  [2,"waarom|staat|de koelkast|open","QVSR","Чому холодильник відчинений?","Why is the fridge open?","Pourquoi le réfrigérateur est-il ouvert ?","لماذا الثلاجة مفتوحة؟"],
+  [2,"waar|kan|ik|mijn jas ophangen","QVSR","Де я можу повісити куртку?","Where can I hang my coat?","Où puis-je accrocher mon manteau ?","أين يمكنني تعليق معطفي؟"],
+  [2,"hoeveel|kosten|deze schoenen","QVS","Скільки коштують ці черевики?","How much do these shoes cost?","Combien coûtent ces chaussures ?","كم ثمن هذه الأحذية؟"],
+  [3,"waarom|moet|ik|de deur sluiten","QVSR","Чому я маю зачинити двері?","Why do I have to close the door?","Pourquoi dois-je fermer la porte ?","لماذا يجب أن أغلق الباب؟"],
+  [3,"welke maat|heb|je|van dit shirt nodig","QVSR","Який розмір цієї футболки тобі потрібен?","What size of this shirt do you need?","Quelle taille de ce t-shirt te faut-il ?","ما المقاس الذي تحتاجه من هذا القميص؟"],
+  [3,"waar|kan|ik|de boodschappen bewaren","QVSR","Де я можу зберігати продукти?","Where can I store the groceries?","Où puis-je ranger les courses ?","أين يمكنني حفظ المشتريات؟"],
+  [3,"hoeveel|water|moet|ik|aan de plant geven","QSRVR","Скільки води потрібно дати рослині?","How much water should I give the plant?","Combien d'eau dois-je donner à la plante ?","كمية الماء التي يجب أن أعطيها للنبتة؟"]
  ],
  city:[
-  [1,"waar|is|de bushalte","QVS","Де автобусна зупинка? (Запитання)","Where is the bus stop?","Où est l'arrêt de bus ?","أين موقف الحافلة؟","altijd","first"],
-  [1,"de bushalte|is|hier","VSR","Автобусна зупинка тут. (Відповідь)","The bus stop is here.","L'arrêt de bus est ici.","موقف الحافلة هنا.","misschien","second"],
-  [1,"hoe|kom|ik|bij het station","QVSR","Як мені дістатися до вокзалу? (Запитання)","How do I get to the station?","Comment aller à la gare ?","كيف أصل إلى المحطة؟","altijd","first"],
-  [1,"ga|rechtdoor|naar|het station","VSRR","Ідіть прямо до вокзалу. (Відповідь)","Go straight ahead to the station.","Allez tout droit à la gare.","اذهب مباشرة إلى المحطة.","misschien","second"],
-  [2,"waar|is|de school","QVS","Де школа? (Запитання)","Where is the school?","Où est l'école ?","أين المدرسة؟","altijd","first"],
-  [2,"de school|is|in het centrum","VSRR","Школа знаходиться в центрі. (Відповідь)","The school is in the centre.","L'école est dans le centre.","المدرسة في المركز.","misschien","second"],
-  [2,"hoe laat|begint|de school","QVS","О котрій починається школа? (Запитання)","What time does school start?","À quelle heure commence l'école ?","في أي ساعة تبدأ المدرسة؟","altijd","first"],
-  [2,"de school|begint|om acht uur","VSRR","Школа починається о восьмій годині. (Відповідь)","School starts at eight o'clock.","L'école commence à huit heures.","تبدأ المدرسة في الساعة الثامنة.","misschien","second"]
+  [1,"waar|is|de bushalte","QVS","Де автобусна зупинка?","Where is the bus stop?","Où est l'arrêt de bus ?","أين موقف الحافلة؟"],
+  [1,"hoe|kom|ik|bij het station","QVSR","Як мені дістатися до вокзалу?","How do I get to the station?","Comment aller à la gare ?","كيف أصل إلى المحطة؟"],
+  [1,"waar|is|het gemeentehuis","QVS","Де муніципалітет?","Where is the town hall?","Où est la mairie ?","أين مبنى البلدية؟"],
+  [1,"hoe laat|begint|de Nederlandse les","QVS","О котрій починається урок нідерландської?","What time does the Dutch lesson start?","À quelle heure commence le cours de néerlandais ?","في أي ساعة يبدأ درس الهولندية؟"],
+  [2,"welke bus|gaat|naar Brussel","QVS","Який автобус їде до Брюсселя?","Which bus goes to Brussels?","Quel bus va à Bruxelles ?","أي حافلة تذهب إلى بروكسل؟"],
+  [2,"waar|kan|ik|een formulier ophalen","QVSR","Де я можу отримати бланк?","Where can I pick up a form?","Où puis-je retirer un formulaire ?","أين يمكنني الحصول على استمارة؟"],
+  [2,"hoeveel|kost|een ticket|naar Antwerpen","QVSR","Скільки коштує квиток до Антверпена?","How much is a ticket to Antwerp?","Combien coûte un billet pour Anvers ?","كم ثمن تذكرة إلى أنتويرب؟"],
+  [2,"waar|moet|ik|mij inschrijven","QVSR","Де мені потрібно зареєструватися?","Where do I need to register?","Où dois-je m'inscrire ?","أين يجب أن أسجل؟"],
+  [3,"welke documenten|heb|ik|nodig voor de gemeente","Q VSR","Які документи потрібні для муніципалітету?","Which documents do I need for the municipality?","Quels documents me faut-il pour la commune ?","ما المستندات التي أحتاجها للبلدية؟"],
+  [3,"hoe laat|vertrekt|de laatste bus","QVS","О котрій відправляється останній автобус?","What time does the last bus leave?","À quelle heure part le dernier bus ?","في أي ساعة تنطلق الحافلة الأخيرة؟"],
+  [3,"waarom|is|de trein|vandaag vertraagd","QVSR","Чому потяг сьогодні затримується?","Why is the train delayed today?","Pourquoi le train est-il en retard aujourd'hui ?","لماذا القطار متأخر اليوم؟"],
+  [3,"hoe|maak|ik|een afspraak bij de gemeente","QVSR","Як записатися на прийом до муніципалітету?","How do I make an appointment at the municipality?","Comment prendre rendez-vous à la commune ?","كيف أحجز موعداً في البلدية؟"]
  ]
 };
-const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>rows.map(r=>({cat,level:r[0],q:r[1].split("|"),roles:r[2].replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],ansType:r[8]||"all",again:false}))); 
+const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>rows.map(r=>({cat,level:r[0],q:r[1].split("|"),roles:r[2].replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
 let bAudio=false,bs=null,buildLevel=1;
 const sentence=s=>{const t=s.q.join(" ");return t[0].toUpperCase()+t.slice(1)+"?"};
 
@@ -1098,25 +1056,7 @@ function renderBuild(){
  const u=getUI(),s=bs.s;
  $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=u.round+" "+round+" · "+u.build;updateProgress();
  const card=$("card");card.replaceChildren();
- 
- const controlRow=el("div","row");
- controlRow.style.justifyContent="space-between";
- controlRow.style.marginBottom="6px";
- 
- const levelBar=el("div","row build-levels");
- levelBar.style.gap="4px";
- [1,2,3].forEach(lv=>{const lb=el("button","btn"+(buildLevel===lv?" primary":""),u.buildLevel+" "+lv);lb.type="button";lb.setAttribute("aria-pressed",String(buildLevel===lv));lb.onclick=()=>{if(buildLevel!==lv){buildLevel=lv;newRound()}};levelBar.appendChild(lb)});
- 
- const filterSel=document.createElement("select");
- filterSel.className="lang-select";
- filterSel.style.fontSize="11px";
- filterSel.innerHTML=`<option value="all">Усі (Запитання й відповіді)</option><option value="first">Тільки запитання</option><option value="second">Тільки відповіді</option>`;
- filterSel.value=userResponsePref;
- filterSel.onchange=e=>{userResponsePref=e.target.value;newRound();};
-
- controlRow.append(levelBar, filterSel);
- card.appendChild(controlRow);
-
+ const levelBar=el("div","row build-levels");levelBar.style.justifyContent="center";levelBar.style.marginBottom="10px";levelBar.setAttribute("aria-label",u.buildLevel);[1,2,3].forEach(lv=>{const lb=el("button","btn"+(buildLevel===lv?" primary":""),u.buildLevel+" "+lv);lb.type="button";lb.setAttribute("aria-pressed",String(buildLevel===lv));lb.onclick=()=>{if(buildLevel!==lv){buildLevel=lv;newRound()}};levelBar.appendChild(lb)});card.replaceChildren(levelBar);
  const top=el("div","q");top.appendChild(el("small","",u.buildSub));
  if(bAudio&&!bs.done)top.appendChild(el("div","icon-box","🔊"));else top.appendChild(el("h2","sm",s[uiLang]||s.en));
  const tools=el("div","row");tools.style.justifyContent="center";
@@ -1126,7 +1066,7 @@ function renderBuild(){
  tools.append(hear,ear);top.appendChild(tools);card.appendChild(top);
  const slots=el("div","slots");
  s.roles.split("").forEach((r,k)=>{
-  const w=el("div","sw2 r"+r);w.appendChild(el("span","role",u.roles[r]||"R"));
+  const w=el("div","sw2 r"+r);w.appendChild(el("span","role",u.roles[r]));
   const t=bs.slots[k],b=el("button","slot"+(t?" filled":"")+(bs.bad.includes(k)?" bad":"")+(bs.done?" good":""),t?t.w:"");
   b.type="button";if(t)tgt(b);b.onclick=()=>clearSlot(k);w.appendChild(b);slots.appendChild(w);
  });
@@ -1175,9 +1115,12 @@ if (document.readyState === "loading") {
   start();
 }
 
+// Offline/PWA support is available on HTTPS (including GitHub Pages) or localhost.
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js", {scope: "./"}).catch(() => {});
+    navigator.serviceWorker.register("./sw.js", {scope: "./"}).catch(() => {
+      // The app remains usable online even if offline setup is unavailable.
+    });
   });
 }
 </script>
