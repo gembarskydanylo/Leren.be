@@ -1,5 +1,5 @@
 /* Polyglot Leren offline cache. Relative paths support GitHub Pages project sites. */
-const CACHE_NAME = "polyglot-leren-v2";
+const CACHE_NAME = "polyglot-leren-v9";
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {

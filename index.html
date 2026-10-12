@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LCJ9JHWQ85"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LCJ9JHWQ85');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F2F4F8">
+<meta name="theme-color" content="#FFD23F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>Polyglot Leren — Nederlands A1.1</title>
+<title>Polyglot Leren — Oranje Pop</title>
 <style>
 :root{color-scheme:light;--bg:#F2F4F8;--fg:#1E2238;--mut:#656C85;--card:#FFFFFF;--line:#E2E6F0;--acc:#4657D9;--acc-hover:#3545c4;--ok:#1F8A53;--ok-bg:#EBF7F0;--bad:#D93D4A;--bad-bg:#FDF0F1;--soft:#EBF0FF;--shadow:0 4px 20px rgba(30,34,56,.05);--amb:#B7791F}
 :root[data-theme="dark"]{color-scheme:dark;--bg:#0F111A;--fg:#F0F2FA;--mut:#98A0B8;--card:#1A1D2A;--line:#2A2E40;--acc:#7B8BFF;--acc-hover:#93A0FF;--ok:#50D086;--ok-bg:#163324;--bad:#FF737C;--bad-bg:#381C23;--soft:#232845;--shadow:0 4px 20px rgba(0,0,0,.25);--amb:#E5B567}
@@ -160,6 +151,54 @@ footer strong{color:var(--fg);font-weight:750}
  .opt{font-size:13px;padding:8px 4px;min-height:42px}
 }
 </style>
+<style id="theme-oranje">
+.select-group>span{display:none}
+.top-right{flex-wrap:nowrap;gap:6px}.select-group{flex:1 1 0;min-width:0}.lang-select{width:100%;min-width:0;padding:3px 4px}.score-pill{flex:0 0 auto}.theme-btn{flex:0 0 auto}
+.lang-select,.theme-btn{min-height:40px;font-size:13px}
+.nav-cats button,.nav-subs button,.modes-wrapper button{min-height:40px}
+.opt{min-height:54px;font-size:15px}.btn{min-height:48px;font-size:15px}.icon-box{font-size:58px}
+
+:root{--bg:#FFF3E0;--fg:#2A1A0C;--mut:#7A5A3A;--card:#FFFFFF;--line:#F3D3A8;--acc:#C94600;--acc-hover:#A93A00;--ok:#1E8E4E;--ok-bg:#DFF5E6;--bad:#D32F2F;--bad-bg:#FFE3E0;--soft:#FFE2B8;--shadow:0 4px 0 rgba(120,70,10,.12);--amb:#B26A00;--pop:#FF8A1F;--hdr:#FFD23F}
+:root[data-theme="dark"]{--bg:#1D130C;--fg:#FFF1E0;--mut:#D9B38A;--card:#2C1D12;--line:#4D3420;--acc:#FFA64D;--acc-hover:#FFB871;--ok:#5BE08F;--ok-bg:#163A25;--bad:#FF8480;--bad-bg:#40201F;--soft:#4A3015;--shadow:0 4px 0 rgba(0,0,0,.35);--pop:#FFA64D;--hdr:#3A2614}
+body{font-family:ui-rounded,"SF Pro Rounded","Nunito","Varela Round","Trebuchet MS",system-ui,sans-serif;font-size:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+header{background:var(--hdr);border:0;border-radius:24px;box-shadow:0 4px 0 rgba(120,70,10,.25);padding:14px 16px}
+.brand h1{font-size:23px;font-weight:900}
+.lang-select,.theme-btn,.score-pill{background:var(--card);color:var(--fg);border:2px solid var(--line);border-radius:12px;box-shadow:none;font-weight:800}
+.score-pill{font-size:14px}
+.stats-bar,.nav-section,.card{border-radius:22px;border:2px solid var(--line);box-shadow:var(--shadow)}
+.sub-wrapper{border:0;background:transparent;padding:0}.section-label{display:none}
+.nav-cats button,.nav-subs button{border-radius:14px;border:2px solid var(--line);border-bottom-width:4px;font-weight:800;box-shadow:none}
+.nav-cats button[aria-selected="true"],.nav-subs button[aria-selected="true"]{background:var(--pop);border-color:#C96A00;color:#2A1A0C;box-shadow:none}
+.modes-wrapper{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom));width:calc(100% - 16px);max-width:704px;z-index:30;border-radius:22px;background:var(--card);border:2px solid var(--line);box-shadow:0 6px 0 rgba(120,70,10,.15),0 10px 30px rgba(0,0,0,.14);padding:6px}
+.modes-wrapper button{border:0;background:transparent;box-shadow:none;border-radius:16px;min-height:48px;font-weight:800;color:var(--mut)}
+.modes-wrapper button.primary{background:var(--pop);color:#2A1A0C;box-shadow:none}
+.opt{border:2px solid var(--line);border-bottom-width:5px;border-radius:18px;min-height:58px;font-size:16px;font-weight:800;box-shadow:none}
+.opt:active:not(:disabled){transform:translateY(3px);border-bottom-width:2px}
+.opt.correct{border-color:var(--ok)!important;background:var(--ok-bg)!important;animation:pop .5s ease}
+@keyframes pop{40%{transform:scale(1.04)}}
+.btn,.listen{border-radius:16px;border:2px solid var(--line);border-bottom-width:5px;font-weight:800;box-shadow:none}
+.btn{min-height:52px}.btn.primary{background:var(--pop);border-color:#C96A00;color:#2A1A0C}.btn.primary:hover{background:#FFA03F}
+.bar{height:14px;border-radius:14px;background:var(--line)}.bar i{background:var(--pop);border-radius:14px}
+/* компактна шапка в один рядок */
+header{padding:8px 10px;gap:6px;flex-wrap:wrap;border-radius:20px;box-shadow:0 3px 0 rgba(120,70,10,.25)}
+.brand{flex:1 1 120px;min-width:0}.brand h1{font-size:clamp(14px,4.2vw,17px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{display:none}
+header .top-right{width:auto;margin:0 0 0 auto;flex:0 0 auto;justify-content:flex-end;flex-wrap:nowrap;gap:4px}
+.select-group{flex:0 0 auto}
+.lang-select{width:34px;min-height:36px;padding:0 0 0 5px;font-size:16px;text-overflow:clip;overflow:hidden;-webkit-appearance:none;appearance:none;background-image:none}
+.score-pill{flex:0 0 auto;min-height:36px;display:flex;align-items:center;padding:0 9px;font-size:13px}
+.theme-btn{flex:0 0 auto;min-width:36px;min-height:36px;padding:0}
+/* щільніший інтерфейс, щоб питання й кнопки були на першому екрані */
+main{gap:8px;padding:8px 8px 18px}
+.stats-bar{padding:4px 12px;font-size:12px;border-radius:14px}
+.nav-section{padding:6px;gap:6px;border-radius:18px}
+.nav-cats button,.nav-subs button{min-height:36px;padding:5px 11px;font-size:13px}
+.bar{height:10px}.meta{font-size:11px}
+.card{padding:12px 12px 8px;gap:8px}
+.icon-box{font-size:46px;margin:0}
+.opt{min-height:50px}.listen{min-height:38px;padding:4px 12px;margin-top:2px}.btn{min-height:48px}
+/* рядок з кнопками (Далі / Знаю це) завжди над нижньою панеллю */
+#card>div.row:last-of-type{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));background:var(--card);padding:8px 0 2px;z-index:5}
+</style>
 </head>
 <body>
 <main>
@@ -218,36 +257,36 @@ const UI={
  uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"Нідерландська мова • Рівень A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)"},
-  subs:{phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово"},
+  tabs:{graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
+  subs:{graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити"},audioSub:"Послухай і обери переклад"},
  en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"Dutch Language • Level A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
   lCat:"Category",lSub:"Subtopic",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
-  tabs:{phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)"},
-  subs:{phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word"},
+  tabs:{graag:"Like / don't like",phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)",werk:"Work & bank"},
+  subs:{graag:"What does this activity mean?",phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word",werk:"Work, office and bank"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review"},audioSub:"Listen and choose the translation"},
  fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"Néerlandais • Niveau A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
-  tabs:{phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)"},
-  subs:{phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l'icône et choisis le mot"},
+  tabs:{graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
+  subs:{graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision"},audioSub:"Écoute et choisis la traduction"},
  ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"اللغة الهولندية • المستوى A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",light:"الوضع الفاتح",dark:"الوضع الداكن",markKnown:"أعرف هذا",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
-  tabs:{phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)"},
-  subs:{phrases:"اختر العبارة الصحيحة",questions:"ماذا تعني كلمة الاستفهام هذه؟",pronouns:"اختر ترجمة الضمير",verbs:"اختر ترجمة الفعل",dehet:"اختر أداة التعريف الصحيحة",adjectives:"اختر الترجمة",numbers:"اختر كلمة العدد",time:"اختر الكلمة الصحيحة",clock:"كم الساعة على مدار الساعة؟",months:"اختر الشهر",weather:"الطقس والأيام والوقت",family:"من هذا في العائلة؟",jobs:"اختر المهنة",body:"انظر إلى الأيقونة واختر الكلمة",doctor:"موعد الطبيب والصحة",home:"انظر إلى الأيقونة واختر الكلمة",shop:"السوبرماركت والمنتجات والعبارات",clothes:"انظر إلى الأيقونة واختر الكلمة",colors:"انظر إلى اللون واختر الكلمة",animals:"انظر إلى الأيقونة واختر الكلمة",city:"انظر إلى الأيقونة واختر الكلمة",transport:"المواصلات والاتجاهات",gemeente:"انظر إلى الأيقونة واختر الكلمة",cvo:"انظر إلى الأيقونة واختر الكلمة"},
+  tabs:{graag:"أحب / لا أحب",phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)",werk:"العمل والبنك"},
+  subs:{graag:"ماذا يعني هذا النشاط؟",phrases:"اختر العبارة الصحيحة",questions:"ماذا تعني كلمة الاستفهام هذه؟",pronouns:"اختر ترجمة الضمير",verbs:"اختر ترجمة الفعل",dehet:"اختر أداة التعريف الصحيحة",adjectives:"اختر الترجمة",numbers:"اختر كلمة العدد",time:"اختر الكلمة الصحيحة",clock:"كم الساعة على مدار الساعة؟",months:"اختر الشهر",weather:"الطقس والأيام والوقت",family:"من هذا في العائلة؟",jobs:"اختر المهنة",body:"انظر إلى الأيقونة واختر الكلمة",doctor:"موعد الطبيب والصحة",home:"انظر إلى الأيقونة واختر الكلمة",shop:"السوبرماركت والمنتجات والعبارات",clothes:"انظر إلى الأيقونة واختر الكلمة",colors:"انظر إلى اللون واختر الكلمة",animals:"انظر إلى الأيقونة واختر الكلمة",city:"انظر إلى الأيقونة واختر الكلمة",transport:"المواصلات والاتجاهات",gemeente:"انظر إلى الأيقونة واختر الكلمة",cvo:"انظر إلى الأيقونة واختر الكلمة",werk:"العمل والمكتب والبنك"},
   modes:{study:"دراسة",quiz:"اختبار",audio:"استماع",review:"مراجعة"},audioSub:"استمع واختر الترجمة"}
 };
 
 const CATEGORIES=[
- {id:"comm", tabs:["phrases", "questions", "pronouns"]},
+ {id:"comm", tabs:["phrases", "questions", "pronouns", "graag"]},
  {id:"grammar", tabs:["verbs", "dehet", "adjectives"]},
  {id:"nums", tabs:["numbers", "time", "clock", "months", "weather"]},
  {id:"people", tabs:["family", "jobs", "body", "doctor"]},
  {id:"home", tabs:["home", "shop", "clothes", "colors", "animals"]},
- {id:"city", tabs:["city", "transport", "gemeente", "cvo"]}
+ {id:"city", tabs:["city", "transport", "gemeente", "cvo", "werk"]}
 ];
 
 const ERASER='<svg viewBox="4 4 56 56" width="50" height="50" role="img" aria-label="eraser"><g transform="rotate(-35 32 32)"><rect x="6" y="20" width="52" height="24" rx="5" fill="#F4A6B5"/><path d="M34 20h19a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H34z" fill="#5B7BD9"/><rect x="6" y="20" width="52" height="24" rx="5" fill="none" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/><path d="M34 20v24" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/></g></svg>';
@@ -255,9 +294,39 @@ const KIT='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label
 const REG='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label="cash register"><rect x="29" y="19" width="6" height="8" fill="#3A4660"/><rect x="16" y="6" width="32" height="15" rx="3" fill="#2B3447"/><rect x="20" y="10" width="18" height="4" rx="1" fill="#7BE0A4"/><path d="M13 27h38l5 13H8z" fill="#5B6B8C"/><g fill="#E8ECF5"><rect x="16" y="30" width="6" height="3" rx="1"/><rect x="25" y="30" width="6" height="3" rx="1"/><rect x="34" y="30" width="6" height="3" rx="1"/><rect x="43" y="30" width="5" height="3" rx="1"/><rect x="14" y="35" width="6" height="3" rx="1"/><rect x="23" y="35" width="6" height="3" rx="1"/><rect x="32" y="35" width="6" height="3" rx="1"/><rect x="41" y="35" width="7" height="3" rx="1"/></g><rect x="8" y="40" width="48" height="16" rx="3" fill="#3A4660"/><rect x="14" y="45" width="36" height="6" rx="2" fill="#9AA7C2"/><rect x="28" y="46.5" width="8" height="3" rx="1.5" fill="#3A4660"/></svg>';
 
 const KEYS=["id","nl","en","fr","uk","ar","icon","ex_nl","ex_uk","art_nl","art_fr"];
-const R=rows=>({items:rows.map(r=>{const o={};KEYS.forEach((k,i)=>{if(r[i]!==undefined)o[k]=r[i]});return o})});
+const R=rows=>({items:(rows||[]).filter(r=>Array.isArray(r)).map(r=>{const o={};KEYS.forEach((k,i)=>{if(r[i]!==undefined)o[k]=r[i]});return o})});
 
 const DATA={
+ graag:R([
+  ["gr_koken", "koken", "to cook", "cuisiner", "готувати", "الطهي", "🍳", "Ik kook graag.", "Я люблю готувати."],
+  ["gr_boodschappen", "boodschappen doen", "to do the shopping", "faire les courses", "ходити по продукти", "شراء البقالة", "🛒", "Ik doe graag boodschappen.", "Я люблю ходити по продукти."],
+  ["gr_afwassen", "afwassen", "to wash the dishes", "faire la vaisselle", "мити посуд", "غسل الصحون", "🍽️", "Ik was niet graag af.", "Я не люблю мити посуд."],
+  ["gr_stofzuigen", "stofzuigen", "to vacuum", "passer l'aspirateur", "пилососити", "التنظيف بالمكنسة الكهربائية", "🧹", "Ik stofzuig niet graag.", "Я не люблю пилососити."],
+  ["gr_was", "de was doen", "to do the laundry", "faire la lessive", "прати білизну", "غسل الملابس", "🧺", "Ik doe niet graag de was.", "Я не люблю прати."],
+  ["gr_strijken", "strijken", "to iron", "repasser", "прасувати", "كي الملابس", "👔", "Ik strijk niet graag.", "Я не люблю прасувати."],
+  ["gr_poetsen", "poetsen", "to clean", "nettoyer", "прибирати", "التنظيف", "🧽", "Ik poets niet graag.", "Я не люблю прибирати."],
+  ["gr_tuin", "in de tuin werken", "to work in the garden", "jardiner", "працювати в саду", "العمل في الحديقة", "🌱", "Ik werk niet graag in de tuin.", "Я не люблю працювати в саду."],
+  ["gr_zwemmen", "zwemmen", "to swim", "nager", "плавати", "السباحة", "🏊", "Ik zwem graag.", "Я люблю плавати."],
+  ["gr_fietsen", "fietsen", "to cycle", "faire du vélo", "їздити на велосипеді", "ركوب الدراجة", "🚴", "Ik fiets graag.", "Я люблю їздити на велосипеді."],
+  ["gr_lopen", "lopen", "to run", "courir", "бігати", "الجري", "🏃", "Ik loop graag.", "Я люблю бігати."],
+  ["gr_voetballen", "voetballen", "to play football", "jouer au football", "грати у футбол", "لعب كرة القدم", "⚽", "Ik voetbal graag.", "Я люблю грати у футбол."],
+  ["gr_fitness", "naar de fitness gaan", "to go to the gym", "aller à la salle de sport", "ходити у фітнес", "الذهاب إلى النادي الرياضي", "🏋️", "Ik ga graag naar de fitness.", "Я люблю ходити у фітнес."],
+  ["gr_dansen", "dansen", "to dance", "danser", "танцювати", "الرقص", "💃", "Ik dans graag.", "Я люблю танцювати."],
+  ["gr_lezen", "lezen", "to read", "lire", "читати", "القراءة", "📖", "Ik lees graag.", "Я люблю читати."],
+  ["gr_wandelen", "wandelen", "to go for a walk", "se promener", "гуляти пішки", "المشي للتنزه", "🚶", "Ik wandel graag.", "Я люблю гуляти пішки."],
+  ["gr_serie", "een serie kijken", "to watch a series", "regarder une série", "дивитися серіал", "مشاهدة مسلسل", "📺", "Ik kijk graag een serie.", "Я люблю дивитися серіали."],
+  ["gr_winkelen", "winkelen", "to go shopping", "faire du shopping", "ходити по магазинах", "التسوق", "🛍️", "Ik winkel graag.", "Я люблю ходити по магазинах."],
+  ["gr_fotos", "foto's nemen", "to take photos", "prendre des photos", "робити фото", "التقاط الصور", "📸", "Ik neem graag foto's.", "Я люблю робити фото."],
+  ["gr_muziek", "naar muziek luisteren", "to listen to music", "écouter de la musique", "слухати музику", "الاستماع إلى الموسيقى", "🎧", "Ik luister graag naar muziek.", "Я люблю слухати музику."],
+  ["gr_cinema", "naar de cinema gaan", "to go to the cinema", "aller au cinéma", "ходити в кіно", "الذهاب إلى السينما", "🎬", "Ik ga graag naar de cinema.", "Я люблю ходити в кіно."],
+  ["gr_cafe", "op café gaan", "to go to a café", "aller au café", "ходити в кафе", "الذهاب إلى المقهى", "🍻", "Ik ga niet graag op café.", "Я не люблю ходити в кафе."],
+  ["gr_restaurant", "op restaurant gaan", "to go to a restaurant", "aller au restaurant", "ходити в ресторан", "الذهاب إلى مطعم", "🍴", "Ik ga graag op restaurant.", "Я люблю ходити в ресторан."],
+  ["gr_graag", "graag", "gladly, like to", "volontiers (aimer)", "охоче (люблю)", "بكل سرور", "👍", "Ik lees graag.", "Я люблю читати."],
+  ["gr_nietgraag", "niet graag", "not like to", "ne pas aimer", "не люблю", "لا أحب", "👎", "Ik strijk niet graag.", "Я не люблю прасувати."],
+  ["gr_elkedag", "elke dag", "every day", "tous les jours", "щодня", "كل يوم", "📅", "Ik kook elke dag.", "Я готую щодня."],
+  ["gr_weekend", "in het weekend", "at the weekend", "le week-end", "у вихідні", "في عطلة نهاية الأسبوع", "🗓️", "Ik voetbal in het weekend.", "У вихідні я граю у футбол."],
+  ["gr_watdoe", "Wat doe jij graag?", "What do you like to do?", "Qu'est-ce que tu aimes faire ?", "Що ти любиш робити?", "ماذا تحب أن تفعل؟", "❓", "Ik lees graag.", "Я люблю читати."]
+ ]),
  pronouns:R([
   ["pro_ik","ik","I","je","я","أنا","👤","Ik ben thuis.","Я вдома."],
   ["pro_jij","jij / je","you (singular)","tu","ти","أنتَ / أنتِ","👉","Jij bent aardig.","Ти добрий."],
@@ -279,7 +348,7 @@ const DATA={
  ]),
  dehet:R([
   ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
-  ["art_boek","boek","book","livre","книга","كتاب","📖","Het boek is open.","Книга відкрита.","het","le"],
+  ["art_boek","boek","book","livre","книга","книга","📖","Het boek is open.","Книга відкрита.","het","le"],
   ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","🛂","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
@@ -308,31 +377,57 @@ const DATA={
   ["cvo_3","het huiswerk","homework","les devoirs","домашнє завдання","الواجب المنزلي","📝","Ik maak mijn huiswerk.","Я роблю домашнє завдання."],
   ["cvo_4","de pauze","break","la pause","перерва","الاستراحة","☕","Het is tijd voor pauze.","Час для перерви."],
   ["cvo_5","het potlood","pencil","le crayon","олівець","قلم رصاص","✏️","Heb je een potlood?","У тебе є олівець?"],
-  ["cvo_6","de gom","eraser","la gomme","гумка для стирання","ممحاة",ERASER,"Mag ik de gom gebruiken?","Можна скористатися гумкою?"]
+  ["cvo_6","de gom","eraser","la gomme","гумка","ممحاة","🧽","Mag ik de gom gebruiken?","Можна скористатися гумкою?"],
+  ["cvo_7","het schrift","notebook","le cahier","зошит","الدفتر","📓","Schrijf in je schrift.","Пиши в зошиті."],
+  ["cvo_8","de les","lesson","le cours","урок","الدرس","📚","De les begint om negen uur.","Урок починається о дев'ятій."],
+  ["cvo_9","het examen","exam","l'examen","іспит","الامتحان","📋","Volgende week heb ik een examen.","Наступного тижня в мене іспит."],
+  ["cvo_10","de klas","class / classroom","la classe","клас","الفصل","🏫","Onze klas is groot.","Наш клас великий."],
+  ["cvo_11","het bord","blackboard / board","le tableau","дошка","السبورة","黒板","Schrijf het op het bord.","Напиши це на дошці."],
+  ["cvo_12","de tas","bag","le sac","сумка (шкільна)","الحقيبة","🎒","Mijn tas is zwaar.","Моя сумка важка."],
+  ["cvo_13","het woordenboek","dictionary","le dictionnaire","словник","القاموس","📖","Ik gebruik een woordenboek.","Я користуюсь словником."],
+  ["cvo_14","begrijpen","to understand","comprendre","розуміти","يفهم","💡","Begrijp je de les?","Ти розумієш урок?"],
+  ["cvo_15","herhalen","to repeat","répéter","повторювати","يكرر","🔁","Kunt u dat herhalen?","Чи можете повторити?"]
  ]),
  gemeente:R([
   ["gem_1","het stadhuis / gemeentehuis","city hall","la maison communale","ратуша / муніципалітет","مبنى البلدية","🏛️","Ik ga naar het gemeentehuis.","Я йду до муніципалітету."],
-  ["gem_2","de identiteitskaart","ID card","la carte d'identité","посвідчення особи / ID-картка","بطاقة الهوية","🪪","Hier is mijn identiteitskaart.","Ось моє посвідчення особи."],
+  ["gem_2","de identiteitskaart","ID card","la carte d'identité","посвідчення особи","بطاقة الهوية","🪪","Hier is mijn identiteitskaart.","Ось моє посвідчення особи."],
   ["gem_3","het adres","address","l'adresse","адреса","العنوان","🏠","Wat is uw adres?","Яка Ваша адреса?"],
-  ["gem_4","het formulier","form","le formulaire","бланк / формуляр","استمارة / نموذج","📄","Vul dit formulier in.","Заповніть цей бланк."],
-  ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."]
+  ["gem_4","het formulier","form","le formulaire","бланк / формуляр","استمارة","📄","Vul dit formulier in.","Заповніть цей бланк."],
+  ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."],
+  ["gem_6","inschrijven","to register","s'inscrire","реєструватися","التسجيل","📋","Ik moet mij inschrijven.","Мені треба зареєструватися."],
+  ["gem_7","het paspoort","passport","le passeport","паспорт","جواز السفر","🛂","Mijn paspoort is geldig.","Мій паспорт дійсний."],
+  ["gem_8","de verblijfsvergunning","residence permit","le titre de séjour","посвідка на проживання","تصريح الإقامة","📑","Ik heb een verblijfsvergunning nodig.","Мені потрібна посвідка на проживання."],
+  ["gem_9","de geboorteakte","birth certificate","l'acte de naissance","свідоцтво про народження","شهادة الميلاد","📜","Ik heb mijn geboorteakte meegenomen.","Я взяв свідоцтво про народження."],
+  ["gem_10","de wachtkamer","waiting room","la salle d'attente","зала очікування","غرفة الانتظار","🪑","Wacht in de wachtkamer, alstublieft.","Зачекайте в залі очікування, будь ласка."],
+  ["gem_11","het loket","counter / desk","le guichet","віконце / каса","الشباك","🪟","Ga naar loket nummer 3.","Підійдіть до віконця номер 3."],
+  ["gem_12","de aanvraag","application / request","la demande","заява / запит","الطلب","📨","Ik doe een aanvraag.","Я подаю заяву."]
  ]),
  doctor:R([
   ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хвороба."],
   ["doc_2","de pijn","pain","la douleur","біль","الألم","🤕","Ik heb veel pijn.","Мені дуже боляче."],
-  ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى / الحرارة","🌡️","Ik heb hoge koorts.","У мене висока температура."],
-  ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية",KIT,"De apotheek is dicht.","Аптека зачинена."],
-  ["doc_5","het medicijn","medicine","le médicament","ліки / медикаменти","الدواء","💊","Neem dit medicijn elke dag.","Приймайте ці ліки щодня."]
+  ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى","🌡️","Ik heb hoge koorts.","У мене висока температура."],
+  ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية","💊","De apotheek is dicht.","Аптека зачинена."],
+  ["doc_5","het medicijn","medicine","le médicament","ліки","الدواء","💊","Neem dit medicijn elke dag.","Приймайте ці ліки щодня."],
+  ["doc_6","de dokter","doctor","le médecin","лікар","الطبيب","🩺","Ik ga naar de dokter.","Я йду до лікаря."],
+  ["doc_7","de afspraak","appointment","le rendez-vous","запис / прийом","الموعد","📅","Ik heb een afspraak om 10 uur.","У мене запис о 10 годині."],
+  ["doc_8","de hoest","cough","la toux","кашель","السعال","😷","Ik heb een droge hoest.","У мене сухий кашель."],
+  ["doc_9","de verkoudheid","cold (illness)","le rhume","застуда","الزكام","🤧","Ik heb een verkoudheid.","У мене застуда."],
+  ["doc_10","het recept","prescription","l'ordonnance","рецепт","الوصفة الطبية","📝","De dokter geeft een recept.","Лікар виписує рецепт."],
+  ["doc_11","de ziekenhuis","hospital","l'hôpital","лікарня","المستشفى","🏥","Hij ligt in het ziekenhuis.","Він у лікарні."],
+  ["doc_12","ziek","ill / sick","malade","хворий","مريض","🤒","Ik voel me ziek.","Я почуваюся хворим."],
+  ["doc_13","beter","better","mieux","краще","أفضل","😊","Ik voel me al beter.","Мені вже краще."],
+  ["doc_14","de keel","throat","la gorge","горло","الحلق","🗣️","Mijn keel doet pijn.","У мене болить горло."],
+  ["doc_15","de buik","belly / stomach","le ventre","живіт","البطن","🤰","Ik heb pijn in mijn buik.","У мене болить живіт."]
  ]),
  shop:R([
   ["sh_1","de winkelkar","shopping cart","le Caddie","візок для покупок","عربة التسوق","🛒","Neem een winkelkar.","Візьміть візок."],
-  ["sh_2","de kassa","checkout","la caisse","каса","الصندوق / الكاسا",REG,"Betaal aan de kassa.","Розрахуйтеся на касі."],
-  ["sh_3","het bonnetje","receipt","le ticket de caisse","чек","الإيصال / الفاتورة","🧾","Wilt u het bonnetje?","Бажаєте чек?"],
-  ["sh_4","de korting","discount","la réduction","знижка","الخصم / التخفيض","🏷️","Er is 20% korting.","Діє знижка 20%."],
-  ["sh_zak","de zak","bag","le sac","пакет / мішок","الكيس","🛍️","Deze zak is van Action.","Цей пакет з Action."],
+  ["sh_2","de kassa","checkout","la caisse","каса","الصندوق","🧾","Betaal aan de kassa.","Розрахуйтеся на касі."],
+  ["sh_3","het bonnetje","receipt","le ticket de caisse","чек","الإيصال","🧾","Wilt u het bonnetje?","Бажаєте чек?"],
+  ["sh_4","de korting","discount","la réduction","знижка","الخصم","🏷️","Er is 20% korting.","Діє знижка 20%."],
+  ["sh_zak","de zak","bag","le sac","пакет","الكيس","🛍️","Deze zak is van Action.","Цей пакет з Action."],
   ["sh_melk","de melk","milk","le lait","молоко","الحليب","🥛","Ik koop een liter melk.","Я купую літр молока."],
   ["sh_brood","het brood","bread","le pain","хліб","الخبز","🍞","Vers brood is lekker.","Свіжий хліб смачний."],
-  ["sh_kaas","de kaas","cheese","le fromage","сир (твердий)","الجبن","🧀","Belgische kaas is lekker.","Бельгійський сир смачний."],
+  ["sh_kaas","de kaas","cheese","le fromage","сир","الجبن","🧀","Belgische kaas is lekker.","Бельгійський сир смачний."],
   ["sh_eieren","de eieren","eggs","les œufs","яйця","البيض","🥚","Ik heb zes eieren nodig.","Мені потрібно 6 яєць."],
   ["sh_boter","de boter","butter","le beurre","масло","الزبدة","🧈","Boter staat in de koelkast.","Масло лежить у холодильнику."],
   ["sh_bananen","de bananen","bananas","les bananes","банани","الموز","🍌","Twee bananen, alstublieft.","Два банани, будь ласка."],
@@ -346,41 +441,56 @@ const DATA={
   ["sh_zout","het zout","salt","le sel","сіль","الملح","🧂","Een beetje zout, alstublieft.","Трохи солі, будь ласка."],
   ["sh_suiker","de suiker","sugar","le sucre","цукор","السكر","🍬","Koffie met suiker.","Кава з цукром."],
   ["sh_koffie","de koffie","coffee","le café","кава","القهوة","☕","Een kopje koffie, aub.","Чашку кави, будь ласка."],
-  ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"]
+  ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"],
+  ["sh_rijst","de rijst","rice","le riz","рис","الأرز","🍚","Ik kook rijst.","Я варю рис."],
+  ["sh_pasta","de pasta","pasta","les pâtes","паста / макарони","المعكرونة","🍝","Pasta met tomatensaus.","Паста з томатним соусом."],
+  ["sh_vlees","het vlees","meat","la viande","м'ясо","اللحم","🥩","Ik eet weinig vlees.","Я їм мало м'яса."],
+  ["sh_vis","de vis","fish","le poisson","риба","السمك","🐟","Verse vis is gezond.","Свіжа риба корисна."],
+  ["sh_kip","de kip","chicken","le poulet","курка","الدجاج","🍗","Kip met groenten.","Курка з овочами."],
+  ["sh_soep","de soep","soup","la soupe","суп","الحساء","🍲","Oma maakt lekkere soep.","Бабуся готує смачний суп."],
+  ["sh_salade","de salade","salad","la salade","салат","السلطة","🥗","Een salade, alstublieft.","Салат, будь ласка."],
+  ["sh_fruit","het fruit","fruit","les fruits","фрукти","الفواكه","🍇","Ik eet elke dag fruit.","Я їм фрукти щодня."],
+  ["sh_groenten","de groenten","vegetables","les légumes","овочі","الخضروات","🥦","Eet meer groenten.","Їж більше овочів."],
+  ["sh_yoghurt","de yoghurt","yoghurt","le yaourt","йогурт","الزبادي","🥛","Yoghurt met fruit.","Йогурт з фруктами."],
+  ["sh_sap","het sap","juice","le jus","сік","العصير","🧃","Appelsap of sinaasappelsap?","Яблучний чи апельсиновий сік?"],
+  ["sh_thee","de thee","tea","le thé","чай","الشاي","🍵","Een kop thee, alstublieft.","Чашку чаю, будь ласка."],
+  ["sh_bier","het bier","beer","la bière","пиво","البيرة","🍺","Een Belgisch bier, aub.","Бельгійське пиво, будь ласка."],
+  ["sh_wijn","de wijn","wine","le vin","вино","النبيذ","🍷","Rode of witte wijn?","Червоне чи біле вино?"],
+  ["sh_chocolade","de chocolade","chocolate","le chocolat","шоколад","الشوكولاتة","🍫","Belgische chocolade is beroemd.","Бельгійський шоколад знаменитий."],
+  ["sh_koekjes","de koekjes","cookies / biscuits","les biscuits","печиво","البسكويت","🍪","Koekjes bij de koffie.","Печиво до кави."]
  ]),
  transport:R([
   ["tr_1","het ticket","ticket","le billet","квиток","التذكرة","🎟️","Een ticket naar Brussel, alstublieft.","Квиток до Брюсселя, будь ласка."],
   ["tr_2","de halte","bus stop","l'arrêt de bus","зупинка","موقف الحافلة","🚏","Waar is de bushalte?","Де автобусна зупинка?"],
   ["tr_3","links","left","à gauche","ліворуч","يساراً","⬅️","Ga naar links.","Поверніть ліворуч."],
   ["tr_4","rechts","right","à droite","праворуч","يميناً","➡️","Sla rechtsaf.","Поверніть праворуч."],
-  ["tr_5","rechtdoor","straight ahead","tout droit","прямо","إلى الأمام مباشرة","⬆️","Ga rechtdoor.","Ідіть прямо."]
+  ["tr_5","rechtdoor","straight ahead","tout droit","прямо","إلى الأمام مباشرة","⬆️","Ga rechtdoor.","Ідіть прямо."],
+  ["tr_6","de bus","bus","le bus","автобус","الحافلة","🚌","Ik neem de bus naar school.","Я їду автобусом до школи."],
+  ["tr_7","de tram","tram","le tram","трамвай","الترام","🚊","De tram stopt hier.","Трамвай зупиняється тут."],
+  ["tr_8","de trein","train","le train","потяг","القطار","🚆","De trein naar Antwerpen is vertraagd.","Потяг до Антверпена затримується."],
+  ["tr_9","het station","station","la gare","вокзал","المحطة","🚉","Het station is dichtbij.","Вокзал поруч."],
+  ["tr_10","de fiets","bicycle","le vélo","велосипед","الدراجة","🚲","Ik ga met de fiets.","Я їду на велосипеді."],
+  ["tr_11","de auto","car","la voiture","автомобіль","السيارة","🚗","De auto staat voor de deur.","Машина стоїть перед дверима."],
+  ["tr_12","parkeren","to park","stationner","паркуватися","ركن السيارة","🅿️","Mag ik hier parkeren?","Можна тут паркуватися?"],
+  ["tr_13","overstappen","to change (transport)","changer","пересідати","التبديل","🔄","Je moet overstappen in Brussel.","Тобі треба пересісти в Брюсселі."],
+  ["tr_14","de vertraging","delay","le retard","затримка","التأخير","⏰","Er is een vertraging van tien minuten.","Затримка десять хвилин."],
+  ["tr_15","het perron","platform","le quai","платформа","الرصيف","🛤️","De trein vertrekt van perron 3.","Потяг відправляється з платформи 3."],
+  ["tr_16","de kaart","travel card","la carte","проїзна картка","بطاقة النقل","💳","Heb je een MOBIB-kaart?","У тебе є картка MOBIB?"],
+  ["tr_17","te voet","on foot","à pied","пішки","سيراً على الأقدام","🚶","Ik ga te voet naar de winkel.","Я йду пішки до магазину."],
+  ["tr_18","het verkeer","traffic","la circulation","рух","المرور","🚦","Er is veel verkeer vandaag.","Сьогодні великий рух."]
  ]),
  weather:R([
   ["w_1","de regen","rain","la pluie","дощ","المطر","🌧️","Er komt veel regen vandaag.","Сьогодні буде сильний дощ."],
-  ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
+  ["w_2","de zon","sun","le soleil","сонце","Шمس","☀️","De zon schijnt.","Сонце світить."],
   ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
   ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
-  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅", "Op maandag werk ik.", "У понеділок я працюю."],
-  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅", "Op dinsdag heb ik les.", "У вівторок у мене урок."],
-  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅", "Op woensdag ga ik naar de markt.", "У середу я йду на ринок."],
-  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅", "Op donderdag sport ik.", "У четвер я займаюся спортом."],
-  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅", "Op vrijdag werk ik thuis.", "У п'ятницю я працюю вдома."],
-  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅", "Op zaterdag slaap ik uit.", "У суботу я довше сплю."],
-  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅", "Op zondag bezoek ik mijn familie.", "У неділю я відвідую родину."],
- ]),
- family:R([
-  ["fam_1", "de moeder", "mother", "la mère", "мама", "الأم", "👩", "Mijn moeder kookt.", "Моя мама готує."],
-  ["fam_2", "de vader", "father", "le père", "тато", "الأب", "👨", "Mijn vader werkt.", "Мій тато працює."],
-  ["fam_3", "de ouders", "parents", "les parents", "батьки", "الوالدان", "👫", "Mijn ouders wonen in België.", "Мої батьки живуть у Бельгії."],
-  ["fam_4", "de broer", "brother", "le frère", "брат", "الأخ", "👦", "Mijn broer is tien.", "Моєму братові десять."],
-  ["fam_5", "de zus", "sister", "la sœur", "сестра", "الأخت", "👧", "Mijn zus studeert.", "Моя сестра навчається."],
-  ["fam_6", "de zoon", "son", "le fils", "син", "الابن", "👦", "Hun zoon gaat naar school.", "Їхній син ходить до школи."],
-  ["fam_7", "de dochter", "daughter", "la fille", "дочка", "الابنة", "👧", "Onze dochter is drie.", "Нашій дочці три роки."],
-  ["fam_8", "de opa", "grandpa", "le grand-père", "дідусь", "الجد", "👴", "Mijn opa is tachtig.", "Моєму дідусеві вісімдесят."],
-  ["fam_9", "de oma", "grandma", "la grand-mère", "бабуся", "الجدة", "👵", "Oma maakt soep.", "Бабуся готує суп."],
-  ["fam_10", "getrouwd", "married", "marié", "одружений", "متزوج", "💍", "Wij zijn getrouwd.", "Ми одружені."],
-  ["fam_11", "alleenstaand", "single", "célibataire", "неодружений", "أعزب", "🧍", "Hij is alleenstaand.", "Він неодружений."],
-  ["fam_12", "het kind", "child", "l'enfant", "дитина", "الطفل", "🧒", "Het kind speelt buiten.", "Дитина грає надворі."]
+  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅"],
+  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅"],
+  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅"],
+  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅"],
+  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
+  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
+  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
  ])
 };
 
@@ -402,8 +512,16 @@ Object.assign(DATA,{
   ["phr_13", "nee", "no", "non", "ні", "لا", "❌", "Nee, dank u.", "Ні, дякую."],
   ["phr_14", "welkom", "welcome", "bienvenue", "ласкаво просимо", "أهلًا وسهلًا", "🤗", "Welkom in België!", "Ласкаво просимо до Бельгії!"],
   ["phr_15", "ik begrijp het niet", "I don't understand", "je ne comprends pas", "я не розумію", "لا أفهم", "🤷", "Sorry, ik begrijp het niet.", "Вибач, я не розумію."],
-  ["phr_16", "kunt u dat herhalen?", "can you repeat that?", "pouvez-vous répéter ?", "чи можете повторити?", "هل يمكنك أن تكرر ذلك؟", "🔁", "Kunt u dat herhalen, alstublieft?", "Чи можете Ви повторити, будь ласка?"],
-  ["phr_17", "leuk je te ontmoeten", "nice to meet you", "enchanté", "приємно познайомитися", "سررت بلقائك", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"]
+  ["phr_16", "kunt u dat herhalen?", "can you repeat that?", "pouvez-vous répéter ?", "чи можете повторити?", "هل يمكنك أن تكرر؟", "🔁", "Kunt u dat herhalen, alstublieft?", "Чи можете Ви повторити, будь ласка?"],
+  ["phr_17", "leuk je te ontmoeten", "nice to meet you", "enchanté", "приємно познайомитися", "سررت بلقائك", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"],
+  ["phr_18", "hoe gaat het?", "how are you?", "comment ça va ?", "як справи?", "كيف حالك؟", "😊", "Hallo, hoe gaat het met jou?", "Привіт, як у тебе справи?"],
+  ["phr_19", "goed, dank je", "fine, thank you", "ça va bien, merci", "добре, дякую", "بخير، شكراً", "👍", "Goed, dank je. En met jou?", "Добре, дякую. А в тебе?"],
+  ["phr_20", "tot morgen", "see you tomorrow", "à demain", "до завтра", "إلى الغد", "👋", "Tot morgen in de les!", "До завтра на уроці!"],
+  ["phr_21", "geen probleem", "no problem", "pas de problème", "без проблем", "لا مشكلة", "👌", "Geen probleem, ik help je.", "Без проблем, я допоможу."],
+  ["phr_22", "mag ik ... ?", "may I ... ?", "est-ce que je peux ... ?", "можна мені ... ?", "هل يمكنني ... ؟", "🙋", "Mag ik een vraag stellen?", "Можна поставити запитання?"],
+  ["phr_23", "ik weet het niet", "I don't know", "je ne sais pas", "я не знаю", "لا أعرف", "🤷‍♂️", "Sorry, ik weet het niet.", "Вибач, я не знаю."],
+  ["phr_24", "spreekt u Engels?", "do you speak English?", "parlez-vous anglais ?", "Ви розмовляєте англійською?", "هل تتحدث الإنجليزية؟", "🇬🇧", "Spreekt u Engels of Frans?", "Ви розмовляєте англійською чи французькою?"],
+  ["phr_25", "een moment, alstublieft", "one moment, please", "un moment, s'il vous plaît", "хвилинку, будь ласка", "لحظة من فضلك", "⏳", "Een moment, alstublieft.", "Хвилинку, будь ласка."]
  ]),
  numbers:R([
   ["num_1", "nul", "0 · zero", "0 · zéro", "0 · нуль", "0 · صفر", "0️⃣", "Het is nul graden.", "Нуль градусів."],
@@ -419,17 +537,10 @@ Object.assign(DATA,{
   ["num_11", "tien", "10 · ten", "10 · dix", "10 · десять", "10 · عشرة", "🔟", "Tien euro, alstublieft.", "Десять євро, будь ласка."],
   ["num_12", "elf", "11 · eleven", "11 · onze", "11 · одинадцять", "11 · أحد عشر", "🔢", "Er zijn elf studenten.", "Є одинадцять студентів."],
   ["num_13", "twaalf", "12 · twelve", "12 · douze", "12 · дванадцять", "12 · اثنا عشر", "🔢", "Het is twaalf uur.", "Зараз дванадцята година."],
-  ["num_dertien", "dertien", "thirteen", "treize", "тринадцять", "ثلاثة عشر", "🔢", "Ik heb dertien euro.", "У мене тринадцять євро."],
-  ["num_veertien", "veertien", "fourteen", "quatorze", "чотирнадцять", "أربعة عشر", "🔢", "Zij is veertien jaar.", "Їй чотирнадцять років."],
   ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
   ["num_15", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten wachten.", "Чекати двадцять хвилин."],
   ["num_16", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig minuten pauze.", "Тридцять хвилин перерви."],
-  ["num_veertig", "veertig", "forty", "quarante", "сорок", "أربعون", "🔢", "Mijn vader is veertig.", "Моєму татові сорок."],
   ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п'ятдесят відсотків."],
-  ["num_zestig", "zestig", "sixty", "soixante", "шістдесят", "ستون", "🔢", "Een uur heeft zestig minuten.", "У годині шістдесят хвилин."],
-  ["num_zeventig", "zeventig", "seventy", "soixante-dix", "сімдесят", "سبعون", "🔢", "Oma is zeventig jaar.", "Бабусі сімдесят років."],
-  ["num_tachtig", "tachtig", "eighty", "quatre-vingts", "вісімдесят", "ثمانون", "🔢", "Opa is tachtig jaar.", "Дідусеві вісімдесят років."],
-  ["num_negentig", "negentig", "ninety", "quatre-vingt-dix", "дев'яносто", "تسعون", "🔢", "De les duurt negentig minuten.", "Урок триває дев'яносто хвилин."],
   ["num_18", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Het kost honderd euro.", "Це коштує сто євро."]
  ]),
  time:R([
@@ -453,22 +564,32 @@ Object.assign(DATA,{
   ["clk_1", "het is twaalf uur", "it is twelve o'clock", "il est midi / minuit", "зараз дванадцята година", "الساعة الثانية عشرة", "🕛", "Om twaalf uur lunchen wij.", "О дванадцятій ми обідаємо."],
   ["clk_2", "het is een uur", "it is one o'clock", "il est une heure", "зараз перша година", "الساعة الواحدة", "🕐", "De les begint om een uur.", "Урок починається о першій."],
   ["clk_3", "het is half twee", "it is half past one (1:30)", "il est une heure et demie", "зараз пів на другу (1:30)", "الواحدة والنصف", "🕜", "We vertrekken om half twee.", "Ми вирушаємо о пів на другу."],
-  ["clk_4", "het is kwart over twee", "it is quarter past two (2:15)", "il est deux heures et quart", "зараз на чверть на третю (2:15)", "الرابعة والربع / وربع", "🕒", "Het is kwart over twee.", "Зараз на чверть на третю."],
-  ["clk_5", "het is kwart voor drie", "it is quarter to three (2:45)", "il est trois heures moins le quart", "зараз за чверть третя (2:45)", "إلا ربع", "🕒", "Kom om kwart voor drie.", "Приходь за чверть третя."]
+  ["clk_4", "het is kwart over twee", "it is quarter past two (2:15)", "il est deux heures et quart", "зараз чверть на третю (2:15)", "الثانية والربع", "🕒", "Het is kwart over twee.", "Зараз чверть на третю."],
+  ["clk_5", "het is kwart voor drie", "it is quarter to three (2:45)", "il est trois heures moins le quart", "зараз за чверть третя (2:45)", "إلا ربع الثالثة", "🕒", "Kom om kwart voor drie.", "Приходь за чверть третя."],
+  ["clk_6", "het is drie uur", "it is three o'clock", "il est trois heures", "зараз третя година", "الساعة الثالثة", "🕒", "Om drie uur is er pauze.", "О третій є перерва."],
+  ["clk_7", "het is half vier", "it is half past three (3:30)", "il est trois heures et demie", "зараз пів на четверту (3:30)", "الثالثة والنصف", "🕞", "De winkel sluit om half vier.", "Магазин зачиняється о пів на четверту."],
+  ["clk_8", "het is vijf uur", "it is five o'clock", "il est cinq heures", "зараз п'ята година", "الساعة الخامسة", "🕔", "Ik ga om vijf uur naar huis.", "Я йду додому о п'ятій."],
+  ["clk_9", "het is half zes", "it is half past five (5:30)", "il est cinq heures et demie", "зараз пів на шосту (5:30)", "الخامسة والنصف", "🕠", "Het eten is om half zes.", "Вечеря о пів на шосту."],
+  ["clk_10", "het is zeven uur", "it is seven o'clock", "il est sept heures", "зараз сьома година", "الساعة السابعة", "🕖", "Ik sta om zeven uur op.", "Я встаю о сьомій."],
+  ["clk_11", "het is half acht", "it is half past seven (7:30)", "il est sept heures et demie", "зараз пів на восьму (7:30)", "السابعة والنصف", "🕢", "De bus komt om half acht.", "Автобус приїжджає о пів на восьму."],
+  ["clk_12", "het is negen uur", "it is nine o'clock", "il est neuf heures", "зараз дев'ята година", "الساعة التاسعة", "🕘", "De les begint om negen uur.", "Урок починається о дев'ятій."],
+  ["clk_13", "het is tien uur", "it is ten o'clock", "il est dix heures", "зараз десята година", "الساعة العاشرة", "🕙", "Om tien uur ga ik slapen.", "О десятій я лягаю спати."],
+  ["clk_14", "het is kwart over acht", "it is quarter past eight (8:15)", "il est huit heures et quart", "зараз чверть на дев'яту (8:15)", "الثامنة والربع", "🕣", "Ik vertrek om kwart over acht.", "Я вирушаю о чверть на дев'яту."],
+  ["clk_15", "het is kwart voor tien", "it is quarter to ten (9:45)", "il est dix heures moins le quart", "зараз за чверть десята (9:45)", "إلا ربع العاشرة", "🕤", "De winkel opent om kwart voor tien.", "Магазин відкривається за чверть десята."]
  ]),
  months:R([
-  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️", "In januari is het koud.", "У січні холодно."],
-  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️", "In februari regent het veel.", "У лютому часто йде дощ."],
-  ["mon_3", "maart", "March", "mars", "березень", "مارس", "🌸", "In maart begint de lente.", "У березні починається весна."],
-  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸", "In april bloeien de bloemen.", "У квітні цвітуть квіти."],
-  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸", "In mei is het mooi weer.", "У травні гарна погода."],
-  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️", "In juni gaan we op vakantie.", "У червні ми їдемо у відпустку."],
-  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️", "In juli is het warm.", "У липні тепло."],
-  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️", "In augustus zwemmen we.", "У серпні ми плаваємо."],
-  ["mon_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂", "In september begint de school.", "У вересні починається школа."],
-  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂", "In oktober vallen de bladeren.", "У жовтні опадає листя."],
-  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂", "In november is het grijs.", "У листопаді похмуро."],
-  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️", "In december vieren we Kerstmis.", "У грудні ми святкуємо Різдво."],
+  ["mon_1", "januari", "January", "janvier", "січень", "يناير", "❄️"],
+  ["mon_2", "februari", "February", "février", "лютий", "فبراير", "❄️"],
+  ["mon_3", "maart", "March", "mars", "березень", "مارس", "🌸"],
+  ["mon_4", "april", "April", "avril", "квітень", "أبريل", "🌸"],
+  ["mon_5", "mei", "May", "mai", "травень", "مايو", "🌸"],
+  ["mon_6", "juni", "June", "juin", "червень", "يونيو", "☀️"],
+  ["mon_7", "juli", "July", "juillet", "липень", "يوليو", "☀️"],
+  ["mon_8", "augustus", "August", "août", "серпень", "أغسطس", "☀️"],
+  ["mon_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂"],
+  ["mon_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍂"],
+  ["mon_11", "november", "November", "novembre", "листопад", "نوفمبر", "🍂"],
+  ["mon_12", "december", "December", "décembre", "грудень", "ديسمبر", "❄️"]
  ]),
  colors:R([
   ["col_1", "rood", "red", "rouge", "червоний", "أحمر", dot("#E5484D"), "De bus is rood.", "Автобус червоний."],
@@ -570,7 +691,7 @@ Object.assign(DATA,{
  ]),
  city:R([
   ["cit_1", "de winkel", "shop", "le magasin", "магазин", "المتجر", "🏪", "De winkel is open.", "Магазин відчинений."],
-  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرماركت", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
+  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرмаркет", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
   ["cit_3", "de bakkerij", "bakery", "la boulangerie", "пекарня", "المخبز", "🥖", "Het brood komt van de bakkerij.", "Хліб з пекарні."],
   ["cit_4", "het restaurant", "restaurant", "le restaurant", "ресторан", "المطعم", "🍽️", "Wij eten in een restaurant.", "Ми їмо в ресторані."],
   ["cit_5", "het ziekenhuis", "hospital", "l'hôpital", "лікарня", "المستشفى", "🏥", "Het ziekenhuis is dichtbij.", "Лікарня поруч."],
@@ -593,6 +714,30 @@ Object.assign(DATA,{
   ["job_8", "de student", "student", "l'étudiant", "студент", "الطالب", "🎓", "De student leest een boek.", "Студент читає книгу."],
   ["job_9", "de boer", "farmer", "l'agriculteur", "фермер", "المزارع", "🧑‍🌾", "De boer werkt buiten.", "Фермер працює надворі."]
  ])
+,
+werk:R([
+  ["wk_1", "het kantoor", "office", "le bureau", "офіс", "المكتب", "🏢", "Ik werk in een kantoor.", "Я працюю в офісі."],
+  ["wk_2", "de collega", "colleague", "le collègue", "колега", "الزميل", "👥", "Mijn collega is aardig.", "Мій колега добрий."],
+  ["wk_3", "de baas / chef", "boss", "le patron", "бос / начальник", "المدير", "👔", "Mijn baas is streng.", "Мій бос суворий."],
+  ["wk_4", "de vergadering", "meeting", "la réunion", "нарада / зустріч", "الاجتماع", "🗓️", "We hebben een vergadering om 10 uur.", "У нас нарада о 10."],
+  ["wk_5", "de computer", "computer", "l'ordinateur", "комп'ютер", "الحاسوب", "💻", "Ik werk op de computer.", "Я працюю за комп'ютером."],
+  ["wk_6", "de email", "email", "l'e-mail", "електронна пошта", "البريد الإلكتروني", "📧", "Ik stuur een email.", "Я надсилаю email."],
+  ["wk_7", "het salaris / loon", "salary", "le salaire", "зарплата", "الراتب", "💰", "Ik krijg mijn salaris op het einde van de maand.", "Я отримую зарплату в кінці місяця."],
+  ["wk_8", "de bank", "bank", "la banque", "банк", "البنك", "🏦", "Ik ga naar de bank.", "Я йду в банк."],
+  ["wk_9", "de rekening", "account / bill", "le compte / la facture", "рахунок", "الحساب", "💳", "Wat is het nummer van je rekening?", "Який номер твого рахунку?"],
+  ["wk_10", "het geld", "money", "l'argent", "гроші", "المال", "💵", "Ik heb geen geld bij me.", "У мене немає з собою грошей."],
+  ["wk_11", "opnemen", "to withdraw", "retirer", "знімати (гроші)", "سحب", "🏧", "Ik wil geld opnemen.", "Я хочу зняти гроші."],
+  ["wk_12", "storten", "to deposit", "déposer", "вносити (на рахунок)", "إيداع", "📥", "Ik stort geld op mijn rekening.", "Я вношу гроші на рахунок."],
+  ["wk_13", "de pinpas / bankkaart", "debit card", "la carte bancaire", "банківська картка", "بطاقة البنك", "💳", "Betaal je met de pinpas?", "Ти платиш карткою?"],
+  ["wk_14", "de automaat", "ATM", "le distributeur", "банкомат", "الصراف الآلي", "🏧", "Waar is de dichtstbijzijnde automaat?", "Де найближчий банкомат?"],
+  ["wk_15", "het contract", "contract", "le contrat", "контракт / договір", "العقد", "📄", "Ik teken het contract morgen.", "Я підпишу контракт завтра."],
+  ["wk_16", "de sollicitatie", "job application", "la candidature", "заява на роботу", "طلب التوظيف", "📝", "Ik doe een sollicitatie.", "Я подаю заяву на роботу."],
+  ["wk_17", "het gesprek", "interview / conversation", "l'entretien", "співбесіда / розмова", "المقابلة", "🗣️", "Ik heb een gesprek bij een bedrijf.", "У мене співбесіда в компанії."],
+  ["wk_18", "de pauzetijd", "break time", "le temps de pause", "час перерви", "وقت الاستراحة", "☕", "In de pauzetijd drink ik koffie.", "У перерві я п'ю каву."],
+  ["wk_19", "overwerken", "to work overtime", "faire des heures supplémentaires", "працювати понаднормово", "العمل الإضافي", "⏰", "Ik moet vandaag overwerken.", "Сьогодні мені треба працювати понаднормово."],
+  ["wk_20", "de vakantie", "holiday / vacation", "les vacances", "відпустка", "الإجازة", "🏖️", "In juli heb ik vakantie.", "У липні в мене відпустка."]
+ ])
+
 });
 
 DATA.verbs.items.push(...R([
@@ -623,6 +768,33 @@ DATA.verbs.items.push(...R([
   ["vx_25", "kunnen", "to be able to", "pouvoir", "могти / вміти", "يستطيع", "💪", "Ik kan zwemmen.", "Я вмію плавати."],
   ["vx_26", "moeten", "to have to", "devoir", "мусити / треба", "يجب عليه", "⚠️", "Ik moet naar de dokter.", "Мені треба до лікаря."],
   ["vx_27", "heten", "to be called", "s'appeler", "називатися", "اسمه / يُدعى", "🏷️", "Ik heet Anna.", "Мене звати Анна."]
+
+  ["vx_28", "beginnen", "to begin / start", "commencer", "починати", "يبدأ", "▶️", "De les begint om negen uur.", "Урок починається о дев'ятій."],
+  ["vx_29", "eindigen", "to end / finish", "finir", "закінчувати", "ينتهي", "⏹️", "De film eindigt om tien uur.", "Фільм закінчується о десятій."],
+  ["vx_30", "openen", "to open", "ouvrir", "відчиняти", "يفتح", "🔓", "Ik open de deur.", "Я відчиняю двері."],
+  ["vx_31", "sluiten", "to close", "fermer", "зачиняти", "يغلق", "🔒", "Sluit het raam, alstublieft.", "Зачини вікно, будь ласка."],
+  ["vx_32", "staan", "to stand", "être debout / se trouver", "стояти", "يقف", "🧍", "Ik sta bij de halte.", "Я стою на зупинці."],
+  ["vx_33", "zitten", "to sit", "être assis", "сидіти", "يجلس", "🪑", "Mag ik hier zitten?", "Можна тут сісти?"],
+  ["vx_34", "liggen", "to lie / be located", "être allongé / se trouver", "лежати / знаходитися", "يرقد / يقع", "🛏️", "Het boek ligt op tafel.", "Книга лежить на столі."],
+  ["vx_35", "vinden", "to find", "trouver", "знаходити", "يجد", "🔍", "Ik kan mijn sleutel niet vinden.", "Я не можу знайти свій ключ."],
+  ["vx_36", "zoeken", "to search / look for", "chercher", "шукати", "يبحث", "🔎", "Ik zoek de bushalte.", "Я шукаю автобусну зупинку."],
+  ["vx_37", "brengen", "to bring", "apporter", "приносити", "يحضر", "📦", "Breng je de documenten mee?", "Ти принесеш документи?"],
+  ["vx_38", "halen", "to fetch / get", "aller chercher", "забирати / діставати", "يجلب", "🏃", "Ik ga brood halen.", "Я йду за хлібом."],
+  ["vx_39", "sturen", "to send", "envoyer", "надсилати", "يرسل", "📧", "Ik stuur je een bericht.", "Я надішлю тобі повідомлення."],
+  ["vx_40", "ontvangen", "to receive", "recevoir", "отримувати", "يستلم", "📥", "Heb je de email ontvangen?", "Ти отримав лист?"],
+  ["vx_41", "reserveren", "to reserve / book", "réserver", "бронювати", "يحجز", "📅", "Ik wil een tafel reserveren.", "Я хочу забронювати столик."],
+  ["vx_42", "bestellen", "to order", "commander", "замовляти", "يطلب", "🛒", "Ik bestel een koffie.", "Я замовляю каву."],
+  ["vx_43", "proberen", "to try", "essayer", "пробувати", "يحاول", "🤞", "Ik probeer Nederlands te spreken.", "Я намагаюся говорити нідерландською."],
+  ["vx_44", "gebruiken", "to use", "utiliser", "використовувати", "يستخدم", "🛠️", "Mag ik je telefoon gebruiken?", "Можна скористатися твоїм телефоном?"],
+  ["vx_45", "nodig hebben", "to need", "avoir besoin de", "потребувати", "يحتاج", "❗", "Ik heb hulp nodig.", "Мені потрібна допомога."],
+  ["vx_46", "vergeten", "to forget", "oublier", "забувати", "ينسى", "🤦", "Ik ben mijn paspoort vergeten.", "Я забув свій паспорт."],
+  ["vx_47", "onthouden", "to remember", "se souvenir", "пам'ятати", "يتذكر", "🧠", "Ik kan het niet onthouden.", "Я не можу це запам'ятати."],
+  ["vx_48", "uitleggen", "to explain", "expliquer", "пояснювати", "يشرح", "💬", "Kunt u dat uitleggen?", "Чи можете це пояснити?"],
+  ["vx_49", "vertellen", "to tell", "raconter / dire", "розповідати", "يروي", "🗣️", "Vertel me over je werk.", "Розкажи мені про свою роботу."],
+  ["vx_50", "ontmoeten", "to meet", "rencontrer", "зустрічати", "يلتقي", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"],
+  ["vx_51", "afspreken", "to make an appointment", "prendre rendez-vous", "домовлятися", "يتفق على موعد", "📅", "Kunnen we afspreken morgen?", "Можемо домовитися на завтра?"],
+  ["vx_52", "werken", "to work", "travailler", "працювати", "يعمل", "💼", "Ik werk in een kantoor.", "Я працюю в офісі."]
+
 ]).items);
 
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
@@ -652,6 +824,7 @@ function saveStore(){
   localStorage.setItem("poly_ui",uiLang);
   localStorage.setItem("poly_cat",currentCat);
   localStorage.setItem("poly_tab",tab);
+  localStorage.setItem("poly_buildLevel",String(buildLevel));
  }catch(e){}
 }
 const getUI=()=>UI[uiLang]||UI.uk;
@@ -698,7 +871,6 @@ function updateHeader(){
  $("uiLangPicker").value=uiLang;
  document.documentElement.lang=uiLang;
  if(uiLang==="ar")document.documentElement.setAttribute("dir","rtl");else document.documentElement.removeAttribute("dir");
- const _tc=document.querySelector('meta[name="theme-color"]');if(_tc)_tc.setAttribute("content",document.documentElement.dataset.theme==="dark"?"#0F111A":"#F2F4F8");
  const dark=document.documentElement.dataset.theme==="dark";
  $("themeToggle").textContent=dark?"☀️":"🌙";
  const themeLabel=dark?(u.light||"Light mode"):(u.dark||"Dark mode");
@@ -795,7 +967,7 @@ function updateProgress(){
 
 function newRound(){
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
- if(mode==="build"){SENT.forEach(x=>{x.again=false});const maxLevel=buildLevel===1?2:3;const pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);const count=buildLevel===1?8:buildLevel===2?10:12;deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);roundBase=roundTotal=deck.length;nextQuestion();return}
+ if(mode==="build"){SENT.forEach(x=>{x.again=false});const maxLevel=buildLevel;const pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);const count=buildLevel===1?8:buildLevel===2?10:12;deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);roundBase=roundTotal=deck.length;nextQuestion();return}
  let list=itemsFor();
  if(mode==="review"){const ids=new Set(list.map(x=>x.id));list=dueItems().filter(x=>ids.has(x.id))}
  if(!list.length){renderEmpty();return}
@@ -817,22 +989,30 @@ function makeOptions(cur){
  return shuffle(out);
 }
 
-const NL_NUM={een:1,twee:2,drie:3,vier:4,vijf:5,zes:6,zeven:7,acht:8,negen:9,tien:10,elf:11,twaalf:12};
-function clockAngles(nlText){
- const t=String(nlText).toLowerCase(),n=w=>NL_NUM[w]||0;
- let m=t.match(/kwart over (\w+)/);if(m){const h=n(m[1]);return h?[h*30+7.5,90]:null}
- m=t.match(/kwart voor (\w+)/);if(m){const h=n(m[1]);return h?[(h-1)*30+22.5,270]:null}
- m=t.match(/half (\w+)/);if(m){const h=n(m[1]);return h?[(h-1)*30+15,180]:null}
- m=t.match(/(\w+) uur/);if(m){const h=n(m[1]);return h?[(h%12)*30,0]:null}
- return null;
-}
 function renderClockFace(nlText){
- const a=clockAngles(nlText);
- if(!a)return el("div","");
  const wrap=el("div","clock-visual");
  wrap.appendChild(el("div","clock-center"));
- const handH=el("div","clock-hand-h");handH.style.transform=`rotate(${a[0]}deg)`;
- const handM=el("div","clock-hand-m");handM.style.transform=`rotate(${a[1]}deg)`;
+ let hAngle=0, mAngle=0;
+ const t = String(nlText).toLowerCase();
+ if(t.includes("twaalf uur")){hAngle=0;mAngle=0;}
+ else if(t.includes("een uur")){hAngle=30;mAngle=0;}
+ else if(t.includes("drie uur")){hAngle=90;mAngle=0;}
+ else if(t.includes("vijf uur")){hAngle=150;mAngle=0;}
+ else if(t.includes("zeven uur")){hAngle=210;mAngle=0;}
+ else if(t.includes("negen uur")){hAngle=270;mAngle=0;}
+ else if(t.includes("tien uur")){hAngle=300;mAngle=0;}
+ else if(t.includes("half twee")){hAngle=45;mAngle=180;}
+ else if(t.includes("half vier")){hAngle=105;mAngle=180;}
+ else if(t.includes("half zes")){hAngle=165;mAngle=180;}
+ else if(t.includes("half acht")){hAngle=225;mAngle=180;}
+ else if(t.includes("kwart over twee")){hAngle=67.5;mAngle=90;}
+ else if(t.includes("kwart over acht")){hAngle=247.5;mAngle=90;}
+ else if(t.includes("kwart voor drie")){hAngle=82.5;mAngle=270;}
+ else if(t.includes("kwart voor tien")){hAngle=292.5;mAngle=270;}
+ else{hAngle=0;mAngle=0;}
+
+ const handH=el("div","clock-hand-h");handH.style.transform=`rotate(${hAngle}deg)`;
+ const handM=el("div","clock-hand-m");handM.style.transform=`rotate(${mAngle}deg)`;
  wrap.append(handH,handM);
  return wrap;
 }
@@ -959,6 +1139,17 @@ function endRound(){
 
 const BUILD_BANK={
  comm:[
+  [1, "lees|jij|graag", "VSR", "Ти любиш читати?", "Do you like reading?", "Aimes-tu lire ?", "هل تحب القراءة؟"],
+  [1, "zwem|jij|graag", "VSR", "Ти любиш плавати?", "Do you like swimming?", "Aimes-tu nager ?", "هل تحب السباحة؟"],
+  [1, "fiets|jij|graag", "VSR", "Ти любиш їздити на велосипеді?", "Do you like cycling?", "Aimes-tu faire du vélo ?", "هل تحب ركوب الدراجة؟"],
+  [2, "kook|jij|elke|dag", "VSRR", "Ти готуєш щодня?", "Do you cook every day?", "Cuisines-tu tous les jours ?", "هل تطبخ كل يوم؟"],
+  [2, "wat|doe|jij|graag", "QVSR", "Що ти любиш робити?", "What do you like to do?", "Qu'est-ce que tu aimes faire ?", "ماذا تحب أن تفعل؟"],
+  [2, "doe|jij|graag|boodschappen", "VSRR", "Ти любиш ходити по продукти?", "Do you like doing the shopping?", "Aimes-tu faire les courses ?", "هل تحب شراء البقالة؟"],
+  [2, "wat|doe|jij|elke|dag", "QVSRR", "Що ти робиш щодня?", "What do you do every day?", "Que fais-tu chaque jour ?", "ماذا تفعل كل يوم؟"],
+  [3, "ga|jij|graag|op|restaurant", "VSRRR", "Ти любиш ходити в ресторан?", "Do you like going to a restaurant?", "Aimes-tu aller au restaurant ?", "هل تحب الذهاب إلى مطعم؟"],
+  [3, "werk|jij|graag|in|de|tuin", "VSRRRR", "Ти любиш працювати в саду?", "Do you like working in the garden?", "Aimes-tu jardiner ?", "هل تحب العمل في الحديقة؟"],
+  [3, "luister|jij|elke|dag|naar|muziek", "VSRRRR", "Ти слухаєш музику щодня?", "Do you listen to music every day?", "Écoutes-tu de la musique tous les jours ?", "هل تستمع إلى الموسيقى كل يوم؟"],
+  [3, "wat|doe|jij|in|het|weekend", "QVSRRR", "Що ти робиш у вихідні?", "What do you do at the weekend?", "Que fais-tu le week-end ?", "ماذا تفعل في عطلة نهاية الأسبوع؟"],
   [1,"hoe|heet|je","QVS","Як тебе звати?","What is your name?","Comment tu t'appelles ?","ما اسمك؟"],
   [1,"waar|woon|je","QVS","Де ти живеш?","Where do you live?","Où habites-tu ?","أين تسكن؟"],
   [1,"hoe|gaat|het","QVS","Як справи?","How are you?","Comment ça va ?","كيف الحال؟"],
@@ -973,7 +1164,7 @@ const BUILD_BANK={
   [3,"kun|je|dat|herhalen","QSRV","Можеш повторити це?","Can you repeat that?","Peux-tu répéter cela ?","هل يمكنك إعادة ذلك؟"]
  ],
  grammar:[
-  [1,"hoe|heet|het","QVS","Як це називається?","What is this called?","Comment ça s'appelle ?","ماذا يسمى هذا؟"],
+  [1,"waar|woon|je","QVS","Де ти живеш?","Where do you live?","Où habites-tu ?","أين تسكن؟"],
   [1,"heb|je|een vraag","QVS","У тебе є запитання?","Do you have a question?","As-tu une question ?","هل لديك سؤال؟"],
   [1,"spreek|je|Nederlands","QVS","Ти розмовляєш нідерландською?","Do you speak Dutch?","Parles-tu néerlandais ?","هل تتحدث الهولندية؟"],
   [1,"is|dit|jouw boek","QVS","Це твоя книжка?","Is this your book?","Est-ce ton livre ?","هل هذا كتابك؟"],
@@ -988,6 +1179,11 @@ const BUILD_BANK={
  ],
  nums:[
   [1,"hoe laat|is|het","QVS","Котра година?","What time is it?","Quelle heure est-il ?","كم الساعة؟"],
+  [1,"hoe laat|begint|de les","QVS","О котрій починається урок?","What time does the lesson start?","À quelle heure commence le cours ?","في أي ساعة يبدأ الدرس؟"],
+  [1,"is|het|half twee","QVS","Зараз пів на другу?","Is it half past one?","Est-il une heure et demie ?","هل الساعة الواحدة والنصف؟"],
+  [2,"hoe laat|vertrekt|de bus","QVS","О котрій відправляється автобус?","What time does the bus leave?","À quelle heure part le bus ?","في أي ساعة تنطلق الحافلة؟"],
+  [2,"wanneer|is|de pauze","QVS","Коли перерва?","When is the break?","Quand est la pause ?","متى الاستراحة؟"],
+  [3,"hoe laat|moet|ik|opstaan","QVSR","О котрій мені треба вставати?","What time do I need to get up?","À quelle heure dois-je me lever ?","في أي ساعة يجب أن أستيقظ؟"],
   [1,"welke dag|is|het vandaag","QVS","Який сьогодні день?","What day is it today?","Quel jour sommes-nous aujourd'hui ?","ما اليوم؟"],
   [1,"hoeveel|is|twee plus drie","QVS","Скільки буде два плюс три?","What is two plus three?","Combien font deux plus trois ?","كم يساوي اثنان زائد ثلاثة؟"],
   [1,"wanneer|is|je verjaardag","QVS","Коли твій день народження?","When is your birthday?","Quand est ton anniversaire ?","متى عيد ميلادك؟"],
@@ -1002,6 +1198,11 @@ const BUILD_BANK={
  ],
  people:[
   [1,"hoe heet|je moeder","QS","Як звати твою маму?","What is your mother's name?","Comment s'appelle ta mère ?","ما اسم أمك؟"],
+  [1,"heb|je|koorts","QVS","У тебе температура?","Do you have a fever?","As-tu de la fièvre ?","هل لديك حمى؟"],
+  [1,"waar|doet|het pijn","QVS","Де болить?","Where does it hurt?","Où as-tu mal ?","أين يؤلمك؟"],
+  [2,"wanneer|is|de afspraak|bij de dokter","QVS","Коли прийом у лікаря?","When is the doctor's appointment?","Quand est le rendez-vous chez le médecin ?","متى موعد الطبيب؟"],
+  [2,"heb|je|een recept|nodig","QVS","Тобі потрібен рецепт?","Do you need a prescription?","As-tu besoin d'une ordonnance ?","هل تحتاج إلى وصفة طبية؟"],
+  [3,"hoe lang|heb|je|al last van de hoest","QVSR","Як довго в тебе вже кашель?","How long have you had the cough?","Depuis combien de temps as-tu la toux ?","منذ متى تعاني من السعال؟"],
   [1,"hoe oud|is|je broer","QVS","Скільки років твоєму братові?","How old is your brother?","Quel âge a ton frère ?","كم عمر أخيك؟"],
   [1,"waar|werkt|de dokter","QVS","Де працює лікар?","Where does the doctor work?","Où travaille le médecin ?","أين يعمل الطبيب؟"],
   [1,"heb|je|pijn","QVS","У тебе щось болить?","Are you in pain?","As-tu mal ?","هل تشعر بالألم؟"],
@@ -1030,6 +1231,16 @@ const BUILD_BANK={
  ],
  city:[
   [1,"waar|is|de bushalte","QVS","Де автобусна зупинка?","Where is the bus stop?","Où est l'arrêt de bus ?","أين موقف الحافلة؟"],
+  [1,"neem|je|de bus|of de tram","QSVS","Ти їдеш автобусом чи трамваєм?","Do you take the bus or the tram?","Prends-tu le bus ou le tram ?","هل تأخذ الحافلة أم الترام؟"],
+  [1,"waar|is|het station","QVS","Де вокзал?","Where is the station?","Où est la gare ?","أين المحطة؟"],
+  [1,"waar|is|de bank","QVS","Де банк?","Where is the bank?","Où est la banque ?","أين البنك؟"],
+  [2,"hoe|kom|ik|bij het perron","QVSR","Як мені дістатися до платформи?","How do I get to the platform?","Comment aller au quai ?","كيف أصل إلى الرصيف؟"],
+  [2,"is|er|een vertraging","QVS","Є затримка?","Is there a delay?","Y a-t-il un retard ?","هل هناك تأخير؟"],
+  [2,"werk|je|in een kantoor","QVS","Ти працюєш в офісі?","Do you work in an office?","Travailles-tu dans un bureau ?","هل تعمل في مكتب؟"],
+  [2,"mag|ik|geld opnemen","QVS","Можна зняти гроші?","Can I withdraw money?","Puis-je retirer de l'argent ?","هل يمكنني سحب المال؟"],
+  [3,"met welke tram|kan|ik|naar het centrum","QVSR","Яким трамваєм я можу до центру?","Which tram can I take to the centre?","Quel tram puis-je prendre pour le centre ?","أي ترام يمكنني أن آخذ إلى المركز؟"],
+  [3,"wanneer|is|de vergadering|morgen","QVS","Коли нарада завтра?","When is the meeting tomorrow?","Quand est la réunion demain ?","متى الاجتماع غداً؟"],
+  [3,"hoe|kan|ik|een rekening openen","QVSR","Як я можу відкрити рахунок?","How can I open an account?","Comment puis-je ouvrir un compte ?","كيف يمكنني فتح حساب؟"],
   [1,"hoe|kom|ik|bij het station","QVSR","Як мені дістатися до вокзалу?","How do I get to the station?","Comment aller à la gare ?","كيف أصل إلى المحطة؟"],
   [1,"waar|is|het gemeentehuis","QVS","Де муніципалітет?","Where is the town hall?","Où est la mairie ?","أين مبنى البلدية؟"],
   [1,"hoe laat|begint|de Nederlandse les","QVS","О котрій починається урок нідерландської?","What time does the Dutch lesson start?","À quelle heure commence le cours de néerlandais ?","في أي ساعة يبدأ درس الهولندية؟"],
@@ -1044,12 +1255,22 @@ const BUILD_BANK={
  ]
 };
 const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>rows.map(r=>({cat,level:r[0],q:r[1].split("|"),roles:r[2].replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
-let bAudio=false,bs=null,buildLevel=1;
+let bAudio=false,bs=null,buildLevel=Number(validStored("poly_buildLevel",["1","2","3"],"1"))||1;
+if(![1,2,3].includes(buildLevel))buildLevel=1;
 const sentence=s=>{const t=s.q.join(" ");return t[0].toUpperCase()+t.slice(1)+"?"};
 
 function nextBuild(){
  locked=false;const s=deck.pop();q++;sessionIds.push("b"+q);
- const decoys=buildLevel===1?[]:buildLevel===2?["misschien"]:["misschien","altijd"];const extras=(s.x?[s.x]:[]).concat(decoys).filter((w,i,a)=>!s.q.includes(w)&&a.indexOf(w)===i);const tiles=shuffle(s.q.map(w=>({w})).concat(extras.map(w=>({w}))));
+ // Richer decoys for higher levels: fixed + random words from other sentences
+ const fixedDecoys=buildLevel===1?[]:buildLevel===2?["misschien","graag"]:["misschien","altijd","graag","samen","vandaag"];
+ let extraPool=[];
+ if(buildLevel>=2){
+  SENT.filter(x=>x.cat===currentCat&&x!==s).forEach(x=>x.q.forEach(w=>{if(!s.q.includes(w)&&!fixedDecoys.includes(w))extraPool.push(w)}));
+  extraPool=shuffle([...new Set(extraPool)]).slice(0,buildLevel===2?1:3);
+ }
+ const decoys=fixedDecoys.concat(extraPool);
+ const extras=(s.x?[s.x]:[]).concat(decoys).filter((w,i,a)=>!s.q.includes(w)&&a.indexOf(w)===i);
+ const tiles=shuffle(s.q.map(w=>({w})).concat(extras.map(w=>({w}))));
  bs={s,tiles,slots:s.q.map(()=>null),stars:3,lock:false,done:false,bad:[]};
  renderBuild();if(bAudio)say(sentence(s));
 }
