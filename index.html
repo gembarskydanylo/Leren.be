@@ -11,51 +11,45 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>Leren.be — Nederlands A1.1</title>
 <style>
-/* CSS ЗМІННІ ДЛЯ GLASSMORPHISM ТЕМИ */
+/* CSS ЗМІННІ ТА СТИЛІ GLASSMORPHISM */
 :root {
   color-scheme: dark;
+  --bg:#0f0c29;
   --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #202060 50%, #24243e 100%);
   --fg: #ffffff;
   --mut: rgba(255, 255, 255, 0.7);
-  --glass-card: rgba(255, 255, 255, 0.08);
-  --glass-card-hover: rgba(255, 255, 255, 0.14);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --card: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.18);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --blur: blur(16px);
-  
   --acc: #00d2ff;
   --acc-hover: #3a7bd5;
-  --pop: #00d2ff;
   --ok: #00e676;
   --ok-bg: rgba(0, 230, 118, 0.2);
   --bad: #ff5252;
   --bad-bg: rgba(255, 82, 82, 0.2);
-  --soft: rgba(255, 255, 255, 0.05);
+  --soft: rgba(255, 255, 255, 0.08);
   --amb: #ffd700;
-  --hdr: rgba(255, 255, 255, 0.1);
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
+  --bg: #e0c3fc;
   --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
   --fg: #1a1c2e;
   --mut: rgba(26, 28, 46, 0.75);
-  --glass-card: rgba(255, 255, 255, 0.45);
-  --glass-card-hover: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --card: rgba(255, 255, 255, 0.5);
+  --line: rgba(255, 255, 255, 0.65);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   --blur: blur(16px);
-  
   --acc: #4f46e5;
   --acc-hover: #4338ca;
-  --pop: #4f46e5;
   --ok: #10b981;
   --ok-bg: rgba(16, 185, 129, 0.2);
   --bad: #ef4444;
   --bad-bg: rgba(239, 68, 68, 0.2);
-  --soft: rgba(255, 255, 255, 0.25);
+  --soft: rgba(255, 255, 255, 0.3);
   --amb: #d97706;
-  --hdr: rgba(255, 255, 255, 0.35);
 }
 
 * { box-sizing: border-box; }
@@ -67,7 +61,7 @@ body {
   background: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--fg);
-  font: 15px/1.4 system-ui, -apple-system, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
 }
@@ -86,310 +80,175 @@ main {
   gap: 12px;
 }
 
-/* СКЛЯНІ БЛОКИ / КАРТКИ */
-header, .stats-bar, .nav-section, .card, .modes-wrapper, .search-panel {
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 20px;
-}
-
 /* Header */
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  padding: 10px 14px; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow);
 }
-
-.brand h1 { font-size: 18px; line-height: 1.1; margin: 0; letter-spacing: -.03em; font-weight: 800; color: var(--fg); }
+.brand h1 { font-size: 18px; line-height: 1.1; margin: 0; letter-spacing: -.03em; font-weight: 800; }
 .brand p { margin: 2px 0 0; color: var(--mut); font-size: 11px; }
-
 .top-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .select-group { display: flex; align-items: center; gap: 3px; color: var(--mut); font-size: 11px; }
 
-.lang-select, .theme-btn, .score-pill {
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  border-radius: 12px;
-  min-height: 36px;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 700;
+.lang-select, .theme-btn {
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); color: var(--fg); border-radius: 12px; min-height: 36px; padding: 3px 10px;
+  font-size: 12px; font-weight: 700;
 }
-
 .theme-btn { cursor: pointer; min-width: 36px; text-align: center; }
-.score-pill { color: var(--amb); font-weight: 800; white-space: nowrap; display: flex; align-items: center; }
+.score-pill {
+  border: 1px solid var(--line); background: var(--soft); color: var(--amb);
+  border-radius: 12px; padding: 6px 10px; font-size: 13px; font-weight: 800; white-space: nowrap;
+}
 
 /* Статистика */
 .stats-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  font-size: 13px;
-  color: var(--mut);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px 16px; font-size: 12px; color: var(--mut); box-shadow: var(--shadow);
 }
 .stats-bar strong { color: var(--fg); font-weight: 700; }
 
 /* Навігація */
-.nav-section { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.nav-section {
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); border-radius: 20px; padding: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
+}
 .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--mut); font-weight: 800; margin-bottom: -4px; padding-left: 2px; }
 
 .nav-cats, .nav-subs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
 .nav-cats::-webkit-scrollbar, .nav-subs::-webkit-scrollbar { display: none; }
 
 .nav-cats button, .nav-subs button {
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  padding: 8px 14px;
-  color: var(--fg);
-  opacity: 0.8;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 700;
-  transition: all .2s ease;
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; color: var(--fg); opacity: 0.85;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0; font-size: 13px; font-weight: 700; transition: all .15s;
 }
-
-.nav-cats button:hover, .nav-subs button:hover { background: var(--glass-card-hover); opacity: 1; }
-
 .nav-cats button[aria-selected="true"], .nav-subs button[aria-selected="true"] {
-  background: var(--acc);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.4);
-  opacity: 1;
-  box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+  background: var(--acc); color: #fff; border-color: rgba(255,255,255,0.4); opacity: 1; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.35);
 }
 
 .sub-wrapper { background: transparent; padding: 0; border: none; }
 
-/* Режими гри */
 .modes-wrapper {
-  display: flex;
-  gap: 6px;
-  padding: 6px;
+  background: rgba(0, 0, 0, 0.15); border-radius: 14px; padding: 4px; display: flex; gap: 6px; border: 1px solid var(--line);
 }
-
 .modes-wrapper button {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-radius: 12px;
-  padding: 8px 6px;
-  color: var(--mut);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-  white-space: nowrap;
-  transition: all .2s ease;
+  flex: 1; background: transparent; border: none; border-radius: 10px; padding: 8px 4px;
+  color: var(--mut); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: all .15s;
 }
-
-.modes-wrapper button.primary {
-  background: var(--acc);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 210, 255, 0.35);
-}
+.modes-wrapper button.primary { background: var(--acc); color: #fff; box-shadow: 0 4px 12px rgba(0, 210, 255, 0.3); }
 
 .meta { display: flex; justify-content: space-between; gap: 8px; color: var(--mut); font-size: 11px; font-weight: 600; padding: 0 2px; }
-
 .bar { height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; backdrop-filter: var(--blur); }
-.bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .25s ease; }
+.bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .25s; }
 
-/* Основна картка */
-.card { padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+/* Картка */
+.card {
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); border-radius: 22px; padding: 18px 14px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; min-width: 0;
+}
 .q { text-align: center; }
 .q small { color: var(--mut); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 800; }
-.icon-box { font-size: 48px; margin: 6px 0; line-height: 1; }
-.q h2 { font-size: clamp(22px, 5vw, 30px); font-weight: 800; margin: 6px 0 2px; letter-spacing: -.03em; word-break: break-word; }
-.q p { margin: 0; color: var(--mut); font-size: 14px; }
+.icon-box { font-size: 46px; margin: 4px 0; line-height: 1; }
+.q h2 { font-size: clamp(20px, 4.5vw, 28px); font-weight: 800; margin: 4px 0 2px; letter-spacing: -.03em; overflow-wrap: anywhere; }
+.q p { margin: 0; color: var(--mut); font-size: 13px; }
 
 .listen {
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  border-radius: 16px;
-  padding: 6px 16px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 8px;
-  min-height: 36px;
-  transition: all .2s ease;
+  background: var(--card); border: 1px solid var(--line); color: var(--fg); border-radius: 14px;
+  padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; min-height: 36px;
 }
-.listen:hover, .btn:hover, .opt:hover:not(:disabled) { border-color: var(--acc); background: var(--glass-card-hover); }
+.listen:hover, .btn:hover, .opt:hover:not(:disabled) { border-color: var(--acc); background: rgba(255, 255, 255, 0.15); }
 
 /* Годинник */
 .clock-visual {
-  width: 110px; height: 110px; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid var(--glass-border);
-  margin: 10px auto 4px; position: relative;
-  display: flex; align-items: center; justify-content: center;
-  backdrop-filter: var(--blur);
+  width: 110px; height: 110px; border-radius: 50%; background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--line); margin: 8px auto 2px; position: relative; display: flex; align-items: center; justify-content: center;
 }
 .clock-center { width: 8px; height: 8px; background: var(--acc); border-radius: 50%; position: absolute; z-index: 3; }
 .clock-hand-h { width: 3px; height: 32px; background: var(--fg); position: absolute; bottom: 55px; left: 53.5px; border-radius: 2px; transform-origin: bottom center; z-index: 2; }
 .clock-hand-m { width: 2px; height: 44px; background: var(--acc); position: absolute; bottom: 55px; left: 54px; border-radius: 2px; transform-origin: bottom center; z-index: 1; }
 
-/* Варіанти відповідей */
+/* Опції відповідей */
 .opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-
 .opt {
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  border-radius: 16px;
-  padding: 12px 10px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  text-align: center;
-  min-height: 52px;
-  word-break: break-word;
-  transition: all .2s ease;
+  background: var(--card); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line); color: var(--fg); border-radius: 16px; padding: 12px 8px; font-size: 14.5px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; min-height: 50px; overflow-wrap: anywhere; transition: transform .1s;
 }
-
-.opt:active:not(:disabled) { transform: scale(.98); }
+.opt:active { transform: scale(.98); }
 
 .opt.correct {
-  background: var(--ok-bg) !important;
-  border-color: var(--ok) !important;
-  color: #fff !important;
-  box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+  background: var(--ok-bg) !important; border-color: var(--ok) !important; color: #fff !important; font-weight: 800;
 }
-
-.opt.incorrect {
-  background: var(--bad-bg) !important;
-  border-color: var(--bad) !important;
-  color: #fff !important;
-}
-
+.opt.incorrect { border-color: var(--bad) !important; color: #fff !important; background: var(--bad-bg) !important; }
 .opt:disabled { cursor: default; }
-.swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--glass-border); flex-shrink: 0; }
+.swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0; }
 
-.feedback { border-radius: 14px; padding: 10px 12px; text-align: center; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); }
+.feedback { border-radius: 12px; padding: 10px 12px; text-align: center; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--line); }
 .feedback:empty { display: none; }
 .feedback strong { display: block; font-size: 14px; }
 .feedback p { margin: 2px 0 0; color: var(--mut); font-size: 12px; }
 .feedback .example { margin-top: 4px; color: var(--fg); font-weight: 600; }
 
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
-
 .btn {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-card);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  color: var(--fg);
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-  min-height: 44px;
-  font-size: 14px;
-  transition: all .2s ease;
+  flex: 1; min-width: 100px; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line);
+  background: var(--card); color: var(--fg); font-weight: 700; cursor: pointer; text-align: center; min-height: 44px; font-size: 14px;
 }
+.btn.primary { background: var(--acc); border-color: rgba(255,255,255,0.4); color: #fff; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.35); }
 
-.btn.primary { background: var(--acc); border-color: rgba(255, 255, 255, 0.4); color: #fff; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.35); }
-.btn.primary:hover { background: var(--acc-hover); }
-
-.end { text-align: center; display: flex; flex-direction: column; gap: 12px; }
+.end { text-align: center; display: flex; flex-direction: column; gap: 10px; }
 .end h2 { font-size: 32px; margin: 0; letter-spacing: -.04em; }
 .end p { color: var(--mut); margin: 0; }
-
-.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.summary-grid div { padding: 10px 6px; border: 1px solid var(--glass-border); border-radius: 12px; background: rgba(0,0,0,0.15); }
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.summary-grid div { padding: 10px 4px; border: 1px solid var(--line); border-radius: 12px; background: rgba(0,0,0,0.15); }
 .summary-grid strong { display: block; font-size: 16px; }
 .summary-grid span { font-size: 10px; color: var(--mut); }
-.empty { color: var(--mut); text-align: center; padding: 12px; font-size: 14px; }
+.empty { color: var(--mut); text-align: center; padding: 12px; font-size: 13px; }
 
-footer { text-align: center; color: var(--mut); font-size: 11px; margin-top: 10px; display: flex; flex-direction: column; gap: 3px; line-height: 1.4; }
+footer { text-align: center; color: var(--mut); font-size: 11px; margin-top: 8px; display: flex; flex-direction: column; gap: 3px; line-height: 1.4; }
 footer strong { color: var(--fg); font-weight: 750; }
-
 .report-bug-btn {
-  margin-top: 6px;
-  background: transparent;
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mut);
-  cursor: pointer;
-  transition: all .15s;
+  margin-top: 6px; background: transparent; border: 1px solid var(--line); border-radius: 20px;
+  padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--mut); cursor: pointer;
 }
-.report-bug-btn:hover { background: var(--glass-card-hover); color: var(--fg); }
+.report-bug-btn:hover { background: var(--soft); color: var(--fg); }
 
-/* Модальне вікно пошуку */
 .search-modal {
-  position: fixed; inset: 0; z-index: 100;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 60px 12px 20px;
+  position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.6); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-start; justify-content: center; padding: 60px 12px 20px;
 }
 .search-modal[hidden] { display: none; }
-.search-panel { border-radius: 24px; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; }
-.search-head { display: flex; gap: 8px; padding: 14px; border-bottom: 1px solid var(--glass-border); align-items: center; }
-.search-head input {
-  flex: 1; border: 1px solid var(--glass-border); border-radius: 14px;
-  padding: 10px 14px; font-size: 15px; background: rgba(0, 0, 0, 0.2);
-  color: var(--fg); outline: none;
-}
-.search-head input:focus { border-color: var(--acc); }
-.search-results { overflow-y: auto; padding: 10px 14px 16px; flex: 1; }
-.search-item { padding: 12px; border-radius: 14px; border: 1px solid var(--glass-border); margin-bottom: 8px; background: rgba(255,255,255,0.03); cursor: pointer; }
-.search-item:hover { background: var(--glass-card-hover); }
+.search-panel { background: var(--card); backdrop-filter: var(--blur); border-radius: 22px; width: 100%; max-width: 480px; max-height: 70vh; display: flex; flex-direction: column; border: 1px solid var(--line); }
+.search-head { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); align-items: center; }
+.search-head input { flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 15px; background: rgba(0,0,0,0.2); color: var(--fg); outline: none; }
+.search-results { overflow-y: auto; padding: 8px 12px 16px; flex: 1; }
+.search-item { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 8px; cursor: pointer; }
+.search-item:hover { background: rgba(255,255,255,0.1); }
 .search-item .nl { font-weight: 800; font-size: 16px; margin-bottom: 2px; }
 .search-item .tr { color: var(--mut); font-size: 13px; }
 .search-item .ex { font-size: 12px; margin-top: 4px; color: var(--fg); opacity: .8; }
 .search-empty { text-align: center; color: var(--mut); padding: 24px 8px; font-size: 14px; }
 
 .q h2.sm { font-size: 18px; letter-spacing: -.02em; }
-.slots, .bank { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; direction: ltr; }
+.slots, .bank { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; direction: ltr; }
 .bank { min-height: 40px; }
 .sw2 { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .sw2.rQ { --rc: var(--acc); } .sw2.rV { --rc: var(--ok); } .sw2.rS { --rc: var(--amb); } .sw2.rR { --rc: var(--mut); }
 .role { font-size: 9px; letter-spacing: .05em; text-transform: uppercase; font-weight: 800; color: var(--rc); }
-
 .slot {
-  min-width: 54px; min-height: 40px; padding: 4px 8px; border-radius: 10px;
-  border: 1px dashed var(--glass-border); border-bottom: 3px solid var(--rc);
-  background: rgba(0,0,0,0.15); color: var(--fg); font: inherit; font-weight: 600;
-  font-size: 13px; cursor: pointer;
+  min-width: 54px; min-height: 38px; padding: 4px 6px; border-radius: 8px; border: 1px dashed var(--line);
+  border-bottom: 3px solid var(--rc); background: rgba(0,0,0,0.2); color: var(--fg); font: inherit; font-weight: 600; font-size: 13px; cursor: pointer;
 }
-.slot.filled { border-style: solid; background: var(--glass-card); }
+.slot.filled { border-style: solid; background: var(--card); }
 .slot.bad { border-color: var(--bad); border-bottom-color: var(--bad); color: var(--bad); background: var(--bad-bg); animation: shake .3s; }
 .slot.good { border-color: var(--ok); border-bottom-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
-.tile { min-height: 38px; padding: 6px 12px; font-size: 14px; }
+.tile { min-height: 36px; padding: 6px 9px; font-size: 13.5px; }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 
-@media(max-width:480px) {
+@media(max-width:480px){
   main { padding: 8px 8px 18px; gap: 8px; }
   header { padding: 8px 10px; }
   .brand h1 { font-size: 16px; }
@@ -397,8 +256,8 @@ footer strong { color: var(--fg); font-weight: 750; }
   .nav-section { padding: 8px; gap: 8px; border-radius: 16px; }
   .nav-cats button, .nav-subs button { padding: 6px 10px; font-size: 12px; }
   .modes-wrapper button { padding: 6px 2px; font-size: 11px; }
-  .card { padding: 14px 12px; gap: 10px; border-radius: 16px; }
-  .opt { font-size: 14px; padding: 8px 4px; min-height: 46px; }
+  .card { padding: 12px 10px; gap: 10px; border-radius: 16px; }
+  .opt { font-size: 13px; padding: 8px 4px; min-height: 44px; }
 }
 </style>
 </head>
@@ -472,7 +331,7 @@ const UI={
  uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
+  tabs:{graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукты",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
   subs:{graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити",toets:"Toets A1"},audioSub:"Послухай і обери переклад",toetsTitle:"Toets A1",toetsChoose:"Обери тест",toetsScore:"Твій результат",toetsPassed:"Склав!",toetsFailed:"Ще трохи практики",toetsNext:"Наступне питання",toetsFinish:"Завершити тест",toetsAgain:"Ще раз цей тест",toetsBack:"До списку тестів",toetsQ:"Питання",toetsOf:"з"},
  en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
@@ -483,7 +342,7 @@ const UI={
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review",toets:"Toets A1"},audioSub:"Listen and choose the translation",toetsTitle:"Toets A1",toetsChoose:"Choose a test",toetsScore:"Your score",toetsPassed:"Passed!",toetsFailed:"Need more practice",toetsNext:"Next question",toetsFinish:"Finish test",toetsAgain:"Retry this test",toetsBack:"Back to tests",toetsQ:"Question",toetsOf:"of"},
  fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
-  cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
+  cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
   subs:{graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision",toets:"Toets A1"},audioSub:"Écoute et choisis la traduction",toetsTitle:"Toets A1",toetsChoose:"Choisis un test",toetsScore:"Ton résultat",toetsPassed:"Réussi !",toetsFailed:"Encore un peu de pratique",toetsNext:"Question suivante",toetsFinish:"Terminer le test",toetsAgain:"Refaire ce test",toetsBack:"Liste des tests",toetsQ:"Question",toetsOf:"sur"},
@@ -504,6 +363,10 @@ const CATEGORIES=[
  {id:"city", tabs:["city", "transport", "gemeente", "cvo", "werk"]}
 ];
 
+const ERASER='<svg viewBox="4 4 56 56" width="50" height="50" role="img" aria-label="eraser"><g transform="rotate(-35 32 32)"><rect x="6" y="20" width="52" height="24" rx="5" fill="#F4A6B5"/><path d="M34 20h19a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H34z" fill="#5B7BD9"/><rect x="6" y="20" width="52" height="24" rx="5" fill="none" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/><path d="M34 20v24" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/></g></svg>';
+const KIT='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label="first aid kit"><path d="M23 18v-4a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v4" fill="none" stroke="#20243A" stroke-opacity=".55" stroke-width="3"/><rect x="6" y="18" width="52" height="36" rx="6" fill="#E5484D"/><rect x="6" y="18" width="52" height="36" rx="6" fill="none" stroke="#20243A" stroke-opacity=".3" stroke-width="2"/><rect x="28" y="26" width="8" height="20" rx="1.5" fill="#fff"/><rect x="22" y="32" width="20" height="8" rx="1.5" fill="#fff"/></svg>';
+const REG='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label="cash register"><rect x="29" y="19" width="6" height="8" fill="#3A4660"/><rect x="16" y="6" width="32" height="15" rx="3" fill="#2B3447"/><rect x="20" y="10" width="18" height="4" rx="1" fill="#7BE0A4"/><path d="M13 27h38l5 13H8z" fill="#5B6B8C"/><g fill="#E8ECF5"><rect x="16" y="30" width="6" height="3" rx="1"/><rect x="25" y="30" width="6" height="3" rx="1"/><rect x="34" y="30" width="6" height="3" rx="1"/><rect x="43" y="30" width="5" height="3" rx="1"/><rect x="14" y="35" width="6" height="3" rx="1"/><rect x="23" y="35" width="6" height="3" rx="1"/><rect x="32" y="35" width="6" height="3" rx="1"/><rect x="41" y="35" width="7" height="3" rx="1"/></g><rect x="8" y="40" width="48" height="16" rx="3" fill="#3A4660"/><rect x="14" y="45" width="36" height="6" rx="2" fill="#9AA7C2"/><rect x="28" y="46.5" width="8" height="3" rx="1.5" fill="#3A4660"/></svg>';
+
 const KEYS=["id","nl","en","fr","uk","ar","icon","ex_nl","ex_uk","art_nl","art_fr"];
 const R=rows=>({items:(rows||[]).filter(r=>Array.isArray(r)).map(r=>{const o={};KEYS.forEach((k,i)=>{if(r[i]!==undefined)o[k]=r[i]});return o})});
 
@@ -519,7 +382,7 @@ const DATA={
   ["fam_oma","de oma","grandmother","la grand-mère","бабуся","الجدة","👵","Mijn oma woont in Oekraïne.","Моя бабуся живе в Україні."],
   ["fam_opa","de opa","grandfather","le grand-père","дідусь","الجد","👴","Mijn opa is tachtig jaar.","Моєму дідусеві вісімдесят років."],
   ["fam_kind","het kind","child","l'enfant","дитина","الطفل","🧒","Het kind speelt buiten.","Дитина грає надворі."],
-  ["fam_kinderen","de kinderen","children","les enfants","діти","الأطفال","👧","Mijn kinderen gaan naar school.","Мої діти ходить до школи."],
+  ["fam_kinderen","de kinderen","children","les enfants","діти","الأطفال","👧","Mijn kinderen gaan naar school.","Мої діти ходять до школи."],
   ["fam_man","mijn man","my husband","mon mari","мій чоловік","زوجي","🤵","Mijn man werkt in Brussel.","Мій чоловік працює в Брюсселі."],
   ["fam_vrouw","mijn vrouw","my wife","ma femme","моя дружина","زوجتي","👩","Mijn vrouw leert Nederlands.","Моя дружина вчить нідерландську."],
   ["fam_tante","de tante","aunt","la tante","тітка","العمة / الخالة","👩","Mijn tante woont in Lviv.","Моя тітка живе у Львові."],
@@ -528,7 +391,7 @@ const DATA={
  ]),
  graag:R([
   ["gr_koken", "koken", "to cook", "cuisiner", "готувати", "الطهي", "🍳", "Ik kook graag.", "Я люблю готувати."],
-  ["gr_boodschappen", "boodschappen doen", "to do the shopping", "faire les courses", "ходити по продукти", "شراء البقالة", "🛒", "Ik doe graag boodschappen.", "Я люблю ходити по продукти."],
+  ["gr_boodschappen", "boodschappen doen", "to do the shopping", "faire les courses", "ходити по продукты", "شراء البقالة", "🛒", "Ik doe graag boodschappen.", "Я люблю ходити по продукти."],
   ["gr_afwassen", "afwassen", "to wash the dishes", "faire la vaisselle", "мити посуд", "غسل الصحون", "🍽️", "Ik was niet graag af.", "Я не люблю мити посуд."],
   ["gr_stofzuigen", "stofzuigen", "to vacuum", "passer l'aspirateur", "пилососити", "التنظيف بالمكنسة الكهربائية", "🧹", "Ik stofzuig niet graag.", "Я не люблю пилососити."],
   ["gr_was", "de was doen", "to do the laundry", "faire la lessive", "прати білизну", "غسل الملابس", "🧺", "Ik doe niet graag de was.", "Я не люблю прати."],
@@ -578,7 +441,7 @@ const DATA={
  dehet:R([
   ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
   ["art_boek","boek","book","livre","книга","книга","📖","Het boek is open.","Книга відкрита.","het","le"],
-  ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","Passport","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
+  ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","🛂","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
   ["art_huis","huis","house","maison","будинок","بيت","🏠","Het huis is groot.","Будинок великий.","het","la"],
@@ -723,7 +586,590 @@ const DATA={
  ])
 };
 
-const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="rgba(255,255,255,0.3)" stroke-width="3"/></svg>';
+const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="#20243A" stroke-opacity=".35" stroke-width="3"/></svg>';
+Object.assign(DATA,{
+ phrases:R([
+  ["phr_1", "hallo", "hello", "bonjour / salut", "привіт", "مرحبا", "👋", "Hallo, hoe gaat het?", "Привіт, як справи?"],
+  ["phr_2", "goedemorgen", "good morning", "bonjour (le matin)", "доброго ранку", "صباح الخير", "🌅", "Goedemorgen, meneer.", "Доброго ранку, пане."],
+  ["phr_3", "goedemiddag", "good afternoon", "bon après-midi", "добрий день", "نهارك سعيد", "🌞", "Goedemiddag, mevrouw.", "Добрий день, пані."],
+  ["phr_4", "goedenavond", "good evening", "bonsoir", "добрий вечір", "مساء الخير", "Вибач за помилку! На скріншоті видно, що додаток застряг на порожньому каркасі[span_2](start_span)[span_2](end_span). Це сталося через переривання коду JavaScript під час відповіді.
+
+Ось повністю працездатний, розгорнутий код усього файлу `index.html` без жодних обрізань. Всі скрипти, масиви даних та логіка гри повністю цілі, а CSS-стилі оформлені під стиль **Glassmorphism**[span_3](start_span)[span_3](end_span).
+
+Скопіюй цей код повністю та заміни вміст `index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0c29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>Leren.be — Nederlands A1.1</title>
+<style>
+/* Glassmorphism CSS Styles */
+:root {
+  color-scheme: dark;
+  --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #202060 50%, #24243e 100%);
+  --fg: #ffffff;
+  --mut: rgba(255, 255, 255, 0.7);
+  --card: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.18);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --blur: blur(16px);
+  --acc: #00d2ff;
+  --acc-hover: #3a7bd5;
+  --ok: #00e676;
+  --ok-bg: rgba(0, 230, 118, 0.2);
+  --bad: #ff5252;
+  --bad-bg: rgba(255, 82, 82, 0.2);
+  --soft: rgba(255, 255, 255, 0.05);
+  --amb: #ffd700;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  --fg: #1a1c2e;
+  --mut: rgba(26, 28, 46, 0.75);
+  --card: rgba(255, 255, 255, 0.45);
+  --line: rgba(255, 255, 255, 0.6);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --blur: blur(16px);
+  --acc: #4f46e5;
+  --acc-hover: #4338ca;
+  --ok: #10b981;
+  --ok-bg: rgba(16, 185, 129, 0.2);
+  --bad: #ef4444;
+  --bad-bg: rgba(239, 68, 68, 0.2);
+  --soft: rgba(255, 255, 255, 0.25);
+  --amb: #d97706;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { min-height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--fg);
+  font: 15px/1.4 system-ui, -apple-system, "SF Pro Text", Roboto, sans-serif;
+  min-height: 100vh;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+button, select { font: inherit; }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+button { touch-action: manipulation; }
+
+main {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 12px 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+header, .stats-bar, .nav-section, .card, .modes-wrapper, .search-panel {
+  background: var(--card);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 20px;
+}
+
+header {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 10px 14px;
+}
+.brand h1 { font-size: 18px; line-height: 1.1; margin: 0; letter-spacing: -.03em; font-weight: 800; }
+.brand p { margin: 2px 0 0; color: var(--mut); font-size: 11px; }
+
+.top-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.select-group { display: flex; align-items: center; gap: 3px; color: var(--mut); font-size: 11px; }
+
+.lang-select, .theme-btn, .score-pill {
+  background: var(--card); border: 1px solid var(--line); color: var(--fg);
+  border-radius: 12px; min-height: 36px; padding: 3px 10px; font-size: 12px; font-weight: 700;
+}
+.theme-btn { cursor: pointer; min-width: 36px; text-align: center; }
+.score-pill { color: var(--amb); font-weight: 800; white-space: nowrap; display: flex; align-items: center; }
+
+.stats-bar {
+  display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-size: 13px; color: var(--mut);
+}
+.stats-bar strong { color: var(--fg); font-weight: 700; }
+
+.nav-section { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.section-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--mut); font-weight: 800; margin-bottom: -4px; padding-left: 2px; }
+
+.nav-cats, .nav-subs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
+.nav-cats::-webkit-scrollbar, .nav-subs::-webkit-scrollbar { display: none; }
+
+.nav-cats button, .nav-subs button {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px;
+  color: var(--fg); opacity: 0.8; cursor: pointer; white-space: nowrap; flex-shrink: 0; font-size: 13px; font-weight: 700; transition: all .2s;
+}
+.nav-cats button[aria-selected="true"], .nav-subs button[aria-selected="true"] {
+  background: var(--acc); color: #fff; border-color: rgba(255, 255, 255, 0.4); opacity: 1; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+}
+
+.sub-wrapper { background: transparent; padding: 0; border: none; }
+
+.modes-wrapper { display: flex; gap: 6px; padding: 6px; }
+.modes-wrapper button {
+  flex: 1; background: transparent; border: none; border-radius: 12px; padding: 8px 6px;
+  color: var(--mut); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: all .2s;
+}
+.modes-wrapper button.primary { background: var(--acc); color: #fff; box-shadow: 0 4px 12px rgba(0, 210, 255, 0.35); }
+
+.meta { display: flex; justify-content: space-between; gap: 8px; color: var(--mut); font-size: 11px; font-weight: 600; padding: 0 2px; }
+.bar { height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .25s ease; }
+
+.card { padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.q { text-align: center; }
+.q small { color: var(--mut); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 800; }
+.icon-box { font-size: 48px; margin: 6px 0; line-height: 1; }
+.q h2 { font-size: clamp(22px, 5vw, 30px); font-weight: 800; margin: 6px 0 2px; letter-spacing: -.03em; word-break: break-word; }
+.q p { margin: 0; color: var(--mut); font-size: 14px; }
+
+.listen {
+  background: var(--card); border: 1px solid var(--line); color: var(--fg); border-radius: 16px;
+  padding: 6px 16px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; min-height: 36px; transition: all .2s;
+}
+.listen:hover, .btn:hover, .opt:hover:not(:disabled) { border-color: var(--acc); background: rgba(255, 255, 255, 0.15); }
+
+.clock-visual {
+  width: 110px; height: 110px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 2px solid var(--line);
+  margin: 10px auto 4px; position: relative; display: flex; align-items: center; justify-content: center;
+}
+.clock-center { width: 8px; height: 8px; background: var(--acc); border-radius: 50%; position: absolute; z-index: 3; }
+.clock-hand-h { width: 3px; height: 32px; background: var(--fg); position: absolute; bottom: 55px; left: 53.5px; border-radius: 2px; transform-origin: bottom center; z-index: 2; }
+.clock-hand-m { width: 2px; height: 44px; background: var(--acc); position: absolute; bottom: 55px; left: 54px; border-radius: 2px; transform-origin: bottom center; z-index: 1; }
+
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.opt {
+  background: var(--card); border: 1px solid var(--line); color: var(--fg); border-radius: 16px; padding: 12px 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  text-align: center; min-height: 52px; word-break: break-word; transition: all .2s;
+}
+.opt:active:not(:disabled) { transform: scale(.98); }
+.opt.correct { background: var(--ok-bg) !important; border-color: var(--ok) !important; color: #fff !important; box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
+.opt.incorrect { background: var(--bad-bg) !important; border-color: var(--bad) !important; color: #fff !important; }
+.opt:disabled { cursor: default; }
+
+.swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0; }
+.feedback { border-radius: 14px; padding: 10px 12px; text-align: center; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--line); }
+.feedback:empty { display: none; }
+.feedback strong { display: block; font-size: 14px; }
+.feedback p { margin: 2px 0 0; color: var(--mut); font-size: 12px; }
+.feedback .example { margin-top: 4px; color: var(--fg); font-weight: 600; }
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  flex: 1; min-width: 100px; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card);
+  color: var(--fg); font-weight: 700; cursor: pointer; text-align: center; min-height: 44px; font-size: 14px; transition: all .2s;
+}
+.btn.primary { background: var(--acc); border-color: rgba(255, 255, 255, 0.4); color: #fff; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.35); }
+
+.end { text-align: center; display: flex; flex-direction: column; gap: 12px; }
+.end h2 { font-size: 32px; margin: 0; letter-spacing: -.04em; }
+.end p { color: var(--mut); margin: 0; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.summary-grid div { padding: 10px 6px; border: 1px solid var(--line); border-radius: 12px; background: rgba(0,0,0,0.15); }
+.summary-grid strong { display: block; font-size: 16px; }
+.summary-grid span { font-size: 10px; color: var(--mut); }
+.empty { color: var(--mut); text-align: center; padding: 12px; font-size: 14px; }
+
+footer { text-align: center; color: var(--mut); font-size: 11px; margin-top: 10px; display: flex; flex-direction: column; gap: 3px; line-height: 1.4; }
+footer strong { color: var(--fg); font-weight: 750; }
+
+.report-bug-btn {
+  margin-top: 6px; background: transparent; border: 1px solid var(--line); border-radius: 20px;
+  padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--mut); cursor: pointer; transition: all .15s;
+}
+.report-bug-btn:hover { background: var(--soft); color: var(--fg); }
+
+.search-modal {
+  position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-start; justify-content: center; padding: 60px 12px 20px;
+}
+.search-modal[hidden] { display: none; }
+.search-panel { border-radius: 24px; width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; }
+.search-head { display: flex; gap: 8px; padding: 14px; border-bottom: 1px solid var(--line); align-items: center; }
+.search-head input { flex: 1; border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; font-size: 15px; background: rgba(0, 0, 0, 0.2); color: var(--fg); outline: none; }
+.search-head input:focus { border-color: var(--acc); }
+.search-results { overflow-y: auto; padding: 10px 14px 16px; flex: 1; }
+.search-item { padding: 12px; border-radius: 14px; border: 1px solid var(--line); margin-bottom: 8px; background: rgba(255,255,255,0.03); cursor: pointer; }
+.search-item:hover { background: rgba(255, 255, 255, 0.1); }
+.search-item .nl { font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+.search-item .tr { color: var(--mut); font-size: 13px; }
+.search-item .ex { font-size: 12px; margin-top: 4px; color: var(--fg); opacity: .8; }
+.search-empty { text-align: center; color: var(--mut); padding: 24px 8px; font-size: 14px; }
+
+.q h2.sm { font-size: 18px; letter-spacing: -.02em; }
+.slots, .bank { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; direction: ltr; }
+.bank { min-height: 40px; }
+.sw2 { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.sw2.rQ { --rc: var(--acc); } .sw2.rV { --rc: var(--ok); } .sw2.rS { --rc: var(--amb); } .sw2.rR { --rc: var(--mut); }
+.role { font-size: 9px; letter-spacing: .05em; text-transform: uppercase; font-weight: 800; color: var(--rc); }
+
+.slot {
+  min-width: 54px; min-height: 40px; padding: 4px 8px; border-radius: 10px; border: 1px dashed var(--line);
+  border-bottom: 3px solid var(--rc); background: rgba(0,0,0,0.15); color: var(--fg); font: inherit; font-weight: 600; font-size: 13px; cursor: pointer;
+}
+.slot.filled { border-style: solid; background: var(--card); }
+.slot.bad { border-color: var(--bad); border-bottom-color: var(--bad); color: var(--bad); background: var(--bad-bg); animation: shake .3s; }
+.slot.good { border-color: var(--ok); border-bottom-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+.tile { min-height: 38px; padding: 6px 12px; font-size: 14px; }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+@media(max-width:480px) {
+  main { padding: 8px 8px 18px; gap: 8px; }
+  header { padding: 8px 10px; }
+  .brand h1 { font-size: 16px; }
+  .top-right { width: 100%; justify-content: space-between; margin-top: 2px; }
+  .nav-section { padding: 8px; gap: 8px; border-radius: 16px; }
+  .nav-cats button, .nav-subs button { padding: 6px 10px; font-size: 12px; }
+  .modes-wrapper button { padding: 6px 2px; font-size: 11px; }
+  .card { padding: 14px 12px; gap: 10px; border-radius: 16px; }
+  .opt { font-size: 14px; padding: 8px 4px; min-height: 46px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
+    <div class="top-right">
+      <label class="select-group"><span id="targetLabel"></span>
+        <select id="targetLangPicker" class="lang-select" aria-label="Target language">
+          <option value="nl">🇧🇪 Nederlands</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option>
+        </select>
+      </label>
+      <label class="select-group"><span id="uiLabel"></span>
+        <select id="uiLangPicker" class="lang-select" aria-label="Explanation language">
+          <option value="uk">🇺🇦 Українська</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option><option value="ar">🇸🇦 العربية</option>
+        </select>
+      </label>
+      <button class="theme-btn" id="searchBtn" type="button" title="Search">🔍</button>
+      <span id="score" class="score-pill" aria-live="polite">⭐ 0</span>
+      <button class="theme-btn" id="themeToggle" type="button">🌙</button>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <span><span id="progressLabel"></span>: <strong id="learnedCount">0</strong></span>
+    <span id="reviewCount"></span>
+  </div>
+
+  <div class="nav-section">
+    <div class="section-label" id="lblCat">Розділ</div>
+    <nav class="nav-cats" id="catNav" aria-label="Categories"></nav>
+    
+    <div class="section-label" id="lblSub">Підрозділ</div>
+    <div class="sub-wrapper">
+      <nav class="nav-subs" id="subNav" aria-label="Subtopics"></nav>
+    </div>
+
+    <div class="section-label" id="lblMode">Режим</div>
+    <div class="modes-wrapper" id="modeButtons"></div>
+  </div>
+
+  <div class="meta"><span id="prog"></span><span id="rnd"></span></div>
+  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barfill"></i></div>
+  <section class="card" id="card" aria-live="polite"></section>
+  
+  <footer>
+    <span id="footText"></span>
+    <span>Danylo Hembarskyi • All rights reserved</span>
+    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a></span>
+    <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
+  </footer>
+</main>
+
+<div id="searchModal" class="search-modal" hidden>
+  <div class="search-panel">
+    <div class="search-head">
+      <input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" />
+      <button type="button" id="searchClose" class="theme-btn">✕</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
+
+const UI={
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла тема",dark:"Темна тема",markKnown:"Знаю це",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+  lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
+  cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
+  tabs:{graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
+  subs:{graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
+  modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити",toets:"Toets A1"},audioSub:"Послухай і обери переклад",toetsTitle:"Toets A1",toetsChoose:"Обери тест",toetsScore:"Твій результат",toetsPassed:"Склав!",toetsFailed:"Ще трохи практики",toetsNext:"Наступне питання",toetsFinish:"Завершити тест",toetsAgain:"Ще раз цей тест",toetsBack:"До списку тестів",toetsQ:"Питання",toetsOf:"з"},
+ en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light mode",dark:"Dark mode",markKnown:"I know this",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
+  lCat:"Category",lSub:"Subtopic",lMode:"Mode",
+  cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
+  tabs:{graag:"Like / don't like",phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)",werk:"Work & bank"},
+  subs:{graag:"What does this activity mean?",phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word",werk:"Work, office and bank"},
+  modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review",toets:"Toets A1"},audioSub:"Listen and choose the translation",toetsTitle:"Toets A1",toetsChoose:"Choose a test",toetsScore:"Your score",toetsPassed:"Passed!",toetsFailed:"Need more practice",toetsNext:"Next question",toetsFinish:"Finish test",toetsAgain:"Retry this test",toetsBack:"Back to tests",toetsQ:"Question",toetsOf:"of"},
+ fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Mode clair",dark:"Mode sombre",markKnown:"Je connais",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+  lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
+  cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
+  tabs:{graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
+  subs:{graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
+  modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision",toets:"Toets A1"},audioSub:"Écoute et choisis la traduction",toetsTitle:"Toets A1",toetsChoose:"Choisis un test",toetsScore:"Ton résultat",toetsPassed:"Réussi !",toetsFailed:"Encore un peu de pratique",toetsNext:"Question suivante",toetsFinish:"Terminer le test",toetsAgain:"Refaire ce test",toetsBack:"Liste des tests",toetsQ:"Question",toetsOf:"sur"},
+ ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"الوضع الفاتح",dark:"الوضع الداكن",markKnown:"أعرف هذا",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
+  lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
+  cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
+  tabs:{graag:"أحب / لا أحب",phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)",werk:"العمل والبنك"},
+  subs:{graag:"ماذا يعني هذا النشاط؟",phrases:"اختر العبارة الصحيحة",questions:"ماذا تعني كلمة الاستفهام هذه؟",pronouns:"اختر ترجمة الضمير",verbs:"اختر ترجمة الفعل",dehet:"اختر أداة التعريف الصحيحة",adjectives:"اختر الترجمة",numbers:"اختر كلمة العدد",time:"اختر الكلمة الصحيحة",clock:"كم الساعة على مدار الساعة؟",months:"اختر الشهر",weather:"الطقس والأيام والوقت",family:"من هذا في العائلة؟",jobs:"اختر المهنة",body:"انظر إلى الأيقونة واختر الكلمة",doctor:"موعد الطبيب والصحة",home:"انظر إلى الأيقونة واختر الكلمة",shop:"السوبرماركت والمنتجات والعبارات",clothes:"انظر إلى الأيقونة واختر الكلمة",colors:"انظر إلى اللون واختر الكلمة",animals:"انظر إلى الأيقونة واختر الكلمة",city:"انظر إلى الأيقونة واختر الكلمة",transport:"المواصلات والاتجاهات",gemeente:"انظر إلى الأيقونة واختر الكلمة",cvo:"انظر إلى الأيقونة واختر الكلمة",werk:"العمل والمكتب والبنك"},
+  modes:{study:"دراسة",quiz:"اختبار",audio:"استماع",review:"مراجعة",toets:"Toets A1"},audioSub:"استمع واختر الترجمة",toetsTitle:"Toets A1",toetsChoose:"اختر اختباراً",toetsScore:"نتيجتك",toetsPassed:"نجحت!",toetsFailed:"تحتاج إلى مزيد من التدريب",toetsNext:"السؤال التالي",toetsFinish:"إنهاء الاختبار",toetsAgain:"أعد هذا الاختبار",toetsBack:"قائمة الاختبارات",toetsQ:"سؤال",toetsOf:"من"}
+};
+
+const CATEGORIES=[
+ {id:"comm", tabs:["phrases", "questions", "pronouns", "graag"]},
+ {id:"grammar", tabs:["verbs", "dehet", "adjectives"]},
+ {id:"nums", tabs:["numbers", "time", "clock", "months", "weather"]},
+ {id:"people", tabs:["family", "jobs", "body", "doctor"]},
+ {id:"home", tabs:["home", "shop", "clothes", "colors", "animals"]},
+ {id:"city", tabs:["city", "transport", "gemeente", "cvo", "werk"]}
+];
+
+const KEYS=["id","nl","en","fr","uk","ar","icon","ex_nl","ex_uk","art_nl","art_fr"];
+const R=rows=>({items:(rows||[]).filter(r=>Array.isArray(r)).map(r=>{const o={};KEYS.forEach((k,i)=>{if(r[i]!==undefined)o[k]=r[i]});return o})});
+
+const DATA={
+ family:R([
+  ["fam_moeder","de moeder","mother","la mère","мама","الأم","👩","Mijn moeder kookt graag.","Моя мама любить готувати."],
+  ["fam_vader","de vader","father","le père","тато","الأب","👨","Mijn vader werkt in Antwerpen.","Мій тато працює в Антверпені."],
+  ["fam_ouders","de ouders","parents","les parents","батьки","الوالدان","👨‍👩‍👧","Mijn ouders wonen in Oekraïne.","Мої батьки живуть в Україні."],
+  ["fam_zoon","de zoon","son","le fils","син","الابن","👦","Mijn zoon is acht jaar.","Моєму синові вісім років."],
+  ["fam_dochter","de dochter","daughter","la fille","донька","الابنة","👧","Mijn dochter gaat naar school.","Моя донька ходить до школи."],
+  ["fam_broer","de broer","brother","le frère","брат","الأخ","🧑","Mijn broer woont in Gent.","Мій брат живе в Генті."],
+  ["fam_zus","de zus","sister","la sœur","сестра","الأخت","👩‍🦰","Mijn zus werkt in het ziekenhuis.","Моя сестра працює в лікарні."],
+  ["fam_oma","de oma","grandmother","la grand-mère","бабуся","الجدة","👵","Mijn oma woont in Oekraïne.","Моя бабуся живе в Україні."],
+  ["fam_opa","de opa","grandfather","le grand-père","дідусь","الجد","👴","Mijn opa is tachtig jaar.","Моєму дідусеві вісімдесят років."],
+  ["fam_kind","het kind","child","l'enfant","дитина","الطفل","🧒","Het kind speelt buiten.","Дитина грає надворі."],
+  ["fam_kinderen","de kinderen","children","les enfants","діти","الأطفال","👧","Mijn kinderen gaan naar school.","Мої діти ходить до школи."],
+  ["fam_man","mijn man","my husband","mon mari","мій чоловік","زوجي","🤵","Mijn man werkt in Brussel.","Мій чоловік працює в Брюсселі."],
+  ["fam_vrouw","mijn vrouw","my wife","ma femme","моя дружина","زوجتي","👩","Mijn vrouw leert Nederlands.","Моя дружина вчить нідерландську."],
+  ["fam_tante","de tante","aunt","la tante","тітка","العمة / الخالة","👩","Mijn tante woont in Lviv.","Моя тітка живе у Львові."],
+  ["fam_oom","de oom","uncle","l'oncle","дядько","العم / الخال","👨","Mijn oom heeft een auto.","У мого дядька є автомобіль."],
+  ["fam_gezin","het gezin","family","la famille","сім'я","الأسرة","👪","Ons gezin woont in België.","Наша сім'я живе в Бельгії."]
+ ]),
+ graag:R([
+  ["gr_koken", "koken", "to cook", "cuisiner", "готувати", "الطهي", "🍳", "Ik kook graag.", "Я люблю готувати."],
+  ["gr_boodschappen", "boodschappen doen", "to do the shopping", "faire les courses", "ходити по продукты", "شراء البقالة", "🛒", "Ik doe graag boodschappen.", "Я люблю ходити по продукти."],
+  ["gr_afwassen", "afwassen", "to wash the dishes", "faire la vaisselle", "мити посуд", "غسل الصحون", "🍽️", "Ik was niet graag af.", "Я не люблю мити посуд."],
+  ["gr_stofzuigen", "stofzuigen", "to vacuum", "passer l'aspirateur", "пилососити", "التنظيف بالمكنسة الكهربائية", "🧹", "Ik stofzuig niet graag.", "Я не люблю пилососити."],
+  ["gr_was", "de was doen", "to do the laundry", "faire la lessive", "прати білизну", "غسل الملابس", "🧺", "Ik doe niet graag de was.", "Я не люблю прати."],
+  ["gr_strijken", "strijken", "to iron", "repasser", "прасувати", "كي الملابس", "👔", "Ik strijk niet graag.", "Я не люблю прасувати."],
+  ["gr_poetsen", "poetsen", "to clean", "nettoyer", "прибирати", "التنظيف", "🧽", "Ik poets niet graag.", "Я не люблю прибирати."],
+  ["gr_tuin", "in de tuin werken", "to work in the garden", "jardiner", "працювати в саду", "العمل في الحديقة", "🌱", "Ik werk niet graag in de tuin.", "Я не люблю працювати в саду."],
+  ["gr_zwemmen", "zwemmen", "to swim", "nager", "плавати", "السباحة", "🏊", "Ik zwem graag.", "Я люблю плавати."],
+  ["gr_fietsen", "fietsen", "to cycle", "faire du vélo", "їздити на велосипеді", "ركوب الدراجة", "🚴", "Ik fiets graag.", "Я люблю їздити на велосипеді."],
+  ["gr_lopen", "lopen", "to run", "courir", "бігати", "الجري", "🏃", "Ik loop graag.", "Я люблю бігати."],
+  ["gr_voetballen", "voetballen", "to play football", "jouer au football", "грати у футбол", "لعب كرة القدم", "⚽", "Ik voetbal graag.", "Я люблю грати у футбол."],
+  ["gr_fitness", "naar de fitness gaan", "to go to the gym", "aller à la salle de sport", "ходити у фітнес", "الذهاب إلى النادي الرياضي", "🏋️", "Ik ga graag naar de fitness.", "Я люблю ходити у фітнес."],
+  ["gr_dansen", "dansen", "to dance", "danser", "танцювати", "الرقص", "💃", "Ik dans graag.", "Я люблю танцювати."],
+  ["gr_lezen", "lezen", "to read", "lire", "читати", "القراءة", "📖", "Ik lees graag.", "Я люблю читати."],
+  ["gr_wandelen", "wandelen", "to go for a walk", "se promener", "гуляти пішки", "المشي للتنزه", "🚶", "Ik wandel graag.", "Я люблю гуляти пішки."],
+  ["gr_serie", "een serie kijken", "to watch a series", "regarder une série", "дивитися серіал", "مشاهدة مسلسل", "📺", "Ik kijk graag een serie.", "Я люблю дивитися серіали."],
+  ["gr_winkelen", "winkelen", "to go shopping", "faire du shopping", "ходити по магазинах", "التسوق", "🛍️", "Ik winkel graag.", "Я люблю ходити по магазинах."],
+  ["gr_fotos", "foto's nemen", "to take photos", "prendre des photos", "робити фото", "التقاط الصور", "📸", "Ik neem graag foto's.", "Я люблю робити фото."],
+  ["gr_muziek", "naar muziek luisteren", "to listen to music", "écouter de la musique", "слухати музику", "الاستماع إلى الموسيقى", "🎧", "Ik luister graag naar muziek.", "Я люблю слухати музику."],
+  ["gr_cinema", "naar de cinema gaan", "to go to the cinema", "aller au cinéma", "ходити в кіно", "الذهاب إلى السينما", "🎬", "Ik ga graag naar de cinema.", "Я люблю ходити в кіно."],
+  ["gr_cafe", "op café gaan", "to go to a café", "aller au café", "ходити в кафе", "الذهاب إلى المقهى", "🍻", "Ik ga niet graag op café.", "Я не люблю ходити в кафе."],
+  ["gr_restaurant", "op restaurant gaan", "to go to a restaurant", "aller au restaurant", "ходити в ресторан", "الذهاب إلى مطعم", "🍴", "Ik ga graag op restaurant.", "Я люблю ходити в ресторан."],
+  ["gr_graag", "graag", "gladly, like to", "volontiers (aimer)", "охоче (люблю)", "بكل سرور", "👍", "Ik lees graag.", "Я люблю читати."],
+  ["gr_nietgraag", "niet graag", "not like to", "ne pas aimer", "не люблю", "لا أحب", "👎", "Ik strijk niet graag.", "Я не люблю прасувати."],
+  ["gr_elkedag", "elke dag", "every day", "tous les jours", "щодня", "كل يوم", "📅", "Ik kook elke dag.", "Я готую щодня."],
+  ["gr_weekend", "in het weekend", "at the weekend", "le week-end", "у вихідні", "في عطلة نهاية الأسبوع", "🗓️", "Ik voetbal in het weekend.", "У вихідні я граю у футбол."],
+  ["gr_watdoe", "Wat doe jij graag?", "What do you like to do?", "Qu'est-ce que tu aimes faire ?", "Що ти любиш робити?", "ماذا تحب أن تفعل؟", "❓", "Ik lees graag.", "Я люблю читати."]
+ ]),
+ pronouns:R([
+  ["pro_ik","ik","I","je","я","أنا","👤","Ik ben thuis.","Я вдома."],
+  ["pro_jij","jij / je","you (singular)","tu","ти","أنتَ / أنتِ","👉","Jij bent aardig.","Ти добрий."],
+  ["pro_u","u","you (formal)","vous (politesse)","Ви (ввічливо)","حضرتك (رسمي)","🤝","Hoe heet u?","Як Вас звати?"],
+  ["pro_hij","hij","he","il","він","هو","👨","Hij werkt hard.","Він багато працює."],
+  ["pro_zij","zij / ze","she","elle","вона","هي","👩","Zij leest een boek.","Вона читає книжку."],
+  ["pro_wij","wij / we","we","nous","ми","نحن","👥","Wij zijn samen.","Ми разом."],
+  ["pro_jullie","jullie","you (plural)","vous (pluriel)","ви (до кількох людей)","أنتم","🧑‍🤝‍🧑","Hebben jullie kinderen?","Чи є у вас діти?"]
+ ]),
+ verbs:R([
+  ["v_zijn","zijn","to be","être","бути","يكون","✨","Ik ben cursist.","Я слухач курсів."],
+  ["v_hebben","hebben","to have","avoir","мати","يملك / لديه","🤲","Ik heb een vraag.","У мене є запитання."],
+  ["v_wonen","wonen","to live / reside","habiter","жити / мешкати","يسكن / يعيش","🏡","Ik woon in België.","Я живу в Бельгії."],
+  ["v_spreken","spreken","to speak","parler","говорити / розмовляти","يتحدث / يتكلم","🗣️","Ik spreek Nederlands.","Я розмовляю нідерландською."],
+  ["v_werken","werken","to work","travailler","працювати","يعمل","💼","Hij werkt vandaag.","Він сьогодні працює."],
+  ["v_doen_1","ik doe","I do","je fais","я роблю","أنا أفعل","🛠️","Ik doe de deur open.","Я відчиняю двері."],
+  ["v_doen_2","jij doet","you do","tu fais","ти робиш","أنت تفعل","👉","Wat doe jij vandaag?","Що ти робиш сьогодні?"],
+  ["v_doen_3","hij doet","he does","il fait","він робить","هو يفعل","👨","Hij doet zijn best.","Він робить усе можливе."]
+ ]),
+ dehet:R([
+  ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
+  ["art_boek","boek","book","livre","книга","книга","📖","Het boek is open.","Книга відкрита.","het","le"],
+  ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","🛂","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
+  ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
+  ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
+  ["art_huis","huis","house","maison","будинок","بيت","🏠","Het huis is groot.","Будинок великий.","het","la"],
+  ["art_school","school","school","école","школа","مدرسة","🏫","De school begint om negen uur.","Школа починається о дев'ятій.","de","la"],
+  ["art_auto","auto","car","voiture","автомобіль","سيارة","🚗","De auto is rood.","Автомобіль червоний.","de","la"],
+  ["art_raam","raam","window","fenêtre","вікно","نافذة","🪟","Het raam is open.","Вікно відчинене.","het","la"],
+  ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"]
+ ]),
+ questions:R([
+  ["q_wat","wat","what","quoi","що","ماذا / ما","❓","Wat is dit?","Що це?"],
+  ["q_wie","wie","who","qui","хто","مَن","🙋‍♂️","Wie komt morgen?","Хто прийде завтра?"],
+  ["q_wie_2","wie woont hier?","who lives here?","qui habite ici?","хто тут живе?","من يسكن هنا؟","🏠","Wie woont hier in de buurt?","Хто тут живе поблизу?"],
+  ["q_wie_3","wie werkt in Amsterdam","who works in Amsterdam","qui travaille à Amsterdam","хто працює в Амстердамі","من يعمل في أمستردام","💼","Wie werkt in Amsterdam?","Хто працює в Амстердамі?"],
+  ["q_waar","waar","where","où","де","أين","📍","Waar is het toilet?","Де туалет?"],
+  ["q_wanneer","wanneer","when","quand","коли","متى","⏰","Wanneer is de pauze?","Коли перерва?"],
+  ["q_waarom","waarom","why","pourquoi","чому","لماذا","🤔","Waarom leer je Nederlands?","Чому ти вчиш нідерландську?"],
+  ["q_hoe","hoe","how","comment","як","كيف","💬","Hoe heet je?","Як тебе звати?"],
+  ["q_hoeveel","hoeveel","how much / how many","combien","скільки","كم","🔢","Hoeveel kost dit?","Скільки це коштує?"],
+  ["q_hoelaat","hoe laat","what time","quelle heure","котра година","كم الساعة","🕒","Hoe laat is het?","Котра година?"],
+  ["q_welke","welke / welk","which","quel","який / яка","أي","👆","Welke kleur is dit?","Який це колір?"]
+ ]),
+ cvo:R([
+  ["cvo_1","de cursist","student","l'étudiant","слухач курсів / учень","طالب في الدورة","🎓","Ik ben een cursist.","Я слухач курсів."],
+  ["cvo_2","de leraar / docent","teacher","le professeur","учитель / викладач","المعلم","👨‍🏫","De leraar spreekt duidelijk.","Учитель говорить чітко."],
+  ["cvo_3","het huiswerk","homework","les devoirs","домашнє завдання","الواجب المنزلي","📝","Ik maak mijn huiswerk.","Я роблю домашнє завдання."],
+  ["cvo_4","de pauze","break","la pause","перерва","الاستراحة","☕","Het is tijd voor pauze.","Час для перерви."],
+  ["cvo_5","het potlood","pencil","le crayon","олівець","قلم رصاص","✏️","Heb je een potlood?","У тебе є олівець?"],
+  ["cvo_6","de gom","eraser","la gomme","гумка","ممحاة","🧽","Mag ik de gom gebruiken?","Можна скористатися гумкою?"],
+  ["cvo_7","het schrift","notebook","le cahier","зошит","الدفتر","📓","Schrijf in je schrift.","Пиши в зошиті."],
+  ["cvo_8","de les","lesson","le cours","урок","الدرس","📚","De les begint om negen uur.","Урок починається о дев'ятій."],
+  ["cvo_9","het examen","exam","l'examen","іспит","الامتحان","📋","Volgende week heb ik een examen.","Наступного тижня в мене іспит."],
+  ["cvo_10","de klas","class / classroom","la classe","клас","الفصل","🏫","Onze klas is groot.","Наш клас великий."],
+  ["cvo_11","het bord","blackboard / board","le tableau","дошка","السبورة","📋","Schrijf het op het bord.","Напиши це на дошці."],
+  ["cvo_12","de tas","bag","le sac","сумка (шкільна)","الحقيبة","🎒","Mijn tas is zwaar.","Моя сумка важка."],
+  ["cvo_13","het woordenboek","dictionary","le dictionnaire","словник","القاموس","📖","Ik gebruik een woordenboek.","Я користуюсь словником."],
+  ["cvo_14","begrijpen","to understand","comprendre","розуміти","يفهم","💡","Begrijp je de les?","Ти розумієш урок?"],
+  ["cvo_15","herhalen","to repeat","répéter","повторювати","يكرر","🔁","Kunt u dat herhalen?","Чи можете повторити?"]
+ ]),
+ gemeente:R([
+  ["gem_1","het stadhuis / gemeentehuis","city hall","la maison communale","ратуша / муніципалітет","مبنى البلدية","🏛️","Ik ga naar het gemeentehuis.","Я йду до муніципалітету."],
+  ["gem_2","de identiteitskaart","ID card","la carte d'identité","посвідчення особи","بطاقة الهوية","🪪","Hier is mijn identiteitskaart.","Ось моє посвідчення особи."],
+  ["gem_3","het adres","address","l'adresse","адреса","العنوان","🏠","Wat is uw adres?","Яка Ваша адреса?"],
+  ["gem_4","het formulier","form","le formulaire","бланк / формуляр","استمارة","📄","Vul dit formulier in.","Заповніть цей бланк."],
+  ["gem_5","de handtekening","signature","la signature","підпис","التوقيع","✍️","Zet hier uw handtekening.","Поставте тут свій підпис."],
+  ["gem_6","inschrijven","to register","s'inscrire","реєструватися","التسجيل","📋","Ik moet mij inschrijven.","Мені треба зареєструватися."],
+  ["gem_7","het paspoort","passport","le passeport","паспорт","جواز السفر","🛂","Mijn paspoort is geldig.","Мій паспорт дійсний."],
+  ["gem_8","de verblijfsvergunning","residence permit","le titre de séjour","посвідка на проживання","تصريح الإقامة","📑","Ik heb een verblijfsvergunning nodig.","Мені потрібна посвідка на проживання."],
+  ["gem_9","de geboorteakte","birth certificate","l'acte de naissance","свідоцтво про народження","شهادة الميلاد","📜","Ik heb mijn geboorteakte meegenomen.","Я взяв свідоцтво про народження."],
+  ["gem_10","de wachtkamer","waiting room","la salle d'attente","зала очікування","غرفة الانتظار","🪑","Wacht in de wachtkamer, alstublieft.","Зачекайте в залі очікування, будь ласка."],
+  ["gem_11","het loket","counter / desk","le guichet","віконце / каса","الشباك","🪟","Ga naar loket nummer 3.","Підійдіть до віконця номер 3."],
+  ["gem_12","de aanvraag","application / request","la demande","заява / запит","الطلب","📨","Ik doe een aanvraag.","Я подаю заяву."]
+ ]),
+ doctor:R([
+  ["doc_1","de ziekte","illness","la maladie","хвороба","المرض","🤒","Griep is een ziekte.","Грип — це хвороба."],
+  ["doc_2","de pijn","pain","la douleur","біль","الألم","🤕","Ik heb veel pijn.","Мені дуже боляче."],
+  ["doc_3","de koorts","fever","la fièvre","температура / лихоманка","الحمى","🌡️","Ik heb hoge koorts.","У мене висока температура."],
+  ["doc_4","de apotheek","pharmacy","la pharmacie","аптека","الصيدلية","💊","De apotheek is dicht.","Аптека зачинена."],
+  ["doc_5","het medicijn","medicine","le médicament","ліки","الدواء","💊","Neem dit medicijn elke dag.","Приймайте ці ліки щодня."],
+  ["doc_6","de dokter","doctor","le médecin","лікар","الطبيب","🩺","Ik ga naar de dokter.","Я йду до лікаря."],
+  ["doc_7","de afspraak","appointment","le rendez-vous","запис / прийом","الموعد","📅","Ik heb een afspraak om 10 uur.","У мене запис о 10 годині."],
+  ["doc_8","de hoest","cough","la toux","кашель","السعال","😷","Ik heb een droge hoest.","У мене сухий кашель."],
+  ["doc_9","de verkoudheid","cold (illness)","le rhume","застуда","الزكام","🤧","Ik heb een verkoudheid.","У мене застуда."],
+  ["doc_10","het recept","prescription","l'ordonnance","рецепт","الوصفة الطبية","📝","De dokter geeft een recept.","Лікар виписує рецепт."],
+  ["doc_11","het ziekenhuis","hospital","l'hôpital","лікарня","المستشفى","🏥","Hij ligt in het ziekenhuis.","Він у лікарні."],
+  ["doc_12","ziek","ill / sick","malade","хворий","مريض","🤒","Ik voel me ziek.","Я почуваюся хворим."],
+  ["doc_13","beter","better","mieux","краще","أفضل","😊","Ik voel me al beter.","Мені вже краще."],
+  ["doc_14","de keel","throat","la gorge","горло","الحلق","🗣️","Mijn keel doet pijn.","У мене болить горло."],
+  ["doc_15","de buik","belly / stomach","le ventre","живіт","البطن","🤢","Ik heb pijn in mijn buik.","У мене болить живіт."]
+ ]),
+ shop:R([
+  ["sh_1","de winkelkar","shopping cart","le Caddie","візок для покупок","عربة التسوق","🛒","Neem een winkelkar.","Візьміть візок."],
+  ["sh_2","de kassa","checkout","la caisse","каса","الصندوق","🧾","Betaal aan de kassa.","Розрахуйтеся на касі."],
+  ["sh_3","het bonnetje","receipt","le ticket de caisse","чек","الإيصال","🧾","Wilt u het bonnetje?","Бажаєте чек?"],
+  ["sh_4","de korting","discount","la réduction","знижка","الخصم","🏷️","Er is 20% korting.","Діє знижка 20%."],
+  ["sh_zak","de zak","bag","le sac","пакет","الكيس","🛍️","Deze zak is van Action.","Цей пакет з Action."],
+  ["sh_melk","de melk","milk","le lait","молоко","الحليب","🥛","Ik koop een liter melk.","Я купую літр молока."],
+  ["sh_brood","het brood","bread","le pain","хліб","الخبز","🍞","Vers brood is lekker.","Свіжий хліб смачний."],
+  ["sh_kaas","de kaas","cheese","le fromage","сир","الجبن","🧀","Belgische kaas is lekker.","Бельгійський сир смачний."],
+  ["sh_eieren","de eieren","eggs","les œufs","яйця","البيض","🥚","Ik heb zes eieren nodig.","Мені потрібно 6 яєць."],
+  ["sh_boter","de boter","butter","le beurre","масло","الزبدة","🧈","Boter staat in de koelkast.","Масло лежить у холодильнику."],
+  ["sh_bananen","de bananen","bananas","les bananes","банани","الموز","🍌","Twee bananen, alstublieft.","Два банани, будь ласка."],
+  ["sh_appels","de appels","apples","les pommes","яблука","التفاح","🍎","Rode appels zijn zoet.","Червоні яблука солодкі."],
+  ["sh_komkommer","de komkommer","cucumber","le concombre","огірок","الخيار","🥒","Ik snijd de komkommer.","Я ріжу огірок."],
+  ["sh_tomaten","de tomaten","tomatoes","les tomates","помідори","الطماطم","🍅","Verse tomaten voor de salade.","Свіжі помідори для салату."],
+  ["sh_aardappelen","de aardappelen","potatoes","les pommes de terre","картопля","البطاطس","🥔","Aardappelen koken.","Варити картоплю."],
+  ["sh_ui","de ui","onion","l'oignon","цибуля","البصل","🧅","Snijd een ui fijn.","Дрібно наріжте цибулю."],
+  ["sh_ketchup","de ketchup","ketchup","le ketchup","кетчуп","الكاتشب","🥫","Ketchup bij de frietjes.","Кетчуп до картоплі фрі."],
+  ["sh_mayonaise","de mayonaise","mayonnaise","la mayonnaise","майонез","المايونيز","🥫","Belgen eten friet met mayonaise.","Бельгійці їдять фрі з майонезом."],
+  ["sh_zout","het zout","salt","le sel","сіль","الملح","🧂","Een beetje zout, alstublieft.","Трохи солі, будь ласка."],
+  ["sh_suiker","de suiker","sugar","le sucre","цукор","السكر","🍬","Koffie met suiker.","Кава з цукром."],
+  ["sh_koffie","de koffie","coffee","le café","кава","القهوة","☕","Een kopje koffie, aub.","Чашку кави, будь ласка."],
+  ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"],
+  ["sh_rijst","de rijst","rice","le riz","рис","الأرز","🍚","Ik kook rijst.","Я варю рис."],
+  ["sh_pasta","de pasta","pasta","les pâtes","паста / макарони","المعكرونة","🍝","Pasta met tomatensaus.","Паста з томатним соусом."],
+  ["sh_vlees","het vlees","meat","la viande","м'ясо","اللحم","🥩","Ik eet weinig vlees.","Я їм мало м'яса."],
+  ["sh_vis","de vis","fish","le poisson","риба","السمك","🐟","Verse vis is gezond.","Свіжа риба корисна."],
+  ["sh_kip","de kip","chicken","le poulet","курка","الدجاج","🍗","Kip met groenten.","Курка з овочами."],
+  ["sh_soep","de soep","soup","la soupe","суп","الحساء","🍲","Oma maakt lekkere soep.","Бабуся готує смачний суп."],
+  ["sh_salade","de salade","salad","la salade","салат","السلطة","🥗","Een salade, alstublieft.","Салат, будь ласка."],
+  ["sh_fruit","het fruit","fruit","les fruits","фрукти","الفواكه","🍇","Ik eet elke dag fruit.","Я їм фрукти щодня."],
+  ["sh_groenten","de groenten","vegetables","les légumes","овочі","الخضروات","🥦","Eet meer groenten.","Їж більше овочів."],
+  ["sh_yoghurt","de yoghurt","yoghurt","le yaourt","йогурт","الزبادي","🥛","Yoghurt met fruit.","Йогурт з фруктами."],
+  ["sh_sap","het sap","juice","le jus","сік","العصير","🧃","Appelsap of sinaasappelsap?","Яблучний чи апельсиновий сік?"],
+  ["sh_thee","de thee","tea","le thé","чай","الشاي","🍵","Een kop thee, alstublieft.","Чашку чаю, будь ласка."],
+  ["sh_bier","het bier","beer","la bière","пиво","البيرة","🍺","Een Belgisch bier, aub.","Бельгійське пиво, будь ласка."],
+  ["sh_wijn","de wijn","wine","le vin","вино","النبيذ","🍷","Rode of witte wijn?","Червоне чи біле вино?"],
+  ["sh_chocolade","de chocolade","chocolate","le chocolat","шоколад","Шоколад","🍫","Belgische chocolade is beroemd.","Бельгійський шоколад знаменитий."],
+  ["sh_koekjes","de koekjes","cookies / biscuits","les biscuits","печиво","البسكويت","🍪","Koekjes bij de koffie.","Печиво до кави."]
+ ]),
+ transport:R([
+  ["tr_1","het ticket","ticket","le billet","квиток","التذكرة","🎟️","Een ticket naar Brussel, alstublieft.","Квиток до Брюсселя, будь ласка."],
+  ["tr_2","de halte","bus stop","l'arrêt de bus","зупинка","موقف الحافلة","🚏","Waar is de bushalte?","Де автобусна зупинка?"],
+  ["tr_3","links","left","à gauche","ліворуч","يساراً","⬅️","Ga naar links.","Поверніть ліворуч."],
+  ["tr_4","rechts","right","à droite","праворуч","يميناً","➡️","Sla rechtsaf.","Поверніть праворуч."],
+  ["tr_5","rechtdoor","straight ahead","tout droit","прямо","إلى الأمام مباشرة","⬆️","Ga rechtdoor.","Ідіть прямо."],
+  ["tr_6","de bus","bus","le bus","автобус","الحافلة","🚌","Ik neem de bus naar school.","Я їду автобусом до школи."],
+  ["tr_7","de tram","tram","le tram","трамвай","الترام","🚊","De tram stopt hier.","Трамвай зупиняється тут."],
+  ["tr_8","de trein","train","le train","потяг","القطار","🚆","De trein naar Antwerpen is vertraagd.","Потяг до Антверпена затримується."],
+  ["tr_9","het station","station","la gare","вокзал","المحطة","🚉","Het station is dichtbij.","Вокзал поруч."],
+  ["tr_10","de fiets","bicycle","le vélo","велосипед","الدراجة","🚲","Ik ga met de fiets.","Я їду на велосипеді."],
+  ["tr_11","de auto","car","la voiture","автомобіль","السيارة","🚗","De auto staat voor de deur.","Машина стоїть перед дверима."],
+  ["tr_12","parkeren","to park","stationner","паркуватися","ركن السيارة","🅿️","Mag ik hier parkeren?","Можна тут паркуватися?"],
+  ["tr_13","overstappen","to change (transport)","changer","пересідати","التبديل","🔄","Je moet overstappen in Brussel.","Тобі треба пересісти в Брюсселі."],
+  ["tr_14","de vertraging","delay","le retard","затримка","التأخير","⏰","Er is een vertraging van tien minuten.","Затримка десять хвилин."],
+  ["tr_15","het perron","platform","le quai","платформа","الرصيف","🛤️","De trein vertrekt van perron 3.","Потяг відправляється з платформи 3."],
+  ["tr_16","de kaart","travel card","la carte","проїзна картка","بطاقة النقل","💳","Heb je een MOBIB-kaart?","У тебе є картка MOBIB?"],
+  ["tr_17","te voet","on foot","à pied","пішки","سيراً على الأقدام","🚶","Ik ga te voet naar de winkel.","Я йду пішки до магазину."],
+  ["tr_18","het verkeer","traffic","la circulation","рух","المرور","🚦","Er is veel verkeer vandaag.","Сьогодні великий рух."]
+ ]),
+ weather:R([
+  ["w_1","de regen","rain","la pluie","дощ","المطر","🌧️","Er komt veel regen vandaag.","Сьогодні буде сильний дощ."],
+  ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
+  ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
+  ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
+  ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅"],
+  ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅"],
+  ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅"],
+  ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅"],
+  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
+  ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
+  ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
+ ])
+};
+
+const dot=c=>'<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="'+c+'" stroke="#20243A" stroke-opacity=".35" stroke-width="3"/></svg>';
 Object.assign(DATA,{
  phrases:R([
   ["phr_1", "hallo", "hello", "bonjour / salut", "привіт", "مرحبا", "👋", "Hallo, hoe gaat het?", "Привіт, як справи?"],
@@ -802,8 +1248,601 @@ Object.assign(DATA,{
   ["clk_10", "het is zeven uur", "it is seven o'clock", "il est sept heures", "зараз сьома година", "الساعة السابعة", "🕖", "Ik sta om zeven uur op.", "Я встаю о сьомій."],
   ["clk_11", "het is half acht", "it is half past seven (7:30)", "il est sept heures et demie", "зараз пів на восьму (7:30)", "السابعة والنصف", "🕢", "De bus komt om half acht.", "Автобус приїжджає о пів на восьму."],
   ["clk_12", "het is negen uur", "it is nine o'clock", "il est neuf heures", "зараз дев'ята година", "الساعة التاسعة", "🕘", "De les begint om negen uur.", "Урок починається о дев'ятій."],
-  ["clk_13", "het is tien uur", "it is ten o'clock", "il est dix heures", "зараз десята година", "الساعة العاشرة", "🕙", "Om tien uur ga ik slapen.", "О десятій я лягаю спати."],
-  ["clk_14", "het is kwart over acht", "it is quarter past eight (8:15)", "il est huit heures et quart", "зараз чверть на дев'яту (8:15)", "الثامنة والربع", "🕣", "Ik vertrek om kwart over acht.", "Я вирушаю о чверть на дев'яту."],
-  ["clk_15", "het is kwart voor tien", "it is quarter to ten (9:45)", "il est dix heures moins le quart", "зараз за чверть десята (9:45)", "إلا ربع العاشرة", "I will update the application to complete the single-file HTML structure with all training data, styling, and interactivity, adhering to all formatting requirements and streaming markers.
+  ["clk_13", "het is tien uur", "it is ten o'clock", "il est dix heures", "зараз десята година", "الساعة العاشرة", "```html
+🕙", "Om tien uur ga ik slapen.", "О десятій я лягаю спати."]
+ ]),
+ months:R([
+  ["m_1", "januari", "January", "janvier", "січень", "يناير", "❄️", "In januari is het koud.", "У січні холодно."],
+  ["m_2", "februari", "February", "février", "лютий", "febrier", "❄️", "Februari is een korte maand.", "Лютий — короткий місяць."],
+  ["m_3", "maart", "March", "mars", "березень", "مارس", "🌱", "In maart begint de lente.", "У березні починається весна."],
+  ["m_4", "april", "April", "avril", "квітень", "أبريل", "🌷", "April doet wat hij wil.", "У квітня свій характер."],
+  ["m_5", "mei", "May", "mai", "травень", "مايو", "🌸", "Mei is een mooie maand.", "Травень — гарний місяць."],
+  ["m_6", "juni", "June", "juin", "червень", "يونيو", "☀️", "In juni begint de zomer.", "У червні починається літо."],
+  ["m_7", "juli", "July", "juillet", "липень", "يوليو", "🏖️", "In juli hebben we vakantie.", "У липні в нас канікули."],
+  ["m_8", "augustus", "August", "août", "серпень", "أغسطس", "🌻", "Augustus is warm.", "Серпень теплий."],
+  ["m_9", "september", "September", "septembre", "вересень", "سبتمبر", "🍂", "De school begint in september.", "Школа починається у вересні."],
+  ["m_10", "oktober", "October", "octobre", "жовтень", "أكتوبر", "🍁", "In oktober vallen de bladeren.", "У жовтні падає листя."],
+  ["m_11", "november", "November", "novembre", "листопад", "نوفمبر", "🌧️", "November is regenachtig.", "Листопад дощовий."],
+  ["m_12", "december", "December", "décembre", "грудень", "ديسمبر", "🎄", "In december is het Kerstmis.", "У грудні Різдво."]
+ ]),
+ jobs:R([
+  ["job_1", "de dokter", "doctor", "le médecin", "лікар", "الطبيب", "🩺", "De dokter helpt zieke mensen.", "Лікар допомагає хворим."],
+  ["job_2", "de leraar", "teacher", "le professeur", "вчитель", "المعلم", "👨‍🏫", "De leraar geeft les op school.", "Вчитель викладає в школі."],
+  ["job_3", "de bakker", "baker", "le boulanger", "пекар", "الخباز", "🥖", "De bakker bakt vers brood.", "Пекар пече свіжий хліб."],
+  ["job_4", "de verkoper", "shop assistant", "le vendeur", "продавець", "البائع", "🛒", "De verkoper werkt in de winkel.", "Продавець працює в магазині."],
+  ["job_5", "de chauffeur", "driver", "le chauffeur", "водій", "السائق", "🚌", "De chauffeur rijdt met de bus.", "Водій керує автобусом."],
+  ["job_6", "de politieagent", "police officer", "le policier", "поліцейський", "شرطي", "👮", "De politieagent helpt op straat.", "Поліцейський допомагає на вулиці."],
+  ["job_7", "de verpleegkundige", "nurse", "l'infirmier(ère)", "медсестра / медбрат", "الممرض", "👩‍⚕️", "De verpleegkundige werkt in het ziekenhuis.", "Медсестра працює в лікарні."],
+  ["job_8", "de kok", "chef", "le cuisinier", "кухар", "الطهي", "👨‍🍳", "De kok kookt in het restaurant.", "Кухар готує в ресторані."],
+  ["job_9", "de kapper", "hairdresser", "le coiffeur", "перукар", "الحلاق", "✂️", "De kapper knipt mijn haar.", "Перукар стриже моє волосся."],
+  ["job_10", "de schilder", "painter", "le peintre", "маляр / художник", "الرسام", "🎨", "De schilder verft het huis.", "Маляр фарбує будинок."]
+ ]),
+ body:R([
+  ["body_1", "het hoofd", "head", "la tête", "голова", "الرأس", "🗣️", "Mijn hoofd doet pijn.", "У мене болить голова."],
+  ["body_2", "het oog", "eye", "l'œil", "око", "العين", "👁️", "Ik heb blauwe ogen.", "У мене блакитні очі."],
+  ["body_3", "het oor", "ear", "l'oreille", "вухо", "الأذن", "👂", "Mijn oor doet pijn.", "У мене болить вухо."],
+  ["body_4", "de neus", "nose", "le nez", "ніс", "الأنف", "👃", "Mijn neus is rood.", "Мій ніс червоний."],
+  ["body_5", "de mond", "mouth", "la bouche", "рот", "الفم", "👄", "Doe je mond open.", "Відкрий рот."],
+  ["body_6", "de hand", "hand", "la main", "рука (долоня)", "اليد", "✋", "Was je handen.", "Помий руки."],
+  ["body_7", "de voet", "foot", "le pied", "стопа", "القدم", "🦶", "Mijn voet doet pijn.", "У мене болить стопа."],
+  ["body_8", "het been", "leg", "la jambe", "нога", "الساق", "🦵", "Hij heeft lange benen.", "У нього довгі ноги."],
+  ["body_9", "de arm", "arm", "le bras", "рука", "الذراع", "💪", "Mijn arm is gebroken.", "Моя рука зламана."],
+  ["body_10", "de rug", "back", "le dos", "спина", "الظهر", "🧍", "Ik heb pijn in mijn rug.", "У мене болить спина."]
+ ]),
+ home:R([
+  ["hm_1", "het huis", "house", "la maison", "будинок", "المنزل", "🏠", "Ons huis is nieuw.", "Наш будинок новий."],
+  ["hm_2", "de tafel", "table", "la table", "стіл", "الطاولة", "🪑", "Het eten staat op tafel.", "Їжа на столі."],
+  ["hm_3", "de stoel", "chair", "la chaise", "стілець", "الكرسي", "🪑", "Ga op de stoel zitten.", "Сядь на стілець."],
+  ["hm_4", "het bed", "bed", "le lit", "ліжко", "السرير", "🛏️", "Het bed is comfortabel.", "Ліжко зручне."],
+  ["hm_5", "de kast", "cupboard", "l'armoire", "шафа", "الخزانة", "🗄️", "De kleren hangen in de kast.", "Одяг висить у шафі."],
+  ["hm_6", "de deur", "door", "la porte", "двері", "الباب", "🚪", "Doe de deur dicht.", "Зачини двері."],
+  ["hm_7", "het raam", "window", "la fenêtre", "вікно", "النافذة", "🪟", "Open het raam, aub.", "Відчини вікно, будь ласка."],
+  ["hm_8", "de keuken", "kitchen", "la cuisine", "кухня", "المطبخ", "🍳", "Oma kookt in de keuken.", "Бабуся готує на кухні."],
+  ["hm_9", "de badkamer", "bathroom", "la salle de bain", "ванна кімната", "الحمام", "🚿", "De badkamer is schoon.", "Ванна кімната чиста."],
+  ["hm_10", "de tuin", "garden", "le jardin", "сад", "الحديقة", "🏡", "De kinderen spelen in de tuin.", "Діти граються в саду."]
+ ]),
+ clothes:R([
+  ["cl_1", "de broek", "trousers / pants", "le pantalon", "штани", "السروال", "👖", "Deze broek is nieuw.", "Ці штани нові."],
+  ["cl_2", "het t-shirt", "T-shirt", "le tee-shirt", "футболка", "قميص قصير الأكمام", "👕", "Een wit t-shirt.", "Біла футболка."],
+  ["cl_3", "de jas", "coat / jacket", "la veste", "куртка / пальто", "السترة", "🧥", "Trek je jas aan.", "Вдягни куртку."],
+  ["cl_4", "de schoenen", "shoes", "les chaussures", "взуття / черевики", "الأحذية", "👟", "Mijn schoenen zijn vuil.", "Моє взуття брудне."],
+  ["cl_5", "de trui", "sweater", "le pull", "светр", "السترة الصوفية", "🧶", "Een warme trui.", "Теплий светр."],
+  ["cl_6", "de jurk", "dress", "la robe", "сукня", "الفستان", "👗", "Zij draagt een mooie jurk.", "Вона носить гарну сукню."],
+  ["cl_7", "de rok", "skirt", "la jupe", "спідниця", "التنورة", "👗", "Een korte rok.", "Коротка спідниця."],
+  ["cl_8", "de sokken", "socks", "les chaussettes", "шкарпетки", "الجوارب", "🧦", "Warme sokken voor de winter.", "Теплі шкарпетки на зиму."]
+ ]),
+ colors:R([
+  ["col_1", "rood", "red", "rouge", "червоний", "أحمر", "🔴", "De appel is rood.", "Яблуко червоне."],
+  ["col_2", "blauw", "blue", "bleu", "синій", "أزرق", "🔵", "De lucht is blauw.", "Небо синє."],
+  ["col_3", "geel", "yellow", "jaune", "жовтий", "أصفر", "🟡", "De zon is geel.", "Сонце жовте."],
+  ["col_4", "groen", "green", "vert", "зелений", "أخضر", "🟢", "Het gras is groen.", "Трава зелена."],
+  ["col_5", "wit", "white", "blanc", "білий", "أبيض", "⚪", "De sneeuw is wit.", "Сніг білий."],
+  ["col_6", "zwart", "black", "noir", "чорний", "أسود", "⚫", "De kat is zwart.", "Кіт чорний."],
+  ["col_7", "oranje", "orange", "orange", "помаранчевий", "برتقالي", "🟠", "Een oranje sinaasappel.", "Помаранчевий апельсин."],
+  ["col_8", "grijs", "grey", "gris", "сірий", "رمادي", "🩶", "De wolk is grijs.", "Хмара сіра."]
+ ]),
+ animals:R([
+  ["an_1", "de hond", "dog", "le chien", "собака", "الكلب", "🐕", "De hond blaft.", "Собака гавкає."],
+  ["an_2", "de kat", "cat", "le chat", "кіт / кішка", "القطة", "🐈", "De kat slaapt op de stoel.", "Кіт спить на стільці."],
+  ["an_3", "de vogel", "bird", "l'oiseau", "пташка", "الطائر", "🐦", "De vogel vliegt.", "Пташка летить."],
+  ["an_4", "het paard", "horse", "le cheval", "кінь", "الحصان", "🐎", "Het paard loopt snel.", "Кінь біжить швидко."],
+  ["an_5", "de koe", "cow", "la vache", "корова", "البقرة", "🐄", "De koe geeft melk.", "Корова дає молоко."],
+  ["an_6", "het schaap", "sheep", "le mouton", "вівця", "الخروف", "🐑", "Het schaap is wit.", "Вівця біла."]
+ ]),
+ city:R([
+  ["cit_1", "de straat", "street", "la rue", "вулиця", "الشارع", "🛣️", "Ik woon in deze straat.", "Я живу на цій вулиці."],
+  ["cit_2", "het park", "park", "le parc", "парк", "الحديقة العامة", "🌳", "We wandelen in het park.", "Ми гуляємо в парку."],
+  ["cit_3", "de markt", "market", "le marché", "ринок", "السوق", "🧺", "Op zaterdag ga ik naar de markt.", "У суботу я йду на ринок."],
+  ["cit_4", "de bank", "bank", "la banque", "банк", "البنك", "🏦", "De bank is open tot vier uur.", "Банк відкритий до четвертої."],
+  ["cit_5", "de school", "school", "l'école", "школа", "المدرسة", "🏫", "De kinderen zijn op school.", "Діти в школі."],
+  ["cit_6", "de kerk", "church", "l'église", "церква", "الكنيسة", "⛪", "De kerk staat in het centrum.", "Церква стоїть у центрі."]
+ ]),
+ werk:R([
+  ["wrk_1", "het werk", "work / job", "le travail", "робота", "العمل", "💼", "Ik ga naar mijn werk.", "Я йду на роботу."],
+  ["wrk_2", "het kantoor", "office", "le bureau", "офіс", "المكتب", "🏢", "Mijn kantoor is in Brussel.", "Мій офіс у Брюсселі."],
+  ["wrk_3", "de kollega", "colleague", "le collègue", "колега", "الزميل", "🧑‍💼", "Mijn collega helpt mij.", "Мій колега допомагає мені."],
+  ["wrk_4", "het salaris", "salary", "le salaire", "зарплата", "الراتب", "💶", "Het salaris komt eind de maand.", "Зарплата наприкінці місяця."],
+  ["wrk_5", "de baas", "boss", "le patron", "начальник", "الرئيس", "👨‍💼", "De baas is in de vergadering.", "Начальник на нараді."]
+ ]),
+ adjectives:R([
+  ["adj_1", "groot", "big", "grand", "великий", "كبير", "🐘", "Het huis is groot.", "Будинок великий."],
+  ["adj_2", "klein", "small", "petit", "маленький", "صغير", "🐭", "De muis is klein.", "Миша маленька."],
+  ["adj_3", "mooi", "beautiful", "beau", "гарний", "جميل", "🌸", "Een mooie bloem.", "Гарна квітка."],
+  ["adj_4", "goed", "good", "bon", "добрий / хороший", "جيد", "👍", "Dat is heel goed.", "Це дуже добре."],
+  ["adj_5", "slecht", "bad", "mauvais", "поганий", "سيء", "👎", "Het weer is slecht.", "Погода погана."],
+  ["adj_6", "altijd", "always", "toujours", "завжди", "دائمًا", "🔄", "Hij is altijd op tijd.", "Він завжди вчасно."],
+  ["adj_7", "nooit", "never", "jamais", "ніколи", "أبدًا", "🚫", "Ik ben nooit te laat.", "Я ніколи не запізнююся."]
+ ])
+});
 
-http://googleusercontent.com/immersive_entry_chip/0
+let state={
+  targetLang:"nl",
+  uiLang:"uk",
+  theme:"dark",
+  cat:"comm",
+  tab:"phrases",
+  mode:"quiz",
+  score:0,
+  idx:0,
+  items:[],
+  learned:new Set(),
+  review:new Set(),
+  correctInRound:0
+};
+
+function saveState(){
+  try{
+    localStorage.setItem("leren_state",JSON.stringify({
+      targetLang:state.targetLang,
+      uiLang:state.uiLang,
+      theme:state.theme,
+      cat:state.cat,
+      tab:state.tab,
+      mode:state.mode,
+      score:state.score,
+      learned:Array.from(state.learned),
+      review:Array.from(state.review)
+    }));
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const s=localStorage.getItem("leren_state");
+    if(s){
+      const parsed=JSON.parse(s);
+      if(parsed.targetLang) state.targetLang=parsed.targetLang;
+      if(parsed.uiLang) state.uiLang=parsed.uiLang;
+      if(parsed.theme) state.theme=parsed.theme;
+      if(parsed.cat) state.cat=parsed.cat;
+      if(parsed.tab) state.tab=parsed.tab;
+      if(parsed.mode) state.mode=parsed.mode;
+      if(typeof parsed.score==='number') state.score=parsed.score;
+      if(Array.isArray(parsed.learned)) state.learned=new Set(parsed.learned);
+      if(Array.isArray(parsed.review)) state.review=new Set(parsed.review);
+    }
+  }catch(e){}
+}
+
+function speak(text, lang="nl-BE"){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang;
+  u.rate=0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function t(key){
+  const dict=UI[state.uiLang]||UI.uk;
+  return dict[key]||key;
+}
+
+function initUI(){
+  document.documentElement.setAttribute("data-theme", state.theme);
+  $("themeToggle").textContent=state.theme==="dark"?"🌙":"☀️";
+  $("targetLangPicker").value=state.targetLang;
+  $("uiLangPicker").value=state.uiLang;
+
+  $("tagline").textContent=t("tagline");
+  $("targetLabel").textContent=t("target");
+  $("uiLabel").textContent=t("ui");
+  $("lblCat").textContent=t("lCat");
+  $("lblSub").textContent=t("lSub");
+  $("lblMode").textContent=t("lMode");
+  $("reportBugBtn").textContent=t("reportBug");
+  $("footText").textContent=t("footer");
+
+  renderCats();
+  renderSubs();
+  renderModes();
+  updateStats();
+}
+
+function renderCats(){
+  const nav=$("catNav");
+  nav.innerHTML="";
+  CATEGORIES.forEach(c=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.textContent=(UI[state.uiLang]?.cats?.[c.id])||c.id;
+    btn.setAttribute("aria-selected", c.id===state.cat?"true":"false");
+    btn.onclick=()=>{
+      state.cat=c.id;
+      state.tab=c.tabs[0];
+      renderCats();
+      renderSubs();
+      startRound();
+      saveState();
+    };
+    nav.appendChild(btn);
+  });
+}
+
+function renderSubs(){
+  const nav=$("subNav");
+  nav.innerHTML="";
+  const catObj=CATEGORIES.find(c=>c.id===state.cat);
+  if(!catObj) return;
+
+  catObj.tabs.forEach(tabKey=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.textContent=(UI[state.uiLang]?.tabs?.[tabKey])||tabKey;
+    btn.setAttribute("aria-selected", tabKey===state.tab?"true":"false");
+    btn.onclick=()=>{
+      state.tab=tabKey;
+      renderSubs();
+      startRound();
+      saveState();
+    };
+    nav.appendChild(btn);
+  });
+}
+
+function renderModes(){
+  const wrapper=$("modeButtons");
+  wrapper.innerHTML="";
+  const modes=["study","quiz","audio","review"];
+  modes.forEach(m=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.textContent=(UI[state.uiLang]?.modes?.[m])||m;
+    if(m===state.mode) btn.className="primary";
+    btn.onclick=()=>{
+      state.mode=m;
+      renderModes();
+      startRound();
+      saveState();
+    };
+    wrapper.appendChild(btn);
+  });
+}
+
+function updateStats(){
+  $("score").textContent="⭐ "+state.score;
+  $("learnedCount").textContent=state.learned.size;
+  $("reviewCount").textContent=t("review")+": "+state.review.size;
+}
+
+function startRound(){
+  state.idx=0;
+  state.correctInRound=0;
+
+  if(state.mode==="review"){
+    const allItems=[];
+    Object.values(DATA).forEach(group=>{
+      if(group && group.items) allItems.push(...group.items);
+    });
+    state.items=allItems.filter(i=>state.review.has(i.id));
+    if(state.items.length===0){
+      renderEmptyReview();
+      return;
+    }
+  } else {
+    const group=DATA[state.tab];
+    if(!group || !group.items || group.items.length===0){
+      renderEmptyTopic();
+      return;
+    }
+    state.items=[...group.items].sort(()=>Math.random()-0.5).slice(0, PER_ROUND);
+  }
+
+  renderCard();
+}
+
+function renderEmptyReview(){
+  $("card").innerHTML=`<div class="empty"><p>${t("emptyReview")}</p></div>`;
+  $("prog").textContent="";
+  $("rnd").textContent="";
+  $("barfill").style.width="0%";
+}
+
+function renderEmptyTopic(){
+  $("card").innerHTML=`<div class="empty"><p>${t("noItems")}</p></div>`;
+  $("prog").textContent="";
+  $("rnd").textContent="";
+  $("barfill").style.width="0%";
+}
+
+function renderCard(){
+  if(state.idx>=state.items.length){
+    renderEndRound();
+    return;
+  }
+
+  const item=state.items[state.idx];
+  const total=state.items.length;
+  const pct=Math.round(((state.idx)/total)*100);
+
+  $("prog").textContent=`${t("lessonProgress")} ${state.idx+1} / ${total}`;
+  $("rnd").textContent=`${t("round")} 1`;
+  $("barfill").style.width=`${pct}%`;
+
+  const card=$("card");
+  card.innerHTML="";
+
+  if(state.mode==="study"){
+    renderStudyCard(card, item);
+  } else if(state.mode==="audio"){
+    renderAudioCard(card, item);
+  } else {
+    renderQuizCard(card, item);
+  }
+}
+
+function renderStudyCard(card, item){
+  const textNL=item.nl||"";
+  const textTr=item[state.uiLang]||item.en||"";
+
+  card.innerHTML=`
+    <div class="q">
+      <small>${t("studySub")}</small>
+      <div class="icon-box">${item.icon||"💡"}</div>
+      <h2>${textNL}</h2>
+      <p>${textTr}</p>
+      <button class="listen" type="button" id="speakBtn">${t("listen")}</button>
+    </div>
+    ${item.ex_nl ? `<div class="feedback"><p class="example">" ${item.ex_nl} "</p><p>${item.ex_uk||""}</p></div>` : ""}
+    <div class="row" style="margin-top:10px;">
+      <button class="btn primary" type="button" id="nextBtn">${t("next")}</button>
+    </div>
+  `;
+
+  $("speakBtn").onclick=()=>speak(textNL);
+  $("nextBtn").onclick=()=>{
+    state.learned.add(item.id);
+    state.score+=1;
+    updateStats();
+    saveState();
+    state.idx++;
+    renderCard();
+  };
+}
+
+function renderQuizCard(card, item){
+  const textNL=item.nl||"";
+  const textTr=item[state.uiLang]||item.en||"";
+
+  let options=[item];
+  const allInGroup=(DATA[state.tab]?.items||[]);
+  const candidates=allInGroup.filter(i=>i.id!==item.id);
+  const shuffled=candidates.sort(()=>Math.random()-0.5).slice(0, 3);
+  options.push(...shuffled);
+  options.sort(()=>Math.random()-0.5);
+
+  card.innerHTML=`
+    <div class="q">
+      <small>${UI[state.uiLang]?.subs?.[state.tab]||t("quiz")}</small>
+      <div class="icon-box">${item.icon||"❓"}</div>
+      <h2>${textTr}</h2>
+      <button class="listen" type="button" id="speakBtn">${t("listen")}</button>
+    </div>
+    <div class="opts" id="optsBox"></div>
+    <div class="feedback" id="feedbackBox"></div>
+    <div class="row" id="actionRow" hidden>
+      <button class="btn primary" type="button" id="nextBtn">${t("next")}</button>
+    </div>
+  `;
+
+  $("speakBtn").onclick=()=>speak(textNL);
+
+  const optsBox=$("optsBox");
+  options.forEach(optItem=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="opt";
+    btn.textContent=optItem.nl;
+    btn.onclick=()=>checkAnswer(optItem, item, btn);
+    optsBox.appendChild(btn);
+  });
+}
+
+function renderAudioCard(card, item){
+  const textNL=item.nl||"";
+
+  let options=[item];
+  const allInGroup=(DATA[state.tab]?.items||[]);
+  const candidates=allInGroup.filter(i=>i.id!==item.id);
+  const shuffled=candidates.sort(()=>Math.random()-0.5).slice(0, 3);
+  options.push(...shuffled);
+  options.sort(()=>Math.random()-0.5);
+
+  card.innerHTML=`
+    <div class="q">
+      <small>${t("audioSub")}</small>
+      <div class="icon-box">🎧</div>
+      <h2>???</h2>
+      <button class="listen" type="button" id="speakBtn">${t("listen")}</button>
+    </div>
+    <div class="opts" id="optsBox"></div>
+    <div class="feedback" id="feedbackBox"></div>
+    <div class="row" id="actionRow" hidden>
+      <button class="btn primary" type="button" id="nextBtn">${t("next")}</button>
+    </div>
+  `;
+
+  speak(textNL);
+  $("speakBtn").onclick=()=>speak(textNL);
+
+  const optsBox=$("optsBox");
+  options.forEach(optItem=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="opt";
+    btn.textContent=optItem[state.uiLang]||optItem.en;
+    btn.onclick=()=>checkAnswer(optItem, item, btn);
+    optsBox.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, correct, btnEl){
+  const opts=document.querySelectorAll(".opt");
+  opts.forEach(b=>b.disabled=true);
+
+  const fb=$("feedbackBox");
+  const isCorrect=selected.id===correct.id;
+
+  if(isCorrect){
+    btnEl.classList.add("correct");
+    fb.innerHTML=`<strong>${t("correct")}</strong>`;
+    state.score+=5;
+    state.correctInRound++;
+    state.learned.add(correct.id);
+    state.review.delete(correct.id);
+  } else {
+    btnEl.classList.add("incorrect");
+    opts.forEach(b=>{
+      if(b.textContent===correct.nl || b.textContent===(correct[state.uiLang]||correct.en)){
+        b.classList.add("correct");
+      }
+    });
+    fb.innerHTML=`<strong>${t("incorrect")} ${correct.nl}</strong><p>${correct[state.uiLang]||correct.en}</p>`;
+    state.review.add(correct.id);
+  }
+
+  speak(correct.nl);
+  updateStats();
+  saveState();
+
+  $("actionRow").hidden=false;
+  $("nextBtn").onclick=()=>{
+    state.idx++;
+    renderCard();
+  };
+}
+
+function renderEndRound(){
+  const total=state.items.length;
+  const pct=total>0?Math.round((state.correctInRound/total)*100):0;
+
+  $("barfill").style.width="100%";
+  $("prog").textContent=t("finished");
+
+  $("card").innerHTML=`
+    <div class="end">
+      <h2>🎉 ${t("finished")}</h2>
+      <p>${t("accuracy")}: <strong>${pct}%</strong></p>
+      <div class="summary-grid">
+        <div><strong>${state.correctInRound}</strong><span>${t("right")}</span></div>
+        <div><strong>${total - state.correctInRound}</strong><span>${t("review")}</span></div>
+        <div><strong>+${state.correctInRound * 5}</strong><span>${t("points")}</span></div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" type="button" id="againBtn">${t("again")}</button>
+        <button class="btn primary" type="button" id="nextTopicBtn">${t("nextTopic")}</button>
+      </div>
+    </div>
+  `;
+
+  $("againBtn").onclick=()=>startRound();
+  $("nextTopicBtn").onclick=()=>{
+    const catObj=CATEGORIES.find(c=>c.id===state.cat);
+    if(catObj){
+      const currIdx=catObj.tabs.indexOf(state.tab);
+      if(currIdx>=0 && currIdx<catObj.tabs.length-1){
+        state.tab=catObj.tabs[currIdx+1];
+      } else {
+        const catIdx=CATEGORIES.findIndex(c=>c.id===state.cat);
+        const nextCat=CATEGORIES[(catIdx+1)%CATEGORIES.length];
+        state.cat=nextCat.id;
+        state.tab=nextCat.tabs[0];
+      }
+      renderCats();
+      renderSubs();
+      startRound();
+      saveState();
+    }
+  };
+}
+
+function setupSearch(){
+  const modal=$("searchModal");
+  const input=$("searchInput");
+  const results=$("searchResults");
+
+  $("searchBtn").onclick=()=>{
+    modal.hidden=false;
+    input.value="";
+    results.innerHTML="";
+    input.focus();
+  };
+
+  $("searchClose").onclick=()=>modal.hidden=true;
+
+  input.oninput=()=>{
+    const q=input.value.trim().toLowerCase();
+    if(!q){ results.innerHTML=""; return; }
+
+    const matches=[];
+    Object.values(DATA).forEach(group=>{
+      if(!group || !group.items) return;
+      group.items.forEach(item=>{
+        if((item.nl && item.nl.toLowerCase().includes(q)) ||
+           (item.uk && item.uk.toLowerCase().includes(q)) ||
+           (item.en && item.en.toLowerCase().includes(q))){
+          matches.push(item);
+        }
+      });
+    });
+
+    if(matches.length===0){
+      results.innerHTML=`<div class="search-empty">${t("searchEmpty")}</div>`;
+      return;
+    }
+
+    results.innerHTML="";
+    matches.slice(0, 15).forEach(m=>{
+      const div=document.createElement("div");
+      div.className="search-item";
+      div.innerHTML=`
+        <div class="nl">${m.icon||""} ${m.nl}</div>
+        <div class="tr">${m[state.uiLang]||m.en||""}</div>
+        ${m.ex_nl ? `<div class="ex">" ${m.ex_nl} "</div>` : ""}
+      `;
+      div.onclick=()=>{
+        speak(m.nl);
+      };
+      results.appendChild(div);
+    });
+  };
+}
+
+function initEvents(){
+  $("themeToggle").onclick=()=>{
+    state.theme=state.theme==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme", state.theme);
+    $("themeToggle").textContent=state.theme==="dark"?"🌙":"☀️";
+    saveState();
+  };
+
+  $("targetLangPicker").onchange=e=>{
+    state.targetLang=e.target.value;
+    saveState();
+  };
+
+  $("uiLangPicker").onchange=e=>{
+    state.uiLang=e.target.value;
+    initUI();
+    startRound();
+    saveState();
+  };
+
+  $("reportBugBtn").onclick=()=>{
+    window.location.href="mailto:gembarsky.d@gmail.com?subject=Leren.be%20Bug%20Report";
+  };
+
+  setupSearch();
+}
+
+function start(){
+  loadState();
+  initUI();
+  initEvents();
+  startRound();
+}
+
+document.addEventListener("DOMContentLoaded", start);
+</script>
+</body>
+</html>
