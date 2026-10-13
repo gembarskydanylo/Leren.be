@@ -1,6 +1,6 @@
-/* Polyglot Leren offline cache. Relative paths support GitHub Pages project sites. */
-const CACHE_NAME = "polyglot-leren-v9";
-const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
+/* Leren.be offline cache. Relative paths support GitHub Pages project sites. */
+const CACHE_NAME = "leren-be-v9";
+const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
@@ -13,7 +13,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("polyglot-leren-") && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => key.startsWith("leren-be-") && key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });

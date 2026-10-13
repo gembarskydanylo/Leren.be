@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Polyglot Leren — Nederlands A1.1",
-  "short_name": "Polyglot Leren",
+  "name": "Leren.be — Nederlands A1.1",
+  "short_name": "Leren.be",
   "description": "Вивчення нідерландської мови A1.1 з вправами та повторенням.",
   "lang": "uk",
   "start_url": "./",
@@ -15,7 +15,25 @@
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
