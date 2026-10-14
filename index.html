@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FFD23F">
+<meta name="theme-color" content="#1a0b3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Leren.be">
+<meta name="application-name" content="Leren.be">
+<meta name="description" content="Вивчення нідерландської мови A1.1 з вправами, тестами та повторенням.">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -272,6 +276,18 @@ footer strong{color:var(--fg);font-weight:750}
   border-color: rgba(255,255,255,.22) !important;
   box-shadow: none !important;
 }
+:root[data-theme="glass"] .opt.correct,
+:root:not([data-theme]) .opt.correct{
+  background: rgba(74,222,128,.30) !important;
+  border-color: #4ADE80 !important;
+  color: #fff !important;
+}
+:root[data-theme="glass"] .opt.incorrect,
+:root:not([data-theme]) .opt.incorrect{
+  background: rgba(251,113,133,.30) !important;
+  border-color: #FB7185 !important;
+  color: #fff !important;
+}
 :root[data-theme="glass"] .nav-cats button[aria-selected="true"],
 :root[data-theme="glass"] .nav-subs button[aria-selected="true"],
 :root:not([data-theme]) .nav-cats button[aria-selected="true"],
@@ -408,7 +424,7 @@ main{gap:8px;padding:8px 8px 18px}
   <footer>
     <span id="footText"></span>
     <span>Danylo Hembarskyi • All rights reserved</span>
-    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a></span>
+    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit">Privacy</a></span>
     <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
     <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
       <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
@@ -1176,6 +1192,7 @@ function updateHeader(){
  const th=document.documentElement.dataset.theme||"glass";
  const icon=th==="dark"?"☀️":th==="oranje"?"🍊":"✨";
  $("themeToggle").textContent=icon;
+ const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute("content",th==="dark"?"#0F111A":th==="oranje"?"#FFD23F":"#1a0b3a");
  const themeLabel=th==="dark"?(u.dark||"Dark"):th==="oranje"?(u.oranje||"Oranje"):(u.glass||"Glass");
  $("themeToggle").title=themeLabel;
  $("themeToggle").setAttribute("aria-label",themeLabel);
