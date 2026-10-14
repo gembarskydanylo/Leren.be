@@ -22,6 +22,7 @@
 | `icon-maskable-512.png` | адаптивна іконка Android |
 | `apple-touch-icon.png` | іконка для iPhone / iPad (180×180) |
 | `screenshots/` | скріншоти 1080×2160 для маніфесту та Google Play |
+| `store/` | тексти для сторінки в Google Play (uk/nl/en), банер 1024×500, іконка 512×512 |
 | `privacy.html` | політика конфіденційності (потрібна для Google Play та App Store) |
 
 ## Запуск локально
