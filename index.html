@@ -377,6 +377,37 @@ main{gap:8px;padding:8px 8px 18px}
 .opt{min-height:50px}.listen{min-height:38px;padding:4px 12px;margin-top:2px}.btn{min-height:48px}
 /* рядок з кнопками (Далі / Знаю це) завжди над нижньою панеллю */
 #card>div.row:last-of-type{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));background:var(--card);padding:8px 0 2px;z-index:5}
+/* ===== Kort / lang board ===== */
+.kl-word{display:flex;justify-content:center;margin:10px 0 6px}
+.kl-word .kl-mag{font-size:30px;padding:10px 22px}
+.kl-mag{display:inline-block;background:#fff;color:#222;font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.06em;font-size:15px;line-height:1.2;padding:5px 10px;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,.25);position:relative;margin:3px auto;white-space:nowrap}
+.kl-mag::before{content:"";position:absolute;top:-5px;left:50%;width:12px;height:9px;margin-left:-6px;background:#2b2b2b;border-radius:2px;opacity:.85}
+.kl-mag .v{color:#D32F2F}
+.kl-mag.miss{outline:3px solid #FB7185;outline-offset:1px}
+.kl-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
+.kl-col{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:150px;padding:12px 6px 14px;border-radius:14px;border:2px dashed;cursor:pointer;font:inherit;color:var(--fg);background:transparent;text-align:center;transition:transform .12s,background .2s}
+.kl-col h3{margin:0;font-size:22px;letter-spacing:.08em;color:var(--fg)}
+.kl-col small{color:var(--mut);font-size:12px;font-weight:700}
+.kl-col.kort{border-color:#38BDF8;background:rgba(56,189,248,.13)}
+.kl-col.lang{border-color:#F59E0B;background:rgba(245,158,11,.13)}
+.kl-col:not(:disabled):not(.static):active{transform:scale(.97)}
+.kl-col:not(:disabled):not(.static):hover{background:rgba(255,255,255,.18)}
+.kl-col:disabled{cursor:default}
+.kl-col.static{cursor:default}
+.kl-list{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px;width:100%}
+.kl-chipbtn{background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center}
+.kl-hint{text-align:center;color:var(--mut);font-size:13px;margin:8px 0 0}
+.kl-verbq{font-size:24px}
+.kl-rule{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px;text-align:center}
+.kl-rt{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--soft)}
+.kl-rt-h{font-weight:800;font-size:13px;padding:6px;background:var(--line)}
+.kl-rt-g{display:grid;grid-template-columns:1fr 1fr}
+.kl-rt-c{font-size:12px;padding:6px 4px;border-top:1px solid var(--line);color:var(--fg)}
+.kl-rt-c:nth-child(odd){border-right:1px solid var(--line)}
+.kl-rt-c.ex{cursor:pointer}
+.kl-rt-c.ex .kl-mag{font-size:13px;padding:4px 8px}
+.kl-rule-note{grid-column:1/-1;font-size:12px;color:var(--mut);margin:2px 0 0}
+.end .kl-cols{margin-top:14px}
 </style>
 </head>
 <body>
@@ -1012,61 +1043,59 @@ DATA.verbs.items.push(...R([
 
 ]).items);
 
-DATA.klanken = R([
-  ["kl_bom","bom","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","💣","bom — 1 vocaal, kort","bom — 1 голосна, коротко"],
-  ["kl_zes","zes","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","6️⃣","zes — korte vocaal","zes — коротка"],
-  ["kl_tram","tram","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","🚊","tram — korte vocaal","tram — коротка"],
-  ["kl_pen","pen","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","🖊️","pen — korte vocaal","pen — коротка"],
-  ["kl_jas","jas","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","🧥","jas — korte vocaal","jas — коротка"],
-  ["kl_kom","kom","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","🥣","kom — korte vocaal","kom — коротка"],
-  ["kl_ben","ben","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","🧍","Ik ben thuis.","Я вдома."],
-  ["kl_heb","heb","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","✋","Ik heb een pen.","У мене є ручка."],
-  ["kl_mag","mag","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","✅","Mag ik binnenkomen?","Можна увійти?"],
-  ["kl_op","op","short vowel · kort","voyelle courte","коротка голосна · kort","حرف علة قصير","⬆️","De lamp is op.","Лампа увімкнена."],
-  ["kl_boom","boom","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🌳","boom — 2 vocalen, lang","boom — 2 голосні, довго"],
-  ["kl_heet","heet","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","📛","Hoe heet jij?","Як тебе звати?"],
-  ["kl_spreek","spreek","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🗣️","Ik spreek Nederlands.","Я говорю нідерландською."],
-  ["kl_school","school","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🏫","Ik ga naar school.","Я йду до школи."],
-  ["kl_graag","graag","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","💛","Ik zwem graag.","Я люблю плавати."],
-  ["kl_woon","woon","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🏠","Ik woon in Brussel.","Я живу в Брюсселі."],
-  ["kl_taal","taal","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🔤","Nederlands is een taal.","Нідерландська — це мова."],
-  ["kl_vraag","vraag","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","❓","Ik heb een vraag.","У мене є питання."],
-  ["kl_raam","raam","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","🪟","Het raam is open.","Вікно відчинене."],
-  ["kl_zoon","zoon","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","👦","Mijn zoon is acht.","Моєму синові вісім."],
-  ["kl_naar","naar","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","➡️","Ik ga naar huis.","Я йду додому."],
-  ["kl_doos","doos","long vowel · lang","voyelle longue","довга голосна · lang","حرف علة طويل","📦","De doos is groot.","Коробка велика."],
-  ["kl_was","ik was → wij wassen","short · double s","court · ss","короткий · ss","قصير · ss","🧼","Ik was — wij wassen","я мию — ми миємо"],
-  ["kl_zwem","ik zwem → wij zwemmen","short · double m","court · mm","короткий · mm","قصير · mm","🏊","Ik zwem — wij zwemmen","я плаваю — ми плаваємо"],
-  ["kl_zit","ik zit → wij zitten","short · double t","court · tt","короткий · tt","قصير · tt","🪑","Ik zit — wij zitten","я сиджу — ми сидимо"],
-  ["kl_lig","ik lig → wij liggen","short · double g","court · gg","короткий · gg","قصير · gg","🛏️","Ik lig — wij liggen","я лежу — ми лежимо"],
-  ["kl_val","ik val → wij vallen","short · double l","court · ll","короткий · ll","قصير · ll","🍂","Ik val — wij vallen","я падаю — ми падаємо"],
-  ["kl_bel","ik bel → wij bellen","short · double l","court · ll","короткий · ll","قصير · ll","📞","Ik bel — wij bellen","я телефоную — ми телефонуємо"],
-  ["kl_zet","ik zet → wij zetten","short · double t","court · tt","короткий · tt","قصير · tt","📦","Ik zet — wij zetten","я ставлю — ми ставимо"],
-  ["kl_leg","ik leg → wij leggen","short · double g","court · gg","короткий · gg","قصير · gg","📌","Ik leg — wij leggen","я кладу — ми кладемо"],
-  ["kl_pak","ik pak → wij pakken","short · double k","court · kk","короткий · kk","قصير · kk","🎒","Ik pak — wij pakken","я беру — ми беремо"],
-  ["kl_stop","ik stop → wij stoppen","short · double p","court · pp","короткий · pp","قصير · pp","🛑","Ik stop — wij stoppen","я зупиняюсь — ми зупиняємось"],
-  ["kl_ren","ik ren → wij rennen","short · double n","court · nn","короткий · nn","قصير · nn","🏃","Ik ren — wij rennen","я біжу — ми біжимо"],
-  ["kl_slaap","ik slaap → wij slapen","long · one p","long · une p","довгий · одна p","طويل · p واحدة","😴","Ik slaap — wij slapen","я сплю — ми спимо"],
-  ["kl_spreken","ik spreek → wij spreken","long · one k","long · une k","довгий · одна k","طويل · k واحدة","🗣️","Ik spreek — wij spreken","я говорю — ми говоримо"],
-  ["kl_wonen","ik woon → wij wonen","long · one n","long · une n","довгий · одна n","طويل · n واحدة","🏠","Ik woon — wij wonen","я живу — ми живемо"],
-  ["kl_lopen","ik loop → wij lopen","long · one p","long · une p","довгий · одна p","طويل · p واحدة","🚶","Ik loop — wij lopen","я йду — ми йдемо"],
-  ["kl_kopen","ik koop → wij kopen","long · one p","long · une p","довгий · одна p","طويل · p واحدة","🛒","Ik koop — wij kopen","я купую — ми купуємо"],
-  ["kl_heten","ik heet → wij heten","long · one t","long · une t","довгий · одна t","طويل · t واحدة","📛","Ik heet — wij heten","мене звати — нас звати"],
-  ["kl_leren","ik leer → wij leren","long · one r","long · une r","довгий · одна r","طويل · r واحدة","📚","Ik leer — wij leren","я вчу — ми вчимо"],
-  ["kl_eten","ik eet → wij eten","long · one t","long · une t","довгий · одна t","طويل · t واحدة","🍽️","Ik eet — wij eten","я їм — ми їмо"],
-  ["kl_nemen","ik neem → wij nemen","long · one m","long · une m","довгий · одна m","طويل · m واحدة","✋","Ik neem — wij nemen","я беру — ми беремо"],
-  ["kl_geven","ik geef → wij geven","long · one v","long · une v","довгий · одна v","طويل · v واحدة","🎁","Ik geef — wij geven","я даю — ми даємо"],
-  ["kl_kijken","ik kijk → wij kijken","long · one k","long · une k","довгий · одна k","طويل · k واحدة","👀","Ik kijk — wij kijken","я дивлюсь — ми дивимось"],
-  ["kl_maken","ik maak → wij maken","long · one k","long · une k","довгий · одна k","طويل · k واحدة","🛠️","Ik maak — wij maken","я роблю — ми робимо"],
-  ["kl_praten","ik praat → wij praten","long · one t","long · une t","довгий · одна t","طويل · t واحدة","💬","Ik praat — wij praten","я розмовляю — ми розмовляємо"],
-  ["kl_halen","ik haal → wij halen","long · one l","long · une l","довгий · одна l","طويل · l واحدة","📦","Ik haal — wij halen","я забираю — ми забираємо"],
-  ["kl_spelen","ik speel → wij spelen","long · one l","long · une l","довгий · одна l","طويل · l واحدة","🎮","Ik speel — wij spelen","я граю — ми граємо"],
-  ["kl_werken","ik werk → wij werken","stem + en","stem + en","основа + en","جذر + en","💼","Ik werk — wij werken","я працюю — ми працюємо"],
-  ["kl_lezen","ik lees → wij lezen","long · one z","long · une z","довгий · одна z","طويل · z واحدة","📖","Ik lees — wij lezen","я читаю — ми читаємо"],
-  ["kl_schrijven","ik schrijf → wij schrijven","long · one v","long · une v","довгий · одна v","طويل · v واحدة","✍️","Ik schrijf — wij schrijven","я пишу — ми пишемо"],
-  ["kl_blijven","ik blijf → wij blijven","long · one v","long · une v","довгий · одна v","طويل · v واحدة","📍","Ik blijf — wij blijven","я лишаюсь — ми лишаємось"],
-  ["kl_rijden","ik rijd → wij rijden","long · one d","long · une d","довгий · одна d","طويل · d واحدة","🚗","Ik rijd — wij rijden","я їду — ми їдемо"]
-]);
+// ===== KORT / LANG (vowel length) — as in class: 1 syllabe, 2 syllabes, verbum =====
+// [word, kind (k=kort, l=lang), uk, en, fr, ar]
+const KL_S1=[
+ ["zes","k","шість","six","six","ستة"],["tram","k","трамвай","tram","tram","ترام"],["zwem","k","(ik) плаваю","(I) swim","(je) nage","أسبح"],
+ ["was","k","(ik) мию","(I) wash","(je) lave","أغسل"],["heb","k","(ik) маю","(I) have","(j')ai","لديّ"],["acht","k","вісім","eight","huit","ثمانية"],
+ ["pen","k","ручка","pen","stylo","قلم"],["kom","k","(ik) приходжу","(I) come","(je) viens","آتي"],["ben","k","(ik) є","(I) am","(je) suis","أكون"],
+ ["jas","k","куртка","coat","manteau","معطف"],["mag","k","можна","may","(je) peux","يُسمح"],["op","k","на, вгору","on, up","sur","على"],
+ ["bom","k","бомба","bomb","bombe","قنبلة"],["kat","k","кіт","cat","chat","قطة"],["bed","k","ліжко","bed","lit","سرير"],
+ ["vis","k","риба","fish","poisson","سمك"],["bus","k","автобус","bus","bus","حافلة"],["zon","k","сонце","sun","soleil","شمس"],
+ ["man","k","чоловік","man","homme","رجل"],["melk","k","молоко","milk","lait","حليب"],
+ ["heet","l","(ik) звуся","(I am) called","(je) m'appelle","اسمي"],["spreek","l","(ik) розмовляю","(I) speak","(je) parle","أتكلم"],
+ ["school","l","школа","school","école","مدرسة"],["graag","l","охоче","gladly","volontiers","بكل سرور"],["woon","l","(ik) живу","(I) live","(j')habite","أسكن"],
+ ["taal","l","мова","language","langue","لغة"],["twee","l","два","two","deux","اثنان"],["vraag","l","питання","question","question","سؤال"],
+ ["raam","l","вікно","window","fenêtre","نافذة"],["zoon","l","син","son","fils","ابن"],["naar","l","до, у (куди)","to","vers","إلى"],
+ ["doos","l","коробка","box","boîte","صندوق"],["boom","l","дерево","tree","arbre","شجرة"],["maan","l","місяць","moon","lune","قمر"],
+ ["boot","l","човен","boat","bateau","قارب"],["zee","l","море","sea","mer","بحر"],["been","l","нога","leg","jambe","ساق"],
+ ["kaas","l","сир","cheese","fromage","جبن"],["uur","l","година","hour","heure","ساعة"]
+];
+const KL_S2=[
+ ["letter","k","літера","letter","lettre","حرف"],["sokken","k","шкарпетки","socks","chaussettes","جوارب"],["wassen","k","мити","to wash","laver","يغسل"],
+ ["zwemmen","k","плавати","to swim","nager","يسبح"],["hebben","k","мати","to have","avoir","يملك"],["bommen","k","бомби","bombs","bombes","قنابل"],
+ ["mannen","k","чоловіки","men","hommes","رجال"],["katten","k","коти","cats","chats","قطط"],["bellen","k","дзвонити","to call","appeler","يتصل"],
+ ["zitten","k","сидіти","to sit","être assis","يجلس"],["liggen","k","лежати","to lie","être couché","يستلقي"],["pakken","k","брати, пакувати","to take, to pack","prendre","يأخذ"],
+ ["stoppen","k","зупинятися","to stop","arrêter","يتوقف"],["rennen","k","бігти","to run","courir","يركض"],["appel","k","яблуко","apple","pomme","تفاحة"],
+ ["koffie","k","кава","coffee","café","قهوة"],["kussen","k","подушка","pillow","coussin","وسادة"],
+ ["slapen","l","спати","to sleep","dormir","ينام"],["wonen","l","жити","to live","habiter","يسكن"],["talen","l","мови","languages","langues","لغات"],
+ ["zeven","l","сім","seven","sept","سبعة"],["spreken","l","розмовляти","to speak","parler","يتكلم"],["zonen","l","сини","sons","fils","أبناء"],
+ ["komen","l","приходити","to come","venir","يأتي"],["samen","l","разом","together","ensemble","معاً"],["vragen","l","питати","to ask","demander","يسأل"],
+ ["bomen","l","дерева","trees","arbres","أشجار"],["lopen","l","ходити","to walk","marcher","يمشي"],["kopen","l","купувати","to buy","acheter","يشتري"],
+ ["eten","l","їсти","to eat","manger","يأكل"],["leren","l","вчити(ся)","to learn","apprendre","يتعلم"],["nemen","l","брати","to take","prendre","يأخذ"],
+ ["spelen","l","грати","to play","jouer","يلعب"],["maken","l","робити","to make","faire","يصنع"],["lezen","l","читати","to read","lire","يقرأ"]
+];
+// Verbs: [infinitive, ik-stem, kind, uk, en, fr, ar]
+const KL_VERBS=[
+ ["slapen","slaap","l","спати","to sleep","dormir","ينام"],["spreken","spreek","l","розмовляти","to speak","parler","يتكلم"],
+ ["wonen","woon","l","жити","to live","habiter","يسكن"],["nemen","neem","l","брати","to take","prendre","يأخذ"],
+ ["lopen","loop","l","ходити","to walk","marcher","يمشي"],["kopen","koop","l","купувати","to buy","acheter","يشتري"],
+ ["eten","eet","l","їсти","to eat","manger","يأكل"],["leren","leer","l","вчити(ся)","to learn","apprendre","يتعلم"],
+ ["spelen","speel","l","грати","to play","jouer","يلعب"],["maken","maak","l","робити","to make","faire","يصنع"],
+ ["heten","heet","l","зватися","to be called","s'appeler","يُسمّى"],["praten","praat","l","говорити","to talk","parler","يتحدث"],
+ ["halen","haal","l","забирати","to fetch","chercher","يجلب"],["vragen","vraag","l","питати","to ask","demander","يسأل"],
+ ["zwemmen","zwem","k","плавати","to swim","nager","يسبح"],["wassen","was","k","мити","to wash","laver","يغسل"],
+ ["hebben","heb","k","мати","to have","avoir","يملك"],["zitten","zit","k","сидіти","to sit","être assis","يجلس"],
+ ["liggen","lig","k","лежати","to lie","être couché","يستلقي"],["bellen","bel","k","дзвонити","to call","appeler","يتصل"],
+ ["pakken","pak","k","брати, пакувати","to take, to pack","prendre","يأخذ"],["stoppen","stop","k","зупинятися","to stop","arrêter","يتوقف"],
+ ["rennen","ren","k","бігти","to run","courir","يركض"],["zetten","zet","k","ставити","to put","mettre","يضع"]
+];
+const klRow=(lvl,r)=>({id:"k"+lvl+"_"+r[0],nl:r[0],kind:r[1]==="l"?"lang":"kort",lvl,uk:r[2],en:r[3],fr:r[4],ar:r[5],icon:""});
+DATA.klanken={items:[
+ ...KL_S1.map(r=>klRow(1,r)),
+ ...KL_S2.map(r=>klRow(2,r)),
+ ...KL_VERBS.map(v=>({id:"k3_"+v[0],nl:v[0],stem:v[1],kind:v[2]==="l"?"lang":"kort",lvl:3,uk:v[3],en:v[4],fr:v[5],ar:v[6],icon:""}))
+]};
 
 
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
@@ -1105,7 +1134,7 @@ function itemsFor(k=tab){
  if(k==="all"){
   const catObj=CATEGORIES.find(c=>c.id===currentCat);
   const subTabs=catObj?catObj.tabs:[];
-  return subTabs.filter(tabVisible).flatMap(t=>DATA[t]?(DATA[t].items||[]):[]);
+  return subTabs.filter(t=>tabVisible(t)&&t!=="klanken").flatMap(t=>DATA[t]?(DATA[t].items||[]):[]);
  }
  return (DATA[k]&&DATA[k].items)||[];
 }
@@ -1288,6 +1317,7 @@ function updateProgress(){
 function newRound(){
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
  if(mode==="toets"){startToets();return;}
+ if(isKl()){klNewRound();return}
  if(mode==="build"){SENT.forEach(x=>{x.again=false});const maxLevel=buildLevel;const pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);const count=buildLevel===1?10:12;deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);roundBase=roundTotal=deck.length;nextQuestion();return}
  let list=itemsFor();
  if(mode==="review"){const ids=new Set(list.map(x=>x.id));list=dueItems().filter(x=>ids.has(x.id))}
@@ -1341,6 +1371,7 @@ function renderClockFace(nlText){
 
 function nextQuestion(){
  if(!deck.length){endRound();return}
+ if(isKl()){klNext();return}
  if(mode==="build"){nextBuild();return}
  locked=false;item=deck.pop();q++;sessionIds.push(item.id);
  const u=getUI();
@@ -1458,9 +1489,153 @@ function endRound(){
   tab=allSubs[nextIdx];
   saveStore();buildNav();newRound();
  };if(mode!=="build")row.appendChild(nt);
+ if(isKl()&&klLevel<3&&(klBoard.kort.length||klBoard.lang.length)){const cols=el("div","kl-cols");["kort","lang"].forEach(kind=>{const col=el("div","kl-col "+kind+" static");col.appendChild(el("h3","",kind.toUpperCase()));const list=el("div","kl-list");klBoard[kind].forEach(x=>list.appendChild(klCard(x.w,{cls:x.ok?"":"miss"})));col.appendChild(list);cols.appendChild(col)});end.appendChild(cols)}
  end.appendChild(row);card.appendChild(end);round++;
 }
 
+
+
+// ========== KORT / LANG game (two columns, as on the class board) ==========
+const KL_UI={
+ uk:{levels:["1 склад","2 склади","Дієслово"],sortSub:"Послухай і постав слово в правильну колонку",verbSub:"Обери правильне написання",kortSub:"коротка голосна",langSub:"довга голосна",rule:"📋 Правило",hear:"чуємо",write:"пишемо",r1k:"1 голосна",r1l:"2 голосні",r2k:"1 голосна + 2 приголосні",r2l:"1 голосна + 1 приголосна",syl1:"1 склад",syl2:"2 склади",tap:"Натисни на слово, щоб почути",verbRule:"Це правило діє і для дієслів!",why1k:"1 склад, коротка → 1 голосна",why1l:"1 склад, довга → 2 голосні",why2k:"2 склади, коротка → 1 голосна + 2 приголосні",why2l:"2 склади, довга → 1 голосна + 1 приголосна"},
+ en:{levels:["1 syllable","2 syllables","Verbs"],sortSub:"Listen and put the word in the right column",verbSub:"Choose the correct spelling",kortSub:"short vowel",langSub:"long vowel",rule:"📋 Rule",hear:"we hear",write:"we write",r1k:"1 vowel",r1l:"2 vowels",r2k:"1 vowel + 2 consonants",r2l:"1 vowel + 1 consonant",syl1:"1 syllable",syl2:"2 syllables",tap:"Tap a word to hear it",verbRule:"This rule also works for verbs!",why1k:"1 syllable, short → 1 vowel",why1l:"1 syllable, long → 2 vowels",why2k:"2 syllables, short → 1 vowel + 2 consonants",why2l:"2 syllables, long → 1 vowel + 1 consonant"},
+ fr:{levels:["1 syllabe","2 syllabes","Verbes"],sortSub:"Écoute et place le mot dans la bonne colonne",verbSub:"Choisis la bonne orthographe",kortSub:"voyelle courte",langSub:"voyelle longue",rule:"📋 Règle",hear:"on entend",write:"on écrit",r1k:"1 voyelle",r1l:"2 voyelles",r2k:"1 voyelle + 2 consonnes",r2l:"1 voyelle + 1 consonne",syl1:"1 syllabe",syl2:"2 syllabes",tap:"Touche un mot pour l'entendre",verbRule:"Cette règle vaut aussi pour les verbes !",why1k:"1 syllabe, courte → 1 voyelle",why1l:"1 syllabe, longue → 2 voyelles",why2k:"2 syllabes, courte → 1 voyelle + 2 consonnes",why2l:"2 syllabes, longue → 1 voyelle + 1 consonne"},
+ ar:{levels:["مقطع واحد","مقطعان","الأفعال"],sortSub:"استمع وضع الكلمة في العمود الصحيح",verbSub:"اختر الكتابة الصحيحة",kortSub:"حرف علة قصير",langSub:"حرف علة طويل",rule:"📋 القاعدة",hear:"نسمع",write:"نكتب",r1k:"حرف علة واحد",r1l:"حرفا علة",r2k:"حرف علة + حرفان ساكنان",r2l:"حرف علة + حرف ساكن",syl1:"مقطع واحد",syl2:"مقطعان",tap:"اضغط على الكلمة لسماعها",verbRule:"هذه القاعدة تنطبق على الأفعال أيضاً!",why1k:"مقطع واحد، قصير ← حرف علة واحد",why1l:"مقطع واحد، طويل ← حرفا علة",why2k:"مقطعان، قصير ← حرف علة + حرفان ساكنان",why2l:"مقطعان، طويل ← حرف علة + حرف ساكن"}
+};
+const klU=()=>KL_UI[uiLang]||KL_UI.uk;
+let klLevel=Number(validStored("poly_klLevel",["1","2","3"],"1"))||1,klBoard={kort:[],lang:[]},klShowRule=false,klQ=null;
+const KL_MODES=["study","quiz","audio","review"];
+const isKl=()=>tab==="klanken"&&KL_MODES.includes(mode);
+const klPool=()=>DATA.klanken.items.filter(x=>x.lvl===klLevel);
+
+// word as a white "magnet" card with red vowels
+function klCard(word,{vowels=true,cls=""}={}){
+ const c=el("span","kl-mag"+(cls?" "+cls:""));tgt(c);
+ String(word).split("").forEach(ch=>{const s=el("span",vowels&&/[aeiouy]/i.test(ch)?"v":"",ch);c.appendChild(s)});
+ return c;
+}
+function klRulePanel(){
+ const k=klU(),box=el("div","kl-rule");
+ const table=(title,kk,lk,ex1,ex2)=>{const t=el("div","kl-rt");t.appendChild(el("div","kl-rt-h",title));
+  const g=el("div","kl-rt-g");
+  g.append(el("div","kl-rt-c","👂 kort"),el("div","kl-rt-c","👂 lang"));
+  g.append(el("div","kl-rt-c","✏️ "+kk),el("div","kl-rt-c","✏️ "+lk));
+  const e1=el("div","kl-rt-c ex");e1.appendChild(klCard(ex1,{vowels:true}));const e2=el("div","kl-rt-c ex");e2.appendChild(klCard(ex2,{vowels:true}));
+  e1.onclick=()=>say(ex1);e2.onclick=()=>say(ex2);g.append(e1,e2);t.appendChild(g);return t};
+ box.append(table(k.syl1,k.r1k,k.r1l,"bom","boom"),table(k.syl2,k.r2k,k.r2l,"bommen","bomen"));
+ const v=el("p","kl-rule-note","⚠ "+k.verbRule+"  ik was — wij wassen · ik slaap — wij slapen");tgt(v);box.appendChild(v);
+ return box;
+}
+function klLevelBar(){
+ const k=klU(),bar=el("div","row build-levels");bar.style.justifyContent="center";bar.style.marginBottom="10px";
+ [1,2,3].forEach(lv=>{const b=el("button","btn"+(klLevel===lv?" primary":""),k.levels[lv-1]);b.type="button";b.setAttribute("aria-pressed",String(klLevel===lv));
+  b.onclick=()=>{if(klLevel!==lv){klLevel=lv;try{localStorage.setItem("poly_klLevel",String(lv))}catch(e){}newRound()}};bar.appendChild(b)});
+ return bar;
+}
+function klNewRound(){
+ klBoard={kort:[],lang:[]};klQ=null;
+ if(mode==="study"){klRenderBoard();return}
+ let list=klPool();
+ if(mode==="review"){const now=Date.now();list=list.filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
+ if(!list.length){renderEmpty();const c=$("card");c.insertBefore(klLevelBar(),c.firstChild);return}
+ deck=shuffle(list).slice(0,12);roundTotal=deck.length;
+ nextQuestion();
+}
+// Study: the whole board for this level
+function klRenderBoard(){
+ const u=getUI(),k=klU();$("prog").textContent=k.levels[klLevel-1];$("rnd").textContent=u.modes.study;roundTotal=0;q=0;updateProgress();
+ const card=$("card");card.replaceChildren(klLevelBar());
+ card.appendChild(klRulePanel());
+ card.appendChild(el("p","kl-hint",k.tap));
+ const cols=el("div","kl-cols");
+ ["kort","lang"].forEach(kind=>{
+  const col=el("div","kl-col "+kind+" static");col.appendChild(el("h3","",kind.toUpperCase()));col.appendChild(el("small","",kind==="kort"?k.kortSub:k.langSub));
+  const list=el("div","kl-list");
+  klPool().filter(x=>x.kind===kind).forEach(x=>{
+   const txt=klLevel===3?"ik "+x.stem+" · wij "+x.nl:x.nl;
+   const b=el("button","kl-chipbtn");b.type="button";b.title=meaningFor(x);
+   if(klLevel===3){b.append(klCard("ik "+x.stem),klCard("wij "+x.nl))}else b.appendChild(klCard(x.nl));
+   b.onclick=()=>say(klLevel===3?"ik "+x.stem+". wij "+x.nl:x.nl);list.appendChild(b)});
+  col.appendChild(list);cols.appendChild(col)});
+ card.appendChild(cols);
+}
+// Level 3 question for a verb item
+function klVerbQuestion(it){
+ const long=it.kind==="lang",plural=Math.random()<.5;
+ if(!plural){
+  const subs=it.nl==="hebben"?["ik","jij"]:["ik","jij","hij","Ana","mijn zoon"]; // hebben: hij/zij heeft (irregular)
+  const subj=subs[Math.floor(Math.random()*subs.length)];
+  const t=(subj!=="ik"&&!it.stem.endsWith("t"))?"t":"";
+  const wrongStem=long?it.stem.replace(/(aa|ee|oo|uu)/,m=>m[0]):it.stem+it.stem.slice(-1);
+  return {prompt:it.nl+" → "+subj+" ___",subj,ok:it.stem+t,bad:wrongStem+t};
+ }
+ const subj=["wij","jullie","mijn kinderen","Ana en Julia"][Math.floor(Math.random()*4)];
+ const bad=long?it.nl.replace(/([^aeiou])en$/,"$1$1en"):it.nl.replace(/([^aeiou])\1en$/,"$1en");
+ return {prompt:"ik "+it.stem+" → "+subj+" ___",subj,ok:it.nl,bad};
+}
+function klNext(){
+ locked=false;item=deck.pop();q++;sessionIds.push(item.id);
+ klQ=klLevel===3?klVerbQuestion(item):null;
+ if(klQ)klQ.opts=shuffle([{l:klQ.ok,ok:true},{l:klQ.bad,ok:false}]);
+ klRender();
+ if(klLevel<3||mode==="audio")say(item.nl);
+}
+function klRender(){
+ const u=getUI(),k=klU();
+ $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=k.levels[klLevel-1]+" · "+u.modes[mode];updateProgress();
+ const card=$("card");card.replaceChildren(klLevelBar());
+ const top=el("div","q");top.appendChild(el("small","",klLevel===3?k.verbSub:k.sortSub));
+ if(klLevel<3){
+  if(mode==="audio"&&!locked)top.appendChild(el("div","icon-box","🔊"));
+  else {const w=el("div","kl-word");w.appendChild(klCard(item.nl,{vowels:locked}));top.appendChild(w)}
+ }else{
+  const p=el("h2","kl-verbq",klQ.prompt);tgt(p);top.appendChild(p);
+  top.appendChild(el("p","",meaningFor(item)));
+ }
+ const tools=el("div","row");tools.style.justifyContent="center";
+ const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(klLevel===3?(locked?klQ.subj+" "+klQ.ok:item.nl):item.nl);
+ const rb=el("button","listen",(klShowRule?"✓ ":"")+k.rule);rb.type="button";rb.onclick=()=>{klShowRule=!klShowRule;klRender()};
+ tools.append(hear,rb);top.appendChild(tools);
+ if(klShowRule)top.appendChild(klRulePanel());
+ card.appendChild(top);
+ const fb=el("div","feedback");fb.id="feedback";
+ if(klLevel<3){
+  const cols=el("div","kl-cols");
+  ["kort","lang"].forEach(kind=>{
+   const col=el("button","kl-col "+kind);col.type="button";col.disabled=locked;
+   col.appendChild(el("h3","",kind.toUpperCase()));col.appendChild(el("small","",kind==="kort"?k.kortSub:k.langSub));
+   const list=el("div","kl-list");klBoard[kind].forEach(x=>list.appendChild(klCard(x.w,{cls:x.ok?"":"miss"})));col.appendChild(list);
+   col.onclick=()=>klAnswer(kind===item.kind);cols.appendChild(col)});
+  card.appendChild(cols);
+ }else{
+  const opts=el("div","opts");
+  klQ.opts.forEach(o=>{
+   const b=el("button","opt");b.type="button";b.dataset.ok=o.ok?"1":"";const t=el("span","",klQ.subj+" "+o.l);tgt(t);b.appendChild(t);
+   b.disabled=locked;b.onclick=()=>klAnswer(o.ok,b);opts.appendChild(b)});
+  card.appendChild(opts);
+ }
+ card.appendChild(fb);
+ const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+}
+function klAnswer(ok,btn){
+ if(locked)return;locked=true;
+ const u=getUI(),k=klU(),s=stateFor(item.id);s.seen++;
+ if(ok){right++;roundPoints+=10;score+=10;s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
+ else{s.wrong++;s.streak=0;s.due=Date.now()}
+ s.known=s.streak>=2;saveStore();updateStats();
+ if(klLevel<3)klBoard[item.kind].push({w:item.nl,ok});
+ klRender();
+ if(klLevel===3){document.querySelectorAll(".opt").forEach(b=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok)b.classList.add("incorrect")})}
+ const fb=$("feedback");
+ fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
+ const why=klLevel===3?(item.kind==="kort"?k.why1k+" · "+k.why2k:k.why1l+" · "+k.why2l):k["why"+klLevel+(item.kind==="kort"?"k":"l")];
+ if(klLevel<3){const w=el("p","");w.appendChild(klCard(item.nl));w.append(" → "+item.kind.toUpperCase());fb.appendChild(w)}
+ else{const w=el("p","");w.append(klCard("ik "+item.stem)," · ",klCard("wij "+item.nl));fb.appendChild(w)}
+ fb.appendChild(el("p","",why));
+ fb.appendChild(el("p","example",meaningFor(item)));
+ say(klLevel===3?klQ.subj+" "+klQ.ok:item.nl);
+ const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+}
 
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
 const TOETS = [
