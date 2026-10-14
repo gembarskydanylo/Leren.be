@@ -431,6 +431,8 @@ main{gap:8px;padding:8px 8px 18px}
 "use strict";
 const $=id=>document.getElementById(id);
 const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
+const NL_ONLY_TABS=["dehet","klanken"];
+const tabVisible=k=>targetLang==="nl"||!NL_ONLY_TABS.includes(k);
 
 const UI={
  uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
@@ -989,8 +991,7 @@ DATA.verbs.items.push(...R([
   ["vx_48", "uitleggen", "to explain", "expliquer", "пояснювати", "يشرح", "💬", "Kunt u dat uitleggen?", "Чи можете це пояснити?"],
   ["vx_49", "vertellen", "to tell", "raconter / dire", "розповідати", "يروي", "🗣️", "Vertel me over je werk.", "Розкажи мені про свою роботу."],
   ["vx_50", "ontmoeten", "to meet", "rencontrer", "зустрічати", "يلتقي", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"],
-  ["vx_51", "afspreken", "to make an appointment", "prendre rendez-vous", "домовлятися", "يتفق على موعد", "📅", "Kunnen we afspreken morgen?", "Можемо домовитися на завтра?"],
-  ["vx_52", "werken", "to work", "travailler", "працювати", "يعمل", "💼", "Ik werk in een kantoor.", "Я працюю в офісі."]
+  ["vx_51", "afspreken", "to make an appointment", "prendre rendez-vous", "домовлятися", "يتفق على موعد", "📅", "Kunnen we afspreken morgen?", "Можемо домовитися на завтра?"]
 
 
 ]).items);
@@ -1060,9 +1061,9 @@ let targetLang=validStored("poly_target",LANGS,"nl"),uiLang=validStored("poly_ui
 if(targetLang===uiLang)uiLang="uk";
 
 let currentCat=validStored("poly_cat",CATEGORIES.map(c=>c.id),"comm");
-let tab=validStored("poly_tab",CATEGORIES.flatMap(c=>c.tabs),"questions");
+let tab=validStored("poly_tab",["all",...CATEGORIES.flatMap(c=>c.tabs)],"questions");
 const activeCatObj=CATEGORIES.find(c=>c.id===currentCat)||CATEGORIES[0];
-if(!activeCatObj.tabs.includes(tab)){currentCat=CATEGORIES[0].id;tab=CATEGORIES[0].tabs[0];}
+if(tab!=="all"&&!activeCatObj.tabs.includes(tab)||!tabVisible(tab)){currentCat=CATEGORIES[0].id;tab=CATEGORIES[0].tabs[0];}
 
 let mode="quiz",deck=[],q=0,right=0,round=1,roundTotal=0,roundBase=0,locked=false,item=null;
 let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore();
@@ -1088,7 +1089,7 @@ function itemsFor(k=tab){
  if(k==="all"){
   const catObj=CATEGORIES.find(c=>c.id===currentCat);
   const subTabs=catObj?catObj.tabs:[];
-  return subTabs.flatMap(t=>DATA[t]?(DATA[t].items||[]):[]);
+  return subTabs.filter(tabVisible).flatMap(t=>DATA[t]?(DATA[t].items||[]):[]);
  }
  return (DATA[k]&&DATA[k].items)||[];
 }
@@ -1215,7 +1216,7 @@ function buildNav(){
  subNav.appendChild(allBtn);
 
  catObj.tabs.forEach(k=>{
-  if(k==="dehet"&&targetLang!=="nl")return;
+  if(!tabVisible(k))return;
   const b=el("button","",(u.tabs[k]||k).replace(/^\d+\.\s*/,""));
   b.type="button";
   const isSelected=(k===tab);
@@ -1235,7 +1236,7 @@ function buildNav(){
 
 function afterLangChange(){
  if(mode==="build"&&targetLang!=="nl")mode="quiz";
- if(tab==="dehet"&&targetLang!=="nl"){const grammar=CATEGORIES.find(c=>c.id==="grammar");currentCat=grammar?grammar.id:CATEGORIES[0].id;tab=grammar?grammar.tabs[0]:CATEGORIES[0].tabs[0];}
+ if(tab!=="all"&&!tabVisible(tab)){const cat=CATEGORIES.find(c=>c.tabs.includes(tab))||CATEGORIES[0];currentCat=cat.id;tab=cat.tabs.find(tabVisible)||"all";}
  const catObj=CATEGORIES.find(c=>c.id===currentCat);
  if(!catObj||!catObj.tabs.includes(tab)&&tab!=="all"){
   currentCat=CATEGORIES[0].id;
@@ -1283,8 +1284,9 @@ function makeOptions(cur){
   const arts=["de","het"];
   return shuffle(arts.map(l=>({label:l,ok:l===artOf(cur),t:true})));
  }
- const f=mode==="audio"?meaningFor:labelFor,t=mode!=="audio",correct=f(cur),seen=new Set([correct]),out=[];
- for(const x of shuffle(itemsFor().filter(x=>x.id!==cur.id))){
+ const f=mode==="audio"?meaningFor:labelFor,g=mode==="audio"?labelFor:meaningFor,t=mode!=="audio",correct=f(cur),seen=new Set([correct]),out=[];
+ // Skip distractors that would also be a correct answer (same prompt text)
+ for(const x of shuffle(itemsFor().filter(x=>x.id!==cur.id&&g(x)!==g(cur)))){
   const v=f(x);
   if(!seen.has(v)){seen.add(v);out.push({label:v,ok:false,c:x.c,t});if(out.length>=3)break}
  }
@@ -1379,7 +1381,7 @@ function renderStudyControls(card){
  const row=el("div","row");
  const hear=el("button","btn",u.listen);hear.type="button";hear.onclick=()=>say(spoken());row.appendChild(hear);
  const known=el("button","btn primary",u.markKnown);known.type="button";known.onclick=()=>{
-  const s=stateFor(item.id);s.seen++;s.correct++;s.streak++;s.known=s.streak>=2;s.due=Date.now()+864e5;
+  const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;
   saveStore();updateStats();
   try{say(spoken())}catch(e){}
   nextQuestion();
@@ -1434,7 +1436,7 @@ function endRound(){
  const rev=el("button","btn",u.reviewMode);rev.type="button";rev.onclick=()=>{mode="review";updateModeButtons();newRound()};row.appendChild(rev);
  const nt=el("button","btn primary",u.nextTopic);nt.type="button";nt.onclick=()=>{
   const catObj=CATEGORIES.find(c=>c.id===currentCat)||CATEGORIES[0];
-  const allSubs=["all", ...catObj.tabs];
+  const allSubs=["all", ...catObj.tabs.filter(tabVisible)];
   const nextIdx=(allSubs.indexOf(tab)+1)%allSubs.length;
   tab=allSubs[nextIdx];
   saveStore();buildNav();newRound();
@@ -1725,7 +1727,7 @@ function answerToets(ok, btn, item){
   if(toetsLocked) return;
   toetsLocked = true;
   const u = getUI();
-  if(ok) toetsRight++;
+  if(ok){ toetsRight++; score+=10; saveStore(); updateStats(); }
   document.querySelectorAll(".opt").forEach(b => {
     b.disabled = true;
     if(b.dataset.ok === "1") b.classList.add("correct");
@@ -1798,7 +1800,7 @@ const BUILD_BANK={
   [1,"hoe|gaat|het","QVS","Як справи?","How are you?","Comment ça va ?","كيف الحال؟"],
   [1,"waar|ben|je","QVS","Де ти?","Where are you?","Où es-tu ?","أين أنت؟"],
   [2,"wat|doe|je|vandaag","QVSR","Що ти сьогодні робиш?","What are you doing today?","Que fais-tu aujourd'hui ?","ماذا تفعل اليوم؟"],
-  [2,"waar|kom|je|vandaan","QVSR","Звідки ти?","Where are you from?","D'où viens-tu ?","من أين أنت؟"],
+  [1,"waar|kom|je|vandaan","QVSR","Звідки ти?","Where do you come from?","D\'où viens-tu ?","من أين أنت؟"],
   [2,"wanneer|begint|de film","QVS","Коли починається фільм?","When does the film start?","Quand commence le film ?","متى يبدأ الفيلم؟"],
   [2,"wil|je|koffie|drinken","VSRR","Хочеш випити кави?","Would you like to drink coffee?","Veux-tu boire un café ?","هل تريد شرب القهوة؟"],
   [2,"waarom|leer|je|Nederlands","QVSR","Чому ти вчиш нідерландську?","Why are you learning Dutch?","Pourquoi apprends-tu le néerlandais ?","لماذا تتعلم الهولندية؟"],
@@ -1806,7 +1808,6 @@ const BUILD_BANK={
   [2,"met wie|ga|je|naar het feest","QVSR","З ким ти йдеш на вечірку?","Who are you going to the party with?","Avec qui vas-tu à la fête ?","مع من ستذهب إلى الحفلة؟"],
   [2,"kun|je|dat|herhalen","VSRR","Можеш повторити це?","Can you repeat that?","Peux-tu répéter cela ?","هل يمكنك إعادة ذلك؟"],
   [1,"hoe|heet|jij","QVS","Як тебе звати?","What is your name?","Comment t\'appelles-tu ?","ما اسمك؟"],
-  [1,"waar|kom|je|vandaan","QVSR","Звідки ти?","Where do you come from?","D\'où viens-tu ?","من أين أنت؟"],
   [1,"spreek|je|Nederlands","VSR","Ти говориш нідерландською?","Do you speak Dutch?","Parles-tu néerlandais ?","هل تتحدث الهولندية؟"],
   [1,"wat|is|jouw telefoonnummer","QVS","Який у тебе номер телефону?","What is your phone number?","Quel est ton numéro ?","ما رقم هاتفك؟"],
   [1,"ben|je|getrouwd","VSR","Ти одружений/заміжня?","Are you married?","Es-tu marié(e) ?","هل أنت متزوج؟"],
@@ -1818,7 +1819,6 @@ const BUILD_BANK={
   [2,"mag|ik|je iets vragen","VSR","Можу я тебе дещо запитати?","May I ask you something?","Puis-je te demander quelque chose ?","هل يمكنني سؤالك شيئاً؟"],
   [2,"wanneer|heb|je|tijd","QVSR","Коли у тебе є час?","When do you have time?","Quand as-tu le temps ?","متى لديك وقت؟"],
   [2,"wat|doe|je|in het weekend","QVSR","Що ти робиш на вихідних?","What do you do on the weekend?","Que fais-tu le week-end ?","ماذا تفعل في عطلة نهاية الأسبوع؟"],
-  [2,"kun|je|dat herhalen","VSR","Можеш повторити?","Can you repeat that?","Peux-tu répéter ?","هل يمكنك إعادة ذلك؟"],
   [2,"wat|betekent|dit woord","QVS","Що означає це слово?","What does this word mean?","Que signifie ce mot ?","ماذا تعني هذه الكلمة؟"]
  ],
  grammar:[
@@ -1910,13 +1910,13 @@ const BUILD_BANK={
   [2,"hoe laat|vertrekt|de laatste bus","QVS","О котрій відправляється останній автобус?","What time does the last bus leave?","À quelle heure part le dernier bus ?","في أي ساعة تنطلق الحافلة الأخيرة؟"],
   [2,"waarom|is|de trein|vandaag vertraagd","QVSR","Чому потяг сьогодні затримується?","Why is the train delayed today?","Pourquoi le train est-il en retard aujourd'hui ?","لماذا القطار متأخر اليوم؟"],
   [2,"hoe|maak|ik|een afspraak bij de gemeente","QVSR","Як записатися на прийом до муніципалітету?","How do I make an appointment at the municipality?","Comment prendre rendez-vous à la commune ?","كيف أحجز موعداً في البلدية؟"],
-  [1,"waar|is|de winkel","QVS","Де магазин?","Where is the shop?","Où est le magasin ?","أين المتجر؟"],
+   [1,"waar|is|de winkel","QVS","Де магазин?","Where is the shop?","Où est le magasin ?","أين المتجر؟"],
   [1,"hoe laat|is|het","QVS","Котра година?","What time is it?","Quelle heure est-il ?","كم الساعة؟"],
   [1,"gaat|deze bus|naar het centrum","VSR","Цей автобус їде до центру?","Does this bus go to the centre?","Ce bus va-t-il au centre ?","هل تذهب هذه الحافلة إلى المركز؟"],
   [1,"kost|dit|veel","VSR","Це дорого коштує?","Does this cost a lot?","Est-ce que ça coûte cher ?","هل هذا غالي؟"],
   [2,"waar|kan|ik|een ticket kopen","QVSR","Де я можу купити квиток?","Where can I buy a ticket?","Où puis-je acheter un billet ?","أين يمكنني شراء تذكرة؟"],
   [2,"hoe|kom|ik|bij de markt","QVSR","Як мені дістатися до ринку?","How do I get to the market?","Comment aller au marché ?","كيف أصل إلى السوق؟"],
-  [2,"is|er|wifi|hier","VSR","Тут є вайфай?","Is there wifi here?","Y a-t-il du wifi ici ?","هل يوجد واي فاي هنا؟"],
+  [2,"is|er|wifi|hier","VSRR","Тут є вайфай?","Is there wifi here?","Y a-t-il du wifi ici ?","هل يوجد واي فاي هنا؟"],
   [2,"wanneer|opent|de bank","QVS","Коли відкривається банк?","When does the bank open?","Quand la banque ouvre-t-elle ?","متى يفتح البنك؟"],
   [2,"mag|ik|hier|parkeren","VSRR","Можна тут паркуватися?","May I park here?","Puis-je me garer ici ?","هل يمكنني ركن السيارة هنا؟"],
   [2,"welke perron|is|het|voor Brussel","QRVS","Яка платформа до Брюсселя?","Which platform is it for Brussels?","Quel quai pour Bruxelles ?","أي رصيف إلى بروكسل؟"],
