@@ -1,5 +1,5 @@
 /* Leren.be offline cache. Relative paths support GitHub Pages project sites. */
-const CACHE_NAME = "leren-be-v9";
+const CACHE_NAME = "leren-be-v13";
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
