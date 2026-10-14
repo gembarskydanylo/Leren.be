@@ -1420,6 +1420,16 @@ function nextQuestion(){
  if(mode==="audio")say(spoken());
 }
 
+// Study: go to the next word and speak the NEW word ~1 s later
+let studySayTimer=null;
+function studyNext(){
+ clearTimeout(studySayTimer);
+ try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+ nextQuestion();
+ if(mode!=="study"||!document.querySelector("#card .q"))return; // round finished
+ const cur=item;
+ studySayTimer=setTimeout(()=>{if(mode==="study"&&item===cur)say(spoken())},1000);
+}
 function renderStudyControls(card){
  const u=getUI(),fb=el("div","feedback");fb.id="feedback";
  fb.appendChild(el("strong","",u.meaning+": "+meaningFor(item)));
@@ -1431,12 +1441,11 @@ function renderStudyControls(card){
  const known=el("button","btn primary",u.markKnown);known.type="button";known.onclick=()=>{
   const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;
   saveStore();updateStats();
-  try{say(spoken())}catch(e){}
-  nextQuestion();
+  studyNext();
  };row.appendChild(known);
  const again=el("button","btn",u.markAgain);again.type="button";again.onclick=()=>{
   const s=stateFor(item.id);s.seen++;s.wrong++;s.streak=0;s.known=false;s.due=Date.now();
-  saveStore();updateStats();nextQuestion();
+  saveStore();updateStats();studyNext();
  };row.appendChild(again);card.appendChild(row);
 }
 
