@@ -1909,8 +1909,8 @@ const BUILD_BANK={
   [2,"welke documenten|heb|ik|nodig voor de gemeente","Q VSR","Які документи потрібні для муніципалітету?","Which documents do I need for the municipality?","Quels documents me faut-il pour la commune ?","ما المستندات التي أحتاجها للبلدية؟"],
   [2,"hoe laat|vertrekt|de laatste bus","QVS","О котрій відправляється останній автобус?","What time does the last bus leave?","À quelle heure part le dernier bus ?","في أي ساعة تنطلق الحافلة الأخيرة؟"],
   [2,"waarom|is|de trein|vandaag vertraagd","QVSR","Чому потяг сьогодні затримується?","Why is the train delayed today?","Pourquoi le train est-il en retard aujourd'hui ?","لماذا القطار متأخر اليوم؟"],
-  [2,"hoe|maak|ik|een afspraak bij de gemeente","QVSR","Як записатися на прийом до муніципалітету?","How do I make an appointment at the municipality?","Comment prendre rendez-vous à la commune ?","كيف أحجز موعداً في البلدية؟"]
-   [1,"waar|is|de winkel","QVS","Де магазин?","Where is the shop?","Où est le magasin ?","أين المتجر؟"],
+  [2,"hoe|maak|ik|een afspraak bij de gemeente","QVSR","Як записатися на прийом до муніципалітету?","How do I make an appointment at the municipality?","Comment prendre rendez-vous à la commune ?","كيف أحجز موعداً في البلدية؟"],
+  [1,"waar|is|de winkel","QVS","Де магазин?","Where is the shop?","Où est le magasin ?","أين المتجر؟"],
   [1,"hoe laat|is|het","QVS","Котра година?","What time is it?","Quelle heure est-il ?","كم الساعة؟"],
   [1,"gaat|deze bus|naar het centrum","VSR","Цей автобус їде до центру?","Does this bus go to the centre?","Ce bus va-t-il au centre ?","هل تذهب هذه الحافلة إلى المركز؟"],
   [1,"kost|dit|veel","VSR","Це дорого коштує?","Does this cost a lot?","Est-ce que ça coûte cher ?","هل هذا غالي؟"],
@@ -1922,7 +1922,7 @@ const BUILD_BANK={
   [2,"welke perron|is|het|voor Brussel","QRVS","Яка платформа до Брюсселя?","Which platform is it for Brussels?","Quel quai pour Bruxelles ?","أي رصيف إلى بروكسل؟"],
 ]
 };
-const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>rows.map(r=>({cat,level:r[0],q:r[1].split("|"),roles:r[2].replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
+const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>(rows||[]).filter(r=>Array.isArray(r)&&typeof r[1]==="string").map(r=>({cat,level:r[0],q:r[1].split("|"),roles:String(r[2]||"").replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
 let bAudio=false,bs=null,buildLevel=Number(validStored("poly_buildLevel",["1","2"],"1"))||1;
 if(![1,2].includes(buildLevel))buildLevel=1;
 const sentence=s=>{const t=s.q.join(" ");return t[0].toUpperCase()+t.slice(1)+"?"};
