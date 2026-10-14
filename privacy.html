@@ -3,27 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1a0b3a">
+<meta name="theme-color" content="#EB6A00">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>Leren.be — Privacy Policy</title>
 <style>
-:root{--bg:#1a0b3a;--fg:#F4F7FF;--mut:#B8C4E8;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.18);--acc:#7DD3FC}
+@font-face{font-family:"Nunito";src:url("./fonts/nunito.woff") format("woff");font-weight:200 1000;font-display:swap}
+@font-face{font-family:"Unbounded";src:url("./fonts/unbounded.woff") format("woff");font-weight:200 900;font-display:swap}
+:root{--oranje:#EB6A00;--oranje-deep:#B04A00;--bg:#FFF6EC;--surface:#fff;--line:#EED9C4;--edge:#E2C7AC;--ink:#2A1D12;--ink-2:#6F5A47}
+@media (prefers-color-scheme:dark){:root{--bg:#1A1411;--surface:#271F19;--line:#41352B;--edge:#120D0A;--ink:#FFF4E8;--ink-2:#C7B29E}}
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(160deg,#1a0b3a 0%,#2e1065 40%,#0c4a6e 100%) fixed;color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
-h1{font-size:26px;margin:0 0 4px}
-h2{font-size:19px;margin:0 0 8px}
-p,li{color:var(--fg)}
-.mut{color:var(--mut);font-size:14px}
-section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:16px 0}
-a{color:var(--acc)}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Nunito",system-ui,sans-serif;font-weight:600}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.hero{background:var(--oranje);color:#fff;border-radius:22px;padding:20px;box-shadow:0 5px 0 var(--oranje-deep)}
+h1{font-family:"Unbounded",sans-serif;font-size:24px;line-height:1.2;margin:0 0 6px;font-weight:800;display:flex;align-items:center;gap:10px}
+h1::before{content:"";width:20px;height:26px;border-radius:5px;flex:none;background:linear-gradient(90deg,#1E1712 0 33.3%,#FDDA24 33.3% 66.6%,#EF3340 66.6%);box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+h2{font-family:"Unbounded",sans-serif;font-size:18px;margin:0 0 8px;font-weight:700}
+.mut{color:rgba(255,255,255,.9);font-size:14px;margin:0}
+section{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:18px 20px;margin:16px 0;box-shadow:0 5px 0 var(--edge)}
+li{margin-bottom:6px}
+a{color:var(--oranje-deep)}
+@media (prefers-color-scheme:dark){a{color:#FF9A3D}}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+nav a{display:inline-block;padding:8px 14px;border-radius:999px;background:var(--surface);border:2px solid var(--line);color:var(--ink);text-decoration:none;font-weight:800;box-shadow:0 3px 0 var(--edge)}
 </style>
 </head>
 <body>
 <main>
-<h1>Leren.be — Privacy Policy</h1>
-<p class="mut">Last updated / Оновлено / Bijgewerkt: 14.10.2026</p>
+<div class="hero"><h1>Leren.be — Privacy Policy</h1>
+<p class="mut">Last updated / Оновлено / Bijgewerkt: 14.10.2026</p></div>
 <nav><a href="#uk">Українська</a><a href="#en">English</a><a href="#nl">Nederlands</a><a href="./">← Leren.be</a></nav>
 
 <section id="uk">
