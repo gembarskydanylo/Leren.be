@@ -290,6 +290,62 @@ footer a{color:inherit}
 .report-bug-btn:active{transform:translateY(var(--depth-sm));box-shadow:none}
 .prog-tools .report-bug-btn{margin-top:0}
 
+
+/* ---------- progression panel (streak · daily goal · level bar) ---------- */
+.progress-panel{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-lg);padding:12px 14px;box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.pp-row{display:flex;gap:10px;align-items:stretch}
+.pp-streak{display:flex;align-items:center;gap:6px;padding:0 14px;border-radius:var(--r-md);background:var(--be-black);color:#fff;font-family:var(--font-display);font-size:18px;min-height:48px}
+.pp-streak.off{background:var(--surface-2);color:var(--ink-2)}
+.pp-streak.off .pp-fire{filter:grayscale(1);opacity:.6}
+.pp-fire{font-size:20px}
+.pp-goal{flex:1;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;gap:4px 10px;padding:6px 12px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);cursor:pointer;text-align:start;box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.pp-goal:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.pp-goal-l{font-size:13px;font-weight:900;color:var(--ink-2)}
+.pp-goal-v{grid-row:1;grid-column:2;font-weight:900;font-size:14px}
+.pp-mini{grid-column:1/-1;height:10px;border-radius:var(--r-pill);background:var(--surface-2);overflow:hidden}
+.pp-mini i{display:block;height:100%;border-radius:inherit;background:var(--be-yellow);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12);transition:width .4s var(--ease)}
+.pp-goal.done{border-color:var(--ok)}
+.pp-goal.done .pp-mini i{background:var(--ok)}
+.pp-level{display:flex;align-items:center;gap:8px}
+.pp-badge{flex:none;font-family:var(--font-display);font-size:13px;font-weight:700;padding:5px 9px;border-radius:10px;background:var(--oranje);color:#fff}
+.pp-badge.next{background:var(--surface-2);color:var(--ink)}
+.pp-badge.soon{opacity:.75}
+.pp-track{flex:1;height:16px;border-radius:var(--r-pill);background:var(--surface-2);overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.06)}
+.pp-track i{display:block;height:100%;min-width:8px;border-radius:inherit;background:var(--oranje);box-shadow:inset 0 -4px 0 rgba(0,0,0,.14),inset 0 4px 0 rgba(255,255,255,.3);transition:width .5s var(--ease)}
+.pp-cap{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);font-weight:800;margin-top:-4px}
+.pp-stats strong{color:var(--ink)}
+.xp-note{font-size:13px!important;color:var(--ink-2)!important;font-weight:800}
+
+/* ---------- level switch ---------- */
+.level-nav{display:flex;gap:8px}
+.lv-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:52px;padding:6px 8px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge);transition:transform var(--press) var(--ease),box-shadow var(--press) var(--ease)}
+.lv-btn:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.lv-name{font-family:var(--font-display);font-weight:700;font-size:16px}
+.lv-tag{font-size:11.5px;font-weight:900;color:var(--ink-2)}
+.lv-btn[aria-pressed="true"]{background:var(--be-black);border-color:var(--be-black);color:#fff;box-shadow:0 var(--depth-sm) 0 #000}
+.lv-btn[aria-pressed="true"] .lv-tag{color:rgba(255,255,255,.7)}
+:root[data-theme="dark"] .lv-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lv-btn.locked,.lv-btn.soon{background:var(--surface-2)}
+.lv-btn.soon .lv-name{opacity:.6}
+
+/* ---------- lock card, goal modal, toast ---------- */
+.lock-card{padding:6px 0}
+.lock-ic{font-size:56px;line-height:1}
+.lock-card h2{font-size:24px!important;color:var(--ink)!important}
+.lock-card .btn.primary{font-size:15px}
+.lock-card p{max-width:46ch;margin:0 auto!important;color:var(--ink-2);line-height:1.5}
+.toets-pick.leveltest{border-color:var(--oranje);background:var(--oranje-soft)}
+.goal-panel{padding:18px;gap:10px;max-height:none}
+.goal-title{font-family:var(--font-display);font-size:20px;margin:0}
+.goal-hint{margin:0;color:var(--ink-2);font-size:14px}
+.goal-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 8px}
+.goal-opt{flex-direction:column;gap:2px;min-height:64px}
+.goal-opt strong{font-family:var(--font-display);font-size:17px;font-weight:700}
+.goal-opt span{font-size:13px;color:var(--ink-2)}
+.toast{position:fixed;z-index:200;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-140%);max-width:min(92vw,460px);padding:12px 18px;border-radius:var(--r-md);background:var(--be-black);color:#fff;font-weight:900;font-size:15px;text-align:center;box-shadow:0 5px 0 #000,0 18px 40px -12px rgba(0,0,0,.5);transition:transform .35s var(--ease);pointer-events:none}
+.toast.show{transform:translate(-50%,0)}
+.toast.big{background:var(--oranje);box-shadow:0 5px 0 var(--oranje-deep),0 18px 40px -12px rgba(0,0,0,.5);font-family:var(--font-display);font-weight:700}
+
 /* ---------- motion ---------- */
 @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.05)}100%{transform:scale(1)}}
@@ -339,12 +395,11 @@ footer a{color:inherit}
     </div>
   </header>
 
-  <div class="stats-bar">
-    <span><span id="progressLabel"></span>: <strong id="learnedCount">0</strong></span>
-    <span id="reviewCount"></span>
-  </div>
+  <section class="progress-panel" id="progressPanel" aria-label="Progress"></section>
+  <span hidden id="progressLabel"></span><span hidden id="learnedCount"></span><span hidden id="reviewCount"></span>
 
   <div class="nav-section">
+    <div class="level-nav" id="levelNav" role="group" aria-label="Level"></div>
     <div class="section-label" id="lblCat">Розділ</div>
     <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav></div>
     
@@ -416,14 +471,37 @@ const UI={
   modes:{study:"دراسة",quiz:"اختبار",audio:"استماع",review:"مراجعة",toets:"Toets A1"},audioSub:"استمع واختر الترجمة",toetsTitle:"Toets A1",toetsChoose:"اختر اختباراً",toetsScore:"نتيجتك",toetsPassed:"نجحت!",toetsFailed:"تحتاج إلى مزيد من التدريب",toetsNext:"السؤال التالي",toetsFinish:"إنهاء الاختبار",toetsAgain:"أعد هذا الاختبار",toetsBack:"قائمة الاختبارات",toetsQ:"سؤال",toetsOf:"من"}
 };
 
+// Levels: unlock by points (need) or by passing the level test
+const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2.1",need:3000,soon:true}];
 const CATEGORIES=[
- {id:"comm", tabs:["phrases", "questions", "pronouns", "graag"]},
- {id:"grammar", tabs:["klanken", "verbs", "dehet", "adjectives"]},
- {id:"nums", tabs:["numbers", "time", "clock", "months", "weather"]},
- {id:"people", tabs:["family", "jobs", "body", "doctor"]},
- {id:"home", tabs:["home", "shop", "clothes", "colors", "animals"]},
- {id:"city", tabs:["city", "transport", "gemeente", "cvo", "werk"]}
+ {id:"comm",lvl:"a11", tabs:["phrases", "questions", "pronouns", "graag"]},
+ {id:"grammar",lvl:"a11", tabs:["klanken", "verbs", "dehet", "adjectives"]},
+ {id:"nums",lvl:"a11", tabs:["numbers", "time", "clock", "months", "weather"]},
+ {id:"people",lvl:"a11", tabs:["family", "jobs", "body", "doctor"]},
+ {id:"home",lvl:"a11", tabs:["home", "shop", "clothes", "colors", "animals"]},
+ {id:"city",lvl:"a11", tabs:["city", "transport", "gemeente", "cvo", "werk"]},
+ {id:"dag",lvl:"a12", tabs:["routine","separable"]},
+ {id:"plans",lvl:"a12", tabs:["modal","afspraak"]},
+ {id:"past",lvl:"a12", tabs:["perfectum","verleden"]},
+ {id:"wonen",lvl:"a12", tabs:["huren"]},
+ {id:"contact",lvl:"a12", tabs:["telefoon","mail"]},
+ {id:"grammar2",lvl:"a12", tabs:["bezit","niet","objpron"]}
 ];
+// A1.2 labels for all explanation languages
+(()=>{const T={
+ uk:{cats:{dag:"☀️ Мій день",plans:"📅 Плани",past:"⏪ Минулий час",wonen:"🏡 Житло",contact:"✉️ Телефон і лист",grammar2:"📘 Граматика 2"},
+  tabs:{routine:"Розпорядок дня",separable:"Дієслова, що розділяються",modal:"Модальні дієслова",afspraak:"Домовитися про зустріч",perfectum:"Perfectum (минулий час)",verleden:"Коли це було?",huren:"Оренда житла",telefoon:"Телефон",mail:"Лист, e-mail",bezit:"Присвійні займенники",niet:"Заперечення niet / geen",objpron:"Кого? Кому?"},
+  subs:{routine:"Що ти робиш протягом дня?",separable:"Обери правильне дієслово",modal:"Обери модальне дієслово",afspraak:"Обери правильну фразу",perfectum:"Що ти робив?",verleden:"Коли це було?",huren:"Обери слово про житло",telefoon:"Розмова телефоном",mail:"Обери фразу для листа",bezit:"Чий це?",niet:"Як сказати «ні»?",objpron:"Кого? Кому?"}},
+ en:{cats:{dag:"☀️ My day",plans:"📅 Plans",past:"⏪ Past tense",wonen:"🏡 Housing",contact:"✉️ Phone & e-mail",grammar2:"📘 Grammar 2"},
+  tabs:{routine:"Daily routine",separable:"Separable verbs",modal:"Modal verbs",afspraak:"Appointments",perfectum:"Perfect tense",verleden:"When was it?",huren:"Renting a home",telefoon:"Phone",mail:"E-mail",bezit:"Possessives",niet:"Negation niet / geen",objpron:"Object pronouns"},
+  subs:{routine:"What do you do during the day?",separable:"Choose the right verb",modal:"Choose the modal verb",afspraak:"Choose the right phrase",perfectum:"What did you do?",verleden:"When was it?",huren:"Choose the housing word",telefoon:"On the phone",mail:"Choose a phrase for the e-mail",bezit:"Whose is it?",niet:"How do you say “no”?",objpron:"Whom?"}},
+ fr:{cats:{dag:"☀️ Ma journée",plans:"📅 Projets",past:"⏪ Passé",wonen:"🏡 Logement",contact:"✉️ Téléphone & e-mail",grammar2:"📘 Grammaire 2"},
+  tabs:{routine:"Routine",separable:"Verbes séparables",modal:"Verbes modaux",afspraak:"Rendez-vous",perfectum:"Passé composé",verleden:"C'était quand ?",huren:"Louer un logement",telefoon:"Téléphone",mail:"E-mail",bezit:"Possessifs",niet:"Négation niet / geen",objpron:"Pronoms objets"},
+  subs:{routine:"Que fais-tu pendant la journée ?",separable:"Choisis le bon verbe",modal:"Choisis le verbe modal",afspraak:"Choisis la bonne phrase",perfectum:"Qu'as-tu fait ?",verleden:"C'était quand ?",huren:"Choisis le mot sur le logement",telefoon:"Au téléphone",mail:"Choisis une phrase pour l'e-mail",bezit:"À qui est-ce ?",niet:"Comment dire « non » ?",objpron:"Qui ? À qui ?"}},
+ ar:{cats:{dag:"☀️ يومي",plans:"📅 الخطط",past:"⏪ الماضي",wonen:"🏡 السكن",contact:"✉️ الهاتف والبريد",grammar2:"📘 القواعد 2"},
+  tabs:{routine:"الروتين اليومي",separable:"أفعال منفصلة",modal:"الأفعال المساعدة",afspraak:"المواعيد",perfectum:"الماضي التام",verleden:"متى كان ذلك؟",huren:"استئجار السكن",telefoon:"الهاتف",mail:"البريد الإلكتروني",bezit:"ضمائر الملكية",niet:"النفي niet / geen",objpron:"ضمائر المفعول"},
+  subs:{routine:"ماذا تفعل خلال اليوم؟",separable:"اختر الفعل الصحيح",modal:"اختر الفعل المساعد",afspraak:"اختر العبارة الصحيحة",perfectum:"ماذا فعلت؟",verleden:"متى كان ذلك؟",huren:"اختر كلمة عن السكن",telefoon:"على الهاتف",mail:"اختر عبارة للرسالة",bezit:"لمن هذا؟",niet:"كيف تقول «لا»؟",objpron:"مَن؟ لِمَن؟"}}};
+ for(const l in T){for(const k of ["cats","tabs","subs"])Object.assign(UI[l][k],T[l][k])}})();
 
 const ERASER='<svg viewBox="4 4 56 56" width="50" height="50" role="img" aria-label="eraser"><g transform="rotate(-35 32 32)"><rect x="6" y="20" width="52" height="24" rx="5" fill="#F4A6B5"/><path d="M34 20h19a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H34z" fill="#5B7BD9"/><rect x="6" y="20" width="52" height="24" rx="5" fill="none" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/><path d="M34 20v24" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/></g></svg>';
 const KIT='<svg viewBox="0 0 64 64" width="50" height="50" role="img" aria-label="first aid kit"><path d="M23 18v-4a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v4" fill="none" stroke="#20243A" stroke-opacity=".55" stroke-width="3"/><rect x="6" y="18" width="52" height="36" rx="6" fill="#E5484D"/><rect x="6" y="18" width="52" height="36" rx="6" fill="none" stroke="#20243A" stroke-opacity=".3" stroke-width="2"/><rect x="28" y="26" width="8" height="20" rx="1.5" fill="#fff"/><rect x="22" y="32" width="20" height="8" rx="1.5" fill="#fff"/></svg>';
@@ -1006,6 +1084,169 @@ DATA.klanken={items:[
 ]};
 
 
+// ===================== LEVEL A1.2 — vocabulary =====================
+// [id, nl, en, fr, uk, ar, icon, ex_nl, ex_uk]
+DATA.routine=R([
+ ["b_wakker","wakker worden","to wake up","se réveiller","прокидатися","يستيقظ","⏰","Ik word om zes uur wakker.","Я прокидаюся о шостій."],
+ ["b_douchen","douchen","to shower","se doucher","приймати душ","يستحم","🚿","Ik douche 's morgens.","Я приймаю душ уранці."],
+ ["b_ontbijten","ontbijten","to have breakfast","prendre le petit-déjeuner","снідати","يتناول الفطور","🥐","We ontbijten om half acht.","Ми снідаємо о пів на восьму."],
+ ["b_tanden","tanden poetsen","to brush your teeth","se brosser les dents","чистити зуби","ينظف أسنانه","🪥","Ik poets mijn tanden twee keer per dag.","Я чищу зуби двічі на день."],
+ ["b_werkgaan","naar het werk gaan","to go to work","aller au travail","йти на роботу","يذهب إلى العمل","💼","Mijn man gaat met de fiets naar het werk.","Мій чоловік їде на роботу велосипедом."],
+ ["b_brengen","de kinderen naar school brengen","to take the children to school","emmener les enfants à l'école","відводити дітей до школи","يأخذ الأطفال إلى المدرسة","🎒","Ik breng de kinderen om acht uur naar school.","Я відводжу дітей до школи о восьмій."],
+ ["b_lunchen","lunchen","to have lunch","déjeuner","обідати","يتغدى","🥪","We lunchen om twaalf uur.","Ми обідаємо о дванадцятій."],
+ ["b_koken","koken","to cook","cuisiner","готувати їжу","يطبخ","🍲","Vanavond kook ik soep.","Сьогодні ввечері я варю суп."],
+ ["b_afwassen","afwassen","to do the dishes","faire la vaisselle","мити посуд","يغسل الصحون","🍽️","Na het eten was ik af.","Після їжі я мию посуд."],
+ ["b_tv","tv kijken","to watch TV","regarder la télé","дивитися телевізор","يشاهد التلفاز","📺","'s Avonds kijken we tv.","Увечері ми дивимося телевізор."],
+ ["b_slapengaan","gaan slapen","to go to bed","aller dormir","лягати спати","يذهب إلى النوم","🛏️","Ik ga om elf uur slapen.","Я лягаю спати об одинадцятій."],
+ ["b_wandelen","gaan wandelen","to go for a walk","aller se promener","йти на прогулянку","يذهب للتنزه","🚶","Op zondag gaan we wandelen.","У неділю ми йдемо на прогулянку."]
+]);
+DATA.separable=R([
+ ["b_opstaan","opstaan → ik sta op","to get up","se lever","вставати","ينهض","🌅","Ik sta om zeven uur op.","Я встаю о сьомій."],
+ ["b_opbellen","opbellen → ik bel op","to phone","téléphoner","телефонувати","يتصل هاتفياً","📞","Ik bel de dokter op.","Я телефоную лікареві."],
+ ["b_meenemen","meenemen → ik neem mee","to take along","emporter","брати з собою","يأخذ معه","☂️","Ik neem een paraplu mee.","Я беру з собою парасольку."],
+ ["b_afspreken","afspreken → ik spreek af","to arrange to meet","se donner rendez-vous","домовлятися про зустріч","يتفق على موعد","🤝","Ik spreek af met een vriendin.","Я домовляюся про зустріч з подругою."],
+ ["b_uitgaan","uitgaan → ik ga uit","to go out","sortir","йти розважатися","يخرج للسهر","🎉","Op zaterdag gaan we uit.","У суботу ми йдемо розважатися."],
+ ["b_aankomen","aankomen → ik kom aan","to arrive","arriver","прибувати","يصل","🚉","De trein komt om negen uur aan.","Потяг прибуває о дев'ятій."],
+ ["b_terugkomen","terugkomen → ik kom terug","to come back","revenir","повертатися","يعود","↩️","Ik kom morgen terug.","Я повернуся завтра."],
+ ["b_opruimen","opruimen → ik ruim op","to tidy up","ranger","прибирати","يرتّب","🧹","De kinderen ruimen hun kamer op.","Діти прибирають свою кімнату."],
+ ["b_invullen","invullen → ik vul in","to fill in","remplir","заповнювати","يملأ (استمارة)","📝","Ik vul het formulier in.","Я заповнюю формуляр."],
+ ["b_ophalen","ophalen → ik haal op","to pick up","aller chercher","забирати (когось)","يُحضِر","🚸","Ik haal mijn zoon op.","Я забираю свого сина."],
+ ["b_binnenkomen","binnenkomen → ik kom binnen","to come in","entrer","заходити","يدخل","🚪","Kom maar binnen!","Заходь!"],
+ ["b_aankleden","zich aankleden → ik kleed me aan","to get dressed","s'habiller","одягатися","يرتدي ملابسه","👕","Ik kleed me snel aan.","Я швидко одягаюся."]
+]);
+DATA.modal=R([
+ ["b_kunnen","kunnen → ik kan","can, to be able","pouvoir","могти, вміти","يستطيع","💪","Ik kan goed koken.","Я вмію добре готувати."],
+ ["b_willen","willen → ik wil","to want","vouloir","хотіти","يريد","🙋","Ik wil Nederlands leren.","Я хочу вивчати нідерландську."],
+ ["b_moeten","moeten → ik moet","must, to have to","devoir","мусити, треба","يجب عليه","❗","Ik moet om acht uur werken.","Я мушу працювати о восьмій."],
+ ["b_mogen","mogen → ik mag","may, to be allowed","avoir le droit","можна, мати дозвіл","يُسمح له","✅","Hier mag je niet roken.","Тут не можна курити."],
+ ["b_zullen","zullen → ik zal","shall, will","aller (futur)","буду (зроблю)","سوف","🔮","Ik zal je morgen bellen.","Я подзвоню тобі завтра."],
+ ["b_kunje","Kun je …?","Can you …?","Tu peux … ?","Ти можеш …?","هل تستطيع …؟","🤔","Kun je me helpen?","Можеш мені допомогти?"],
+ ["b_wilje","Wil je …?","Do you want …?","Tu veux … ?","Ти хочеш …?","هل تريد …؟","☕","Wil je koffie?","Хочеш кави?"],
+ ["b_moetje","Moet je …?","Do you have to …?","Tu dois … ?","Тобі треба …?","هل يجب عليك …؟","⏳","Moet je vandaag werken?","Тобі сьогодні треба працювати?"],
+ ["b_magik","Mag ik …?","May I …?","Puis-je … ?","Можна мені …?","هل يمكنني …؟","🙏","Mag ik een glas water?","Можна мені склянку води?"],
+ ["b_kanniet","Ik kan niet.","I can't.","Je ne peux pas.","Я не можу.","لا أستطيع.","🚫","Sorry, ik kan vandaag niet.","Вибач, сьогодні я не можу."],
+ ["b_kunnenwij","wij kunnen, jullie kunnen","we can, you (pl.) can","nous pouvons, vous pouvez","ми можемо, ви можете","نستطيع، تستطيعون","👥","Kunnen jullie morgen komen?","Ви можете прийти завтра?"]
+]);
+DATA.afspraak=R([
+ ["b_afspraakmaken","Ik wil graag een afspraak maken.","I'd like to make an appointment.","Je voudrais prendre rendez-vous.","Я хотів би записатися на прийом.","أود حجز موعد.","📅","Goedemorgen, ik wil graag een afspraak maken bij de dokter.","Доброго ранку, я хотів би записатися до лікаря."],
+ ["b_wanneerpast","Wanneer past het?","When suits you?","Quand est-ce que ça vous convient ?","Коли вам зручно?","متى يناسبك؟","🗓️"],
+ ["b_pastdinsdag","Past dinsdag?","Is Tuesday OK?","Mardi, ça vous va ?","Вівторок підходить?","هل يناسبك يوم الثلاثاء؟","✔️"],
+ ["b_pastgoed","Dat past goed.","That suits me fine.","Ça me convient.","Мені це підходить.","هذا يناسبني.","👍"],
+ ["b_pastniet","Dat past niet.","That doesn't suit me.","Ça ne me convient pas.","Мені це не підходить.","هذا لا يناسبني.","👎"],
+ ["b_omhoelaat","Om hoe laat?","At what time?","À quelle heure ?","О котрій?","في أي ساعة؟","🕒"],
+ ["b_totdan","Tot dan!","See you then!","À tout à l'heure !","До зустрічі!","إلى اللقاء حينها!","👋"],
+ ["b_telaat","Sorry, ik ben te laat.","Sorry, I'm late.","Désolé, je suis en retard.","Вибачте, я спізнився.","آسف، لقد تأخرت.","🏃"],
+ ["b_annuleren","Ik moet de afspraak annuleren.","I have to cancel the appointment.","Je dois annuler le rendez-vous.","Мені треба скасувати зустріч.","يجب أن ألغي الموعد.","❌"],
+ ["b_verplaatsen","Kunnen we de afspraak verplaatsen?","Can we move the appointment?","Pouvons-nous déplacer le rendez-vous ?","Можемо перенести зустріч?","هل يمكننا تغيير موعد اللقاء؟","🔁"],
+ ["b_tijd","Hebt u morgen tijd?","Do you have time tomorrow?","Avez-vous du temps demain ?","У вас є час завтра?","هل لديك وقت غداً؟","⌚"],
+ ["b_afgesproken","Afgesproken!","Agreed!","C'est convenu !","Домовились!","اتفقنا!","🤝"]
+]);
+DATA.perfectum=R([
+ ["b_pf_werken","ik heb gewerkt","I worked","j'ai travaillé","я працював","عملتُ","💼","Gisteren heb ik acht uur gewerkt.","Учора я працював вісім годин."],
+ ["b_pf_eten","ik heb gegeten","I ate","j'ai mangé","я поїв","أكلتُ","🍝","Ik heb al gegeten.","Я вже поїв."],
+ ["b_pf_gaan","ik ben gegaan","I went","je suis allé","я пішов, поїхав","ذهبتُ","🚶","Ik ben naar de markt gegaan.","Я пішов на ринок."],
+ ["b_pf_slapen","ik heb geslapen","I slept","j'ai dormi","я спав","نمتُ","😴","Ik heb goed geslapen.","Я добре спав."],
+ ["b_pf_kopen","ik heb gekocht","I bought","j'ai acheté","я купив","اشتريتُ","🛍️","Ik heb brood gekocht.","Я купив хліб."],
+ ["b_pf_doen","ik heb gedaan","I did","j'ai fait","я зробив","فعلتُ","✔️","Wat heb je gisteren gedaan?","Що ти робив учора?"],
+ ["b_pf_zien","ik heb gezien","I saw","j'ai vu","я побачив","رأيتُ","👀","Ik heb een film gezien.","Я подивився фільм."],
+ ["b_pf_komen","ik ben gekomen","I came","je suis venu","я прийшов, приїхав","جئتُ","🏁","Ik ben met de bus gekomen.","Я приїхав автобусом."],
+ ["b_pf_spelen","ik heb gespeeld","I played","j'ai joué","я грався","لعبتُ","⚽","De kinderen hebben buiten gespeeld.","Діти гралися надворі."],
+ ["b_pf_leren","ik heb geleerd","I learned","j'ai appris","я вивчив","تعلّمتُ","📚","Ik heb nieuwe woorden geleerd.","Я вивчив нові слова."],
+ ["b_pf_maken","ik heb gemaakt","I made","j'ai préparé","я приготував","حضّرتُ","🍳","Ik heb soep gemaakt.","Я приготував суп."],
+ ["b_pf_bellen","ik heb gebeld","I called","j'ai téléphoné","я подзвонив","اتصلتُ","📞","Ik heb de dokter gebeld.","Я подзвонив лікареві."],
+ ["b_pf_blijven","ik ben gebleven","I stayed","je suis resté","я залишився","بقيتُ","🏠","Ik ben thuis gebleven.","Я залишився вдома."],
+ ["b_pf_lezen","ik heb gelezen","I read (past)","j'ai lu","я прочитав","قرأتُ","📖","Ik heb een boek gelezen.","Я прочитав книжку."]
+]);
+DATA.verleden=R([
+ ["b_gisteren","gisteren","yesterday","hier","учора","أمس","📆","Gisteren was ik moe.","Учора я був втомлений."],
+ ["b_eergisteren","eergisteren","the day before yesterday","avant-hier","позавчора","أول أمس","⏮️"],
+ ["b_vanmorgen","vanmorgen","this morning","ce matin","сьогодні вранці","هذا الصباح","🌄","Vanmorgen heb ik gesport.","Сьогодні вранці я займався спортом."],
+ ["b_gisteravond","gisteravond","last night","hier soir","учора ввечері","مساء أمس","🌙","Gisteravond hebben we een film gezien.","Учора ввечері ми дивилися фільм."],
+ ["b_vorigeweek","vorige week","last week","la semaine dernière","минулого тижня","الأسبوع الماضي","🗓️"],
+ ["b_vorigemaand","vorige maand","last month","le mois dernier","минулого місяця","الشهر الماضي","📅"],
+ ["b_vorigjaar","vorig jaar","last year","l'année dernière","торік","العام الماضي","🎆","Vorig jaar zijn we naar België gekomen.","Торік ми приїхали до Бельгії."],
+ ["b_geleden","twee dagen geleden","two days ago","il y a deux jours","два дні тому","قبل يومين","⌛"],
+ ["b_net","net","just (now)","à l'instant","щойно","للتو","⚡","Ik ben net thuisgekomen.","Я щойно прийшов додому."],
+ ["b_al","al","already","déjà","вже","بالفعل","✅","Heb je al gegeten?","Ти вже поїв?"],
+ ["b_nognniet","nog niet","not yet","pas encore","ще ні","ليس بعد","⏳","Ik heb het nog niet gedaan.","Я ще цього не зробив."],
+ ["b_vroeger","vroeger","in the past","autrefois","раніше","في الماضي","🕰️","Vroeger woonde ik in Oekraïne.","Раніше я жив в Україні."]
+]);
+DATA.huren=R([
+ ["b_appartement","het appartement","apartment","l'appartement","квартира","الشقة","🏢","We huren een appartement in Gent.","Ми орендуємо квартиру в Генті."],
+ ["b_studio","de studio","studio flat","le studio","студія (однокімнатна)","الاستوديو","🛋️"],
+ ["b_huur","de huur","rent","le loyer","орендна плата","الإيجار","💶","De huur is 800 euro per maand.","Оренда — 800 євро на місяць."],
+ ["b_huren","huren","to rent","louer","орендувати","يستأجر","🔑","We willen een huis huren.","Ми хочемо орендувати будинок."],
+ ["b_eigenaar","de eigenaar","owner, landlord","le propriétaire","власник","المالك","🧑‍💼","De eigenaar woont in Brussel.","Власник живе в Брюсселі."],
+ ["b_waarborg","de huurwaarborg","rental deposit","la garantie locative","гарантійний депозит","تأمين الإيجار","🏦","De huurwaarborg is twee maanden huur.","Депозит — це оренда за два місяці."],
+ ["b_contract","het huurcontract","rental contract","le bail","договір оренди","عقد الإيجار","📄"],
+ ["b_verhuizen","verhuizen","to move house","déménager","переїжджати","ينتقل إلى سكن جديد","📦","Volgende maand verhuizen we.","Наступного місяця ми переїжджаємо."],
+ ["b_buren","de buren","neighbours","les voisins","сусіди","الجيران","🏘️","Onze buren zijn vriendelijk.","Наші сусіди привітні."],
+ ["b_verdieping","de verdieping","floor, storey","l'étage","поверх","الطابق","🔼","Ik woon op de derde verdieping.","Я живу на третьому поверсі."],
+ ["b_lift","de lift","lift, elevator","l'ascenseur","ліфт","المصعد","🛗"],
+ ["b_gemeubeld","gemeubeld","furnished","meublé","мебльований","مفروش","🪑","Het appartement is gemeubeld.","Квартира мебльована."],
+ ["b_kosten","de kosten","utilities, charges","les charges","комунальні витрати","التكاليف","💡","De kosten zijn niet inbegrepen.","Комунальні не включені."],
+ ["b_zoekertje","het zoekertje","classified ad","la petite annonce","оголошення","الإعلان المبوّب","📰","Ik zoek een huis via een zoekertje.","Я шукаю житло через оголошення."]
+]);
+DATA.telefoon=R([
+ ["b_met","Met Anna.","Anna speaking.","Anna à l'appareil.","Анна слухає.","آنا تتحدث.","📱"],
+ ["b_metwie","Met wie spreek ik?","Who am I speaking to?","Qui est à l'appareil ?","З ким я розмовляю?","مع من أتحدث؟","❓"],
+ ["b_kanik","Kan ik … spreken?","Can I speak to …?","Puis-je parler à … ?","Можна поговорити з …?","هل يمكنني التحدث مع …؟","🗣️"],
+ ["b_ogenblik","Een ogenblikje, alstublieft.","One moment, please.","Un instant, s'il vous plaît.","Хвилинку, будь ласка.","لحظة من فضلك.","⏸️"],
+ ["b_herhalen","Kunt u dat herhalen?","Could you repeat that?","Pouvez-vous répéter ?","Можете повторити?","هل يمكنك تكرار ذلك؟","🔂"],
+ ["b_trager","Kunt u wat trager spreken?","Could you speak more slowly?","Pouvez-vous parler plus lentement ?","Можете говорити повільніше?","هل يمكنك التحدث ببطء أكثر؟","🐢"],
+ ["b_terugbellen","Ik bel terug.","I'll call back.","Je rappelle.","Я передзвоню.","سأعاود الاتصال.","🔄"],
+ ["b_verstaniet","Ik versta u niet goed.","I can't understand you well.","Je ne vous comprends pas bien.","Я вас погано розумію.","لا أفهمك جيداً.","🔇"],
+ ["b_nummer","Wat is uw telefoonnummer?","What is your phone number?","Quel est votre numéro de téléphone ?","Який ваш номер телефону?","ما رقم هاتفك؟","🔢"],
+ ["b_ziek","Ik ben ziek. Ik kan niet komen.","I'm ill. I can't come.","Je suis malade. Je ne peux pas venir.","Я хворий. Я не можу прийти.","أنا مريض. لا أستطيع المجيء.","🤒"],
+ ["b_voicemail","de voicemail","voicemail","la messagerie vocale","голосова пошта","البريد الصوتي","📼"],
+ ["b_bericht","een bericht sturen","to send a message","envoyer un message","надіслати повідомлення","يرسل رسالة","💬","Ik stuur je straks een bericht.","Я пізніше надішлю тобі повідомлення."]
+]);
+DATA.mail=R([
+ ["b_beste","Beste Jan,","Dear Jan,","Cher Jan,","Привіт, Яне! (на початку листа)","عزيزي يان،","✉️"],
+ ["b_geachte","Geachte heer, mevrouw,","Dear Sir or Madam,","Madame, Monsieur,","Шановні пане / пані,","السيد / السيدة المحترم(ة)،","🎩"],
+ ["b_bedankt","Bedankt voor je mail.","Thanks for your e-mail.","Merci pour ton e-mail.","Дякую за твій лист.","شكراً على رسالتك.","🙏"],
+ ["b_omdat","Ik schrijf je omdat …","I'm writing to you because …","Je t'écris parce que …","Я пишу тобі, тому що …","أكتب إليك لأن …","✍️"],
+ ["b_bijlage","In de bijlage vindt u …","Please find attached …","Vous trouverez en pièce jointe …","У вкладенні ви знайдете …","ستجد في المرفق …","📎"],
+ ["b_groetjes","Groetjes,","Love, / Bye,","Bisous,","Обіймаю, (неформально)","تحياتي،","😊"],
+ ["b_mvg","Met vriendelijke groeten,","Kind regards,","Cordialement,","З повагою,","مع أطيب التحيات،","🤝"],
+ ["b_totsnel","Tot snel!","See you soon!","À bientôt !","До скорого!","إلى اللقاء قريباً!","👋"],
+ ["b_email","de e-mail","e-mail","l'e-mail","електронний лист","البريد الإلكتروني","📧"],
+ ["b_onderwerp","het onderwerp","subject (of an e-mail)","l'objet","тема листа","الموضوع","🏷️"],
+ ["b_afzender","de afzender","sender","l'expéditeur","відправник","المُرسِل","📤"],
+ ["b_antwoorden","antwoorden","to reply","répondre","відповідати","يرد","↪️","Ik antwoord morgen op je mail.","Я відповім на твій лист завтра."]
+]);
+DATA.bezit=R([
+ ["b_mijn","mijn","my","mon, ma","мій, моя","ـي (لي)","🙋","Mijn naam is Anna.","Мене звати Анна."],
+ ["b_jouw","jouw, je","your","ton, ta","твій, твоя","ـكَ (لك)","👉","Is dat jouw fiets?","Це твій велосипед?"],
+ ["b_uw","uw","your (formal)","votre","ваш (ввічливо)","ـكم (رسمي)","🎩","Wat is uw adres?","Яка ваша адреса?"],
+ ["b_zijn","zijn","his","son, sa (à lui)","його","ـه (له)","👨","Zijn auto is rood.","Його машина червона."],
+ ["b_haar","haar","her","son, sa (à elle)","її","ـها (لها)","👩","Haar dochter heet Mila.","Її доньку звати Міла."],
+ ["b_ons","ons (+ het-woord)","our (het-words)","notre (mot en het)","наш (з het-словами)","ـنا (مع het)","🏠","Ons huis is klein.","Наш будинок маленький."],
+ ["b_onze","onze (+ de-woord)","our (de-words)","notre (mot en de)","наш, наша (з de-словами)","ـنا (مع de)","👨‍👩‍👧","Onze kinderen gaan naar school.","Наші діти ходять до школи."],
+ ["b_jullie","jullie","your (plural)","votre (pluriel)","ваш (множина)","ـكم (للجمع)","👥","Is dat jullie auto?","Це ваша машина?"],
+ ["b_hun","hun","their","leur","їхній","ـهم (لهم)","👪","Hun kinderen spelen buiten.","Їхні діти граються надворі."]
+]);
+DATA.niet=R([
+ ["b_niet","niet","not","ne … pas","не","لا (نفي الفعل)","🙅","Ik werk vandaag niet.","Я сьогодні не працюю."],
+ ["b_geen","geen","no, not a","pas de","нема (з іменником)","لا يوجد","🚫","Ik heb geen auto.","У мене немає машини."],
+ ["b_nooit","nooit","never","jamais","ніколи","أبداً","⛔","Ik rook nooit.","Я ніколи не курю."],
+ ["b_niemand","niemand","nobody","personne","ніхто","لا أحد","👻","Er is niemand thuis.","Вдома нікого немає."],
+ ["b_niets","niets","nothing","rien","нічого","لا شيء","🫙","Ik heb niets gekocht.","Я нічого не купив."],
+ ["b_ookniet","ook niet","not … either","non plus","теж ні","ولا … أيضاً","🤷","Ik ook niet.","Я теж ні."],
+ ["b_geenmeer","geen … meer","no more (of something)","plus de","більше нема (чогось)","لم يعد هناك","🍞","Ik heb geen brood meer.","У мене більше нема хліба."],
+ ["b_nietmeer","niet meer","not anymore","ne … plus","більше не (робити)","لم يعد يفعل","🔚","Ik woon niet meer in Kyiv.","Я більше не живу в Києві."]
+]);
+DATA.objpron=R([
+ ["b_o_mij","mij, me","me","moi, me","мене, мені","ني، لي","🙋","Kun je mij helpen?","Можеш мені допомогти?"],
+ ["b_o_jou","jou, je","you","toi, te","тебе, тобі","كَ، لكَ","👉","Ik bel je morgen.","Я подзвоню тобі завтра."],
+ ["b_o_u","u","you (formal)","vous","вас, вам (ввічливо)","حضرتك","🎩","Kan ik u helpen?","Чим можу вам допомогти?"],
+ ["b_o_hem","hem","him","le, lui","його, йому","ـه (هو)","👨","Ik zie hem morgen.","Я побачу його завтра."],
+ ["b_o_haar","haar (wie?)","her (object)","la, lui","її, їй","ـها (هي)","👩","Ik bel haar vanavond.","Я подзвоню їй сьогодні ввечері."],
+ ["b_o_ons","ons (wie?)","us","nous","нас, нам","نا (نحن)","👥","Ze bezoeken ons op zondag.","Вони відвідують нас у неділю."],
+ ["b_o_jullie","jullie (wie?)","you (plural, object)","vous (pluriel)","вас (множина)","كم (أنتم)","🧑‍🤝‍🧑","Ik zie jullie morgen.","Побачимося завтра."],
+ ["b_o_ze","hen, ze","them","les, leur","їх, їм","ـهم","👪","Ik help ze met hun huiswerk.","Я допомагаю їм з домашнім завданням."]
+]);
+
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
 function loadNumber(key,fallback){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}catch(e){return fallback}}
 function loadStore(){try{const v=JSON.parse(localStorage.getItem("poly_progress")||"{}");return v&&typeof v==="object"&&!Array.isArray(v)?v:{}}catch(e){return {}}}
@@ -1020,6 +1261,9 @@ if(tab!=="all"&&!activeCatObj.tabs.includes(tab)||!tabVisible(tab)){currentCat=C
 
 let mode="quiz",deck=[],q=0,right=0,round=1,roundTotal=0,roundBase=0,locked=false,item=null;
 let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore();
+let curLevel=validStored("poly_level",LEVELS.map(l=>l.id),"a11");
+if(!levelUnlocked(curLevel))curLevel="a11";
+if(catLevel(currentCat)!==curLevel){const c=levelCats(curLevel)[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all"}
 
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
@@ -1033,6 +1277,7 @@ function saveStore(){
   localStorage.setItem("poly_ui",uiLang);
   localStorage.setItem("poly_cat",currentCat);
   localStorage.setItem("poly_tab",tab);
+  localStorage.setItem("poly_level",curLevel);
   localStorage.setItem("poly_buildLevel",String(buildLevel));
  }catch(e){}
 }
@@ -1059,19 +1304,135 @@ const learnedCount=()=>allItems().filter(x=>stateFor(x.id).known).length;
 
 function updateStats(){
  const u=getUI();
- const known=learnedCount();
- const due=dueItems().length;
- // Concrete reward labels
- let badge="🌱";
- if(score>=500) badge="🏆";
- else if(score>=250) badge="🥇";
- else if(score>=100) badge="🥈";
- else if(score>=50) badge="🥉";
- else if(score>=20) badge="⭐";
- $("score").textContent=badge+" "+score;
- $("score").title=(u.points||"Points")+": "+score+" · "+(u.learned||"Learned")+": "+known;
- $("learnedCount").textContent=known;
- $("reviewCount").textContent=u.review+": "+due;
+ $("score").textContent="⭐ "+score;
+ $("score").title=(u.points||"Points")+": "+score;
+ $("learnedCount").textContent=learnedCount();
+ renderProgressPanel();
+}
+
+
+// ========== PROGRESSION: levels, XP bar, daily goal, streak ==========
+const PG_UI={
+ uk:{xpTo:n=>"ще "+n+" балів до",unlockedBy:"відкрито",soon:"скоро",streak:n=>n+" "+(n%10===1&&n%100!==11?"день":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?"дні":"днів"))+" поспіль",streak0:"Почни серію сьогодні",goal:"Ціль дня",goalDone:"Ціль дня виконано! 🔥",goalTitle:"Ціль на день",goalHint:"Скільки балів набирати щодня? Виконана ціль продовжує серію днів 🔥.",goals:[[30,"Легко","≈ 3 хв"],[50,"Нормально","≈ 5 хв"],[100,"Серйозно","≈ 10 хв"],[200,"Інтенсив","≈ 20 хв"]],close:"Готово",lockedTitle:l=>"Рівень "+l+" ще закритий",lockedText:(n,l)=>"Набери ще "+n+" балів — або, якщо вже знаєш матеріал, склади тест на рівень і відкрий "+l+" одразу.",takeTest:"Пройти тест на рівень",backTo:l=>"Вчитися далі ("+l+")",levelUp:l=>"🎉 Відкрито рівень "+l+"!",soonText:"Рівень A2 вже в розробці. Збирай бали — вони збережуться.",learned:"Вивчено",review:"до повторення",bestOnly:b=>"Бали дає лише новий рекорд (було "+b+")",newBest:n=>"Новий рекорд! +"+n+" балів",passedLT:l=>"Склав! Рівень "+l+" відкрито 🎉",ltNeed:p=>"Для відкриття рівня треба "+p+"% правильних",easyXp:"+2 · це слово ти вже знаєш",levelLabel:"Рівень",xp:"балів"},
+ en:{xpTo:n=>n+" more points to",unlockedBy:"unlocked",soon:"soon",streak:n=>n+"-day streak",streak0:"Start a streak today",goal:"Daily goal",goalDone:"Daily goal reached! 🔥",goalTitle:"Daily goal",goalHint:"How many points per day? Reaching the goal keeps your streak 🔥 going.",goals:[[30,"Easy","≈ 3 min"],[50,"Regular","≈ 5 min"],[100,"Serious","≈ 10 min"],[200,"Intense","≈ 20 min"]],close:"Done",lockedTitle:l=>"Level "+l+" is still locked",lockedText:(n,l)=>"Earn "+n+" more points — or, if you already know this, pass the level test and unlock "+l+" right away.",takeTest:"Take the level test",backTo:l=>"Keep learning ("+l+")",levelUp:l=>"🎉 Level "+l+" unlocked!",soonText:"Level A2 is in the works. Keep collecting points — they're saved.",learned:"Learned",review:"Review",bestOnly:b=>"Points only for a new best (was "+b+")",newBest:n=>"New best! +"+n+" points",passedLT:l=>"Passed! Level "+l+" unlocked 🎉",ltNeed:p=>"You need "+p+"% correct to unlock the level",easyXp:"+2 · you already know this word",levelLabel:"Level",xp:"points"},
+ fr:{xpTo:n=>"encore "+n+" points pour",unlockedBy:"débloqué",soon:"bientôt",streak:n=>n+" jours d'affilée",streak0:"Commence une série aujourd'hui",goal:"Objectif du jour",goalDone:"Objectif du jour atteint ! 🔥",goalTitle:"Objectif quotidien",goalHint:"Combien de points par jour ? Atteindre l'objectif prolonge ta série 🔥.",goals:[[30,"Facile","≈ 3 min"],[50,"Normal","≈ 5 min"],[100,"Sérieux","≈ 10 min"],[200,"Intensif","≈ 20 min"]],close:"OK",lockedTitle:l=>"Le niveau "+l+" est encore verrouillé",lockedText:(n,l)=>"Gagne encore "+n+" points — ou, si tu connais déjà, réussis le test de niveau pour débloquer "+l+" tout de suite.",takeTest:"Passer le test de niveau",backTo:l=>"Continuer ("+l+")",levelUp:l=>"🎉 Niveau "+l+" débloqué !",soonText:"Le niveau A2 est en préparation. Continue à gagner des points, ils sont gardés.",learned:"Appris",review:"À réviser",bestOnly:b=>"Points seulement pour un nouveau record (avant "+b+")",newBest:n=>"Nouveau record ! +"+n+" points",passedLT:l=>"Réussi ! Niveau "+l+" débloqué 🎉",ltNeed:p=>"Il faut "+p+"% de bonnes réponses pour débloquer le niveau",easyXp:"+2 · tu connais déjà ce mot",levelLabel:"Niveau",xp:"points"},
+ ar:{xpTo:n=>"بقي "+n+" نقطة حتى",unlockedBy:"مفتوح",soon:"قريباً",streak:n=>n+" أيام متتالية",streak0:"ابدأ سلسلة اليوم",goal:"هدف اليوم",goalDone:"تحقق هدف اليوم! 🔥",goalTitle:"الهدف اليومي",goalHint:"كم نقطة في اليوم؟ تحقيق الهدف يحافظ على سلسلتك 🔥.",goals:[[30,"سهل","≈ 3 د"],[50,"عادي","≈ 5 د"],[100,"جاد","≈ 10 د"],[200,"مكثف","≈ 20 د"]],close:"تم",lockedTitle:l=>"المستوى "+l+" ما زال مغلقاً",lockedText:(n,l)=>"اجمع "+n+" نقطة أخرى — أو إذا كنت تعرف المادة، اجتز اختبار المستوى وافتح "+l+" فوراً.",takeTest:"خذ اختبار المستوى",backTo:l=>"تابع التعلم ("+l+")",levelUp:l=>"🎉 تم فتح المستوى "+l+"!",soonText:"المستوى A2 قيد الإعداد. استمر في جمع النقاط، فهي محفوظة.",learned:"تم تعلمها",review:"للمراجعة",bestOnly:b=>"النقاط فقط لرقم قياسي جديد (كان "+b+")",newBest:n=>"رقم قياسي جديد! +"+n+" نقطة",passedLT:l=>"نجحت! تم فتح المستوى "+l+" 🎉",ltNeed:p=>"تحتاج "+p+"% إجابات صحيحة لفتح المستوى",easyXp:"+2 · أنت تعرف هذه الكلمة",levelLabel:"المستوى",xp:"نقاط"}
+};
+const pgU=()=>PG_UI[uiLang]||PG_UI.uk;
+function lsGet(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v==null?fb:v}catch(e){return fb}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+const dayStr=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const yesterdayStr=()=>{const d=new Date();d.setDate(d.getDate()-1);return dayStr(d)};
+function levelById(id){return LEVELS.find(l=>l.id===id)}
+function levelUnlocked(id){const L=levelById(id);if(!L||L.soon)return false;if(id==="a11")return true;return score>=L.need||lsGet("poly_unlocked",[]).includes(id)}
+function levelCats(lv){lv=lv||curLevel;return CATEGORIES.filter(c=>c.lvl===lv)}
+function catLevel(id){return (CATEGORIES.find(c=>c.id===id)||{}).lvl||"a11"}
+// highest open level and the next goal
+function rankInfo(){
+ let cur=LEVELS[0];for(const L of LEVELS){if(levelUnlocked(L.id))cur=L}
+ const next=LEVELS[LEVELS.indexOf(cur)+1]||null;
+ return {cur,next};
+}
+function dailyState(){const d=lsGet("poly_daily",{});return d.d===dayStr()?d:{d:dayStr(),xp:0,done:false}}
+function streakState(){const s=lsGet("poly_streak",{n:0,last:""});const live=s.last===dayStr()||s.last===yesterdayStr();return {n:live?s.n:0,last:s.last,today:s.last===dayStr()}}
+const dailyGoal=()=>{const g=Number(lsGet("poly_goal",50));return [30,50,100,200].includes(g)?g:50};
+// every XP gain goes through here
+function addXP(n){
+ if(!(n>0))return;
+ const before=rankInfo().cur.id;
+ score+=n;
+ const d=dailyState();d.xp+=n;
+ if(!d.done&&d.xp>=dailyGoal()){
+  d.done=true;
+  const s=lsGet("poly_streak",{n:0,last:""});
+  if(s.last!==dayStr()){s.n=(s.last===yesterdayStr()?s.n:0)+1;s.last=dayStr();lsSet("poly_streak",s)}
+  toast(pgU().goalDone+" · "+pgU().streak(s.n));
+ }
+ lsSet("poly_daily",d);
+ const after=rankInfo().cur;
+ if(after.id!==before)toast(pgU().levelUp(after.name),true);
+}
+// XP for a correct answer: full for new/due words, small for words already mastered and not due
+function xpForCorrect(s){return (s.known&&s.due>Date.now())?2:10}
+let toastTimer=null;
+function toast(msg,big){
+ let t=$("toast");if(!t){t=el("div","toast");t.id="toast";t.setAttribute("role","status");document.body.appendChild(t)}
+ t.textContent=msg;t.classList.toggle("big",!!big);t.classList.add("show");
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),big?3600:2600);
+}
+function renderProgressPanel(){
+ const u=getUI(),p=pgU(),box=$("progressPanel");if(!box)return;
+ const {cur,next}=rankInfo(),st=streakState(),d=dailyState(),g=dailyGoal();
+ box.replaceChildren();
+ // row 1: streak + daily goal
+ const r1=el("div","pp-row");
+ const sk=el("div","pp-streak"+(st.n?"":" off"));sk.append(el("span","pp-fire","🔥"),el("strong","",String(st.n)));sk.title=st.n?p.streak(st.n):p.streak0;
+ const gb=el("button","pp-goal");gb.type="button";gb.title=p.goalTitle;gb.onclick=openGoalModal;
+ const gl=el("span","pp-goal-l",p.goal);const gv=el("span","pp-goal-v",Math.min(d.xp,g)+" / "+g);
+ const gt=el("span","pp-mini");const gi=el("i");gi.style.width=Math.min(100,Math.round(d.xp/g*100))+"%";gt.appendChild(gi);
+ if(d.done)gb.classList.add("done");
+ gb.append(gl,gt,gv);r1.append(sk,gb);box.appendChild(r1);
+ // row 2: level bar
+ const r2=el("div","pp-level");
+ const from=el("span","pp-badge",cur.name);
+ const track=el("div","pp-track");const fill=el("i");
+ let label;
+ if(next){const span=Math.max(1,next.need-cur.need),done=Math.max(0,Math.min(span,score-cur.need));fill.style.width=Math.round(done/span*100)+"%";
+  const left=Math.max(0,next.need-score);label=left>0?p.xpTo(left)+" "+next.name+(next.soon?" ("+p.soon+")":""):next.name+" · "+(next.soon?p.soon:p.unlockedBy);}
+ else{fill.style.width="100%";label=cur.name}
+ track.setAttribute("role","progressbar");track.setAttribute("aria-label",label);track.appendChild(fill);
+ const to=el("span","pp-badge next"+(next&&next.soon?" soon":""),next?next.name+(next.soon?"":" 🔒"):"🏆");
+ r2.append(from,track,to);box.appendChild(r2);
+ const cap=el("div","pp-cap");cap.append(el("span","",label));
+ const stats=el("span","pp-stats");stats.append(p.learned+" ",el("strong","",String(learnedCount()))," · "+p.review+" ",el("strong","",String(dueItems().length)));
+ cap.appendChild(stats);box.appendChild(cap);
+}
+function renderLevelNav(){
+ const nav=$("levelNav");if(!nav)return;nav.replaceChildren();const p=pgU();
+ LEVELS.forEach(L=>{
+  const open=levelUnlocked(L.id),b=el("button","lv-btn");b.type="button";
+  b.setAttribute("aria-pressed",String(L.id===curLevel));
+  b.append(el("span","lv-name",L.name));
+  if(L.soon)b.append(el("span","lv-tag",p.soon)),b.classList.add("soon");
+  else if(!open)b.append(el("span","lv-tag","🔒 "+Math.max(0,L.need-score))),b.classList.add("locked");
+  b.onclick=()=>{
+   if(L.soon){showLevelSoon();return}
+   if(!open){showLevelLocked(L);return}
+   if(curLevel!==L.id){curLevel=L.id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";if(mode==="toets")mode="quiz";saveStore();updateModeButtons();buildNav();newRound()}
+  };
+  nav.appendChild(b);
+ });
+}
+function showLevelLocked(L){
+ const p=pgU(),card=$("card");$("prog").textContent="";$("rnd").textContent="";
+ card.replaceChildren();const box=el("div","end lock-card");
+ box.append(el("div","lock-ic","🔒"),el("h2","",p.lockedTitle(L.name)),el("p","",p.lockedText(Math.max(0,L.need-score),L.name)));
+ const row=el("div","row");
+ const lt=TOETS.find(t=>t.kind==="leveltest"&&t.unlocks===L.id);
+ if(lt){const b=el("button","btn primary",p.takeTest);b.type="button";b.onclick=()=>{mode="toets";updateModeButtons();toetsId=lt.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()};row.appendChild(b)}
+ const back=el("button","btn",p.backTo(levelById(curLevel).name));back.type="button";back.onclick=()=>{buildNav();newRound()};row.appendChild(back);
+ box.appendChild(row);card.appendChild(box);
+}
+function showLevelSoon(){
+ const p=pgU(),card=$("card");card.replaceChildren();const box=el("div","end lock-card");
+ box.append(el("div","lock-ic","🛠️"),el("h2","","A2"),el("p","",p.soonText));
+ const back=el("button","btn primary",p.backTo(levelById(curLevel).name));back.type="button";back.onclick=()=>{buildNav();newRound()};
+ const row=el("div","row");row.appendChild(back);box.appendChild(row);card.appendChild(box);
+}
+function openGoalModal(){
+ const p=pgU();let m=$("goalModal");
+ if(!m){m=el("div","search-modal");m.id="goalModal";m.addEventListener("click",e=>{if(e.target===m)m.hidden=true});document.body.appendChild(m)}
+ m.replaceChildren();m.hidden=false;
+ const panel=el("div","search-panel goal-panel");panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
+ panel.append(el("h2","goal-title",p.goalTitle),el("p","goal-hint",p.goalHint));
+ const list=el("div","goal-list");
+ p.goals.forEach(([v,name,time])=>{const b=el("button","opt goal-opt"+(dailyGoal()===v?" correct":""));b.type="button";
+  b.append(el("strong","",v+" "+p.xp),el("span","",name+" · "+time));
+  b.onclick=()=>{lsSet("poly_goal",v);openGoalModal();renderProgressPanel()};list.appendChild(b)});
+ panel.appendChild(list);
+ const st=streakState();panel.appendChild(el("p","goal-hint",st.n?"🔥 "+p.streak(st.n):p.streak0));
+ const c=el("button","btn primary",p.close);c.type="button";c.onclick=()=>{m.hidden=true};panel.appendChild(c);
+ m.appendChild(panel);c.focus();
 }
 
 function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
@@ -1139,8 +1500,9 @@ function updateHeader(){
 
 function buildNav(){
  const u=getUI();
+ renderLevelNav();
  const catNav=$("catNav");catNav.replaceChildren();
- CATEGORIES.forEach(c=>{
+ levelCats().forEach(c=>{
   const b=el("button","",u.cats[c.id]||c.id);
   b.type="button";
   const isSelected=(c.id===currentCat);
@@ -1193,8 +1555,7 @@ function afterLangChange(){
  if(tab!=="all"&&!tabVisible(tab)){const cat=CATEGORIES.find(c=>c.tabs.includes(tab))||CATEGORIES[0];currentCat=cat.id;tab=cat.tabs.find(tabVisible)||"all";}
  const catObj=CATEGORIES.find(c=>c.id===currentCat);
  if(!catObj||!catObj.tabs.includes(tab)&&tab!=="all"){
-  currentCat=CATEGORIES[0].id;
-  tab=CATEGORIES[0].tabs[0];
+  const c0=levelCats()[0];currentCat=c0.id;tab=c0.tabs.find(tabVisible)||"all";
  }
  saveStore();updateHeader();buildNav();newRound();
 }
@@ -1359,8 +1720,8 @@ function renderStudyControls(card){
 
 function answer(ok,btn){
  if(locked)return;locked=true;
- const u=getUI(),s=stateFor(item.id);s.seen++;
- if(ok){right++;roundPoints+=10;score+=10;s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
+ const u=getUI(),s=stateFor(item.id);s.seen++;let gain=0;
+ if(ok){gain=xpForCorrect(s);right++;roundPoints+=gain;addXP(gain);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
  else{s.wrong++;s.streak=0;s.due=Date.now()}
  s.known=s.streak>=2;
  saveStore();updateStats();
@@ -1373,6 +1734,7 @@ function answer(ok,btn){
  const exK="ex_"+targetLang,trK="ex_"+uiLang;
  if(item[exK])fb.appendChild(tgt(el("p","example",item[exK])));
  if(item[trK])fb.appendChild(el("p","",item[trK]));
+ if(gain===2)fb.appendChild(el("p","xp-note",pgU().easyXp));
  const nx=$("nx");
  nx.disabled=false;
  say(item[exK]||shown(item));
@@ -1537,7 +1899,7 @@ function klRender(){
 function klAnswer(ok,btn){
  if(locked)return;locked=true;
  const u=getUI(),k=klU(),s=stateFor(item.id);s.seen++;
- if(ok){right++;roundPoints+=10;score+=10;s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
+ if(ok){const g=xpForCorrect(s);right++;roundPoints+=g;addXP(g);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
  else{s.wrong++;s.streak=0;s.due=Date.now()}
  s.known=s.streak>=2;saveStore();updateStats();
  if(klLevel<3)klBoard[item.kind].push({w:item.nl,ok});
@@ -1743,10 +2105,11 @@ function startToets(){
   const title = el("div","q");
   title.appendChild(el("h2","",u.toetsChoose || "Обери тест"));
   card.appendChild(title);
-  TOETS.forEach(t => {
-    const b = el("button","btn toets-pick");
+  TOETS.filter(t => (t.lvl||"a11") === curLevel && !(t.kind==="leveltest" && levelUnlocked(t.unlocks))).forEach(t => {
+    const b = el("button","btn toets-pick"+(t.kind==="leveltest"?" leveltest":""));
     b.type = "button";
-    b.textContent = (t.title[uiLang] || t.title.en || t.id) + " (" + t.questions.length + ")";
+    const best = lsGet("poly_toetsbest",{})[t.id];
+    b.textContent = (t.title[uiLang] || t.title.en || t.id) + " (" + t.questions.length + ")" + (best!=null ? " · ★ " + best + "/" + t.questions.length : "");
     b.onclick = () => {
       toetsId = t.id;
       toetsQ = 0;
@@ -1826,7 +2189,7 @@ function answerToets(ok, btn, item){
   if(toetsLocked) return;
   toetsLocked = true;
   const u = getUI();
-  if(ok){ toetsRight++; score+=10; saveStore(); updateStats(); }
+  if(ok) toetsRight++;
   document.querySelectorAll(".opt").forEach(b => {
     b.disabled = true;
     if(b.dataset.ok === "1") b.classList.add("correct");
@@ -1860,10 +2223,22 @@ function endToets(){
   const card = $("card");
   card.replaceChildren();
   const end = el("div","end");
+  const pg = pgU(), passMark = (test && test.pass) || 70, passed = pct >= passMark;
+  const bestMap = lsGet("poly_toetsbest",{}), prev = test ? (bestMap[test.id]||0) : 0;
+  const gain = Math.max(0, toetsRight - prev) * 10;
+  if(test && toetsRight > prev){ bestMap[test.id] = toetsRight; lsSet("poly_toetsbest", bestMap); }
+  let unlockedNow = null;
+  if(test && test.kind === "leveltest" && passed){
+    const un = lsGet("poly_unlocked",[]); if(!un.includes(test.unlocks)){ un.push(test.unlocks); lsSet("poly_unlocked", un); }
+    unlockedNow = levelById(test.unlocks);
+  }
+  addXP(gain); saveStore(); updateStats();
+  if(unlockedNow) toast(pg.passedLT(unlockedNow.name), true);
   end.appendChild(el("h2","", toetsRight + " / " + total));
-  end.appendChild(el("p","", pct + "% · " + (pct >= 70 ? (u.toetsPassed||"Склав!") : (u.toetsFailed||"Ще практика"))));
+  end.appendChild(el("p","", pct + "% · " + (passed ? (u.toetsPassed||"Склав!") : (u.toetsFailed||"Ще практика"))));
+  end.appendChild(el("p","xp-note", unlockedNow ? pg.passedLT(unlockedNow.name) : (test && test.kind==="leveltest" && !passed) ? pg.ltNeed(passMark) : gain > 0 ? pg.newBest(gain) : pg.bestOnly(prev + "/" + total)));
   const grid = el("div","summary-grid");
-  [[u.right||"Правильні", toetsRight],[u.points||"Балів", toetsRight*10],[u.toetsScore||"Результат", pct+"%"]].forEach(([l,v])=>{
+  [[u.right||"Правильні", toetsRight],[u.points||"Балів", "+"+gain],[u.toetsScore||"Результат", pct+"%"]].forEach(([l,v])=>{
     const d = el("div"); d.append(el("strong","",v), el("span","",l)); grid.appendChild(d);
   });
   end.appendChild(grid);
@@ -1872,9 +2247,9 @@ function endToets(){
   again.type = "button";
   again.onclick = () => { toetsQ=0; toetsRight=0; nextToetsQuestion(); };
   row.appendChild(again);
-  const back = el("button","btn primary", u.toetsBack || "До тестів");
+  const back = el("button","btn primary", unlockedNow ? "→ " + unlockedNow.name : (u.toetsBack || "До тестів"));
   back.type = "button";
-  back.onclick = startToets;
+  back.onclick = unlockedNow ? () => { curLevel = unlockedNow.id; const c = levelCats()[0]; currentCat = c.id; tab = c.tabs.find(tabVisible)||"all"; mode = "quiz"; saveStore(); updateModeButtons(); buildNav(); newRound(); } : startToets;
   row.appendChild(back);
   end.appendChild(row);
   card.appendChild(end);
@@ -2021,6 +2396,122 @@ const BUILD_BANK={
   [2,"welke perron|is|het|voor Brussel","QRVS","Яка платформа до Брюсселя?","Which platform is it for Brussels?","Quel quai pour Bruxelles ?","أي رصيف إلى بروكسل؟"],
 ]
 };
+// ===================== LEVEL A1.2 — build-a-question bank =====================
+Object.assign(BUILD_BANK,{
+ dag:[
+  [1,"wanneer|sta|je|op","QVSR","Коли ти встаєш?","When do you get up?","Quand te lèves-tu ?","متى تستيقظ؟"],
+  [1,"hoe laat|ga|je|slapen","QVSR","О котрій ти лягаєш спати?","What time do you go to bed?","À quelle heure vas-tu dormir ?","في أي ساعة تذهب إلى النوم؟"],
+  [1,"ontbijt|je|elke dag","VSR","Ти снідаєш щодня?","Do you have breakfast every day?","Prends-tu le petit-déjeuner tous les jours ?","هل تتناول الفطور كل يوم؟"],
+  [2,"wie|haalt|de kinderen|op","QVRR","Хто забирає дітей?","Who picks up the children?","Qui va chercher les enfants ?","من يُحضِر الأطفال؟"],
+  [2,"neem|je|een paraplu|mee","VSRR","Ти береш із собою парасольку?","Are you taking an umbrella?","Prends-tu un parapluie ?","هل تأخذ مظلة معك؟"],
+  [2,"wanneer|kom|je|terug","QVSR","Коли ти повернешся?","When are you coming back?","Quand reviens-tu ?","متى تعود؟"],
+  [2,"wat|doe|je|'s avonds","QVSR","Що ти робиш увечері?","What do you do in the evening?","Que fais-tu le soir ?","ماذا تفعل في المساء؟"]
+ ],
+ plans:[
+  [1,"kun|je|morgen|komen","VSRR","Ти можеш прийти завтра?","Can you come tomorrow?","Peux-tu venir demain ?","هل تستطيع المجيء غداً؟"],
+  [1,"wil|je|koffie","VSR","Хочеш кави?","Do you want coffee?","Veux-tu du café ?","هل تريد قهوة؟"],
+  [1,"mag|ik|binnenkomen","VSR","Можна увійти?","May I come in?","Puis-je entrer ?","هل يمكنني الدخول؟"],
+  [2,"moet|je|vandaag|werken","VSRR","Тобі сьогодні треба працювати?","Do you have to work today?","Dois-tu travailler aujourd'hui ?","هل يجب أن تعمل اليوم؟"],
+  [2,"wanneer|past|het|voor jou","QVSR","Коли тобі зручно?","When suits you?","Quand est-ce que ça te convient ?","متى يناسبك؟"],
+  [2,"kunnen|we|de afspraak|verplaatsen","VSRR","Можемо перенести зустріч?","Can we move the appointment?","Pouvons-nous déplacer le rendez-vous ?","هل يمكننا تغيير الموعد؟"],
+  [2,"om hoe laat|spreken|we|af","QVSR","О котрій ми зустрічаємося?","What time are we meeting?","À quelle heure on se voit ?","في أي ساعة نلتقي؟"]
+ ],
+ past:[
+  [1,"wat|heb|je|gedaan","QVSR","Що ти робив?","What did you do?","Qu'as-tu fait ?","ماذا فعلت؟"],
+  [1,"heb|je|al|gegeten","VSRR","Ти вже поїв?","Have you eaten yet?","As-tu déjà mangé ?","هل أكلت بالفعل؟"],
+  [1,"waar|ben|je|geweest","QVSR","Де ти був?","Where have you been?","Où étais-tu ?","أين كنت؟"],
+  [2,"wat|heb|je|gisteren gekocht","QVSR","Що ти вчора купив?","What did you buy yesterday?","Qu'as-tu acheté hier ?","ماذا اشتريت أمس؟"],
+  [2,"hoe laat|ben|je|thuisgekomen","QVSR","О котрій ти прийшов додому?","What time did you get home?","À quelle heure es-tu rentré ?","في أي ساعة عدت إلى البيت؟"],
+  [2,"heb|je|goed|geslapen","VSRR","Ти добре спав?","Did you sleep well?","As-tu bien dormi ?","هل نمت جيداً؟"],
+  [2,"wie|heb|je|gebeld","QVSR","Кому ти телефонував?","Who did you call?","Qui as-tu appelé ?","بمن اتصلت؟"]
+ ],
+ wonen:[
+  [1,"hoeveel|is|de huur","QVS","Скільки коштує оренда?","How much is the rent?","Combien coûte le loyer ?","كم الإيجار؟"],
+  [1,"is|het appartement|gemeubeld","VSR","Квартира мебльована?","Is the apartment furnished?","L'appartement est-il meublé ?","هل الشقة مفروشة؟"],
+  [1,"is|er|een lift","VSR","Тут є ліфт?","Is there a lift?","Y a-t-il un ascenseur ?","هل يوجد مصعد؟"],
+  [2,"op welke verdieping|woon|je","QVS","На якому поверсі ти живеш?","Which floor do you live on?","À quel étage habites-tu ?","في أي طابق تسكن؟"],
+  [2,"wanneer|verhuizen|jullie","QVS","Коли ви переїжджаєте?","When are you moving?","Quand déménagez-vous ?","متى تنتقلون؟"],
+  [2,"hoeveel|is|de huurwaarborg","QVS","Який гарантійний депозит?","How much is the deposit?","Combien est la garantie locative ?","كم تأمين الإيجار؟"],
+  [2,"zijn|de kosten|inbegrepen","VSR","Комунальні включені?","Are the utilities included?","Les charges sont-elles comprises ?","هل التكاليف مشمولة؟"]
+ ],
+ contact:[
+  [1,"met wie|spreek|ik","QVS","З ким я розмовляю?","Who am I speaking to?","Qui est à l'appareil ?","مع من أتحدث؟"],
+  [1,"kunt|u|dat herhalen","VSR","Можете повторити?","Could you repeat that?","Pouvez-vous répéter ?","هل يمكنك تكرار ذلك؟"],
+  [1,"wat|is|uw telefoonnummer","QVS","Який ваш номер телефону?","What is your phone number?","Quel est votre numéro de téléphone ?","ما رقم هاتفك؟"],
+  [2,"kan|ik|mevrouw Peeters|spreken","VSRR","Можна поговорити з пані Петерс?","Can I speak to Mrs Peeters?","Puis-je parler à Madame Peeters ?","هل يمكنني التحدث مع السيدة بيترز؟"],
+  [2,"kunt|u|wat trager|spreken","VSRR","Можете говорити трохи повільніше?","Could you speak a bit more slowly?","Pouvez-vous parler un peu plus lentement ?","هل يمكنك التحدث ببطء أكثر قليلاً؟"],
+  [2,"hebt|u|mijn mail|gekregen","VSRR","Ви отримали мій лист?","Did you get my e-mail?","Avez-vous reçu mon e-mail ?","هل استلمت رسالتي؟"],
+  [2,"wanneer|bel|je|terug","QVSR","Коли ти передзвониш?","When will you call back?","Quand rappelles-tu ?","متى ستعاود الاتصال؟"]
+ ],
+ grammar2:[
+  [1,"is|dat|jouw fiets","VSR","Це твій велосипед?","Is that your bike?","C'est ton vélo ?","هل هذه دراجتك؟"],
+  [1,"waar|is|mijn sleutel","QVS","Де мій ключ?","Where is my key?","Où est ma clé ?","أين مفتاحي؟"],
+  [1,"heb|je|geen tijd","VSR","У тебе немає часу?","Don't you have time?","Tu n'as pas le temps ?","أليس لديك وقت؟"],
+  [2,"kun|je|mij|helpen","VSRR","Можеш мені допомогти?","Can you help me?","Peux-tu m'aider ?","هل يمكنك مساعدتي؟"],
+  [2,"waarom|werk|je|vandaag niet","QVSR","Чому ти сьогодні не працюєш?","Why aren't you working today?","Pourquoi ne travailles-tu pas aujourd'hui ?","لماذا لا تعمل اليوم؟"],
+  [2,"is|dat|hun huis","VSR","Це їхній будинок?","Is that their house?","C'est leur maison ?","هل هذا بيتهم؟"],
+  [2,"wanneer|zie|je|hem","QVSR","Коли ти його побачиш?","When will you see him?","Quand le vois-tu ?","متى ستراه؟"]
+ ]
+});
+
+// ===================== LEVEL A1.2 — tests (+ level test that unlocks A1.2) =====================
+const Q=(uk,en,fr,ar)=>({uk,en,fr,ar});
+const GAP=Q("Заповни пропуск","Fill the gap","Complète","أكمل الفراغ");
+TOETS.forEach(t=>{if(!t.lvl)t.lvl="a11"});
+TOETS.push(
+ {id:"lt_a12",lvl:"a11",kind:"leveltest",unlocks:"a12",pass:80,
+  title:Q("🔓 Тест на рівень A1.2","🔓 Level test A1.2","🔓 Test de niveau A1.2","🔓 اختبار المستوى A1.2"),
+  questions:[
+   {type:"mc",q:Q("Як сказати «Мене звати Анна»?","How do you say «My name is Anna»?","Comment dire « Je m'appelle Anna » ?","كيف تقول «اسمي آنا»؟"),opts:["Ik heet Anna.","Ik ben heet Anna.","Mijn heet Anna.","Ik heten Anna."],ok:0},
+   {type:"gap",sentence:"___ woon je? — In Gent.",q:GAP,opts:["Waar","Wat","Wie","Wanneer"],ok:0},
+   {type:"mc",q:Q("Обери артикль: ___ huis","Choose the article: ___ huis","Choisis l'article : ___ huis","اختر أداة التعريف: ___ huis"),opts:["het","de","des","der"],ok:0},
+   {type:"gap",sentence:"Het is ___. (9:30)",q:GAP,opts:["half tien","half negen","negen uur","kwart over negen"],ok:0},
+   {type:"mc",q:Q("Правильна форма:","Correct form:","Forme correcte :","الصيغة الصحيحة:"),opts:["jij woont","jij woon","jij wonen","jij woonen"],ok:0},
+   {type:"mc",q:Q("Що означає «de rekening»?","What does «de rekening» mean?","Que signifie « de rekening » ?","ماذا تعني «de rekening»؟"),opts:[Q("рахунок","the bill","l'addition","الفاتورة"),Q("кімната","the room","la chambre","الغرفة"),Q("годинник","the clock","l'horloge","الساعة"),Q("листок","the leaf","la feuille","الورقة")],ok:0},
+   {type:"gap",sentence:"Ik ___ twee kinderen.",q:GAP,opts:["heb","ben","hebben","heeft"],ok:0},
+   {type:"mc",q:Q("Число 17:","Number 17:","Le nombre 17 :","العدد 17:"),opts:["zeventien","zeventig","zevenentien","zeven"],ok:0},
+   {type:"read",text:"Mijn naam is Olga. Ik kom uit Oekraïne. Ik woon nu in Leuven met mijn man en mijn dochter. Ik werk in een bakkerij.",q:Q("Де працює Ольга?","Where does Olga work?","Où travaille Olga ?","أين تعمل أولغا؟"),opts:["In een bakkerij","In een school","In een ziekenhuis","In een winkel"],ok:0},
+   {type:"read",text:"Mijn naam is Olga. Ik kom uit Oekraïne. Ik woon nu in Leuven met mijn man en mijn dochter. Ik werk in een bakkerij.",q:Q("З ким живе Ольга?","Who does Olga live with?","Avec qui habite Olga ?","مع من تسكن أولغا؟"),opts:[Q("З чоловіком і донькою","With her husband and daughter","Avec son mari et sa fille","مع زوجها وابنتها"),Q("З батьками","With her parents","Avec ses parents","مع والديها"),Q("Сама","Alone","Seule","وحدها"),Q("З сином","With her son","Avec son fils","مع ابنها")],ok:0},
+   {type:"gap",sentence:"Wat ___ je graag? — Ik lees graag.",q:GAP,opts:["doe","doet","doen","dat"],ok:0},
+   {type:"mc",q:Q("«Hoeveel kost het?» означає:","«Hoeveel kost het?» means:","« Hoeveel kost het? » signifie :","«Hoeveel kost het?» تعني:"),opts:[Q("Скільки це коштує?","How much is it?","Combien ça coûte ?","كم سعره؟"),Q("Котра година?","What time is it?","Quelle heure est-il ?","كم الساعة؟"),Q("Скільки тобі років?","How old are you?","Quel âge as-tu ?","كم عمرك؟"),Q("Як справи?","How are you?","Comment ça va ?","كيف حالك؟")],ok:0},
+   {type:"gap",sentence:"De winkel is ___ maandag tot zaterdag open.",q:GAP,opts:["van","op","in","om"],ok:0},
+   {type:"mc",q:Q("Множина: één boek → twee …","Plural: één boek → twee …","Pluriel : één boek → twee …","الجمع: één boek → twee …"),opts:["boeken","boeks","boekken","boekes"],ok:0},
+   {type:"gap",sentence:"Ik ga ___ de bus naar het werk.",q:GAP,opts:["met","op","in","van"],ok:0}
+  ]},
+ {id:"t5",lvl:"a12",
+  title:Q("Тест A1.2 · Мій день і плани","Test A1.2 · My day and plans","Test A1.2 · Ma journée et mes projets","اختبار A1.2 · يومي وخططي"),
+  questions:[
+   {type:"gap",sentence:"Ik ___ om zeven uur op.",q:GAP,opts:["sta","staan","opstaan","stop"],ok:0},
+   {type:"gap",sentence:"Wanneer ___ je terug?",q:GAP,opts:["kom","komt","komen","kwam"],ok:0},
+   {type:"mc",q:Q("Що означає «Ik moet werken»?","What does «Ik moet werken» mean?","Que signifie « Ik moet werken » ?","ماذا تعني «Ik moet werken»؟"),opts:[Q("Я мушу працювати","I have to work","Je dois travailler","يجب أن أعمل"),Q("Я хочу працювати","I want to work","Je veux travailler","أريد أن أعمل"),Q("Я можу працювати","I can work","Je peux travailler","أستطيع أن أعمل"),Q("Я люблю працювати","I like working","J'aime travailler","أحب العمل")],ok:0},
+   {type:"gap",sentence:"___ ik binnenkomen?",q:GAP,opts:["Mag","Mogen","Magt","Mogt"],ok:0},
+   {type:"gap",sentence:"Kun je ___ helpen?",q:GAP,opts:["me","mijn","ik","mijne"],ok:0},
+   {type:"mc",q:Q("Як сказати «Домовились!»?","How do you say «Agreed!»?","Comment dire « C'est convenu ! » ?","كيف تقول «اتفقنا!»؟"),opts:["Afgesproken!","Tot ziens!","Pas op!","Goedenavond!"],ok:0},
+   {type:"read",text:"Hoi Tom,\nKun je morgen om 10 uur komen? Ik moet om 9 uur naar de dokter.\nGroetjes, Lisa",q:Q("О котрій Ліза йде до лікаря?","What time is Lisa going to the doctor?","À quelle heure Lisa va-t-elle chez le médecin ?","في أي ساعة تذهب ليزا إلى الطبيب؟"),opts:["Om 9 uur","Om 10 uur","Om 8 uur","Om 11 uur"],ok:0},
+   {type:"read",text:"Hoi Tom,\nKun je morgen om 10 uur komen? Ik moet om 9 uur naar de dokter.\nGroetjes, Lisa",q:Q("Про що Ліза просить Тома?","What does Lisa ask Tom?","Que demande Lisa à Tom ?","ماذا تطلب ليزا من توم؟"),opts:[Q("Прийти завтра о 10","To come tomorrow at 10","Venir demain à 10 h","أن يأتي غداً الساعة 10"),Q("Подзвонити лікарю","To call the doctor","Appeler le médecin","أن يتصل بالطبيب"),Q("Прийти сьогодні о 9","To come today at 9","Venir aujourd'hui à 9 h","أن يأتي اليوم الساعة 9"),Q("Написати лист","To write an e-mail","Écrire un e-mail","أن يكتب رسالة")],ok:0},
+   {type:"gap",sentence:"Ik ___ de dokter op.",q:GAP,opts:["bel","bellen","opbel","belt"],ok:0},
+   {type:"mc",q:Q("Яке речення правильне?","Which sentence is correct?","Quelle phrase est correcte ?","أي جملة صحيحة؟"),opts:["Ik neem een paraplu mee.","Ik meeneem een paraplu.","Ik neem mee een paraplu.","Ik mee neem een paraplu."],ok:0},
+   {type:"gap",sentence:"Wij ___ morgen niet komen.",q:GAP,opts:["kunnen","kan","kunt","kunnt"],ok:0},
+   {type:"mc",q:Q("«Past dinsdag?» означає:","«Past dinsdag?» means:","« Past dinsdag? » signifie :","«Past dinsdag?» تعني:"),opts:[Q("Вівторок підходить?","Is Tuesday OK?","Mardi, ça va ?","هل يناسبك الثلاثاء؟"),Q("Вівторок минув?","Is Tuesday over?","Mardi est passé ?","هل انتهى الثلاثاء؟"),Q("Що у вівторок?","What's on Tuesday?","Quoi mardi ?","ماذا يوم الثلاثاء؟"),Q("Ти був у вівторок?","Were you there on Tuesday?","Tu étais là mardi ?","هل كنت هناك الثلاثاء؟")],ok:0}
+  ]},
+ {id:"t6",lvl:"a12",
+  title:Q("Тест A1.2 · Минулий час і житло","Test A1.2 · Past tense and housing","Test A1.2 · Passé et logement","اختبار A1.2 · الماضي والسكن"),
+  questions:[
+   {type:"gap",sentence:"Gisteren ___ ik gewerkt.",q:GAP,opts:["heb","ben","hebt","is"],ok:0},
+   {type:"gap",sentence:"Ik ___ naar de markt gegaan.",q:GAP,opts:["ben","heb","is","zijn"],ok:0},
+   {type:"gap",sentence:"Wat heb je gisteren ___?",q:GAP,opts:["gedaan","gedoen","doen","gedoet"],ok:0},
+   {type:"mc",q:Q("Минула форма від «kopen»:","Past participle of «kopen»:","Participe passé de « kopen » :","التصريف الماضي لـ «kopen»:"),opts:["gekocht","gekoopt","gekopen","kocht"],ok:0},
+   {type:"mc",q:Q("«Vorige week» означає:","«Vorige week» means:","« Vorige week » signifie :","«Vorige week» تعني:"),opts:[Q("минулого тижня","last week","la semaine dernière","الأسبوع الماضي"),Q("наступного тижня","next week","la semaine prochaine","الأسبوع القادم"),Q("цього тижня","this week","cette semaine","هذا الأسبوع"),Q("щотижня","every week","chaque semaine","كل أسبوع")],ok:0},
+   {type:"gap",sentence:"Heb je ___ gegeten? — Ja, om zes uur.",q:GAP,opts:["al","nog","geen","niets"],ok:0},
+   {type:"read",text:"Te huur: appartement in Mechelen.\n2 slaapkamers, 2de verdieping, lift.\nHuur: 750 euro per maand. Kosten: 100 euro.",q:Q("Яка орендна плата за місяць?","How much is the rent per month?","Quel est le loyer par mois ?","كم الإيجار في الشهر؟"),opts:["750 euro","100 euro","2 euro","75 euro"],ok:0},
+   {type:"read",text:"Te huur: appartement in Mechelen.\n2 slaapkamers, 2de verdieping, lift.\nHuur: 750 euro per maand. Kosten: 100 euro.",q:Q("Скільки в квартирі спалень?","How many bedrooms are there?","Combien y a-t-il de chambres ?","كم عدد غرف النوم؟"),opts:["Twee","Een","Drie","Vier"],ok:0},
+   {type:"gap",sentence:"Dat is ___ fiets.",q:Q("Заповни: «Це мій велосипед.»","Fill in: «That is my bike.»","Complète : « C'est mon vélo. »","أكمل: «هذه دراجتي.»"),opts:["mijn","me","mij","ik"],ok:0},
+   {type:"gap",sentence:"Ik heb ___ auto.",q:Q("Заповни: «У мене немає машини.»","Fill in: «I don't have a car.»","Complète : « Je n'ai pas de voiture. »","أكمل: «ليس لدي سيارة.»"),opts:["geen","niet","nee","nooit"],ok:0},
+   {type:"mc",q:Q("«Наш дім» (het huis):","«Our house» (het huis):","« Notre maison » (het huis) :","«بيتنا» (het huis):"),opts:["ons huis","onze huis","onzes huis","wij huis"],ok:0},
+   {type:"gap",sentence:"Ik zie ___ morgen.",q:Q("Заповни: «Я побачу його завтра.»","Fill in: «I'll see him tomorrow.»","Complète : « Je le vois demain. »","أكمل: «سأراه غداً.»"),opts:["hem","zijn","hij","haar"],ok:0}
+  ]}
+);
+
 const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>(rows||[]).filter(r=>Array.isArray(r)&&typeof r[1]==="string").map(r=>({cat,level:r[0],q:r[1].split("|"),roles:String(r[2]||"").replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
 let bAudio=false,bs=null,buildLevel=Number(validStored("poly_buildLevel",["1","2"],"1"))||1;
 if(![1,2].includes(buildLevel))buildLevel=1;
@@ -2063,7 +2554,7 @@ function hintBuild(){
 function finishBuild(){
  const cur=bs,s=cur.s;cur.done=true;locked=true;
  if(!s.again){
-  const pts=cur.stars===3?10:cur.stars===2?7:4;score+=pts;roundPoints+=pts;
+  const pts=cur.stars===3?10:cur.stars===2?7:4;addXP(pts);roundPoints+=pts;
   if(cur.stars===3)right++;else{s.again=true;deck.unshift(s);roundTotal++}
   saveStore();updateStats();
  }
@@ -2186,7 +2677,7 @@ $("searchBtn")&&$("searchBtn").addEventListener("click",openSearch);
 $("searchClose")&&$("searchClose").addEventListener("click",closeSearch);
 $("searchModal")&&$("searchModal").addEventListener("click",e=>{ if(e.target===$("searchModal")) closeSearch(); });
 $("searchInput")&&$("searchInput").addEventListener("input",runSearch);
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSearch(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSearch(); const gm=$("goalModal"); if(gm) gm.hidden=true; } });
 
 $("themeToggle").addEventListener("click",()=>{
  const cur=document.documentElement.dataset.theme==="dark"?"dark":"light";

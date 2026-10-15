@@ -20,8 +20,11 @@ Leren.be — Nederlands A1
 **Повний опис:**
 Leren.be — тренажер нідерландської мови рівня A1.1, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
 
-📚 ПОНАД 500 СЛІВ І ФРАЗ
-6 розділів і 27 тем: привітання й фрази, питання, займенники, дієслова, артиклі de/het, прикметники, числа, години, місяці, погода, сім'я, професії, тіло, лікар і аптека, дім, покупки, одяг, кольори, тварини, місто, транспорт, муніципалітет, школа CVO, робота й банк.
+📈 ДВА РІВНІ: A1.1 І A1.2
+Збирай бали, виконуй ціль дня, тримай серію днів 🔥 і відкривай наступний рівень. Якщо вже знаєш матеріал, склади тест на рівень і переходь одразу.
+
+📚 ПОНАД 650 СЛІВ І ФРАЗ
+A1.2: мій день, модальні дієслова, минулий час perfectum, житло, телефон і лист. A1.1 — 6 розділів і 27 тем: привітання й фрази, питання, займенники, дієслова, артиклі de/het, прикметники, числа, години, місяці, погода, сім'я, професії, тіло, лікар і аптека, дім, покупки, одяг, кольори, тварини, місто, транспорт, муніципалітет, школа CVO, робота й банк.
 
 🎯 РЕЖИМИ НАВЧАННЯ
 • Вивчати: нове слово з прикладом речення та озвученням
@@ -64,8 +67,11 @@ Leer Nederlands op niveau A1: woorden, oefeningen, luisteren en mini-toetsen.
 **Volledige beschrijving:**
 Leren.be is een oefenapp voor Nederlands op niveau A1.1, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
 
-📚 MEER DAN 500 WOORDEN EN ZINNEN
-6 delen en 27 thema's: begroetingen, vragen, voornaamwoorden, werkwoorden, de/het, bijvoeglijke naamwoorden, getallen, de klok, maanden, het weer, familie, beroepen, het lichaam, dokter en apotheek, het huis, boodschappen, kleding, kleuren, dieren, de stad, vervoer, de gemeente, school (CVO), werk en bank.
+📈 TWEE NIVEAUS: A1.1 EN A1.2
+Verzamel punten, haal je dagdoel, houd je reeks 🔥 vol en ontgrendel het volgende niveau. Ken je het al? Doe de niveautest en ga meteen verder.
+
+📚 MEER DAN 650 WOORDEN EN ZINNEN
+A1.2: mijn dag, modale werkwoorden, het perfectum, wonen, telefoon en mail. A1.1 — 6 delen en 27 thema's: begroetingen, vragen, voornaamwoorden, werkwoorden, de/het, bijvoeglijke naamwoorden, getallen, de klok, maanden, het weer, familie, beroepen, het lichaam, dokter en apotheek, het huis, boodschappen, kleding, kleuren, dieren, de stad, vervoer, de gemeente, school (CVO), werk en bank.
 
 🎯 OEFENVORMEN
 • Leren: nieuw woord met voorbeeldzin en uitspraak
@@ -107,8 +113,11 @@ Learn Dutch A1: words, quizzes, listening and mini exams. Made for beginners.
 **Full description:**
 Leren.be is a Dutch (A1.1) practice app made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
 
-📚 500+ WORDS AND PHRASES
-6 sections and 27 topics: greetings, questions, pronouns, verbs, de/het, adjectives, numbers, telling the time, months, weather, family, jobs, the body, doctor and pharmacy, home, shopping, clothes, colours, animals, the city, transport, the municipality, school (CVO), work and bank.
+📈 TWO LEVELS: A1.1 AND A1.2
+Collect points, hit your daily goal, keep your 🔥 streak and unlock the next level. Already know it? Take the level test and move on right away.
+
+📚 650+ WORDS AND PHRASES
+A1.2: my day, modal verbs, the perfect tense, housing, phone and e-mail. A1.1 — 6 sections and 27 topics: greetings, questions, pronouns, verbs, de/het, adjectives, numbers, telling the time, months, weather, family, jobs, the body, doctor and pharmacy, home, shopping, clothes, colours, animals, the city, transport, the municipality, school (CVO), work and bank.
 
 🎯 PRACTICE MODES
 • Study: new word with an example sentence and audio
