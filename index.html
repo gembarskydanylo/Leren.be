@@ -346,6 +346,27 @@ footer a{color:inherit}
 .toast.show{transform:translate(-50%,0)}
 .toast.big{background:var(--oranje);box-shadow:0 5px 0 var(--oranje-deep),0 18px 40px -12px rgba(0,0,0,.5);font-family:var(--font-display);font-weight:700}
 
+
+/* ---------- verbs in a story ---------- */
+.vh-ctx{width:100%;display:flex;flex-direction:column;gap:2px;margin:4px 0 2px;padding:8px 12px;border-radius:var(--r-sm);background:var(--surface-2);text-align:start}
+.vh-ctx p{margin:0;font-size:14px;color:var(--ink-2)}
+.vh-sent{font-family:var(--font-body)!important;font-size:clamp(20px,5.6vw,24px)!important;font-weight:800!important;line-height:1.45!important;margin-top:8px!important}
+.vh-gap{display:inline-block;min-width:4.2em;padding:0 8px;margin:0 2px;border-radius:10px;border-bottom:4px solid var(--oranje);background:var(--oranje-soft);color:var(--oranje-deep);font-family:var(--font-display);font-weight:700}
+.vh-gap.filled{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-deep)}
+:root[data-theme="dark"] .vh-gap{color:#FFB070}
+:root[data-theme="dark"] .vh-gap.filled{color:var(--ok)}
+.vh-inf{display:inline-block;margin-top:6px;padding:3px 12px;border-radius:var(--r-pill);background:var(--be-black);color:#fff;font-weight:900;font-size:14px}
+.vh-inf::before{content:"→ "}
+.vh-rules{margin:6px 0 0;padding:0 0 0 18px;text-align:start;font-size:14px;color:var(--ink);font-weight:700}
+.vh-rules li{margin:2px 0}
+.vh-story{margin:0;padding:0 0 0 22px;display:flex;flex-direction:column;gap:8px;text-align:start}
+.vh-line{background:none;border:0;padding:0;font:inherit;font-size:16px;font-weight:700;color:var(--ink);text-align:start;cursor:pointer;line-height:1.45}
+.vh-line mark{background:var(--oranje-soft);color:var(--oranje-deep);padding:0 4px;border-radius:6px;font-weight:900}
+:root[data-theme="dark"] .vh-line mark{color:#FFB070}
+.vh-tr{display:block;font-size:13px;color:var(--ink-2)}
+.vh-end{text-align:start;margin-top:6px;padding:14px;border-radius:var(--r-md);background:var(--surface-2)}
+.vh-end strong{display:block;margin-bottom:8px}
+
 /* ---------- motion ---------- */
 @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.05)}100%{transform:scale(1)}}
@@ -441,7 +462,7 @@ footer a{color:inherit}
 "use strict";
 const $=id=>document.getElementById(id);
 const LANGS=["nl","en","fr"],UI_LANGS=["uk","en","fr","ar"],PER_ROUND=10;
-const NL_ONLY_TABS=["dehet","klanken"];
+const NL_ONLY_TABS=["dehet","klanken","vervoegen"];
 const tabVisible=k=>targetLang==="nl"||!NL_ONLY_TABS.includes(k);
 
 const UI={
@@ -475,7 +496,7 @@ const UI={
 const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2.1",need:3000,soon:true}];
 const CATEGORIES=[
  {id:"comm",lvl:"a11", tabs:["phrases", "questions", "pronouns", "graag"]},
- {id:"grammar",lvl:"a11", tabs:["klanken", "verbs", "dehet", "adjectives"]},
+ {id:"grammar",lvl:"a11", tabs:["klanken", "vervoegen", "verbs", "dehet", "adjectives"]},
  {id:"nums",lvl:"a11", tabs:["numbers", "time", "clock", "months", "weather"]},
  {id:"people",lvl:"a11", tabs:["family", "jobs", "body", "doctor"]},
  {id:"home",lvl:"a11", tabs:["home", "shop", "clothes", "colors", "animals"]},
@@ -490,17 +511,17 @@ const CATEGORIES=[
 // A1.2 labels for all explanation languages
 (()=>{const T={
  uk:{cats:{dag:"☀️ Мій день",plans:"📅 Плани",past:"⏪ Минулий час",wonen:"🏡 Житло",contact:"✉️ Телефон і лист",grammar2:"📘 Граматика 2"},
-  tabs:{routine:"Розпорядок дня",separable:"Дієслова, що розділяються",modal:"Модальні дієслова",afspraak:"Домовитися про зустріч",perfectum:"Perfectum (минулий час)",verleden:"Коли це було?",huren:"Оренда житла",telefoon:"Телефон",mail:"Лист, e-mail",bezit:"Присвійні займенники",niet:"Заперечення niet / geen",objpron:"Кого? Кому?"},
-  subs:{routine:"Що ти робиш протягом дня?",separable:"Обери правильне дієслово",modal:"Обери модальне дієслово",afspraak:"Обери правильну фразу",perfectum:"Що ти робив?",verleden:"Коли це було?",huren:"Обери слово про житло",telefoon:"Розмова телефоном",mail:"Обери фразу для листа",bezit:"Чий це?",niet:"Як сказати «ні»?",objpron:"Кого? Кому?"}},
+  tabs:{vervoegen:"Дієслово в історії",routine:"Розпорядок дня",separable:"Дієслова, що розділяються",modal:"Модальні дієслова",afspraak:"Домовитися про зустріч",perfectum:"Perfectum (минулий час)",verleden:"Коли це було?",huren:"Оренда житла",telefoon:"Телефон",mail:"Лист, e-mail",bezit:"Присвійні займенники",niet:"Заперечення niet / geen",objpron:"Кого? Кому?"},
+  subs:{vervoegen:"Обери правильну форму дієслова",routine:"Що ти робиш протягом дня?",separable:"Обери правильне дієслово",modal:"Обери модальне дієслово",afspraak:"Обери правильну фразу",perfectum:"Що ти робив?",verleden:"Коли це було?",huren:"Обери слово про житло",telefoon:"Розмова телефоном",mail:"Обери фразу для листа",bezit:"Чий це?",niet:"Як сказати «ні»?",objpron:"Кого? Кому?"}},
  en:{cats:{dag:"☀️ My day",plans:"📅 Plans",past:"⏪ Past tense",wonen:"🏡 Housing",contact:"✉️ Phone & e-mail",grammar2:"📘 Grammar 2"},
-  tabs:{routine:"Daily routine",separable:"Separable verbs",modal:"Modal verbs",afspraak:"Appointments",perfectum:"Perfect tense",verleden:"When was it?",huren:"Renting a home",telefoon:"Phone",mail:"E-mail",bezit:"Possessives",niet:"Negation niet / geen",objpron:"Object pronouns"},
-  subs:{routine:"What do you do during the day?",separable:"Choose the right verb",modal:"Choose the modal verb",afspraak:"Choose the right phrase",perfectum:"What did you do?",verleden:"When was it?",huren:"Choose the housing word",telefoon:"On the phone",mail:"Choose a phrase for the e-mail",bezit:"Whose is it?",niet:"How do you say “no”?",objpron:"Whom?"}},
+  tabs:{vervoegen:"Verbs in a story",routine:"Daily routine",separable:"Separable verbs",modal:"Modal verbs",afspraak:"Appointments",perfectum:"Perfect tense",verleden:"When was it?",huren:"Renting a home",telefoon:"Phone",mail:"E-mail",bezit:"Possessives",niet:"Negation niet / geen",objpron:"Object pronouns"},
+  subs:{vervoegen:"Choose the right form of the verb",routine:"What do you do during the day?",separable:"Choose the right verb",modal:"Choose the modal verb",afspraak:"Choose the right phrase",perfectum:"What did you do?",verleden:"When was it?",huren:"Choose the housing word",telefoon:"On the phone",mail:"Choose a phrase for the e-mail",bezit:"Whose is it?",niet:"How do you say “no”?",objpron:"Whom?"}},
  fr:{cats:{dag:"☀️ Ma journée",plans:"📅 Projets",past:"⏪ Passé",wonen:"🏡 Logement",contact:"✉️ Téléphone & e-mail",grammar2:"📘 Grammaire 2"},
-  tabs:{routine:"Routine",separable:"Verbes séparables",modal:"Verbes modaux",afspraak:"Rendez-vous",perfectum:"Passé composé",verleden:"C'était quand ?",huren:"Louer un logement",telefoon:"Téléphone",mail:"E-mail",bezit:"Possessifs",niet:"Négation niet / geen",objpron:"Pronoms objets"},
-  subs:{routine:"Que fais-tu pendant la journée ?",separable:"Choisis le bon verbe",modal:"Choisis le verbe modal",afspraak:"Choisis la bonne phrase",perfectum:"Qu'as-tu fait ?",verleden:"C'était quand ?",huren:"Choisis le mot sur le logement",telefoon:"Au téléphone",mail:"Choisis une phrase pour l'e-mail",bezit:"À qui est-ce ?",niet:"Comment dire « non » ?",objpron:"Qui ? À qui ?"}},
+  tabs:{vervoegen:"Verbes en histoire",routine:"Routine",separable:"Verbes séparables",modal:"Verbes modaux",afspraak:"Rendez-vous",perfectum:"Passé composé",verleden:"C'était quand ?",huren:"Louer un logement",telefoon:"Téléphone",mail:"E-mail",bezit:"Possessifs",niet:"Négation niet / geen",objpron:"Pronoms objets"},
+  subs:{vervoegen:"Choisis la bonne forme du verbe",routine:"Que fais-tu pendant la journée ?",separable:"Choisis le bon verbe",modal:"Choisis le verbe modal",afspraak:"Choisis la bonne phrase",perfectum:"Qu'as-tu fait ?",verleden:"C'était quand ?",huren:"Choisis le mot sur le logement",telefoon:"Au téléphone",mail:"Choisis une phrase pour l'e-mail",bezit:"À qui est-ce ?",niet:"Comment dire « non » ?",objpron:"Qui ? À qui ?"}},
  ar:{cats:{dag:"☀️ يومي",plans:"📅 الخطط",past:"⏪ الماضي",wonen:"🏡 السكن",contact:"✉️ الهاتف والبريد",grammar2:"📘 القواعد 2"},
-  tabs:{routine:"الروتين اليومي",separable:"أفعال منفصلة",modal:"الأفعال المساعدة",afspraak:"المواعيد",perfectum:"الماضي التام",verleden:"متى كان ذلك؟",huren:"استئجار السكن",telefoon:"الهاتف",mail:"البريد الإلكتروني",bezit:"ضمائر الملكية",niet:"النفي niet / geen",objpron:"ضمائر المفعول"},
-  subs:{routine:"ماذا تفعل خلال اليوم؟",separable:"اختر الفعل الصحيح",modal:"اختر الفعل المساعد",afspraak:"اختر العبارة الصحيحة",perfectum:"ماذا فعلت؟",verleden:"متى كان ذلك؟",huren:"اختر كلمة عن السكن",telefoon:"على الهاتف",mail:"اختر عبارة للرسالة",bezit:"لمن هذا؟",niet:"كيف تقول «لا»؟",objpron:"مَن؟ لِمَن؟"}}};
+  tabs:{vervoegen:"الأفعال في قصة",routine:"الروتين اليومي",separable:"أفعال منفصلة",modal:"الأفعال المساعدة",afspraak:"المواعيد",perfectum:"الماضي التام",verleden:"متى كان ذلك؟",huren:"استئجار السكن",telefoon:"الهاتف",mail:"البريد الإلكتروني",bezit:"ضمائر الملكية",niet:"النفي niet / geen",objpron:"ضمائر المفعول"},
+  subs:{vervoegen:"اختر الصيغة الصحيحة للفعل",routine:"ماذا تفعل خلال اليوم؟",separable:"اختر الفعل الصحيح",modal:"اختر الفعل المساعد",afspraak:"اختر العبارة الصحيحة",perfectum:"ماذا فعلت؟",verleden:"متى كان ذلك؟",huren:"اختر كلمة عن السكن",telefoon:"على الهاتف",mail:"اختر عبارة للرسالة",bezit:"لمن هذا؟",niet:"كيف تقول «لا»؟",objpron:"مَن؟ لِمَن؟"}}};
  for(const l in T){for(const k of ["cats","tabs","subs"])Object.assign(UI[l][k],T[l][k])}})();
 
 const ERASER='<svg viewBox="4 4 56 56" width="50" height="50" role="img" aria-label="eraser"><g transform="rotate(-35 32 32)"><rect x="6" y="20" width="52" height="24" rx="5" fill="#F4A6B5"/><path d="M34 20h19a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H34z" fill="#5B7BD9"/><rect x="6" y="20" width="52" height="24" rx="5" fill="none" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/><path d="M34 20v24" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/></g></svg>';
@@ -1587,6 +1608,7 @@ function newRound(){
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
  if(mode==="toets"){startToets();return;}
  if(isKl()){klNewRound();return}
+ if(isVh()){vhNewRound();return}
  if(mode==="build"){SENT.forEach(x=>{x.again=false});const maxLevel=buildLevel;const pool=SENT.filter(x=>x.cat===currentCat&&x.level<=maxLevel);const count=buildLevel===1?10:12;deck=shuffle(pool).slice(0,Math.min(count,pool.length)).sort((a,b)=>b.q.length-a.q.length);roundBase=roundTotal=deck.length;nextQuestion();return}
  let list=itemsFor();
  if(mode==="review"){const ids=new Set(list.map(x=>x.id));list=dueItems().filter(x=>ids.has(x.id))}
@@ -1641,6 +1663,7 @@ function renderClockFace(nlText){
 function nextQuestion(){
  if(!deck.length){endRound();return}
  if(isKl()){klNext();return}
+ if(isVh()){vhNext();return}
  if(mode==="build"){nextBuild();return}
  locked=false;item=deck.pop();q++;sessionIds.push(item.id);
  const u=getUI();
@@ -1769,6 +1792,7 @@ function endRound(){
   saveStore();buildNav();newRound();
  };if(mode!=="build")row.appendChild(nt);
  if(isKl()&&klLevel<3&&(klBoard.kort.length||klBoard.lang.length)){const cols=el("div","kl-cols");["kort","lang"].forEach(kind=>{const col=el("div","kl-col "+kind+" static");col.appendChild(el("h3","",kind.toUpperCase()));const list=el("div","kl-list");klBoard[kind].forEach(x=>list.appendChild(klCard(x.w,{cls:x.ok?"":"miss"})));col.appendChild(list);cols.appendChild(col)});end.appendChild(cols)}
+ if(isVh()&&vhDone.length){const box=el("div","vh-end");box.appendChild(el("strong","",vhU().whole+": "+vhCur().title));const ol=el("ol","vh-story");vhCur().gaps.forEach(g=>{const li=el("li");const p=el("span","vh-line");tgt(p);const [a,b]=g.s.split("___");p.append(a,el("mark","",g.ok),b);li.appendChild(p);ol.appendChild(li)});box.appendChild(ol);end.appendChild(box)}
  end.appendChild(row);card.appendChild(end);round++;
 }
 
@@ -1913,6 +1937,134 @@ function klAnswer(ok,btn){
  fb.appendChild(el("p","",why));
  fb.appendChild(el("p","example",meaningFor(item)));
  say(klLevel===3?klQ.subj+" "+klQ.ok:item.nl);
+ const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+}
+
+
+// ========== VERBS IN A STORY ("Een dag van …" worksheet style) ==========
+// Each gap: v = infinitive, s = sentence with ___, ok = right form, bad = typical wrong forms, r = rule keys, uk/en = translation
+const VH_STORIES=[
+ {id:"taras",title:"Een dag van Taras",gaps:[
+  {v:"slapen",s:"Het is 6:00 u. Taras ___ nog.",ok:"slaapt",bad:["slapt","slapen","slaap"],r:["t","vowel"],uk:"Зараз 6:00. Тарас ще спить.",en:"It's 6:00. Taras is still sleeping."},
+  {v:"slapen",s:"Om 6:30 u staat Taras op. Zijn kinderen ___ tot 7:00 u.",ok:"slapen",bad:["slaapt","slappen","slaap"],r:["en"],uk:"О 6:30 Тарас встає. Його діти сплять до 7:00.",en:"At 6:30 Taras gets up. His children sleep until 7:00."},
+  {v:"hebben",s:"Taras ___ twee kinderen: een zoon en een dochter.",ok:"heeft",bad:["hebt","heb","hebben"],r:["irr"],uk:"Тарас має двох дітей: сина й доньку.",en:"Taras has two children: a son and a daughter."},
+  {v:"heten",s:"Zijn zoon ___ Ostap.",ok:"heet",bad:["heett","heten","hete"],r:["tt","vowel"],uk:"Його сина звати Остап.",en:"His son is called Ostap."},
+  {v:"heten",s:"Zijn dochter ___ Solomiia.",ok:"heet",bad:["heett","heten","het"],r:["tt","vowel"],uk:"Його доньку звати Соломія.",en:"His daughter is called Solomiia."},
+  {v:"nemen",s:"Taras ___ een douche om 6:45 u.",ok:"neemt",bad:["nemt","nemen","neem"],r:["t","vowel"],uk:"Тарас приймає душ о 6:45.",en:"Taras takes a shower at 6:45."},
+  {v:"eten",s:"Na de douche ___ Taras brood met kaas.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу Тарас їсть хліб із сиром.",en:"After the shower Taras eats bread with cheese."},
+  {v:"drinken",s:"De kinderen ___ melk.",ok:"drinken",bad:["drinkt","drink","drinkken"],r:["en"],uk:"Діти п'ють молоко.",en:"The children drink milk."},
+  {v:"vertrekken",s:"Om 7:45 u ___ Taras naar zijn werk.",ok:"vertrekt",bad:["vertrekkt","vertrekken","vertrek"],r:["t","dbl"],uk:"О 7:45 Тарас вирушає на роботу.",en:"At 7:45 Taras leaves for work."},
+  {v:"nemen",s:"Ostap en Solomiia ___ de bus naar school.",ok:"nemen",bad:["neemt","nemmen","neem"],r:["en"],uk:"Остап і Соломія їдуть до школи автобусом.",en:"Ostap and Solomiia take the bus to school."},
+  {v:"zwemmen",s:"Vandaag ___ de kinderen op school.",ok:"zwemmen",bad:["zwemen","zwemt","zwemmt"],r:["en"],uk:"Сьогодні діти плавають у школі.",en:"Today the children swim at school."},
+  {v:"zwemmen",s:"Taras ___ niet graag.",ok:"zwemt",bad:["zwemmt","zwemmen","zweemt"],r:["t","dbl"],uk:"Тарас не любить плавати.",en:"Taras doesn't like swimming."},
+  {v:"lopen",s:"Hij ___ wel graag.",ok:"loopt",bad:["lopt","lopen","loop"],r:["t","vowel"],uk:"А от бігати він любить.",en:"He does like running."},
+  {v:"lezen",s:"De kinderen ___ en schrijven in de klas.",ok:"lezen",bad:["leest","lezzen","lesen"],r:["en"],uk:"Діти читають і пишуть у класі.",en:"The children read and write in class."},
+  {v:"spreken",s:"Solomiia ___ al goed Nederlands.",ok:"spreekt",bad:["sprekt","spreken","spreek"],r:["t","vowel"],uk:"Соломія вже добре розмовляє нідерландською.",en:"Solomiia already speaks Dutch well."},
+  {v:"leren",s:"Taras ___ Nederlands bij CVO.",ok:"leert",bad:["leezt","leest","leren"],r:["t","vowel"],uk:"Тарас вивчає нідерландську в CVO.",en:"Taras learns Dutch at CVO."},
+  {v:"komen",s:"Om 16:20 u ___ de kinderen thuis.",ok:"komen",bad:["komt","kommen","koomen"],r:["en"],uk:"О 16:20 діти приходять додому.",en:"At 16:20 the children come home."},
+  {v:"spelen",s:"Ostap en Solomiia ___ samen met de kat.",ok:"spelen",bad:["speelt","spellen","speel"],r:["en"],uk:"Остап і Соломія граються з котом.",en:"Ostap and Solomiia play with the cat."},
+  {v:"verjaren",s:"Vandaag ___ Solomiia: ze is negen!",ok:"verjaart",bad:["verjart","verjaren","verjaard"],r:["t","vowel"],uk:"Сьогодні в Соломії день народження: їй дев'ять!",en:"Today is Solomiia's birthday: she is nine!"},
+  {v:"geven",s:"Taras ___ een cadeau aan zijn dochter.",ok:"geeft",bad:["geevt","geft","geven"],r:["t","vf"],uk:"Тарас дарує доньці подарунок.",en:"Taras gives his daughter a present."},
+  {v:"lezen",s:"'s Avonds ___ Taras de krant tot 22:30 u.",ok:"leest",bad:["leezt","lezt","lezen"],r:["t","zs"],uk:"Увечері Тарас читає газету до 22:30.",en:"In the evening Taras reads the paper until 22:30."}
+ ]},
+ {id:"oksana",title:"Het weekend van Oksana",gaps:[
+  {v:"zijn",s:"Het is zaterdag. Oksana ___ vrij.",ok:"is",bad:["zijn","ben","bent"],r:["irr"],uk:"Субота. Оксана вільна.",en:"It's Saturday. Oksana is free."},
+  {v:"gaan",s:"Oksana ___ naar de markt in Brussel.",ok:"gaat",bad:["gaan","gat","gaatt"],r:["t","irr"],uk:"Оксана йде на ринок у Брюсселі.",en:"Oksana goes to the market in Brussels."},
+  {v:"kopen",s:"Daar ___ Oksana appels, brood en kaas.",ok:"koopt",bad:["kopt","kopen","koopd"],r:["t","vowel"],uk:"Там Оксана купує яблука, хліб і сир.",en:"There Oksana buys apples, bread and cheese."},
+  {v:"betalen",s:"Ze ___ met haar bankkaart.",ok:"betaalt",bad:["betalt","betaal","betaald"],r:["t","vowel"],uk:"Вона платить банківською карткою.",en:"She pays with her bank card."},
+  {v:"wonen",s:"Haar ouders ___ in Lviv.",ok:"wonen",bad:["woont","wonnen","woonen"],r:["en"],uk:"Її батьки живуть у Львові.",en:"Her parents live in Lviv."},
+  {v:"bellen",s:"Oksana ___ haar moeder elke zaterdag.",ok:"belt",bad:["bellt","bellen","beld"],r:["t","dbl"],uk:"Оксана телефонує мамі щосуботи.",en:"Oksana calls her mother every Saturday."},
+  {v:"praten",s:"Ze ___ een uur met haar moeder.",ok:"praat",bad:["praatt","prat","praad"],r:["tt","vowel"],uk:"Вона годину розмовляє з мамою.",en:"She talks to her mother for an hour."},
+  {v:"zijn",s:"Haar ouders ___ blij.",ok:"zijn",bad:["is","ben","zijnt"],r:["irr","en"],uk:"Її батьки радіють.",en:"Her parents are happy."},
+  {v:"koken",s:"'s Middags ___ Oksana borsjt.",ok:"kookt",bad:["kokt","koken","kookd"],r:["t","vowel"],uk:"Удень Оксана варить борщ.",en:"In the afternoon Oksana cooks borscht."},
+  {v:"hebben",s:"Haar vriend Bohdan vraagt: \"___ jij honger?\"",ok:"Heb",bad:["Hebt","Heeft","Hebben"],r:["inv"],uk:"Її друг Богдан питає: «Ти голодна?»",en:"Her friend Bohdan asks: \"Are you hungry?\""},
+  {v:"eten",s:"Oksana en Bohdan ___ samen borsjt met brood.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Оксана й Богдан разом їдять борщ із хлібом.",en:"Oksana and Bohdan eat borscht with bread together."},
+  {v:"kijken",s:"Daarna ___ Oksana en Bohdan een film.",ok:"kijken",bad:["kijkt","kijkken","kijk"],r:["en"],uk:"Потім Оксана й Богдан дивляться фільм.",en:"Then Oksana and Bohdan watch a film."},
+  {v:"vinden",s:"Bohdan ___ de film heel goed.",ok:"vindt",bad:["vind","vint","vinden"],r:["dt"],uk:"Богданові фільм дуже подобається.",en:"Bohdan thinks the film is very good."},
+  {v:"worden",s:"Om 23:00 u ___ Oksana moe.",ok:"wordt",bad:["word","wort","worden"],r:["dt"],uk:"Об 23:00 Оксана втомлюється.",en:"At 23:00 Oksana gets tired."},
+  {v:"gaan",s:"Oksana ___ slapen. Goedenacht!",ok:"gaat",bad:["gaan","gat","gaatt"],r:["t","irr"],uk:"Оксана йде спати. На добраніч!",en:"Oksana goes to sleep. Good night!"}
+ ]}
+];
+const VH_RULES={
+ uk:{t:"hij / zij / ім'я → основа + t (Taras slaapt)",en:"вони, ми, ze (мн.), двоє людей → інфінітив на -en (de kinderen slapen)",vowel:"довга голосна в основі пишеться двома літерами: slapen → slaap, nemen → neem",dbl:"подвійна приголосна в основі стає однією: zwemmen → zwem, vertrekken → vertrek",zs:"z в кінці основи стає s: lezen → lees → hij leest",vf:"v в кінці основи стає f: geven → geef → hij geeft",tt:"основа вже закінчується на t — друге t не додаємо: hij eet, hij heet",dt:"основа на d + t = dt: vinden → hij vindt, worden → hij wordt",irr:"неправильне дієслово: hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij після дієслова (питання) — без t: Heb jij …? Woon jij …?"},
+ en:{t:"he / she / a name → stem + t (Taras slaapt)",en:"they, we, ze (pl.), two people → infinitive in -en (de kinderen slapen)",vowel:"a long vowel in the stem is written double: slapen → slaap, nemen → neem",dbl:"a double consonant becomes single in the stem: zwemmen → zwem",zs:"z at the end of the stem becomes s: lezen → lees → hij leest",vf:"v at the end of the stem becomes f: geven → geef → hij geeft",tt:"the stem already ends in t — no extra t: hij eet, hij heet",dt:"stem in d + t = dt: vinden → hij vindt, worden → hij wordt",irr:"irregular verb: hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij after the verb (question) — no t: Heb jij …? Woon jij …?"},
+ fr:{t:"il / elle / un prénom → radical + t (Taras slaapt)",en:"ils, nous, ze (pl.), deux personnes → infinitif en -en (de kinderen slapen)",vowel:"une voyelle longue dans le radical s'écrit double : slapen → slaap, nemen → neem",dbl:"une consonne double devient simple dans le radical : zwemmen → zwem",zs:"z à la fin du radical devient s : lezen → lees → hij leest",vf:"v à la fin du radical devient f : geven → geef → hij geeft",tt:"le radical finit déjà par t — pas de t en plus : hij eet, hij heet",dt:"radical en d + t = dt : vinden → hij vindt, worden → hij wordt",irr:"verbe irrégulier : hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij après le verbe (question) — sans t : Heb jij …? Woon jij …?"},
+ ar:{t:"هو / هي / اسم ← الجذر + t (Taras slaapt)",en:"هم، نحن، ze (جمع)، شخصان ← المصدر بـ -en (de kinderen slapen)",vowel:"حرف العلة الطويل في الجذر يُكتب مضاعفاً: slapen ← slaap",dbl:"الحرف الساكن المضاعف يصبح مفرداً في الجذر: zwemmen ← zwem",zs:"z في آخر الجذر تصبح s: lezen ← lees ← hij leest",vf:"v في آخر الجذر تصبح f: geven ← geef ← hij geeft",tt:"الجذر ينتهي بـ t — لا نضيف t أخرى: hij eet",dt:"جذر بـ d + t = dt: vinden ← hij vindt",irr:"فعل شاذ: hebben ← hij heeft، zijn ← hij is",inv:"jij بعد الفعل (سؤال) — بدون t: Heb jij …؟"}
+};
+const VH_UI={uk:{sub:"Обери правильну форму дієслова",story:"Історія",read:"Прочитай історію й послухай кожне речення",whole:"Уся історія"},
+ en:{sub:"Choose the right form of the verb",story:"Story",read:"Read the story and listen to each sentence",whole:"The whole story"},
+ fr:{sub:"Choisis la bonne forme du verbe",story:"Histoire",read:"Lis l'histoire et écoute chaque phrase",whole:"Toute l'histoire"},
+ ar:{sub:"اختر الصيغة الصحيحة للفعل",story:"القصة",read:"اقرأ القصة واستمع إلى كل جملة",whole:"القصة كاملة"}};
+const vhU=()=>VH_UI[uiLang]||VH_UI.uk;
+let vhStory=validStored("poly_story",VH_STORIES.map(x=>x.id),"taras"),vhDone=[];
+const isVh=()=>tab==="vervoegen"&&KL_MODES.includes(mode);
+const vhCur=()=>VH_STORIES.find(x=>x.id===vhStory)||VH_STORIES[0];
+const vhId=(st,i)=>"vh_"+st.id+"_"+i;
+const vhFill=g=>g.s.replace("___",g.ok);
+const vhTr=g=>g[uiLang]||g.en;
+function vhBar(){
+ const bar=el("div","row build-levels");bar.style.justifyContent="center";bar.style.marginBottom="10px";
+ VH_STORIES.forEach(st=>{const b=el("button","btn"+(st.id===vhStory?" primary":""),st.title.replace(/^(Een dag van|Het weekend van) /,""));b.type="button";b.title=st.title;
+  b.setAttribute("aria-pressed",String(st.id===vhStory));b.onclick=()=>{if(vhStory!==st.id){vhStory=st.id;try{localStorage.setItem("poly_story",st.id)}catch(e){}newRound()}};bar.appendChild(b)});
+ return bar;
+}
+function vhNewRound(){
+ vhDone=[];const st=vhCur();
+ if(mode==="study"){vhRenderStudy();return}
+ let list=st.gaps.map((g,i)=>({g,i,id:vhId(st,i)}));
+ if(mode==="review"){const now=Date.now();list=list.filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
+ if(!list.length){renderEmpty();const c=$("card");c.insertBefore(vhBar(),c.firstChild);return}
+ deck=list.slice().reverse();roundTotal=deck.length; // keep story order (deck.pop takes from the end)
+ nextQuestion();
+}
+function vhRenderStudy(){
+ const u=getUI(),v=vhU(),st=vhCur();$("prog").textContent=st.title;$("rnd").textContent=u.modes.study;roundTotal=0;q=0;updateProgress();
+ const card=$("card");card.replaceChildren(vhBar());
+ const top=el("div","q");const h=el("h2","",st.title);tgt(h);top.append(el("small","",v.read),h);card.appendChild(top);
+ const list=el("ol","vh-story");
+ st.gaps.forEach(g=>{const li=el("li");const p=el("button","vh-line");p.type="button";tgt(p);
+  const [a,b]=g.s.split("___");p.append(a,el("mark","",g.ok),b);p.onclick=()=>say(vhFill(g));
+  li.append(p,el("span","vh-tr",vhTr(g)));list.appendChild(li)});
+ card.appendChild(list);
+}
+function vhNext(){
+ locked=false;item=deck.pop();q++;sessionIds.push(item.id);
+ item.opts=shuffle([{l:item.g.ok,ok:true},...item.g.bad.slice(0,3).map(l=>({l,ok:false}))]);
+ vhRender();
+ if(mode==="audio")say(item.g.v);
+}
+function vhRender(){
+ const u=getUI(),v=vhU(),st=vhCur(),g=item.g;
+ $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=st.title+" · "+u.modes[mode];updateProgress();
+ const card=$("card");card.replaceChildren(vhBar());
+ const top=el("div","q");top.appendChild(el("small","",v.sub));
+ // last two finished sentences for context
+ const prev=locked?vhDone.slice(0,-1):vhDone;
+ if(prev.length){const ctx=el("div","vh-ctx");prev.slice(-2).forEach(x=>{const p=el("p","",vhFill(x));tgt(p);ctx.appendChild(p)});top.appendChild(ctx)}
+ const sent=el("h2","vh-sent");tgt(sent);const [a,b]=g.s.split("___");
+ const gap=el("span","vh-gap"+(locked?" filled":""),locked?g.ok:"_____");sent.append(a,gap,b);top.appendChild(sent);
+ const inf=el("span","vh-inf",g.v);tgt(inf);top.appendChild(inf);
+ const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(locked?vhFill(g):g.v);top.appendChild(hear);
+ card.appendChild(top);
+ const opts=el("div","opts");
+ item.opts.forEach(o=>{const bt=el("button","opt");bt.type="button";bt.dataset.ok=o.ok?"1":"";const t=el("span","",o.l);tgt(t);bt.appendChild(t);bt.disabled=locked;bt.onclick=()=>vhAnswer(o.ok,bt);opts.appendChild(bt)});
+ card.appendChild(opts);
+ const fb=el("div","feedback");fb.id="feedback";card.appendChild(fb);
+ const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+}
+function vhAnswer(ok,btn){
+ if(locked)return;locked=true;
+ const u=getUI(),g=item.g,s=stateFor(item.id);s.seen++;
+ if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
+ else{s.wrong++;s.streak=0;s.due=Date.now()}
+ s.known=s.streak>=2;saveStore();updateStats();
+ const chosen=btn.textContent;vhDone.push(g);
+ vhRender();
+ document.querySelectorAll("#card .opt").forEach(b=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok&&b.textContent===chosen)b.classList.add("incorrect")});
+ const fb=$("feedback");fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
+ const full=el("p","example",vhFill(g));tgt(full);fb.appendChild(full);fb.appendChild(el("p","",vhTr(g)));
+ const R=VH_RULES[uiLang]||VH_RULES.uk;const ul=el("ul","vh-rules");g.r.forEach(k=>ul.appendChild(el("li","",R[k])));fb.appendChild(ul);
+ say(vhFill(g));
  const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
 
