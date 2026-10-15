@@ -368,6 +368,12 @@ footer a{color:inherit}
 .vh-end{text-align:start;margin-top:6px}
 .vh-end strong{display:block;margin-bottom:8px}
 
+/* ---------- separable verbs ---------- */
+.sep-sent .vh-gap{min-width:2.6em;text-align:center}
+.sep-inf{display:block;margin-top:4px;font-size:17px;color:var(--ink-2)}
+.sep-pair b{font-weight:900}
+.sep-pair i{font-style:normal;color:var(--ink-2);margin:0 2px}
+
 /* ---------- "Далі" always reachable above the bottom dock ---------- */
 .card .row:has(> #nx:not(:disabled)){position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:6}
 .card .row:has(> #nx:not(:disabled))::before{content:"";position:absolute;inset:-10px -8px -12px;background:linear-gradient(to bottom,transparent,var(--surface) 35%);z-index:-1;border-radius:var(--r-md);pointer-events:none}
@@ -1695,6 +1701,7 @@ function nextQuestion(){
  if(!deck.length){endRound();return}
  if(isKl()){klNext();return}
  if(isVh()){vhNext();return}
+ if(isSep()){sepNext();return}
  if(mode==="build"){nextBuild();return}
  locked=false;item=deck.pop();q++;sessionIds.push(item.id);
  const u=getUI();
@@ -2123,6 +2130,83 @@ function vhAnswer(ok,btn){
  const R=VH_RULES[uiLang]||VH_RULES.uk;const ul=el("ul","vh-rules");g.r.forEach(k=>ul.appendChild(el("li","",R[k])));fb.appendChild(ul);
  say(vhFill(g));
  const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+}
+
+
+// ========== SEPARABLE VERBS: sentence with two gaps (verb on place 2, particle at the end) ==========
+// id → sentence with two ___, finite verb v, particle p, wrong conjugation w, translations
+const SEP={
+ b_opstaan:{s:"Ik ___ om zeven uur ___.",v:"sta",p:"op",w:"staat",uk:"Я встаю о сьомій.",en:"I get up at seven."},
+ b_opbellen:{s:"Ik ___ de dokter ___.",v:"bel",p:"op",w:"belt",uk:"Я телефоную лікареві.",en:"I call the doctor."},
+ b_meenemen:{s:"Ik ___ een paraplu ___.",v:"neem",p:"mee",w:"neemt",uk:"Я беру з собою парасольку.",en:"I take an umbrella along."},
+ b_afspreken:{s:"Ik ___ met een vriendin ___.",v:"spreek",p:"af",w:"spreekt",uk:"Я домовляюся про зустріч з подругою.",en:"I arrange to meet a friend."},
+ b_uitgaan:{s:"Op zaterdag ___ we ___.",v:"gaan",p:"uit",w:"gaat",uk:"У суботу ми йдемо гуляти.",en:"On Saturday we go out."},
+ b_aankomen:{s:"De trein ___ om negen uur ___.",v:"komt",p:"aan",w:"kom",uk:"Потяг прибуває о дев'ятій.",en:"The train arrives at nine."},
+ b_terugkomen:{s:"Ik ___ morgen ___.",v:"kom",p:"terug",w:"komt",uk:"Я повернуся завтра.",en:"I'll come back tomorrow."},
+ b_opruimen:{s:"De kinderen ___ hun kamer ___.",v:"ruimen",p:"op",w:"ruimt",uk:"Діти прибирають свою кімнату.",en:"The children tidy their room."},
+ b_invullen:{s:"Ik ___ het formulier ___.",v:"vul",p:"in",w:"vult",uk:"Я заповнюю формуляр.",en:"I fill in the form."},
+ b_ophalen:{s:"Ik ___ mijn zoon om drie uur ___.",v:"haal",p:"op",w:"haalt",uk:"Я забираю сина о третій.",en:"I pick up my son at three."},
+ b_binnenkomen:{s:"Anna ___ de klas ___.",v:"komt",p:"binnen",w:"kom",uk:"Анна заходить до класу.",en:"Anna comes into the classroom."},
+ b_aankleden:{s:"Ik ___ me snel ___.",v:"kleed",p:"aan",w:"kleedt",uk:"Я швидко одягаюся.",en:"I get dressed quickly."}
+};
+const SEP_UI={
+ uk:{sub:"Розділи дієслово: перша частина на 2-му місці, частка в кінці",rule:"Дієслово, що розділяється: змінна частина стоїть на 2-му місці, а частка (op, mee, af, uit, aan, in, terug, binnen) іде в самий кінець речення.",none:"—"},
+ en:{sub:"Split the verb: first part in 2nd place, particle at the end",rule:"Separable verb: the conjugated part goes in 2nd place and the particle (op, mee, af, uit, aan, in, terug, binnen) goes to the very end.",none:"—"},
+ fr:{sub:"Sépare le verbe : la 1re partie en 2e position, la particule à la fin",rule:"Verbe séparable : la partie conjuguée est en 2e position et la particule (op, mee, af, uit, aan, in, terug, binnen) va tout à la fin.",none:"—"},
+ ar:{sub:"افصل الفعل: الجزء الأول في المكان الثاني والأداة في النهاية",rule:"الفعل المنفصل: الجزء المصرَّف في المكان الثاني، والأداة (op, mee, af, uit…) في آخر الجملة.",none:"—"}
+};
+const sepU=()=>SEP_UI[uiLang]||SEP_UI.uk;
+const isSep=()=>tab==="separable"&&targetLang==="nl"&&["quiz","audio","review"].includes(mode);
+const sepFill=d=>{const [a,b,c]=d.s.split("___");return a+d.v+b+d.p+c};
+function sepNext(){
+ locked=false;item=deck.pop();q++;sessionIds.push(item.id);
+ const d=SEP[item.id];if(!d){nextQuestion();return}
+ const n=sepU().none;
+ item.sep=d;
+ item.opts=shuffle([
+  {a:d.v,b:d.p,ok:true},
+  {a:d.p+d.v,b:n,ok:false},          // not split: "opsta"
+  {a:(()=>{const inf=item.nl.split("→")[0].trim();return inf===d.p+d.v?d.p+d.w:inf})(),b:n,ok:false}, // infinitive (or "opruimt" when it equals the unsplit form)
+  {a:d.w,b:d.p,ok:false}             // wrong ending
+ ]);
+ sepRender();
+ if(mode==="audio")say(item.nl.split("→")[0].trim());
+}
+function sepRender(){
+ const u=getUI(),d=item.sep;
+ $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=u.round+" "+round+" · "+u.modes[mode];updateProgress();
+ const card=$("card");card.replaceChildren();
+ const top=el("div","q");top.appendChild(el("small","",sepU().sub));
+ if(item.icon)top.appendChild(iconBox(item.icon));
+ const [a,b,c]=d.s.split("___");
+ const h=el("h2","vh-sent sep-sent");tgt(h);
+ h.append(a,el("span","vh-gap"+(locked?" filled":" active"),locked?d.v:"1"),b,el("span","vh-gap"+(locked?" filled":" active"),locked?d.p:"2"),c);
+ top.appendChild(h);
+ const inf=el("span","vh-inf2 sep-inf","("+item.nl.split("→")[0].trim()+")");tgt(inf);top.appendChild(inf);
+ const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(locked?sepFill(d):item.nl.split("→")[0].trim());top.appendChild(hear);
+ card.appendChild(top);
+ const opts=el("div","opts sep-opts");
+ item.opts.forEach(o=>{const bt=el("button","opt");bt.type="button";bt.dataset.ok=o.ok?"1":"";
+  const t=el("span","sep-pair");tgt(t);t.append(el("b","",o.a),el("i",""," … "),el("b","",o.b));bt.appendChild(t);
+  bt.disabled=locked;bt.onclick=()=>sepAnswer(o.ok,bt);opts.appendChild(bt)});
+ card.appendChild(opts);
+ const fb=el("div","feedback");fb.id="feedback";card.appendChild(fb);
+ const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+}
+function sepAnswer(ok,btn){
+ if(locked)return;locked=true;
+ const u=getUI(),d=item.sep,s=stateFor(item.id);s.seen++;
+ if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
+ else{s.wrong++;s.streak=0;s.due=Date.now()}
+ s.known=s.streak>=2;saveStore();updateStats();
+ const idx=[...btn.parentNode.children].indexOf(btn);
+ sepRender();
+ document.querySelectorAll("#card .opt").forEach((b,i)=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok&&i===idx)b.classList.add("incorrect")});
+ const fb=$("feedback");fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
+ const full=el("p","example",sepFill(d));tgt(full);fb.appendChild(full);
+ fb.appendChild(el("p","",d[uiLang]||d.en));
+ fb.appendChild(el("p","xp-note",sepU().rule));
+ say(sepFill(d));
 }
 
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
