@@ -121,6 +121,10 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .nav-subs button{flex:none;white-space:nowrap;cursor:pointer;padding:8px 14px;border-radius:var(--r-pill);border:0;background:transparent;color:var(--ink-2);font-weight:800;font-size:14px}
 .nav-subs button[aria-selected="true"]{background:var(--be-black);color:#fff}
 :root[data-theme="dark"] .nav-subs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.nav-scrollbar{display:block;position:relative;height:14px;margin:0 2px 2px;border-radius:var(--r-pill);background:var(--surface-2);box-shadow:inset 0 2px 3px rgba(0,0,0,.08);touch-action:none;cursor:pointer;user-select:none}
+.nav-scroll-thumb{position:absolute;inset-block:1px;left:0;min-width:36px;border-radius:var(--r-pill);background:var(--oranje);box-shadow:inset 0 -2px 0 rgba(0,0,0,.16),inset 0 2px 0 rgba(255,255,255,.32);cursor:grab;will-change:transform}
+.nav-scrollbar:active .nav-scroll-thumb{cursor:grabbing}
+.nav-scrollbar:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 
 /* ---------- progress ---------- */
 .meta{display:flex;justify-content:space-between;gap:8px;color:var(--ink-2);font-size:13px;font-weight:800;padding:0 4px;margin-bottom:-6px}
@@ -434,9 +438,11 @@ footer a{color:inherit}
  main{max-width:1600px;padding:28px clamp(24px,4vw,64px) 132px;gap:18px}
  .nav-fade-wrap,.sub-wrapper{margin:0}
  .nav-fade-wrap::after{display:none}
- .nav-cats{flex-wrap:wrap;overflow:visible;scroll-snap-type:none;padding:2px 0 10px}
- .nav-cats button{scroll-snap-align:none}
- .nav-subs{flex-wrap:wrap;overflow:visible;padding:0 0 4px}
+ .nav-fade-wrap,.sub-wrapper{min-width:0}
+ .nav-cats{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:2px 0 6px;scrollbar-width:none}
+ .nav-cats::-webkit-scrollbar,.nav-subs::-webkit-scrollbar{display:none}
+ .nav-cats button{scroll-snap-align:start}
+ .nav-subs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:0 0 4px;scrollbar-width:none}
  .progress-panel{width:100%}
  .card{width:min(100%,1200px);margin-inline:auto;padding:28px clamp(24px,4vw,52px)}
  .modes-wrapper{width:min(900px,calc(100% - 64px));gap:8px;padding:8px}
@@ -482,11 +488,12 @@ footer a{color:inherit}
   <div class="nav-section">
     <div class="level-nav" id="levelNav" role="group" aria-label="Level"></div>
     <div class="section-label" id="lblCat">Розділ</div>
-    <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav></div>
+    <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav><div class="nav-scrollbar" id="catSlider" role="scrollbar" aria-controls="catNav" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><span class="nav-scroll-thumb"></span></div></div>
     
     <div class="section-label" id="lblSub">Підрозділ</div>
     <div class="sub-wrapper">
       <nav class="nav-subs" id="subNav" aria-label="Subtopics"></nav>
+      <div class="nav-scrollbar" id="subSlider" role="scrollbar" aria-controls="subNav" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><span class="nav-scroll-thumb"></span></div>
     </div>
 
     <div class="section-label" id="lblMode">Режим</div>
@@ -1629,6 +1636,59 @@ function buildNav(){
 
  const activeSub=subNav.querySelector('[aria-selected="true"]');
  if(activeSub&&activeSub.scrollIntoView)activeSub.scrollIntoView({inline:"center",block:"nearest"});
+}
+
+function bindNavSlider(navId,sliderId,labelKey){
+ const nav=$(navId),slider=$(sliderId),thumb=slider?.querySelector(".nav-scroll-thumb");
+ if(!nav||!slider||!thumb)return;
+ const labels={uk:{cats:"Прокрутка розділів",subs:"Прокрутка тем"},en:{cats:"Scroll categories",subs:"Scroll topics"},fr:{cats:"Faire défiler les catégories",subs:"Faire défiler les thèmes"},ar:{cats:"تمرير الفئات",subs:"تمرير المواضيع"}};
+ let dragging=false,startX=0,startRatio=0,frame=0;
+ const sync=()=>{
+  const max=nav.scrollWidth-nav.clientWidth;
+  if(max<=2){slider.hidden=true;return}
+  slider.hidden=false;
+  const width=slider.clientWidth,thumbWidth=Math.min(width,Math.max(36,width*nav.clientWidth/nav.scrollWidth));
+  const maxThumb=width-thumbWidth,rtl=getComputedStyle(nav).direction==="rtl",pct=max?Math.max(0,Math.min(1,rtl?1+nav.scrollLeft/max:nav.scrollLeft/max)):0;
+  thumb.style.width=thumbWidth+"px";thumb.style.transform="translateX("+(pct*maxThumb)+"px)";
+  slider.setAttribute("aria-label",(labels[uiLang]||labels.uk)[labelKey]);
+  slider.setAttribute("aria-valuenow",String(Math.round(pct*100)));
+  slider.setAttribute("aria-valuetext",Math.round(pct*100)+"%");
+ };
+ const queueSync=()=>{if(!frame)frame=requestAnimationFrame(()=>{frame=0;sync()})};
+ nav.addEventListener("scroll",queueSync,{passive:true});
+ window.addEventListener("resize",queueSync);
+ new MutationObserver(queueSync).observe(nav,{childList:true});
+ slider.addEventListener("pointerdown",e=>{
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();sync();
+  const r=slider.getBoundingClientRect(),tr=thumb.getBoundingClientRect(),max=nav.scrollWidth-nav.clientWidth,travel=r.width-tr.width,rtl=getComputedStyle(nav).direction==="rtl";
+  if(max<=0||travel<=0)return;
+  slider.setPointerCapture(e.pointerId);dragging=true;startX=e.clientX;startRatio=max?Math.max(0,Math.min(1,rtl?1+nav.scrollLeft/max:nav.scrollLeft/max)):0;
+  if(!thumb.contains(e.target)){
+   const pct=Math.max(0,Math.min(1,(e.clientX-r.left-tr.width/2)/travel));
+   nav.scrollLeft=rtl?(pct-1)*max:pct*max;startRatio=pct;
+  }
+ });
+ slider.addEventListener("pointermove",e=>{
+  if(!dragging)return;
+  const travel=slider.clientWidth-thumb.offsetWidth,max=nav.scrollWidth-nav.clientWidth,rtl=getComputedStyle(nav).direction==="rtl";
+  if(travel>0){const pct=Math.max(0,Math.min(1,startRatio+(e.clientX-startX)/travel));nav.scrollLeft=rtl?(pct-1)*max:pct*max}
+ });
+ const stopDrag=()=>{dragging=false};
+ slider.addEventListener("pointerup",stopDrag);slider.addEventListener("pointercancel",stopDrag);
+ slider.addEventListener("keydown",e=>{
+  const step=Math.max(100,nav.clientWidth*.35);let left=null;
+  if(e.key==="ArrowRight"||e.key==="PageDown")left=step;
+  else if(e.key==="ArrowLeft"||e.key==="PageUp")left=-step;
+  else if(e.key==="Home")left=-Infinity;
+  else if(e.key==="End")left=Infinity;
+  if(left===null)return;e.preventDefault();
+  const max=nav.scrollWidth-nav.clientWidth,rtl=getComputedStyle(nav).direction==="rtl";
+  const pct=max?Math.max(0,Math.min(1,rtl?1+nav.scrollLeft/max:nav.scrollLeft/max)):0;
+  const target=left===-Infinity?(rtl?1:0):left===Infinity?(rtl?0:1):Math.max(0,Math.min(1,pct+left/Math.max(1,max)));
+  nav.scrollTo({left:rtl?(target-1)*max:target*max,behavior:"smooth"});
+ });
+ sync();
 }
 
 function afterLangChange(){
@@ -3001,7 +3061,7 @@ function start(){
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
- updateHeader();buildNav();newRound();
+ updateHeader();buildNav();bindNavSlider("catNav","catSlider","cats");bindNavSlider("subNav","subSlider","subs");newRound();
 }
 
 if (document.readyState === "loading") {
