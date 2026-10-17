@@ -428,6 +428,31 @@ footer a{color:inherit}
  main{padding-top:24px}
  .card{padding:24px}
 }
+
+/* ---------- wide web layout ---------- */
+@media (min-width:760px){
+ main{max-width:1600px;padding:28px clamp(24px,4vw,64px) 132px;gap:18px}
+ .nav-fade-wrap,.sub-wrapper{margin:0}
+ .nav-fade-wrap::after{display:none}
+ .nav-cats{flex-wrap:wrap;overflow:visible;scroll-snap-type:none;padding:2px 0 10px}
+ .nav-cats button{scroll-snap-align:none}
+ .nav-subs{flex-wrap:wrap;overflow:visible;padding:0 0 4px}
+ .progress-panel{width:100%}
+ .card{width:min(100%,1200px);margin-inline:auto;padding:28px clamp(24px,4vw,52px)}
+ .modes-wrapper{width:min(900px,calc(100% - 64px));gap:8px;padding:8px}
+ .modes-wrapper button{flex-direction:row;gap:8px;min-height:58px;padding:8px 12px;font-size:14px}
+ .dock-ic{font-size:20px}
+ .dock-tx{font-size:13px;white-space:normal;overflow:visible}
+ footer{width:min(100%,1120px);margin:18px auto 0;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 18px}
+}
+@media (min-width:1200px){
+ main{padding-top:36px}
+ .nav-section{gap:14px}
+ .nav-cats{gap:12px}
+ .nav-subs{gap:10px}
+ .card{padding-top:34px;padding-bottom:34px}
+ .opts{gap:16px}
+}
 </style>
 </head>
 <body>
@@ -1619,17 +1644,21 @@ function changeTargetLang(l){if(!LANGS.includes(l))return;targetLang=l;if(target
 function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang===uiLang)targetLang=uiLang==="en"?"nl":"en";afterLangChange()}
 
 function showSpeechNote(){const c=$("card");if(!c||$("speechNote"))return;const p=el("p","empty",getUI().noSpeech);p.id="speechNote";c.appendChild(p)}
+let speechVoices=[];
+function refreshSpeechVoices(){try{speechVoices=window.speechSynthesis.getVoices()||[]}catch(e){speechVoices=[]}}
+if("speechSynthesis" in window){refreshSpeechVoices();window.speechSynthesis.addEventListener?.("voiceschanged",refreshSpeechVoices)}
 function say(text){
  try{
   if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){showSpeechNote();return}
-  window.speechSynthesis.cancel();
+  const synth=window.speechSynthesis;
+  if(synth.speaking||synth.pending)synth.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[targetLang]||"nl-BE";u.rate=.86;
-  const voices=window.speechSynthesis.getVoices(),pre=u.lang.toLowerCase().split("-")[0];
+  u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[targetLang]||"nl-BE";u.rate=.92;
+  const voices=speechVoices.length?speechVoices:(refreshSpeechVoices(),speechVoices),pre=u.lang.toLowerCase().split("-")[0];
   const v=voices.find(x=>x.lang.toLowerCase()===u.lang.toLowerCase())||voices.find(x=>x.lang.toLowerCase().startsWith(pre));
   if(v)u.voice=v;
   u.onerror=e=>{if(!["interrupted","canceled","not-allowed"].includes(e.error))showSpeechNote()};
-  window.speechSynthesis.speak(u);
+  synth.speak(u);
  }catch(e){showSpeechNote()}
 }
 const spoken=()=>(tab==="dehet"&&mode!=="study"&&!locked)?labelFor(item):shown(item);
@@ -1750,15 +1779,11 @@ function nextQuestion(){
  if(mode==="audio")say(spoken());
 }
 
-// Study: go to the next word and speak the NEW word ~1 s later
-let studySayTimer=null;
+// Study: speak the new word immediately after rendering it.
 function studyNext(){
- clearTimeout(studySayTimer);
- try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+ try{const s=window.speechSynthesis;if(s&&(s.speaking||s.pending))s.cancel()}catch(e){}
  nextQuestion();
- if(mode!=="study"||!document.querySelector("#card .q"))return; // round finished
- const cur=item;
- studySayTimer=setTimeout(()=>{if(mode==="study"&&item===cur)say(spoken())},1000);
+ if(mode==="study"&&document.querySelector("#card .q"))say(spoken()); // round finished
 }
 function renderStudyControls(card){
  const u=getUI(),fb=el("div","feedback");fb.id="feedback";
@@ -1798,7 +1823,6 @@ function answer(ok,btn){
  if(gain===2)fb.appendChild(el("p","xp-note",pgU().easyXp));
  const nx=$("nx");
  nx.disabled=false;
- say(item[exK]||shown(item));
  setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
 
@@ -1974,7 +1998,6 @@ function klAnswer(ok,btn){
  else{const w=el("p","");w.append(klCard("ik "+item.stem)," · ",klCard("wij "+item.nl));fb.appendChild(w)}
  fb.appendChild(el("p","",why));
  fb.appendChild(el("p","example",meaningFor(item)));
- say(klLevel===3?klQ.subj+" "+klQ.ok:item.nl);
  const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
 
@@ -2128,7 +2151,6 @@ function vhAnswer(ok,btn){
  const fb=$("feedback");fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
  const full=el("p","example",g.n+". "+vhFill(g));tgt(full);fb.appendChild(full);fb.appendChild(el("p","",vhTr(g)));
  const R=VH_RULES[uiLang]||VH_RULES.uk;const ul=el("ul","vh-rules");g.r.forEach(k=>ul.appendChild(el("li","",R[k])));fb.appendChild(ul);
- say(vhFill(g));
  const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
 }
 
@@ -2206,7 +2228,6 @@ function sepAnswer(ok,btn){
  const full=el("p","example",sepFill(d));tgt(full);fb.appendChild(full);
  fb.appendChild(el("p","",d[uiLang]||d.en));
  fb.appendChild(el("p","xp-note",sepU().rule));
- say(sepFill(d));
 }
 
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
@@ -2499,12 +2520,6 @@ function answerToets(ok, btn, item){
   }
   const nx = $("nx");
   if(nx) nx.disabled = false;
-  if(ok){
-    const ans = item.opts ? item.opts[item.ok] : "";
-    const spoken = (ans && typeof ans === "object") ? (ans.nl || ans.en || "") : String(ans||"");
-    // only speak Dutch-looking gap answers
-    if(item.type==="gap" && spoken) say(spoken);
-  }
   if(nx) setTimeout(() => nx.scrollIntoView({behavior:"smooth", block:"nearest"}), 100);
 }
 
