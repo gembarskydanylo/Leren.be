@@ -414,7 +414,7 @@ a9cbe526	het ticket
 5e46d702	Een ticket naar Brussel, alstublieft.
 3b0bf1e4	de halte
 49cec658	Waar is de bushalte?
-e9ca9aee	links
+e9ca9aee	Links
 c8a15b1a	Ga naar links.
 4f205f42	rechts
 b2d5fbcf	Sla rechtsaf.
@@ -463,7 +463,7 @@ f248949f	donderdag
 425d05f8	zondag
 f9473f67	hallo
 78708830	Hallo, hoe gaat het?
-800905bd	goedemorgen
+800905bd	Goedemorgen
 e57c9705	Goedemorgen, meneer.
 2fcfa31b	goedemiddag
 1c26ee0c	Goedemiddag, mevrouw.
@@ -471,9 +471,9 @@ e57c9705	Goedemorgen, meneer.
 ca06efea	Goedenavond, mevrouw.
 fad4960d	goedenacht
 d7b221a7	Goedenacht en slaap lekker.
-d7d3c8ab	tot ziens
+d7d3c8ab	Tot ziens
 df3e7bee	Tot ziens en tot morgen!
-5d349592	dank u wel
+5d349592	Dank u wel
 4df436f4	Dank u wel voor de hulp.
 d4906f86	alsjeblieft
 53d01a38	Een koffie, alsjeblieft.
@@ -483,9 +483,9 @@ d4906f86	alsjeblieft
 b252b462	Sorry, ik ben te laat.
 83f3d6ad	pardon
 0da2df4c	Pardon, waar is het station?
-6c3f7a14	ja
+6c3f7a14	Ja
 4f62a679	Ja, dat klopt.
-3699ac1b	nee
+3699ac1b	Nee
 af6192be	Nee, dank u.
 b351d7ec	welkom
 116ebbdc	Welkom in België!
@@ -513,7 +513,7 @@ ac0c7b26	Geen probleem, ik help je.
 3e9fcf2e	Het is nul graden.
 2bd3d5bb	één
 16d39036	Ik heb één broer.
-c391d2da	twee
+c391d2da	Twee
 82e25765	Ik heb twee kinderen.
 aaa111f1	drie
 18a6d5f4	Drie koffie, alstublieft.
@@ -546,7 +546,7 @@ caac9323	honderd
 8983e61a	Het kost honderd euro.
 e84e292d	vandaag
 e456996c	Vandaag heb ik les.
-dad06e15	morgen
+dad06e15	Morgen
 8d0113c5	Morgen ga ik naar de dokter.
 5740a2a2	gisteren
 d35a7d71	Gisteren was het koud.
@@ -584,7 +584,7 @@ b7212a6c	het is kwart over twee
 8b3585e6	Het is kwart over twee.
 3cfc86ff	het is kwart voor drie
 d6ffa71b	Kom om kwart voor drie.
-30efe0ba	het is drie uur
+30efe0ba	Het is drie uur
 77ecd91b	Om drie uur is er pauze.
 7a23cb1f	het is half vier
 661e747a	De winkel sluit om half vier.
@@ -824,7 +824,7 @@ d6775963	de collega
 cb2337e0	Mijn collega is aardig.
 68a0e942	de baas / chef
 23425add	Mijn baas is streng.
-a44d928a	de vergadering
+a44d928a	De vergadering
 5a1e5248	We hebben een vergadering om 10 uur.
 c2c8858b	de computer
 f5eea8bb	Ik werk op de computer.
@@ -1036,7 +1036,7 @@ b54e72fa	ik ben gebleven
 756f3695	Vanmorgen heb ik gesport.
 560d7811	gisteravond
 e8012a39	Gisteravond hebben we een film gezien.
-1d946dc9	vorige week
+1d946dc9	Vorige week
 3fefe340	vorige maand
 4d1f273e	vorig jaar
 7f33e161	Vorig jaar zijn we naar België gekomen.
@@ -1575,4 +1575,46 @@ bb92c841	Hebt u mijn mail gekregen?
 09858bb5	Waarom werk je vandaag niet?
 25cc3e7f	Is dat hun huis?
 b948f757	Wanneer zie je hem?
+e719090d	Ik heet Anna.
+e45d1669	het boek
+037f2bfa	Ik spreek een beetje Nederlands.
+a427a6be	In Antwerpen
+5586c39f	Het is kwart over drie.
+d93babc6	Ik koop een brood.
+33121bff	Aan de kassa
+9aecf939	Vijf euro
+bfe312e1	In het kantoor
+41186813	de pinpas
+83078f5f	Neem de trein naar Brussel.
+36bc8b9c	Met de tram
+fdf74cb0	Hoeveel kost het ticket?
+98c8691d	Het salaris
+9eebd1b5	Frankrijk
+48136286	In Brussel
+bb0d476e	Jacques is 32 jaar.
+dec6201c	Zijn verjaardag is 14 januari.
+7358d623	Frans en een beetje Nederlands
+30168967	Portugal
+ec55aad0	Maria is niet getrouwd.
+472e8675	3 maart
+86c9346f	Hoe heet hij/zij?
+3570ce8e	Waar woon je? — In Gent.
+bbc17c51	het huis
+3e295e1c	Het is half tien. (9:30)
+50bbcf09	zeventien
+613976ad	In een bakkerij
+499ffad8	Wat doe je graag? — Ik lees graag.
+88c0937e	Hoeveel kost het?
+3243b73d	De winkel is van maandag tot zaterdag open.
+3b1dbfdd	boeken
+45c8c646	Ik ga met de bus naar het werk.
+1530a186	Ik moet werken
+844933f6	Om 9 uur
+d614505c	Wij kunnen morgen niet komen.
+cc239cf8	Gisteren heb ik gewerkt.
+d918aa1c	gekocht
+c09a685d	Heb je al gegeten? — Ja, om zes uur.
+cd4a0a3c	750 euro
+b34c6559	Dat is mijn fiets.
+0ea3e09c	ons huis
 13de3456	Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.

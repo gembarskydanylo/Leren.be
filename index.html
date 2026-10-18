@@ -408,8 +408,6 @@ footer a{color:inherit}
 .sep-pair i{font-style:normal;color:var(--ink-2);margin:0 2px}
 
 /* ---------- "Далі" always reachable above the bottom dock ---------- */
-.card .row:has(> #nx:not(:disabled)){position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:6}
-.card .row:has(> #nx:not(:disabled))::before{content:"";position:absolute;inset:-10px -8px -12px;background:linear-gradient(to bottom,transparent,var(--surface) 35%);z-index:-1;border-radius:var(--r-md);pointer-events:none}
 
 /* ---------- compact Kort / lang so word + columns + feedback fit one screen ---------- */
 .kl-word{margin:6px 0 2px}
@@ -2040,6 +2038,8 @@ function renderClockFace(nlText){
  return wrap;
 }
 
+// After an answer: scroll just enough that the feedback and "Next" sit above the bottom dock (nothing overlaps).
+function revealNext(){setTimeout(()=>{const nx=$("nx");if(!nx||nx.closest("[hidden]"))return;const dock=$("modeButtons"),limit=(dock?dock.getBoundingClientRect().top:innerHeight)-14,r=nx.getBoundingClientRect();if(r.bottom>limit)window.scrollBy({top:r.bottom-limit,behavior:"smooth"})},120)}
 function cardToTop(){const c=$("card");if(c&&c.getBoundingClientRect().top<0)c.scrollIntoView({block:"start",behavior:"smooth"})}
 function nextQuestion(){
  cardToTop();
@@ -2139,7 +2139,8 @@ function answer(ok,btn){
  if(gain===2)fb.appendChild(el("p","xp-note",pgU().easyXp));
  const nx=$("nx");
  nx.disabled=false;
- setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+ revealNext();
+ autoSay(shown(item));
 }
 
 function renderEmpty(){
@@ -2314,7 +2315,8 @@ function klAnswer(ok,btn){
  else{const w=el("p","");w.append(klCard("ik "+item.stem)," · ",klCard("wij "+item.nl));fb.appendChild(w)}
  fb.appendChild(el("p","",why));
  fb.appendChild(el("p","example",meaningFor(item)));
- const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+ const nx=$("nx");if(nx)revealNext();
+ autoSay(klLevel===3?klQ.subj+" "+klQ.ok:item.nl);
 }
 
 
@@ -2467,7 +2469,8 @@ function vhAnswer(ok,btn){
  const fb=$("feedback");fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
  const full=el("p","example",g.n+". "+vhFill(g));tgt(full);fb.appendChild(full);fb.appendChild(el("p","",vhTr(g)));
  const R=VH_RULES[uiLang]||VH_RULES.uk;const ul=el("ul","vh-rules");g.r.forEach(k=>ul.appendChild(el("li","",R[k])));fb.appendChild(ul);
- const nx=$("nx");if(nx)setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
+ const nx=$("nx");if(nx)revealNext();
+ autoSay(vhFill(g));
 }
 
 
@@ -2544,6 +2547,7 @@ function sepAnswer(ok,btn){
  const full=el("p","example",sepFill(d));tgt(full);fb.appendChild(full);
  fb.appendChild(el("p","",d[uiLang]||d.en));
  fb.appendChild(el("p","xp-note",sepU().rule));
+ revealNext();autoSay(sepFill(d));
 }
 
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
@@ -2816,6 +2820,18 @@ function nextToetsQuestion(){
   });
 }
 
+// Dutch text to read aloud after a Toets answer: the full sentence with the gap filled,
+// the Dutch phrase quoted in the question, or the Dutch answer itself.
+function toetsSpoken(item){
+  if(!item || !item.opts) return "";
+  const ans = item.opts[item.ok];
+  if(item.type === "gap" && item.sentence && typeof ans === "string") return item.sentence.replace("___", ans);
+  const qen = (item.q && (item.q.en || item.q.uk)) || "";
+  if(ans && typeof ans === "object"){ const m = qen.match(/«([^»]+)»/); return m ? m[1] : ""; }
+  const a = String(ans ?? "").trim(); if(!a || a === "—" || /^[\d:.,\s]+$/.test(a)) return "";
+  if(qen.includes("___")){ const part = qen.slice(qen.lastIndexOf(":") + 1).trim(); return part.replace("___", a); }
+  return a;
+}
 function answerToets(ok, btn, item){
   if(toetsLocked) return;
   toetsLocked = true;
@@ -2836,7 +2852,8 @@ function answerToets(ok, btn, item){
   }
   const nx = $("nx");
   if(nx) nx.disabled = false;
-  if(nx) setTimeout(() => nx.scrollIntoView({behavior:"smooth", block:"nearest"}), 100);
+  revealNext();
+  const sp = toetsSpoken(item); if(sp) autoSay(sp);
 }
 
 function endToets(){
