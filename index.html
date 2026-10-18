@@ -86,14 +86,10 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
  box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 .brand h1{font-family:var(--font-display);font-size:22px;line-height:1;margin:0;font-weight:800;letter-spacing:-.01em}
 .brand p{margin:0;padding:3px 8px;border-radius:var(--r-pill);background:rgba(0,0,0,.16);font-size:12px;font-weight:800;line-height:1.2}
-.top-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-inline-end:52px}
 .select-group{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9)}
 .lang-select,.theme-btn,.score-pill{min-height:38px;border-radius:var(--r-sm);border:0;font-weight:800;font-size:13px}
 .lang-select option{background:#fff;color:#2A1D12}
 .lang-select{background:#FFFFFF;color:#2A1D12;padding:0 8px;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35);cursor:pointer}
-#themeToggle{position:absolute;top:12px;inset-inline-end:12px;z-index:2}
-.brand{padding-inline-end:104px}
-#helpBtn{position:absolute;top:12px;inset-inline-end:60px;z-index:2;font-size:16px}
 /* language pickers drawn as flags with the code written on them */
 .flag-pick{position:relative;display:inline-flex;min-width:66px;height:38px;border-radius:var(--r-sm);overflow:hidden;
  box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35),inset 0 0 0 2px rgba(255,255,255,.95);cursor:pointer}
@@ -469,17 +465,9 @@ footer a{color:inherit}
 /* ---------- small phones ---------- */
 @media (max-width:420px){
  main{padding:10px 12px 20px;gap:12px}
- .nav-fade-wrap,.sub-wrapper{margin:0 -12px}
- .nav-cats{padding:2px 12px 10px;scroll-padding-inline:12px}.nav-subs{padding:0 12px 2px}
  header{padding:12px 12px 12px 14px;gap:10px}
  .brand h1{font-size:20px}
- .top-right{width:100%;display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:7px;padding-inline-end:0}
- .flag-pick{min-width:0;width:100%}
- .auto-speech-btn{min-width:40px;padding:0 6px}
- .auto-speech-btn .at{display:none}
  .score-pill{padding:0 9px}
- #targetLabel,#uiLabel{display:none}
- .select-group .lang-select{width:100%}
  .kl-rule{grid-template-columns:1fr}
  .opts{gap:10px}
  .opt{min-height:54px;font-size:15px}
@@ -492,18 +480,10 @@ footer a{color:inherit}
 /* ---------- wide web layout ---------- */
 @media (min-width:760px){
  main{max-width:1600px;padding:28px clamp(24px,4vw,64px) 132px;gap:18px}
- .nav-fade-wrap,.sub-wrapper{margin:0}
- .nav-fade-wrap::after{display:none}
- .nav-fade-wrap,.sub-wrapper{min-width:0}
- .nav-cats{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:2px 0 6px;scrollbar-width:none}
- .nav-cats::-webkit-scrollbar,.nav-subs::-webkit-scrollbar{display:none}
- .nav-cats button{scroll-snap-align:start}
- .nav-subs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:0 0 4px;scrollbar-width:none}
  .progress-panel{width:100%}
  .card{width:min(100%,1200px);margin-inline:auto;padding:28px clamp(24px,4vw,52px)}
  .modes-wrapper{width:min(900px,calc(100% - 64px));gap:8px;padding:8px}
  .modes-wrapper button{flex-direction:row;gap:8px;min-height:58px;padding:8px 12px;font-size:14px}
- .dock-ic{font-size:20px}
  .dock-tx{font-size:13px;white-space:normal;overflow:visible}
  footer{width:min(100%,1120px);margin:18px auto 0;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 18px}
 }
@@ -515,34 +495,205 @@ footer a{color:inherit}
  .card{padding-top:34px;padding-bottom:34px}
  .opts{gap:16px}
 }
+
+/* ========== APP SHELL (lesson first · sheets · vector icons) ========== */
+.ico{display:inline-flex;width:20px;height:20px;flex:none}
+.ico svg{width:100%;height:100%;display:block}
+[data-views][hidden]{display:none!important}
+#tagline{display:none}
+.hdr-stats{display:flex;align-items:center;gap:8px;margin-inline-start:auto}
+.hdr-pill{display:inline-flex;align-items:center;gap:5px;min-height:40px;padding:0 12px;border-radius:var(--r-pill);border:0;font:800 15px var(--font-body,inherit);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hdr-pill .ico{width:18px;height:18px}
+.streak-pill{background:rgba(255,255,255,.95);color:#C2410C;cursor:pointer;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
+.streak-pill.off{color:#9A8573}
+.streak-pill:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.score-pill{background:var(--be-black);color:var(--be-yellow);box-shadow:0 var(--depth-sm) 0 rgba(0,0,0,.35)}
+.hdr-btn{display:inline-grid;place-items:center;width:42px;height:40px;border-radius:var(--r-sm);border:0;background:rgba(255,255,255,.95);color:#2A1D12;cursor:pointer;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
+.hdr-btn .ico{width:22px;height:22px}
+.hdr-btn:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.hdr-btn:focus-visible,.streak-pill:focus-visible{outline:3px solid #fff;outline-offset:2px}
+header{flex-wrap:nowrap}
+.topic-bar{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:8px 10px 8px 8px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);text-align:start;cursor:pointer;font:inherit;box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.topic-bar:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.topic-bar:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+.tb-level{flex:none;display:grid;place-items:center;min-width:52px;height:40px;padding:0 8px;border-radius:12px;background:var(--oranje);color:#fff;font:800 14px var(--font-display)}
+.tb-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.tb-text small{color:var(--ink-2);font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-text strong{font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-change{flex:none;display:inline-flex;align-items:center;gap:2px;color:var(--oranje-deep);font-weight:900;font-size:14px}
+:root[data-theme="dark"] .tb-change{color:var(--oranje)}
+.tb-change .ico{width:18px;height:18px}
+[dir="rtl"] .tb-change .ico,[dir="rtl"] .set-btn .ico{transform:scaleX(-1)}
+.lesson-modes{display:flex;gap:4px;padding:4px;border-radius:var(--r-md);background:var(--surface-2);overflow-x:auto;scrollbar-width:none}
+.lesson-modes::-webkit-scrollbar{display:none}
+.seg-btn{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 10px;border:0;border-radius:12px;background:transparent;color:var(--ink-2);font:800 14px var(--font-body,inherit);cursor:pointer;white-space:nowrap}
+.seg-btn .ico{width:18px;height:18px}
+.seg-btn[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--edge),0 0 0 2px var(--oranje) inset}
+.seg-btn:focus-visible{outline:3px solid var(--oranje);outline-offset:1px}
+.view-title{font-family:var(--font-display);font-size:20px;margin:2px 4px 0;text-wrap:balance}
+.dict-view,.progress-view{display:flex;flex-direction:column;gap:12px}
+.dict-search{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.dict-search:focus-within{border-color:var(--oranje)}
+.dict-search .ico{color:var(--ink-2)}
+.dict-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:700 17px var(--font-body,inherit)}
+.dict-hint{margin:0 4px;color:var(--ink-2);font-size:14px}
+.dict-view .search-results{padding:0;overflow:visible}
+.search-item{background:var(--surface)}
+.search-item:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+.pv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pv-tile{display:flex;flex-direction:column;gap:2px;padding:14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+.pv-tile strong{font:800 26px var(--font-display);font-variant-numeric:tabular-nums}
+.pv-tile span{color:var(--ink-2);font-size:13px;font-weight:800}
+.pv-toets h3{margin:6px 4px 8px;font-size:16px}
+.pv-list{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
+.pv-row{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;font-size:14px;font-weight:700}
+.pv-row+.pv-row{border-top:1px solid var(--line)}
+.pv-row strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-row.none strong{color:var(--ink-2);font-weight:700}
+/* sheets */
+body.sheet-open{overflow:hidden}
+.sheet{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center;background:rgba(30,23,18,.55)}
+.sheet-panel{width:100%;max-width:640px;max-height:92vh;overflow:auto;background:var(--bg);border-radius:var(--r-lg) var(--r-lg) 0 0;padding:6px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:sheetUp .22s var(--ease)}
+@keyframes sheetUp{from{transform:translateY(30px);opacity:.4}}
+.sheet-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 10px;background:var(--bg)}
+.sheet-head h2{margin:0;font-family:var(--font-display);font-size:20px}
+.sheet-x{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.sheet-x .ico{width:20px;height:20px}
+.sheet .section-label{position:static;width:auto;height:auto;overflow:visible;clip:auto;margin:6px 2px -2px;color:var(--ink-2);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.sheet .nav-cats{flex-wrap:wrap;overflow:visible;padding:0 0 4px}
+.sheet .nav-cats button{flex:1 1 auto;justify-content:center;white-space:normal}
+.sheet .nav-subs{flex-wrap:wrap;overflow:visible;padding:0;gap:8px}
+.sheet .nav-subs button{border:2px solid var(--line);background:var(--surface);color:var(--ink);white-space:normal;text-align:start;min-height:44px}
+.sheet .nav-subs button[aria-selected="true"]{border-color:var(--be-black)}
+.set-list{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
+.set-row{display:flex;align-items:center;gap:12px;min-height:62px;padding:10px 14px}
+.set-row+.set-row{border-top:1px solid var(--line)}
+.set-row>.ico{color:var(--oranje-deep);width:22px;height:22px}
+:root[data-theme="dark"] .set-row>.ico{color:var(--oranje)}
+.set-l{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:800;font-size:15px}
+.set-l small{color:var(--ink-2);font-weight:700;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-btn{flex:none;min-height:40px;padding:0 14px;border-radius:var(--r-sm);border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer}
+.set-btn:active{transform:translateY(2px)}
+.switch{flex:none;position:relative;width:54px;height:32px;border-radius:99px;border:0;background:var(--line);cursor:pointer;transition:background .15s}
+.switch i{position:absolute;top:3px;inset-inline-start:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:inset-inline-start .15s}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"] i{inset-inline-start:25px}
+.switch:focus-visible,.set-btn:focus-visible,.sheet-x:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+.set-row .flag-pick{box-shadow:0 2px 0 var(--edge),inset 0 0 0 2px rgba(255,255,255,.95)}
+.sheet footer{margin-top:14px}
+/* dock with vector icons */
+.dock-ic{width:22px;height:22px}
+.modes-wrapper button{gap:3px}
+@media (min-width:760px){
+ .sheet{align-items:center}
+ .sheet-panel{border-radius:var(--r-lg);max-height:86vh}
+ header,.topic-bar,.lesson-modes,.view-title,.dict-view,.progress-view,.meta,.bar{width:min(100%,1200px);margin-inline:auto}
+ .dict-view,.progress-view{max-width:760px}
+ .pv-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:420px){
+ .hdr-pill{padding:0 10px;font-size:14px}
+ .brand h1{font-size:19px}
+ .seg-btn{padding:0 6px;font-size:13.5px}
+ .seg-btn .ico{display:none}
+}
+.sheet .nav-fade-wrap,.sheet .sub-wrapper{margin:0}
+.sheet .nav-fade-wrap::after{display:none}
+.progress-view .pp-stats{display:none}
+.share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:4px auto 0}
+.share-btn .ico{width:18px;height:18px}
+.grow-modal .goal-opt{align-items:flex-start;text-align:start}
+.grow-modal .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.grow-modal a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.grow-modal .goal-list{grid-template-columns:1fr}
 </style>
 </head>
 <body>
-<main>
+<main data-view="lesson">
   <header>
     <div class="brand"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
-    <div class="top-right">
-      <label class="select-group"><span id="targetLabel"></span>
-        <span class="flag-pick" id="targetPick"><span class="flag-face" id="targetFace" aria-hidden="true"></span><select id="targetLangPicker" class="lang-select" aria-label="Target language">
-          <option value="nl">🇧🇪 BE</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option>
-        </select></span>
-      </label>
-      <label class="select-group"><span id="uiLabel"></span>
-        <span class="flag-pick" id="uiPick"><span class="flag-face" id="uiFace" aria-hidden="true"></span><select id="uiLangPicker" class="lang-select" aria-label="Explanation language">
-          <option value="uk">🇺🇦 UKR</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option><option value="ar">🇸🇦 AR</option>
-        </select></span>
-      </label>
-      <button class="theme-btn" id="searchBtn" type="button" title="Search">🔍</button>
-      <div class="speech-controls">
-        <button class="auto-speech-btn" id="autoSpeechToggle" type="button" aria-pressed="false"></button>
-        <button class="theme-btn voice-settings-btn" id="voiceSettingsBtn" type="button" aria-label="Voice settings" title="Voice settings">🎙️</button>
-        <span id="speechStatus" role="status" aria-live="polite" hidden></span>
-      </div>
-      <span id="score" class="score-pill" aria-live="polite">⭐ 0</span>
-      <button class="theme-btn" id="themeToggle" type="button">🌙</button>
-      <button class="theme-btn" id="helpBtn" type="button" aria-label="Help">❓</button>
+    <div class="hdr-stats">
+      <button type="button" class="hdr-pill streak-pill" id="streakPill"></button>
+      <span id="score" class="hdr-pill score-pill" aria-live="polite"></span>
+      <button class="hdr-btn" id="settingsBtn" type="button" aria-haspopup="dialog"></button>
     </div>
   </header>
+
+  <button type="button" class="topic-bar" id="topicBar" data-views="lesson" aria-haspopup="dialog"></button>
+  <div class="lesson-modes" id="lessonModes" role="tablist" data-views="lesson"></div>
+  <span id="toetsTitle" hidden></span>
+
+  <div class="meta" data-views="lesson toets"><span id="prog"></span><span id="rnd"></span></div>
+  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets"><i id="barfill"></i></div>
+  <section class="card" id="card" aria-live="polite" data-views="lesson toets"></section>
+
+  <section class="dict-view" id="dictView" data-views="dict" hidden>
+    <h2 class="view-title" id="dictTitle"></h2>
+    <div class="dict-search"><span class="ico" aria-hidden="true" data-ico="search"></span><input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" aria-labelledby="dictTitle"></div>
+    <p class="dict-hint" id="dictHint"></p>
+    <div id="searchResults" class="search-results"></div>
+  </section>
+
+  <section class="progress-view" id="progressView" data-views="progress" hidden>
+    <h2 class="view-title" id="progressTitle"></h2>
+    <section class="progress-panel" id="progressPanel" aria-label="Progress"></section>
+    <div class="pv-grid" id="pvGrid"></div>
+    <div class="pv-toets" id="pvToets"></div>
+  </section>
+  <span hidden id="progressLabel"></span><span hidden id="learnedCount"></span><span hidden id="reviewCount"></span>
+</main>
+
+<div class="sheet" id="topicsSheet" hidden>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="topicsTitle">
+    <div class="sheet-head"><h2 id="topicsTitle"></h2><button type="button" class="sheet-x" data-close="topicsSheet" aria-label="Close"></button></div>
+    <div class="nav-section">
+      <div class="section-label" id="lblLevel"></div>
+      <div class="level-nav" id="levelNav" role="group" aria-label="Level"></div>
+      <div class="section-label" id="lblCat">Розділ</div>
+      <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav></div>
+      <div class="section-label" id="lblSub">Підрозділ</div>
+      <div class="sub-wrapper"><nav class="nav-subs" id="subNav" aria-label="Subtopics"></nav></div>
+      <span hidden id="lblMode"></span>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="settingsSheet" hidden>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="sheet-head"><h2 id="settingsTitle"></h2><button type="button" class="sheet-x" data-close="settingsSheet" aria-label="Close"></button></div>
+    <div class="set-list">
+      <div class="set-row"><span class="ico" data-ico="globe"></span><span class="set-l" id="targetLabel"></span>
+        <span class="flag-pick" id="targetPick"><span class="flag-face" id="targetFace" aria-hidden="true"></span><select id="targetLangPicker" class="lang-select" aria-labelledby="targetLabel">
+          <option value="nl">🇧🇪 BE</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option>
+        </select></span></div>
+      <div class="set-row"><span class="ico" data-ico="chat"></span><span class="set-l" id="uiLabel"></span>
+        <span class="flag-pick" id="uiPick"><span class="flag-face" id="uiFace" aria-hidden="true"></span><select id="uiLangPicker" class="lang-select" aria-labelledby="uiLabel">
+          <option value="uk">🇺🇦 UKR</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option><option value="ar">🇸🇦 AR</option>
+        </select></span></div>
+      <div class="set-row" id="voiceRow"><span class="ico" data-ico="mic"></span><span class="set-l"><span id="voiceRowLabel"></span><small id="voiceRowValue"></small></span>
+        <button class="set-btn" id="voiceSettingsBtn" type="button"></button></div>
+      <div class="set-row"><span class="ico" data-ico="volume"></span><span class="set-l"><span id="autoRowLabel"></span><small id="autoRowHint"></small></span>
+        <button class="switch" id="autoSpeechToggle" type="button" role="switch" aria-checked="false" aria-labelledby="autoRowLabel"><i></i></button></div>
+      <div class="set-row"><span class="ico" data-ico="moon"></span><span class="set-l" id="themeRowLabel"></span>
+        <button class="switch" id="themeToggle" type="button" role="switch" aria-checked="false" aria-labelledby="themeRowLabel"><i></i></button></div>
+      <div class="set-row"><span class="ico" data-ico="target"></span><span class="set-l" id="goalRowLabel"></span>
+        <button class="set-btn" id="goalBtn" type="button"></button></div>
+      <div class="set-row"><span class="ico" data-ico="help"></span><span class="set-l" id="helpRowLabel"></span>
+        <button class="set-btn" id="helpBtn" type="button"></button></div>
+      <span id="speechStatus" role="status" aria-live="polite" hidden></span>
+    </div>
+    <footer>
+    <span id="footText"></span>
+    <span>Danylo Hembarskyi • All rights reserved</span>
+    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit">Privacy</a></span>
+    <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
+    <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
+      <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
+      <button type="button" id="importProgBtn" class="report-bug-btn"></button>
+    </div>
+    </footer>
+  </div>
+</div>
 
   <dialog class="voice-dialog" id="voiceDialog" aria-labelledby="voiceDialogTitle">
     <div class="voice-dialog-content">
@@ -557,48 +708,8 @@ footer a{color:inherit}
     </div>
   </dialog>
 
-  <section class="progress-panel" id="progressPanel" aria-label="Progress"></section>
-  <span hidden id="progressLabel"></span><span hidden id="learnedCount"></span><span hidden id="reviewCount"></span>
-
-  <div class="nav-section">
-    <div class="level-nav" id="levelNav" role="group" aria-label="Level"></div>
-    <div class="section-label" id="lblCat">Розділ</div>
-    <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav><div class="nav-scrollbar" id="catSlider" role="scrollbar" aria-controls="catNav" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><span class="nav-scroll-thumb"></span></div></div>
-    
-    <div class="section-label" id="lblSub">Підрозділ</div>
-    <div class="sub-wrapper">
-      <nav class="nav-subs" id="subNav" aria-label="Subtopics"></nav>
-      <div class="nav-scrollbar" id="subSlider" role="scrollbar" aria-controls="subNav" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><span class="nav-scroll-thumb"></span></div>
-    </div>
-
-    <div class="section-label" id="lblMode">Режим</div>
-  </div>
-
-  <div class="meta"><span id="prog"></span><span id="rnd"></span></div>
-  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barfill"></i></div>
-  <section class="card" id="card" aria-live="polite"></section>
-  
-  <footer>
-    <span id="footText"></span>
-    <span>Danylo Hembarskyi • All rights reserved</span>
-    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit">Privacy</a></span>
-    <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
-    <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
-      <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
-      <button type="button" id="importProgBtn" class="report-bug-btn"></button>
-    </div>
-  </footer>
-</main>
-
-<div id="searchModal" class="search-modal" hidden>
-  <div class="search-panel">
-    <div class="search-head">
-      <input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" />
-      <button type="button" id="searchClose" class="theme-btn">✕</button>
-    </div>
-    <div id="searchResults" class="search-results"></div>
-  </div>
-</div>
+<div id="searchModal" hidden></div>
+<button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
 <script>
 "use strict";
@@ -608,25 +719,25 @@ const NL_ONLY_TABS=["dehet","klanken","vervoegen"];
 const tabVisible=k=>targetLang==="nl"||!NL_ONLY_TABS.includes(k);
 
 const UI={
- uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",repeat:"🔁 Повторити",autoOn:"🔊 Авто: увімкнено",autoOff:"🔇 Авто: вимкнено",autoOnShort:"🔊 Авто",autoOffShort:"🔇 Авто",speechPlaying:"Зараз звучить",voiceSettings:"🎙️ Голос",voiceTitle:"Налаштування голосу",voiceLabel:"Голос для озвучення",voiceDefault:"Голос пристрою за замовчуванням",voiceSample:"▶ Прослухати зразок",voiceClose:"Готово",voiceHint:"Доступні голоси залежать від пристрою та браузера. Вибір збережеться на цьому пристрої.",voiceMissing:"Для цієї мови не знайдено голосів на пристрої.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",speechHelp:"Нідерландський голос не знайдено. На Android відкрий Налаштування → Спеціальні можливості → Виведення тексту в мовлення → Встановити голосові дані та завантаж потрібну мову. Потім повернись у Leren.be і натисни «Повторити».",speechAndroidHelp:"Інструкція Android",speechStore:"Speech Services у Google Play",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",repeat:"🔊 Ще раз",autoOn:"🔊 Авто: увімкнено",autoOff:"🔇 Авто: вимкнено",autoOnShort:"🔊 Авто",autoOffShort:"🔇 Авто",speechPlaying:"Зараз звучить",voiceSettings:"🎙️ Голос",voiceTitle:"Налаштування голосу",voiceLabel:"Голос для озвучення",voiceDefault:"Голос пристрою за замовчуванням",voiceSample:"▶ Прослухати зразок",voiceClose:"Готово",voiceHint:"Доступні голоси залежать від пристрою та браузера. Вибір збережеться на цьому пристрої.",voiceMissing:"Для цієї мови не знайдено голосів на пристрої.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",speechHelp:"Нідерландський голос не знайдено. На Android відкрий Налаштування → Спеціальні можливості → Виведення тексту в мовлення → Встановити голосові дані та завантаж потрібну мову. Потім повернись у Leren.be і натисни «Повторити».",speechAndroidHelp:"Інструкція Android",speechStore:"Speech Services у Google Play",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
   tabs:{klanken:"Kort / lang",graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
   subs:{klanken:"Коротка чи довга голосна?",graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити",toets:"Toets A1"},audioSub:"Послухай і обери переклад",toetsTitle:"Toets A1",toetsChoose:"Обери тест",toetsScore:"Твій результат",toetsPassed:"Склав!",toetsFailed:"Ще трохи практики",toetsNext:"Наступне питання",toetsFinish:"Завершити тест",toetsAgain:"Ще раз цей тест",toetsBack:"До списку тестів",toetsQ:"Питання",toetsOf:"з"},
- en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",repeat:"🔁 Replay",autoOn:"🔊 Auto: on",autoOff:"🔇 Auto: off",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Speaking now",voiceSettings:"🎙️ Voice",voiceTitle:"Voice settings",voiceLabel:"Speech voice",voiceDefault:"Device default voice",voiceSample:"▶ Play sample",voiceClose:"Done",voiceHint:"Available voices depend on this device and browser. Your choice is saved on this device.",voiceMissing:"No voices for this language were found on this device.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",speechHelp:"No Dutch voice was found. On Android, open Settings → Accessibility → Text-to-speech output → Install voice data, then download the language you need. Return to Leren.be and tap Replay.",speechAndroidHelp:"Android instructions",speechStore:"Speech Services on Google Play",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
+ en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",repeat:"🔊 Again",autoOn:"🔊 Auto: on",autoOff:"🔇 Auto: off",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Speaking now",voiceSettings:"🎙️ Voice",voiceTitle:"Voice settings",voiceLabel:"Speech voice",voiceDefault:"Device default voice",voiceSample:"▶ Play sample",voiceClose:"Done",voiceHint:"Available voices depend on this device and browser. Your choice is saved on this device.",voiceMissing:"No voices for this language were found on this device.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",speechHelp:"No Dutch voice was found. On Android, open Settings → Accessibility → Text-to-speech output → Install voice data, then download the language you need. Return to Leren.be and tap Replay.",speechAndroidHelp:"Android instructions",speechStore:"Speech Services on Google Play",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
   lCat:"Category",lSub:"Subtopic",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
   tabs:{klanken:"Short / long",graag:"Like / don't like",phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)",werk:"Work & bank"},
   subs:{klanken:"Short or long vowel?",graag:"What does this activity mean?",phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word",werk:"Work, office and bank"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review",toets:"Toets A1"},audioSub:"Listen and choose the translation",toetsTitle:"Toets A1",toetsChoose:"Choose a test",toetsScore:"Your score",toetsPassed:"Passed!",toetsFailed:"Need more practice",toetsNext:"Next question",toetsFinish:"Finish test",toetsAgain:"Retry this test",toetsBack:"Back to tests",toetsQ:"Question",toetsOf:"of"},
- fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",repeat:"🔁 Réécouter",autoOn:"🔊 Auto : activé",autoOff:"🔇 Auto : désactivé",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Lecture en cours",voiceSettings:"🎙️ Voix",voiceTitle:"Paramètres vocaux",voiceLabel:"Voix de synthèse",voiceDefault:"Voix par défaut de l’appareil",voiceSample:"▶ Écouter un exemple",voiceClose:"Terminé",voiceHint:"Les voix disponibles dépendent de l’appareil et du navigateur. Votre choix est enregistré sur cet appareil.",voiceMissing:"Aucune voix pour cette langue n’a été trouvée sur cet appareil.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",speechHelp:"Aucune voix néerlandaise n’a été trouvée. Sur Android, ouvrez Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales, puis téléchargez la langue souhaitée. Revenez dans Leren.be et touchez Réécouter.",speechAndroidHelp:"Instructions Android",speechStore:"Speech Services sur Google Play",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+ fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",repeat:"🔊 Encore",autoOn:"🔊 Auto : activé",autoOff:"🔇 Auto : désactivé",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Lecture en cours",voiceSettings:"🎙️ Voix",voiceTitle:"Paramètres vocaux",voiceLabel:"Voix de synthèse",voiceDefault:"Voix par défaut de l’appareil",voiceSample:"▶ Écouter un exemple",voiceClose:"Terminé",voiceHint:"Les voix disponibles dépendent de l’appareil et du navigateur. Votre choix est enregistré sur cet appareil.",voiceMissing:"Aucune voix pour cette langue n’a été trouvée sur cet appareil.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",speechHelp:"Aucune voix néerlandaise n’a été trouvée. Sur Android, ouvrez Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales, puis téléchargez la langue souhaitée. Revenez dans Leren.be et touchez Réécouter.",speechAndroidHelp:"Instructions Android",speechStore:"Speech Services sur Google Play",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{klanken:"Court / long",graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
   subs:{klanken:"Voyelle courte ou longue ?",graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision",toets:"Toets A1"},audioSub:"Écoute et choisis la traduction",toetsTitle:"Toets A1",toetsChoose:"Choisis un test",toetsScore:"Ton résultat",toetsPassed:"Réussi !",toetsFailed:"Encore un peu de pratique",toetsNext:"Question suivante",toetsFinish:"Terminer le test",toetsAgain:"Refaire ce test",toetsBack:"Liste des tests",toetsQ:"Question",toetsOf:"sur"},
- ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",repeat:"🔁 أعد الاستماع",autoOn:"🔊 تلقائي: تشغيل",autoOff:"🔇 تلقائي: إيقاف",autoOnShort:"🔊 تلقائي",autoOffShort:"🔇 تلقائي",speechPlaying:"يُشغَّل الآن",voiceSettings:"🎙️ الصوت",voiceTitle:"إعدادات الصوت",voiceLabel:"صوت القراءة",voiceDefault:"الصوت الافتراضي للجهاز",voiceSample:"▶ استمع إلى عينة",voiceClose:"تم",voiceHint:"تعتمد الأصوات المتاحة على الجهاز والمتصفح. سيتم حفظ اختيارك على هذا الجهاز.",voiceMissing:"لم يتم العثور على أصوات لهذه اللغة على الجهاز.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",speechHelp:"لم يتم العثور على صوت هولندي. على Android افتح الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت، ثم نزّل اللغة المطلوبة. ارجع إلى Leren.be واضغط إعادة الاستماع.",speechAndroidHelp:"تعليمات Android",speechStore:"Speech Services على Google Play",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
+ ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",repeat:"🔊 مرة أخرى",autoOn:"🔊 تلقائي: تشغيل",autoOff:"🔇 تلقائي: إيقاف",autoOnShort:"🔊 تلقائي",autoOffShort:"🔇 تلقائي",speechPlaying:"يُشغَّل الآن",voiceSettings:"🎙️ الصوت",voiceTitle:"إعدادات الصوت",voiceLabel:"صوت القراءة",voiceDefault:"الصوت الافتراضي للجهاز",voiceSample:"▶ استمع إلى عينة",voiceClose:"تم",voiceHint:"تعتمد الأصوات المتاحة على الجهاز والمتصفح. سيتم حفظ اختيارك على هذا الجهاز.",voiceMissing:"لم يتم العثور على أصوات لهذه اللغة على الجهاز.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",speechHelp:"لم يتم العثور على صوت هولندي. على Android افتح الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت، ثم نزّل اللغة المطلوبة. ارجع إلى Leren.be واضغط إعادة الاستماع.",speechAndroidHelp:"تعليمات Android",speechStore:"Speech Services على Google Play",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
   tabs:{klanken:"قصير / طويل",graag:"أحب / لا أحب",phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)",werk:"العمل والبنك"},
@@ -1467,8 +1578,7 @@ const learnedCount=()=>allItems().filter(x=>stateFor(x.id).known).length;
 
 function updateStats(){
  const u=getUI();
- $("score").textContent="⭐ "+score;
- $("score").title=(u.points||"Points")+": "+score;
+ if(typeof renderShellText==="function"&&$("settingsBtn").firstChild)renderShellText();
  $("learnedCount").textContent=learnedCount();
  renderProgressPanel();
 }
@@ -1508,7 +1618,7 @@ function addXP(n){
  if(!d.done&&d.xp>=dailyGoal()){
   d.done=true;
   const s=lsGet("poly_streak",{n:0,last:""});
-  if(s.last!==dayStr()){s.n=(s.last===yesterdayStr()?s.n:0)+1;s.last=dayStr();lsSet("poly_streak",s)}
+  if(s.last!==dayStr()){s.n=(s.last===yesterdayStr()?s.n:0)+1;s.last=dayStr();lsSet("poly_streak",s);if(s.n>=3&&typeof maybeAskRating==="function")maybeAskRating()}
   toast(pgU().goalDone+" · "+pgU().streak(s.n));
  }
  lsSet("poly_daily",d);
@@ -1559,9 +1669,9 @@ function renderLevelNav(){
   if(L.soon)b.append(el("span","lv-tag",p.soon)),b.classList.add("soon");
   else if(!open)b.append(el("span","lv-tag","🔒 "+Math.max(0,L.need-score))),b.classList.add("locked");
   b.onclick=()=>{
-   if(L.soon){showLevelSoon();return}
-   if(!open){showLevelLocked(L);return}
-   if(curLevel!==L.id){curLevel=L.id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";if(mode==="toets")mode="quiz";saveStore();updateModeButtons();buildNav();newRound()}
+   if(L.soon){closeSheet("topicsSheet");if(view!=="lesson")setView("lesson");showLevelSoon();return}
+   if(!open){closeSheet("topicsSheet");if(view!=="lesson")setView("lesson");showLevelLocked(L);return}
+   if(curLevel!==L.id){curLevel=L.id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";if(mode==="toets")mode=lessonMode;saveStore();updateModeButtons();buildNav();newRound()}
   };
   nav.appendChild(b);
  });
@@ -1604,8 +1714,7 @@ const FLAG_OF={nl:"be",uk:"ua",en:"gb",fr:"fr",ar:"sa"};
 function syncFlagFaces(){[["targetLangPicker","targetFace"],["uiLangPicker","uiFace"]].forEach(([s,f])=>{const sel=$(s),face=$(f);if(!sel||!face)return;const o=sel.options[sel.selectedIndex];face.dataset.flag=FLAG_OF[sel.value]||"";face.textContent=o?o.textContent.replace(/^\S+\s*/,""):"";face.parentNode.title=sel.getAttribute("aria-label")||""})}
 function updateHeader(){
  const u=getUI();
- const autoBtn=$("autoSpeechToggle");if(autoBtn){{const t=autoSpeech?(u.autoOnShort||"🔊 Auto"):(u.autoOffShort||"🔇 Auto"),i=t.indexOf(" ");autoBtn.replaceChildren(el("span","ai",i>0?t.slice(0,i):t),el("span","at",i>0?t.slice(i):""))}autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-label",autoBtn.title);autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
- const voiceBtn=$("voiceSettingsBtn");if(voiceBtn){voiceBtn.textContent="🎙️";voiceBtn.title=u.voiceTitle||"Voice settings";voiceBtn.setAttribute("aria-label",voiceBtn.title)}
+ const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.setAttribute("aria-checked",String(autoSpeech));autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off")}
  const voiceTitle=$("voiceDialogTitle"),voiceLabel=$("voiceSelectLabel"),voiceHint=$("voiceHint"),voicePreview=$("voicePreviewBtn"),voiceClose=$("voiceCloseBtn");
  if(voiceTitle)voiceTitle.textContent=u.voiceTitle||"Voice settings";
  if(voiceLabel)voiceLabel.textContent=u.voiceLabel||"Speech voice";
@@ -1614,8 +1723,6 @@ function updateHeader(){
  if(voiceClose)voiceClose.textContent=u.voiceClose||"Done";
  if($("voiceDialog")?.open)populateVoicePicker();
  $("tagline").textContent=u.tagline;
- $("targetLabel").textContent=u.target;
- $("uiLabel").textContent=u.ui;
  $("progressLabel").textContent=u.learned;
  $("footText").textContent=u.footer;
  const rbtn=$("reportBugBtn");
@@ -1664,13 +1771,11 @@ function updateHeader(){
  document.documentElement.lang=uiLang;
  if(uiLang==="ar")document.documentElement.setAttribute("dir","rtl");else document.documentElement.removeAttribute("dir");
  const th=document.documentElement.dataset.theme==="dark"?"dark":"light";
- const icon=th==="dark"?"☀️":"🌙";
- $("themeToggle").textContent=icon;
+ $("themeToggle").setAttribute("aria-checked",String(th==="dark"));
  const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute("content",th==="dark"?"#1A1411":"#EB6A00");
  const themeLabel=th==="dark"?(u.light||"Light"):(u.dark||"Dark"); // label = what the button switches to
  $("themeToggle").title=themeLabel;
- $("themeToggle").setAttribute("aria-label",themeLabel);
- updateStats();
+ updateStats();renderShellText();
  updateModeButtons();
 }
 
@@ -1701,9 +1806,10 @@ function buildNav(){
  allBtn.setAttribute("aria-selected",String(tab==="all"));
  allBtn.onclick=()=>{
   tab="all";
+  if(mode==="toets"){mode=lessonMode;view="lesson"}
   saveStore();
-  buildNav();
-  newRound();
+  buildNav();updateModeButtons();
+  newRound();closeSheet("topicsSheet");
  };
  subNav.appendChild(allBtn);
 
@@ -1715,15 +1821,15 @@ function buildNav(){
   b.setAttribute("aria-selected",String(isSelected));
   b.onclick=()=>{
    tab=k;
+   if(mode==="toets"){mode=lessonMode;view="lesson"}
    saveStore();
-   buildNav();
-   newRound();
+   buildNav();updateModeButtons();
+   newRound();closeSheet("topicsSheet");
   };
   subNav.appendChild(b);
  });
 
- const activeSub=subNav.querySelector('[aria-selected="true"]');
- if(activeSub&&activeSub.scrollIntoView)activeSub.scrollIntoView({inline:"center",block:"nearest"});
+ if(typeof renderTopicBar==="function")renderTopicBar();
 }
 
 function bindNavSlider(navId,sliderId,labelKey){
@@ -1781,6 +1887,7 @@ function bindNavSlider(navId,sliderId,labelKey){
 
 function afterLangChange(){
  if(mode==="build"&&targetLang!=="nl")mode="quiz";
+ if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
  if(tab!=="all"&&!tabVisible(tab)){const cat=CATEGORIES.find(c=>c.tabs.includes(tab))||CATEGORIES[0];currentCat=cat.id;tab=cat.tabs.find(tabVisible)||"all";}
  const catObj=CATEGORIES.find(c=>c.id===currentCat);
  if(!catObj||!catObj.tabs.includes(tab)&&tab!=="all"){
@@ -1791,7 +1898,7 @@ function afterLangChange(){
 function changeTargetLang(l){if(!LANGS.includes(l))return;targetLang=l;if(targetLang===uiLang)uiLang=targetLang==="en"?"uk":"en";afterLangChange()}
 function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang===uiLang)targetLang=uiLang==="en"?"nl":"en";afterLangChange()}
 
-let autoSpeech=lsGet("leren_auto_speech",false);
+let autoSpeech=lsGet("leren_auto_speech",true);
 function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>b.classList.remove("is-speaking"));if(active&&button)button.classList.add("is-speaking");const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
 function showSpeechNote(){
  const c=$("card");if(!c||$("speechNote"))return;
@@ -1818,8 +1925,33 @@ function populateVoicePicker(){
 }
 if("speechSynthesis" in window){refreshSpeechVoices();window.speechSynthesis.addEventListener?.("voiceschanged",()=>{refreshSpeechVoices();if($("voiceDialog")?.open)populateVoicePicker()})}
 let speechToken=0;
+// Recorded audio: audio/nl/<hash>.m4a, listed in audio/nl/manifest.json (made by tools/make-audio.sh).
+// Falls back to the device voice for anything not recorded.
+const audioNorm=t=>String(t||"").trim().replace(/\s+/g," ").toLowerCase();
+function audioHash(t){let h=0x811c9dc5;const s=audioNorm(t);for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return h.toString(16).padStart(8,"0")}
+let audioSet=new Set(),audioEl=null;
+function loadAudioManifest(){try{fetch("audio/nl/manifest.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))audioSet=new Set(a)}).catch(()=>{})}catch(e){}}
+function useRecorded(){return targetLang==="nl"&&!lsGet("leren_voice_force_tts",false)}
+function playRecorded(text,button){
+ const h=audioHash(text);if(!useRecorded()||!audioSet.has(h))return false;
+ const token=++speechToken;
+ try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+ if(audioEl){audioEl.pause();audioEl=null}
+ updateSpeechState(false);
+ const a=new Audio("audio/nl/"+h+".m4a");audioEl=a;
+ const done=()=>{if(token===speechToken)updateSpeechState(false)};
+ a.onplaying=()=>{if(token===speechToken)updateSpeechState(true,button)};a.onended=done;
+ a.onerror=()=>{done();audioSet.delete(h);if(token===speechToken)sayTTS(text,button)};
+ const pr=a.play();if(pr&&pr.catch)pr.catch(()=>done());
+ return true;
+}
 function say(text,button){
+ if(playRecorded(text,button))return;
+ sayTTS(text,button);
+}
+function sayTTS(text,button){
  try{
+  if(audioEl){audioEl.pause();audioEl=null}
   if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){showSpeechNote();return}
   const synth=window.speechSynthesis,token=++speechToken;
   if(synth.speaking||synth.pending)synth.cancel();
@@ -1965,7 +2097,7 @@ function nextQuestion(){
 
 // Study: speak the new word immediately after rendering it.
 function studyNext(){
- try{const s=window.speechSynthesis;if(s&&(s.speaking||s.pending)){++speechToken;s.cancel();updateSpeechState(false)}}catch(e){}
+ try{if(audioEl){audioEl.pause();audioEl=null;++speechToken;updateSpeechState(false)}const s=window.speechSynthesis;if(s&&(s.speaking||s.pending)){++speechToken;s.cancel();updateSpeechState(false)}}catch(e){}
  nextQuestion();
  if(autoSpeech&&mode==="study"&&document.querySelector("#card .q"))say(spoken()); // round finished
 }
@@ -2735,6 +2867,8 @@ function endToets(){
     const d = el("div"); d.append(el("strong","",v), el("span","",l)); grid.appendChild(d);
   });
   end.appendChild(grid);
+  if(test){const tt=test.title[uiLang]||test.title.en||test.id;const sh=el("button","btn share-btn");sh.type="button";sh.append(ico("share"),el("span","",growU().share));sh.onclick=()=>shareResult(tt,pct,passed);end.appendChild(sh)}
+  if(passed)maybeAskRating();
   const row = el("div","row");
   const again = el("button","btn", u.toetsAgain || "Ще раз");
   again.type = "button";
@@ -3096,14 +3230,10 @@ const DOCK={uk:{study:"Вчити",quiz:"Тест",audio:"Слухати",build:
  fr:{study:"Étude",quiz:"Quiz",audio:"Écoute",build:"Phrases",toets:"Toets",review:"Révision"},
  ar:{study:"دراسة",quiz:"اختبار",audio:"استماع",build:"تركيب",toets:"Toets",review:"مراجعة"}};
 function updateModeButtons(){
- const u=getUI(),wrap=$("modeButtons");wrap.replaceChildren();
- [["study",u.study],["quiz",u.quiz],["audio",u.audio]].concat(targetLang==="nl"?[["build",u.build]]:[],[["toets",u.modes.toets||"Toets A1"],["review",u.reviewMode]]).forEach(([m,label])=>{
-  const d=(DOCK[uiLang]||DOCK.uk)[m]||label;
-  const b=el("button",m===mode?"primary":"");b.type="button";
-  b.setAttribute("aria-label",label);b.title=label;if(m===mode)b.setAttribute("aria-current","true");
-  b.append(el("span","dock-ic",DOCK_IC[m]),el("span","dock-tx",d));
-  b.onclick=()=>{mode=m;updateModeButtons();newRound()};wrap.appendChild(b);
- });
+ if(mode==="toets"&&view==="lesson")view="toets";
+ if(mode!=="toets"&&view==="toets")view="lesson";
+ if(mode!=="toets"&&LESSON_MODES().includes(mode))lessonMode=mode;
+ renderDock();renderLessonModes();renderTopicBar();applyView();
 }
 
 $("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
@@ -3122,21 +3252,8 @@ function allVocab(){
   });
   return out;
 }
-function openSearch(){
-  const u=getUI();
-  const modal=$("searchModal");
-  const inp=$("searchInput");
-  if(!modal||!inp) return;
-  modal.hidden=false;
-  inp.placeholder=u.searchPh||"Zoek een woord…";
-  inp.value="";
-  $("searchResults").replaceChildren();
-  inp.focus();
-}
-function closeSearch(){
-  const modal=$("searchModal");
-  if(modal) modal.hidden=true;
-}
+function openSearch(){setView("dict")}
+function closeSearch(){}
 function runSearch(){
   const u=getUI();
   const q=($("searchInput").value||"").trim().toLowerCase();
@@ -3162,7 +3279,9 @@ function runSearch(){
       const ex=el("div","ex",it.ex_nl+(it.ex_uk?" — "+it.ex_uk:""));
       div.appendChild(ex);
     }
+    div.tabIndex=0;div.setAttribute("role","button");
     div.addEventListener("click",()=>{ if(it.nl) say(it.nl); });
+    div.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&it.nl){e.preventDefault();say(it.nl)} });
     box.appendChild(div);
   });
 }
@@ -3180,12 +3299,212 @@ $("themeToggle").addEventListener("click",()=>{
  updateHeader();
 });
 
+// ========== APP SHELL: views (lesson / toets / dictionary / progress), sheets, vector icons ==========
+const ICONS={
+ lesson:'<path d="M12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.6 9 2.6 12 0v-5"/>',
+ toets:'<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V2.8h6V4M9 10h6M9 14h6M9 18h3"/>',
+ dict:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+ progress:'<path d="M5 20V11M11 20V5M17 20v-7M3 20h18"/>',
+ study:'<path d="M2.5 5.5c3.2-1.6 6.3-1.4 9.5 1 3.2-2.4 6.3-2.6 9.5-1v13c-3.2-1.6-6.3-1.4-9.5 1-3.2-2.4-6.3-2.6-9.5-1z"/><path d="M12 6.5v13"/>',
+ quiz:'<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="m8 12.2 2.8 2.8L16 9.5"/>',
+ audio:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="5" height="7" rx="2"/><rect x="16" y="14" width="5" height="7" rx="2"/>',
+ build:'<rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><rect x="8" y="3" width="8" height="8" rx="2"/>',
+ review:'<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 3.5V9H9"/>',
+ settings:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+ flame:'<path fill="currentColor" stroke="none" d="M12 22c4.2 0 7.3-3 7.3-7.2 0-4.6-3.6-6.8-4.6-11.3-2.9 1.9-5.3 5.2-5.3 8.4-1.1-.7-1.9-1.9-2.1-3.4-1.6 1.9-2.6 4.2-2.6 6.4C4.7 19 7.8 22 12 22z"/>',
+ star:'<path fill="currentColor" stroke="none" d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3 1.1-6.5-4.7-4.6 6.5-.9z"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3.3 3.2 14.7 0 18M12 3c-3.2 3.3-3.2 14.7 0 18"/>',
+ chat:'<path d="M4 4.5h16v11.5H9.5L4 20.5z"/><path d="M8 9h8M8 12.5h5"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+ volume:'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
+ moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>',
+ help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .9-1 1.6v.5"/><path d="M12 17h.01"/>',
+ close:'<path d="M6 6l12 12M18 6 6 18"/>',
+ chevron:'<path d="m9 6 6 6-6 6"/>',
+ share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/>'
+};
+function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
+function fillIcons(root){(root||document).querySelectorAll("[data-ico]").forEach(e=>{if(!e.firstChild)e.replaceWith(Object.assign(ico(e.dataset.ico,e.className.replace(/\bico\b/,"").trim()),{}))})}
+const NAV_UI={
+ uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з'являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Введи слово нідерландською або українською. Натисни на результат, щоб почути вимову.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
+ en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Type a word in Dutch or in your language. Tap a result to hear it.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
+ fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Tape un mot en néerlandais ou dans ta langue. Touche un résultat pour l'écouter.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
+ ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"اكتب كلمة بالهولندية أو بلغتك. اضغط على النتيجة لتسمعها.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
+};
+const navU=()=>NAV_UI[uiLang]||NAV_UI.uk;
+const LESSON_MODES=()=>["study","quiz","audio"].concat(targetLang==="nl"?["build"]:[],["review"]);
+let view="lesson",lessonMode=validStored("leren_lesson_mode",["study","quiz","audio","build","review"],"quiz");
+if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
+mode=lessonMode;
+function applyView(){
+ const m=document.querySelector("main");if(m)m.dataset.view=view;
+ document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
+}
+function setView(v){
+ const prev=view;view=v;
+ if(v==="toets"){mode="toets";updateModeButtons();newRound()}
+ else if(v==="lesson"){const need=mode!==lessonMode;mode=lessonMode;updateModeButtons();if(need)newRound()}
+ else{updateModeButtons();
+  if(v==="dict"){const i=$("searchInput");i.placeholder=getUI().searchPh||"Zoek een woord…";runSearch();if(!matchMedia("(pointer:coarse)").matches)setTimeout(()=>{try{i.focus({preventScroll:true})}catch(e){}},50)}
+  if(v==="progress")renderProgressView()}
+ applyView();if(prev!==v)window.scrollTo({top:0});
+}
+function renderDock(){
+ const u=navU(),wrap=$("modeButtons");if(!wrap)return;wrap.replaceChildren();
+ [["lesson",u.lesson],["toets",u.toets],["dict",u.dict],["progress",u.progress]].forEach(([v,label])=>{
+  const b=el("button",v===view?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
+  if(v===view)b.setAttribute("aria-current","page");
+  b.append(ico(v,"dock-ic"),el("span","dock-tx",label));
+  b.onclick=()=>setView(v);wrap.appendChild(b);
+ });
+}
+function renderLessonModes(){
+ const wrap=$("lessonModes");if(!wrap)return;wrap.replaceChildren();
+ const u=getUI(),d=DOCK[uiLang]||DOCK.uk;
+ LESSON_MODES().forEach(m=>{
+  const b=el("button","seg-btn");b.type="button";b.setAttribute("role","tab");b.dataset.mode=m;
+  const on=m===mode;b.setAttribute("aria-selected",String(on));b.title={study:u.study,quiz:u.quiz,audio:u.audio,build:u.build,review:u.reviewMode}[m]||d[m];
+  b.append(ico(m),el("span","",d[m]));
+  b.onclick=()=>{if(mode===m)return;mode=m;lessonMode=m;try{localStorage.setItem("leren_lesson_mode",m)}catch(e){}updateModeButtons();newRound()};
+  wrap.appendChild(b);
+ });
+}
+function renderTopicBar(){
+ const b=$("topicBar");if(!b)return;const u=getUI(),n=navU();
+ const cat=CATEGORIES.find(c=>c.id===currentCat);
+ b.replaceChildren();
+ const lv=el("span","tb-level",(levelById(curLevel)||{}).name||"A1.1");
+ const txt=el("span","tb-text");
+ txt.append(el("small","",cat?(u.cats[cat.id]||cat.id):""),el("strong","",tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,"")));
+ const ch=el("span","tb-change");ch.append(el("span","",n.change),ico("chevron"));
+ b.append(lv,txt,ch);b.title=n.topics;
+}
+function openSheet(id){
+ const s=$(id);if(!s)return;s.hidden=false;document.body.classList.add("sheet-open");
+ if(id==="topicsSheet"){buildNav();const a=s.querySelector('#subNav [aria-selected="true"]');if(a)a.scrollIntoView({block:"nearest"})}
+ const x=s.querySelector(".sheet-x");if(x)setTimeout(()=>{try{x.focus({preventScroll:true})}catch(e){}},30);
+}
+function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?$("topicBar"):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
+document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{if(e.target===s)closeSheet(s.id)})});
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeSheet(b.dataset.close)));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
+$("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
+$("settingsBtn").addEventListener("click",()=>openSheet("settingsSheet"));
+$("streakPill").addEventListener("click",()=>setView("progress"));
+$("goalBtn").addEventListener("click",openGoalModal);
+function renderShellText(){
+ const n=navU(),u=getUI(),p=pgU();
+ const sb=$("settingsBtn");sb.replaceChildren(ico("settings"));sb.title=n.settings;sb.setAttribute("aria-label",n.settings);
+ $("settingsTitle").textContent=n.settings;$("topicsTitle").textContent=n.topics;$("lblLevel").textContent=n.level;
+ document.querySelectorAll(".sheet-x").forEach(x=>{x.replaceChildren(ico("close"));x.setAttribute("aria-label",n.close)});
+ $("targetLabel").textContent=n.learn;$("uiLabel").textContent=n.expl;
+ $("voiceRowLabel").textContent=n.voice;
+ const saved=lsGet("leren_voice_"+targetLang,"");$("voiceRowValue").textContent=saved?saved.split("|")[1]||saved:n.voiceDevice;
+ $("voiceSettingsBtn").textContent=n.voicePick;
+ $("autoRowLabel").textContent=n.auto;$("autoRowHint").textContent=n.autoHint;
+ $("themeRowLabel").textContent=n.theme;$("goalRowLabel").textContent=n.goal;$("goalBtn").textContent=n.goalV(dailyGoal());
+ $("helpRowLabel").textContent=n.guide;$("helpBtn").textContent=n.guideBtn;
+ $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
+ const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
+ const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)));sc.title=(u.points||"Points")+": "+score;
+ fillIcons();renderTopicBar();
+}
+function renderProgressView(){
+ const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;
+ renderProgressPanel();
+ grid.replaceChildren();
+ [[n.pvLearned,learnedCount()],[n.pvReview,dueItems().length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
+ tb.replaceChildren(el("h3","",n.pvToets));
+ const best=lsGet("poly_toetsbest",{}),list=el("div","pv-list");
+ TOETS.filter(t=>t.kind!=="leveltest").forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
+  r.append(el("span","",t.title[uiLang]||t.title.en||t.id),el("strong","",b!=null?b+" / "+t.questions.length:n.pvNone));if(b==null)r.classList.add("none");list.appendChild(r)});
+ tb.appendChild(list);
+}
+
+// ========== GROWTH: first-run level question, rating prompt (Android app), share result ==========
+const PLAY_PACKAGE="io.github.gembarskydanylo.twa"; // change here if the Play package name changes
+const SITE_URL="https://gembarskydanylo.github.io/Leren.be/";
+const GROW_UI={
+ uk:{lvlQ:"З чого почнемо?",lvlHint:"Можна змінити будь-коли через «Змінити» над уроком.",lvlNew:"Я тільки починаю",lvlNewS:"Рівень A1.1 з перших слів",lvlKnow:"Я вже знаю основи A1.1",lvlKnowS:"Тест на рівень A1.2 (15 питань)",rateQ:"Подобається Leren.be?",rateT:"Оціни застосунок у Google Play. Це допоможе іншим українцям у Бельгії його знайти.",rateYes:"⭐ Оцінити",rateLater:"Пізніше",share:"Поділитися",shareTxt:(t,p)=>"Я склав «"+t+"» на "+p+" % у Leren.be 🇧🇪 Вчу нідерландську: ",shareTry:(t,p)=>"Мій результат «"+t+"»: "+p+" % у Leren.be 🇧🇪 Вчу нідерландську: ",copied:"Текст скопійовано — встав його в чат",passed:"Склав!",result:"Мій результат"},
+ en:{lvlQ:"Where shall we start?",lvlHint:"You can change it anytime with “Change” above the lesson.",lvlNew:"I'm just starting",lvlNewS:"Level A1.1 from the first words",lvlKnow:"I already know A1.1 basics",lvlKnowS:"Level test for A1.2 (15 questions)",rateQ:"Enjoying Leren.be?",rateT:"Rate the app on Google Play. It helps other learners in Belgium find it.",rateYes:"⭐ Rate",rateLater:"Later",share:"Share",shareTxt:(t,p)=>"I passed “"+t+"” with "+p+"% on Leren.be 🇧🇪 Learning Dutch: ",shareTry:(t,p)=>"My result on “"+t+"”: "+p+"% on Leren.be 🇧🇪 Learning Dutch: ",copied:"Text copied — paste it in a chat",passed:"Passed!",result:"My result"},
+ fr:{lvlQ:"Par où commencer ?",lvlHint:"Tu peux changer à tout moment avec « Changer » au-dessus de la leçon.",lvlNew:"Je débute",lvlNewS:"Niveau A1.1 dès les premiers mots",lvlKnow:"Je connais déjà les bases A1.1",lvlKnowS:"Test de niveau A1.2 (15 questions)",rateQ:"Leren.be te plaît ?",rateT:"Note l'appli sur Google Play. Ça aide d'autres apprenants en Belgique à la trouver.",rateYes:"⭐ Noter",rateLater:"Plus tard",share:"Partager",shareTxt:(t,p)=>"J'ai réussi « "+t+" » avec "+p+" % sur Leren.be 🇧🇪 J'apprends le néerlandais : ",shareTry:(t,p)=>"Mon résultat à « "+t+" » : "+p+" % sur Leren.be 🇧🇪 J'apprends le néerlandais : ",copied:"Texte copié — colle-le dans une discussion",passed:"Réussi !",result:"Mon résultat"},
+ ar:{lvlQ:"من أين نبدأ؟",lvlHint:"يمكنك التغيير في أي وقت عبر «تغيير» فوق الدرس.",lvlNew:"أنا مبتدئ",lvlNewS:"المستوى A1.1 من الكلمات الأولى",lvlKnow:"أعرف أساسيات A1.1",lvlKnowS:"اختبار المستوى A1.2 (15 سؤالًا)",rateQ:"هل يعجبك Leren.be؟",rateT:"قيّم التطبيق في Google Play، فهذا يساعد متعلمين آخرين في بلجيكا على إيجاده.",rateYes:"⭐ قيّم",rateLater:"لاحقًا",share:"مشاركة",shareTxt:(t,p)=>"نجحت في «"+t+"» بنسبة "+p+"% على Leren.be 🇧🇪 أتعلّم الهولندية: ",shareTry:(t,p)=>"نتيجتي في «"+t+"»: "+p+"% على Leren.be 🇧🇪 أتعلّم الهولندية: ",copied:"تم نسخ النص — الصقه في محادثة",passed:"نجحت!",result:"نتيجتي"}
+};
+const growU=()=>GROW_UI[uiLang]||GROW_UI.uk;
+try{if(document.referrer.startsWith("android-app://"))lsSet("leren_twa",true)}catch(e){}
+function popup(build){
+ let m=$("growModal");
+ if(!m){m=el("div","search-modal grow-modal");m.id="growModal";m.addEventListener("click",e=>{if(e.target===m&&!m.dataset.lock)m.hidden=true});document.body.appendChild(m)}
+ m.replaceChildren();m.hidden=false;delete m.dataset.lock;
+ const panel=el("div","search-panel goal-panel");panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
+ build(panel,()=>{m.hidden=true},m);m.appendChild(panel);
+ const f=panel.querySelector("button");if(f)setTimeout(()=>{try{f.focus({preventScroll:true})}catch(e){}},30);
+}
+let pendingLevelTest=false;
+function startLevelTest(){
+ const lt=TOETS.find(t=>t.kind==="leveltest"&&t.unlocks==="a12");if(!lt||levelUnlocked("a12"))return;
+ view="toets";mode="toets";updateModeButtons();applyView();toetsId=lt.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion();window.scrollTo({top:0});
+}
+function firstRun(){
+ if(lsGet("leren_tour_done",false)){lsSet("leren_level_asked",true);return}
+ if(lsGet("leren_level_asked",false)){startTour();return}
+ const g=growU();
+ popup((panel,close,m)=>{
+  m.dataset.lock="1";
+  panel.append(el("h2","goal-title",g.lvlQ),el("p","goal-hint",g.lvlHint));
+  const list=el("div","goal-list");
+  [[g.lvlNew,g.lvlNewS,false],[g.lvlKnow,g.lvlKnowS,true]].forEach(([t,sub,test])=>{
+   const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
+   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(startTour,250)};list.appendChild(b)});
+  panel.appendChild(list);
+ });
+}
+function afterTourEnd(){if(pendingLevelTest){pendingLevelTest=false;setTimeout(startLevelTest,200)}}
+function maybeAskRating(){
+ if(!lsGet("leren_twa",false))return;
+ const r=lsGet("leren_rate",{});if(r.done||(r.later&&Date.now()-r.later<10*864e5))return;
+ const g=growU();
+ setTimeout(()=>popup((panel,close)=>{
+  panel.append(el("h2","goal-title",g.rateQ),el("p","goal-hint",g.rateT));
+  const row=el("div","row");
+  const yes=el("a","btn primary",g.rateYes);yes.href="https://play.google.com/store/apps/details?id="+PLAY_PACKAGE;yes.target="_blank";yes.rel="noopener";
+  yes.onclick=()=>{lsSet("leren_rate",{done:true});close()};
+  const later=el("button","btn",g.rateLater);later.type="button";later.onclick=()=>{lsSet("leren_rate",{later:Date.now()});close()};
+  row.append(later,yes);panel.appendChild(row);
+ }),1600);
+}
+function shareCard(title,pct,passed){
+ const c=document.createElement("canvas");c.width=1080;c.height=1080;const x=c.getContext("2d");
+ x.fillStyle="#EB6A00";x.fillRect(0,0,1080,1080);
+ x.fillStyle="rgba(255,255,255,.12)";x.beginPath();x.arc(1080,0,420,0,Math.PI*2);x.fill();
+ [["#1E1712",0],["#FDDA24",1],["#EF3340",2]].forEach(([col,i])=>{x.fillStyle=col;x.fillRect(90+i*44,96,44,60)});
+ x.fillStyle="#fff";x.font="800 64px Unbounded, Nunito, sans-serif";x.textBaseline="middle";x.fillText("Leren.be",250,128);
+ x.font="800 260px Unbounded, Nunito, sans-serif";x.textAlign="center";x.fillText(pct+"%",540,520);
+ x.font="800 64px Nunito, sans-serif";x.fillText(passed?growU().passed:growU().result,540,720);
+ x.font="700 46px Nunito, sans-serif";const t=title.length>34?title.slice(0,33)+"…":title;x.fillText(t,540,810);
+ x.fillStyle="#1E1712";x.fillRect(0,960,1080,120);x.fillStyle="#FDDA24";x.font="800 40px Nunito, sans-serif";x.fillText("gembarskydanylo.github.io/Leren.be",540,1020);
+ return new Promise(r=>c.toBlob(r,"image/png"));
+}
+async function shareResult(title,pct,passed){
+ const g=growU(),text=(passed?g.shareTxt:g.shareTry)(title,pct)+SITE_URL;
+ try{
+  if(navigator.share){
+   const blob=await shareCard(title,pct,passed);const file=blob&&new File([blob],"leren-be-result.png",{type:"image/png"});
+   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text});return}
+   await navigator.share({text});return;
+  }
+ }catch(e){if(e&&e.name==="AbortError")return}
+ try{await navigator.clipboard.writeText(text);toast(g.copied)}catch(e){toast(text)}
+}
+
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
- updateHeader();buildNav();bindNavSlider("catNav","catSlider","cats");bindNavSlider("subNav","subSlider","subs");newRound();
+ updateHeader();buildNav();newRound();applyView();loadAudioManifest();
 }
 
 if (document.readyState === "loading") {
@@ -3212,87 +3531,67 @@ const TOUR_UI={
 };
 const TOUR_STEPS=[
  {id:"welcome",at:null,
-  uk:["Вітаю в Leren.be! 👋","Тренажер нідерландської рівня A1, як на курсах CVO та inburgering. За хвилину покажу, для чого кожна кнопка. Цю інструкцію можна пропустити й відкрити пізніше кнопкою ❓ угорі."],
-  en:["Welcome to Leren.be! 👋","A Dutch A1 trainer, just like the CVO and inburgering courses. In one minute I'll show you what every button does. You can skip this and open it later with the ❓ button at the top."],
-  fr:["Bienvenue sur Leren.be ! 👋","Un entraîneur de néerlandais A1, comme aux cours CVO et inburgering. En une minute, je te montre à quoi sert chaque bouton. Tu peux passer et revenir plus tard avec le bouton ❓ en haut."],
-  ar:["مرحبًا بك في Leren.be! 👋","مدرّب للغة الهولندية بمستوى A1، مثل دروس CVO والاندماج. خلال دقيقة سأشرح لك وظيفة كل زر. يمكنك التخطي وفتح هذا الشرح لاحقًا بزر ❓ في الأعلى."]},
- {id:"target",at:["#targetPick"],
-  uk:["Яку мову ти вчиш","Прапор 🇧🇪 BE — нідерландська, як говорять у Бельгії. Натисни на прапор, щоб замість неї вчити англійську (ENG) або французьку (FRA)."],
-  en:["The language you learn","The 🇧🇪 BE flag means Dutch as spoken in Belgium. Tap the flag to learn English (ENG) or French (FRA) instead."],
-  fr:["La langue que tu apprends","Le drapeau 🇧🇪 BE, c'est le néerlandais parlé en Belgique. Touche le drapeau pour apprendre plutôt l'anglais (ENG) ou le français (FRA)."],
-  ar:["اللغة التي تتعلّمها","علم 🇧🇪 BE يعني الهولندية كما تُتحدث في بلجيكا. اضغط على العلم لتتعلّم الإنجليزية (ENG) أو الفرنسية (FRA) بدلًا منها."]},
- {id:"ui",at:["#uiPick"],
-  uk:["Мова пояснень","Тут вибираєш, якою мовою показувати переклад і правила: 🇺🇦 українська (UKR), англійська, французька або арабська."],
-  en:["Explanation language","Choose the language for translations and rules: Ukrainian (UKR), English, French or Arabic."],
-  fr:["Langue des explications","Choisis la langue des traductions et des règles : ukrainien (UKR), anglais, français ou arabe."],
-  ar:["لغة الشرح","اختر لغة الترجمة والقواعد: الأوكرانية (UKR) أو الإنجليزية أو الفرنسية أو العربية."]},
- {id:"search",at:["#searchBtn"],
-  uk:["🔍 Пошук слова","Маленький словник. Введи слово нідерландською або українською, і побачиш переклад та приклад."],
-  en:["🔍 Word search","A small dictionary. Type a word in Dutch or in your language to see the translation and an example."],
-  fr:["🔍 Recherche","Un petit dictionnaire. Tape un mot en néerlandais ou dans ta langue pour voir la traduction et un exemple."],
-  ar:["🔍 البحث عن كلمة","قاموس صغير. اكتب كلمة بالهولندية أو بلغتك لترى الترجمة ومثالًا."]},
- {id:"voice",at:["#voiceSettingsBtn"],actions:["pickVoice","sample"],
-  uk:["🎙️ Хто озвучує слова",
-   "Слова читає не записаний диктор, а голос, вбудований у твій телефон чи комп'ютер. Тому на різних пристроях звучання різне.",
-   "Натисни 🎙️, вибери голос з позначкою <b>nl-BE</b> (бельгійський) або <b>nl-NL</b> (нідерландський) і натисни «▶ Прослухати зразок». Вибір збережеться.",
-   "Немає нідерландського голосу? <b>Android:</b> Налаштування → Спеціальні можливості → Синтез мовлення → Встановити голосові дані → Nederlands. <b>iPhone:</b> Параметри → Доступність → Усний вміст → Голоси → Nederlands."],
-  en:["🎙️ Who reads the words",
-   "The words are not read by a recorded speaker but by the voice built into your phone or computer. That's why it sounds different on every device.",
-   "Tap 🎙️, choose a voice marked <b>nl-BE</b> (Belgian) or <b>nl-NL</b> (Netherlands) and press “▶ Play sample”. Your choice is saved.",
-   "No Dutch voice? <b>Android:</b> Settings → Accessibility → Text-to-speech → Install voice data → Nederlands. <b>iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Dutch."],
-  fr:["🎙️ Qui lit les mots",
-   "Les mots ne sont pas lus par un enregistrement, mais par la voix intégrée à ton téléphone ou ordinateur. Le son change donc d'un appareil à l'autre.",
-   "Touche 🎙️, choisis une voix marquée <b>nl-BE</b> (belge) ou <b>nl-NL</b> (Pays-Bas) et appuie sur « ▶ Écouter un exemple ». Ton choix est enregistré.",
-   "Pas de voix néerlandaise ? <b>Android :</b> Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales → Nederlands. <b>iPhone :</b> Réglages → Accessibilité → Contenu énoncé → Voix → Néerlandais."],
-  ar:["🎙️ من يقرأ الكلمات",
-   "لا يقرأ الكلمات قارئ مسجَّل، بل الصوت المدمج في هاتفك أو حاسوبك، لذلك يختلف الصوت من جهاز لآخر.",
-   "اضغط 🎙️ واختر صوتًا مكتوبًا عليه <b>nl-BE</b> (بلجيكي) أو <b>nl-NL</b> (هولندي) ثم اضغط «▶ استمع إلى عيّنة». سيُحفظ اختيارك.",
-   "لا يوجد صوت هولندي؟ <b>أندرويد:</b> الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت ← Nederlands. <b>آيفون:</b> الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← الهولندية."]},
- {id:"auto",at:["#autoSpeechToggle"],actions:["auto"],
-  uk:["🔊 Авто — озвучувати самому","<b>Увімкнено 🔊:</b> нове слово звучить одразу, щойно з'являється. <b>Вимкнено 🔇:</b> тиша, слово звучить лише коли натиснеш «🔁 Повторити». Для режиму «Слухати» краще ввімкнути."],
-  en:["🔊 Auto — speak by itself","<b>On 🔊:</b> each new word is spoken as soon as it appears. <b>Off 🔇:</b> silence; a word is spoken only when you press “🔁 Repeat”. Turn it on for the Listening mode."],
-  fr:["🔊 Auto — lecture automatique","<b>Activé 🔊 :</b> chaque nouveau mot est lu dès qu'il apparaît. <b>Désactivé 🔇 :</b> silence ; le mot n'est lu que si tu appuies sur « 🔁 Répéter ». Active-le pour le mode Écoute."],
-  ar:["🔊 تلقائي — النطق وحده","<b>مُفعَّل 🔊:</b> تُنطق كل كلمة جديدة فور ظهورها. <b>مُطفأ 🔇:</b> صمت، ولا تُنطق الكلمة إلا عند الضغط على «🔁 إعادة». فعّله لوضع الاستماع."]},
- {id:"score",at:["#score"],
-  uk:["⭐ Бали","За кожну правильну відповідь отримуєш бали: нове або забуте слово дає 10, слово, яке ти вже добре знаєш, дає 2."],
-  en:["⭐ Points","Every correct answer earns points: a new or forgotten word gives 10, a word you already know well gives 2."],
-  fr:["⭐ Points","Chaque bonne réponse rapporte des points : un mot nouveau ou oublié donne 10, un mot que tu connais déjà bien donne 2."],
-  ar:["⭐ النقاط","كل إجابة صحيحة تمنحك نقاطًا: الكلمة الجديدة أو المنسية تعطي 10، والكلمة التي تعرفها جيدًا تعطي 2."]},
- {id:"theme",at:["#themeToggle"],
-  uk:["🌙 Світла чи темна тема","Перемикає оформлення. Темна тема зручніша ввечері."],
-  en:["🌙 Light or dark","Switches the look. The dark theme is easier on the eyes in the evening."],
-  fr:["🌙 Clair ou sombre","Change l'apparence. Le thème sombre repose les yeux le soir."],
-  ar:["🌙 فاتح أو داكن","يبدّل المظهر. الوضع الداكن أريح للعين في المساء."]},
- {id:"progress",at:["#progressPanel"],
-  uk:["Твій прогрес","🔥 — скільки днів поспіль ти займаєшся. <b>Ціль дня</b> — скільки балів набрати сьогодні (натисни, щоб змінити). Смужка внизу показує, скільки балів лишилось до наступного рівня."],
-  en:["Your progress","🔥 shows how many days in a row you've practised. <b>Daily goal</b> is how many points to earn today (tap to change). The bar shows how many points are left until the next level."],
-  fr:["Ta progression","🔥 indique combien de jours d'affilée tu t'entraînes. <b>Objectif du jour</b> : les points à gagner aujourd'hui (touche pour changer). La barre montre les points restants avant le niveau suivant."],
-  ar:["تقدّمك","🔥 عدد الأيام المتتالية التي تدرّبت فيها. <b>هدف اليوم</b> هو عدد النقاط المطلوبة اليوم (اضغط لتغييره). يوضح الشريط النقاط المتبقية حتى المستوى التالي."]},
- {id:"levels",at:["#levelNav"],
-  uk:["Рівні","A1.1 відкритий одразу. A1.2 відкривається, коли набереш 1000 балів. Якщо вже знаєш матеріал, натисни на замок 🔒 і склади тест на рівень. A2 — скоро."],
-  en:["Levels","A1.1 is open from the start. A1.2 opens at 1000 points. Already know the material? Tap the lock 🔒 and take the level test. A2 is coming soon."],
-  fr:["Niveaux","A1.1 est ouvert dès le départ. A1.2 s'ouvre à 1000 points. Tu connais déjà ? Touche le cadenas 🔒 et passe le test de niveau. A2 arrive bientôt."],
-  ar:["المستويات","المستوى A1.1 مفتوح من البداية. يُفتح A1.2 عند 1000 نقطة. إن كنت تعرف المادة، اضغط على القفل 🔒 وأدِّ اختبار المستوى. المستوى A2 قريبًا."]},
- {id:"topics",at:["#catNav","#subNav"],
-  uk:["Розділи й теми","Спочатку вибери розділ (Спілкування, Граматика…), а під ним — тему. Список довший за екран: гортай пальцем убік або тягни помаранчевий повзунок."],
-  en:["Sections and topics","First pick a section (Communication, Grammar…), then a topic below it. The list is wider than the screen: swipe sideways or drag the orange slider."],
-  fr:["Rubriques et thèmes","Choisis d'abord une rubrique (Communication, Grammaire…), puis un thème en dessous. La liste dépasse l'écran : glisse sur le côté ou tire le curseur orange."],
-  ar:["الأقسام والمواضيع","اختر أولًا قسمًا (التواصل، القواعد…) ثم موضوعًا تحته. القائمة أعرض من الشاشة: اسحب بإصبعك جانبيًا أو حرّك الشريط البرتقالي."]},
+  uk:["Вітаю в Leren.be! 👋","Тренажер нідерландської рівня A1, як на курсах CVO та inburgering. За хвилину покажу, як тут усе влаштовано. Цю інструкцію завжди можна відкрити знову: ⚙ Налаштування → «Інструкція»."],
+  en:["Welcome to Leren.be! 👋","A Dutch A1 trainer, just like the CVO and inburgering courses. In one minute I'll show you around. You can always reopen this guide: ⚙ Settings → “Guide”."],
+  fr:["Bienvenue sur Leren.be ! 👋","Un entraîneur de néerlandais A1, comme aux cours CVO et inburgering. En une minute, je te fais visiter. Tu peux rouvrir ce guide à tout moment : ⚙ Réglages → « Guide »."],
+  ar:["مرحبًا بك في Leren.be! 👋","مدرّب للغة الهولندية بمستوى A1، مثل دروس CVO والاندماج. خلال دقيقة سأعرّفك على التطبيق. يمكنك فتح هذا الشرح مجددًا: ⚙ الإعدادات ← «الشرح»."]},
+ {id:"topic",at:["#topicBar"],
+  uk:["Тема уроку","Тут видно рівень і тему, яку ти зараз вчиш. Натисни «Змінити», щоб вибрати рівень (A1.1, A1.2), розділ і тему. A1.2 відкривається за 1000 балів або тестом на рівень."],
+  en:["Lesson topic","This shows your level and the topic you are studying. Tap “Change” to pick a level (A1.1, A1.2), a section and a topic. A1.2 unlocks at 1000 points or with the level test."],
+  fr:["Thème de la leçon","Ici, ton niveau et le thème en cours. Touche « Changer » pour choisir un niveau (A1.1, A1.2), une rubrique et un thème. A1.2 s'ouvre à 1000 points ou avec le test de niveau."],
+  ar:["موضوع الدرس","هنا يظهر مستواك والموضوع الذي تدرسه. اضغط «تغيير» لاختيار المستوى (A1.1، A1.2) والقسم والموضوع. يُفتح A1.2 عند 1000 نقطة أو باختبار المستوى."]},
+ {id:"modes",at:["#lessonModes"],
+  uk:["Як вчити тему","<b>Вчити</b> — нове слово з прикладом · <b>Тест</b> — вибери переклад · <b>Слухати</b> — почуй і вибери значення · <b>Речення</b> — склади речення з карток · <b>Повтор</b> — слова, у яких ти помилявся."],
+  en:["How to practise","<b>Study</b> — a new word with an example · <b>Quiz</b> — pick the translation · <b>Listen</b> — hear it and pick the meaning · <b>Build</b> — make a sentence from cards · <b>Review</b> — words you got wrong."],
+  fr:["Comment t'entraîner","<b>Étude</b> — un mot nouveau avec un exemple · <b>Quiz</b> — choisis la traduction · <b>Écoute</b> — écoute et choisis le sens · <b>Phrases</b> — construis une phrase · <b>Révision</b> — les mots ratés."],
+  ar:["طرق التدريب","<b>دراسة</b> — كلمة جديدة مع مثال · <b>اختبار</b> — اختر الترجمة · <b>استماع</b> — اسمع واختر المعنى · <b>تركيب</b> — ركّب جملة · <b>مراجعة</b> — الكلمات التي أخطأت فيها."]},
  {id:"card",at:["#card .q"],
-  uk:["Завдання","Тут питання й варіанти відповідей. Кнопка «🔁 Повторити» ще раз озвучує слово. Після відповіді з'являється пояснення та кнопка «Далі»."],
-  en:["The exercise","Here you see the question and the answer options. “🔁 Repeat” reads the word again. After you answer you get an explanation and a “Next” button."],
-  fr:["L'exercice","Ici, la question et les réponses possibles. « 🔁 Répéter » relit le mot. Après ta réponse, tu vois une explication et le bouton « Suivant »."],
-  ar:["التمرين","هنا السؤال وخيارات الإجابة. زر «🔁 إعادة» ينطق الكلمة مرة أخرى. بعد الإجابة يظهر شرح وزر «التالي»."]},
+  uk:["Завдання","Тут питання і варіанти відповідей. Кнопка «🔊 Ще раз» знову озвучує слово. Після відповіді з'являється пояснення і кнопка «Далі»."],
+  en:["The exercise","Here is the question and the answer options. “🔊 Again” reads the word once more. After you answer you get an explanation and a “Next” button."],
+  fr:["L'exercice","Ici, la question et les réponses. « 🔊 Encore » relit le mot. Après ta réponse, tu vois une explication et le bouton « Suivant »."],
+  ar:["التمرين","هنا السؤال وخيارات الإجابة. زر «🔊 مرة أخرى» ينطق الكلمة من جديد. بعد الإجابة يظهر شرح وزر «التالي»."]},
  {id:"dock",at:["#modeButtons"],
-  uk:["Режими навчання","📖 <b>Вчити</b> — нове слово з прикладом<br>✅ <b>Тест</b> — вибери правильний переклад<br>🎧 <b>Слухати</b> — почуй слово й вибери значення<br>🧩 <b>Речення</b> — склади речення з карток<br>📝 <b>Toets</b> — міні-іспит, як на курсі<br>🔁 <b>Повтор</b> — слова, у яких ти помилявся"],
-  en:["Practice modes","📖 <b>Study</b> — a new word with an example<br>✅ <b>Quiz</b> — pick the right translation<br>🎧 <b>Listen</b> — hear the word and pick its meaning<br>🧩 <b>Sentences</b> — build a sentence from cards<br>📝 <b>Toets</b> — a mini exam like in class<br>🔁 <b>Review</b> — words you got wrong"],
-  fr:["Modes d'entraînement","📖 <b>Apprendre</b> — un mot nouveau avec un exemple<br>✅ <b>Quiz</b> — choisis la bonne traduction<br>🎧 <b>Écoute</b> — écoute le mot et choisis son sens<br>🧩 <b>Phrases</b> — construis une phrase avec des cartes<br>📝 <b>Toets</b> — mini-examen comme en classe<br>🔁 <b>Révision</b> — les mots où tu t'es trompé"],
-  ar:["أوضاع التدريب","📖 <b>تعلّم</b> — كلمة جديدة مع مثال<br>✅ <b>اختبار</b> — اختر الترجمة الصحيحة<br>🎧 <b>استماع</b> — اسمع الكلمة واختر معناها<br>🧩 <b>جمل</b> — ركّب جملة من البطاقات<br>📝 <b>Toets</b> — امتحان قصير كما في الصف<br>🔁 <b>مراجعة</b> — الكلمات التي أخطأت فيها"]},
- {id:"help",at:["#helpBtn"],
-  uk:["Готово! 🎉","Ця інструкція завжди тут, під кнопкою ❓. Succes met Nederlands leren!"],
-  en:["All set! 🎉","This guide is always here, under the ❓ button. Succes met Nederlands leren!"],
-  fr:["C'est parti ! 🎉","Ce guide est toujours ici, sous le bouton ❓. Succes met Nederlands leren !"],
-  ar:["جاهز! 🎉","هذا الشرح موجود دائمًا هنا تحت زر ❓. Succes met Nederlands leren!"]}
+  uk:["Чотири розділи","<b>Урок</b> — навчання за темами · <b>Toets</b> — міні-іспити, як на курсі · <b>Словник</b> — знайди будь-яке слово й послухай його · <b>Прогрес</b> — бали, серія днів, результати іспитів."],
+  en:["Four sections","<b>Lesson</b> — learn by topic · <b>Toets</b> — mini exams like in class · <b>Dictionary</b> — look up any word and hear it · <b>Progress</b> — points, streak and exam results."],
+  fr:["Quatre rubriques","<b>Leçon</b> — apprendre par thème · <b>Toets</b> — mini-examens comme en classe · <b>Dico</b> — cherche un mot et écoute-le · <b>Progrès</b> — points, série et résultats."],
+  ar:["أربعة أقسام","<b>الدرس</b> — التعلّم حسب الموضوع · <b>Toets</b> — امتحانات قصيرة كما في الصف · <b>القاموس</b> — ابحث عن كلمة واستمع إليها · <b>التقدّم</b> — النقاط والسلسلة والنتائج."]},
+ {id:"stats",at:["#streakPill","#score"],
+  uk:["🔥 Серія і ⭐ бали","🔥 — скільки днів поспіль ти виконуєш ціль дня. ⭐ — твої бали: нове або забуте слово дає 10, вже добре відоме — 2. Натисни на 🔥, щоб відкрити прогрес."],
+  en:["🔥 Streak and ⭐ points","🔥 is how many days in a row you've reached your daily goal. ⭐ are your points: a new or forgotten word gives 10, a well-known one gives 2. Tap 🔥 to open your progress."],
+  fr:["🔥 Série et ⭐ points","🔥 : nombre de jours d'affilée où tu atteins ton objectif. ⭐ : tes points — un mot nouveau ou oublié rapporte 10, un mot bien connu 2. Touche 🔥 pour voir tes progrès."],
+  ar:["🔥 السلسلة و⭐ النقاط","🔥 عدد الأيام المتتالية التي حققت فيها هدفك. ⭐ نقاطك: الكلمة الجديدة أو المنسية تعطي 10، والمعروفة جيدًا 2. اضغط 🔥 لفتح التقدّم."]},
+ {id:"settings",at:["#settingsBtn"],
+  uk:["⚙ Налаштування","Тут мова, яку ти вчиш (🇧🇪 BE — нідерландська, як у Бельгії), мова пояснень (🇺🇦 UKR), голос, автоозвучення, темна тема, ціль дня та ця інструкція."],
+  en:["⚙ Settings","Here you set the language you learn (🇧🇪 BE — Dutch as in Belgium), the explanation language, the voice, auto-play, dark theme, daily goal and this guide."],
+  fr:["⚙ Réglages","Ici : la langue apprise (🇧🇪 BE — néerlandais de Belgique), la langue des explications, la voix, la lecture auto, le thème sombre, l'objectif du jour et ce guide."],
+  ar:["⚙ الإعدادات","هنا تختار اللغة التي تتعلّمها (🇧🇪 BE — الهولندية كما في بلجيكا) ولغة الشرح والصوت والنطق التلقائي والوضع الداكن وهدف اليوم وهذا الشرح."]},
+ {id:"voice",at:["#settingsBtn"],actions:["pickVoice","sample"],
+  uk:["🎙 Хто озвучує слова",
+   "Слова читає не записаний диктор, а голос, вбудований у твій телефон чи комп'ютер. Тому на різних пристроях звучання різне.",
+   "⚙ Налаштування → «Голос озвучення» → «Вибрати». Обери голос з позначкою <b>nl-BE</b> (бельгійський) або <b>nl-NL</b> (нідерландський) і натисни «▶ Прослухати зразок». Вибір збережеться.",
+   "Немає нідерландського голосу? <b>Android:</b> Налаштування → Спеціальні можливості → Синтез мовлення → Встановити голосові дані → Nederlands. <b>iPhone:</b> Параметри → Доступність → Усний вміст → Голоси → Nederlands."],
+  en:["🎙 Who reads the words",
+   "The words are not read by a recorded speaker but by the voice built into your phone or computer. That's why it sounds different on every device.",
+   "⚙ Settings → “Speech voice” → “Choose”. Pick a voice marked <b>nl-BE</b> (Belgian) or <b>nl-NL</b> (Netherlands) and press “▶ Play sample”. Your choice is saved.",
+   "No Dutch voice? <b>Android:</b> Settings → Accessibility → Text-to-speech → Install voice data → Nederlands. <b>iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Dutch."],
+  fr:["🎙 Qui lit les mots",
+   "Les mots ne sont pas lus par un enregistrement, mais par la voix intégrée à ton téléphone ou ordinateur. Le son change donc d'un appareil à l'autre.",
+   "⚙ Réglages → « Voix » → « Choisir ». Prends une voix marquée <b>nl-BE</b> (belge) ou <b>nl-NL</b> (Pays-Bas) et appuie sur « ▶ Écouter un exemple ». Ton choix est enregistré.",
+   "Pas de voix néerlandaise ? <b>Android :</b> Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales → Nederlands. <b>iPhone :</b> Réglages → Accessibilité → Contenu énoncé → Voix → Néerlandais."],
+  ar:["🎙 من يقرأ الكلمات",
+   "لا يقرأ الكلمات قارئ مسجَّل، بل الصوت المدمج في هاتفك أو حاسوبك، لذلك يختلف الصوت من جهاز لآخر.",
+   "⚙ الإعدادات ← «صوت النطق» ← «اختيار». اختر صوتًا مكتوبًا عليه <b>nl-BE</b> (بلجيكي) أو <b>nl-NL</b> (هولندي) ثم اضغط «▶ استمع إلى عيّنة». سيُحفظ اختيارك.",
+   "لا يوجد صوت هولندي؟ <b>أندرويد:</b> الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت ← Nederlands. <b>آيفون:</b> الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← الهولندية."]},
+ {id:"auto",at:["#settingsBtn"],actions:["auto"],
+  uk:["🔊 Автоозвучення","<b>Увімкнено</b> (так за замовчуванням): нове слово звучить одразу, щойно з'являється. <b>Вимкнено</b>: тиша, слово звучить лише коли натиснеш «🔊 Ще раз». Перемикач — у ⚙ Налаштуваннях."],
+  en:["🔊 Auto-play","<b>On</b> (the default): each new word is spoken as soon as it appears. <b>Off</b>: silence; a word is spoken only when you press “🔊 Again”. The switch is in ⚙ Settings."],
+  fr:["🔊 Lecture auto","<b>Activée</b> (par défaut) : chaque nouveau mot est lu dès qu'il apparaît. <b>Désactivée</b> : silence ; le mot n'est lu que si tu appuies sur « 🔊 Encore ». L'interrupteur est dans ⚙ Réglages."],
+  ar:["🔊 النطق التلقائي","<b>مُفعَّل</b> (افتراضيًا): تُنطق كل كلمة جديدة فور ظهورها. <b>مُطفأ</b>: صمت، ولا تُنطق الكلمة إلا عند الضغط على «🔊 مرة أخرى». المفتاح في ⚙ الإعدادات."]},
+ {id:"done",at:null,
+  uk:["Готово! 🎉","Починай з першої теми — завдання вже чекає. Succes met Nederlands leren!"],
+  en:["All set! 🎉","Start with the first topic — the exercise is waiting. Succes met Nederlands leren!"],
+  fr:["C'est parti ! 🎉","Commence par le premier thème — l'exercice t'attend. Succes met Nederlands leren !"],
+  ar:["جاهز! 🎉","ابدأ بالموضوع الأول — التمرين بانتظارك. Succes met Nederlands leren!"]}
 ];
 let tourIdx=-1,tourRoot=null,tourTimer=0;
 function tourT(){return TOUR_UI[uiLang]||TOUR_UI.uk}
@@ -3353,7 +3652,8 @@ function tourKey(e){
 }
 function startTour(){
  if(tourRoot)return;
- const sd=$("searchModal");if(sd&&!sd.hidden)return;
+ document.querySelectorAll(".sheet:not([hidden])").forEach(x=>closeSheet(x.id));
+ if(view!=="lesson")setView("lesson");
  tourRoot=el("div","tour");tourRoot.setAttribute("role","dialog");tourRoot.setAttribute("aria-modal","true");tourRoot.setAttribute("aria-labelledby","tourTitle");
  tourRoot.append(el("div","tour-spot"),el("div","tour-card"));
  document.body.appendChild(tourRoot);
@@ -3365,12 +3665,12 @@ function tourEnd(){
  lsSet("leren_tour_done",true);
  removeEventListener("resize",tourPlace);removeEventListener("scroll",tourPlace);document.removeEventListener("keydown",tourKey);
  tourRoot.remove();tourRoot=null;tourIdx=-1;clearTimeout(tourTimer);
+ if(typeof afterTourEnd==="function")afterTourEnd();
  $("helpBtn")?.focus({preventScroll:true});
 }
-$("helpBtn").addEventListener("click",startTour);
-function updateHelpBtn(){const b=$("helpBtn");if(!b)return;const t={uk:"Інструкція",en:"Guide",fr:"Guide",ar:"الشرح"}[uiLang]||"Guide";b.title=t;b.setAttribute("aria-label",t)}
-updateHelpBtn();
-if(!lsGet("leren_tour_done",false))setTimeout(startTour,700);
+$("helpBtn").addEventListener("click",()=>{closeSheet("settingsSheet");setTimeout(startTour,250)});
+function updateHelpBtn(){}
+setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
 </body>
