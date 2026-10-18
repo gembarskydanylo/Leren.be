@@ -86,7 +86,7 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
  box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 .brand h1{font-family:var(--font-display);font-size:22px;line-height:1;margin:0;font-weight:800;letter-spacing:-.01em}
 .brand p{margin:0;padding:3px 8px;border-radius:var(--r-pill);background:rgba(0,0,0,.16);font-size:12px;font-weight:800;line-height:1.2}
-.top-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.top-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-inline-end:52px}
 .select-group{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9)}
 .lang-select,.theme-btn,.score-pill{min-height:38px;border-radius:var(--r-sm);border:0;font-weight:800;font-size:13px}
 .lang-select option{background:#fff;color:#2A1D12}
@@ -97,6 +97,15 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 #searchBtn{background:#fff;color:#2A1D12;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
 #searchBtn:active{transform:translateY(var(--depth-sm));box-shadow:none}
 .score-pill{display:inline-flex;align-items:center;padding:0 12px;background:var(--be-black);color:var(--be-yellow);white-space:nowrap;box-shadow:0 var(--depth-sm) 0 rgba(0,0,0,.35)}
+.auto-speech-btn{min-height:38px;padding:0 7px;border:2px solid rgba(255,255,255,.45);border-radius:var(--r-sm);background:rgba(60,25,0,.22);color:#fff;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}
+.auto-speech-btn[aria-pressed="true"]{background:#fff;color:#2A1D12}
+#speechStatus{font-size:12px;font-weight:900;white-space:nowrap}
+#speechStatus[hidden]{display:none}
+.speech-help{margin:10px auto 0;max-width:520px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);color:var(--ink);font-size:14px}
+.speech-help p{margin:0 0 8px}
+.speech-help a{display:inline-block;margin:3px 10px;color:var(--oranje);font-weight:900}
+.listen.is-speaking{outline:3px solid var(--oranje);outline-offset:3px;animation:speechPulse 1s ease-in-out infinite alternate}
+@keyframes speechPulse{to{filter:brightness(.85);transform:scale(1.03)}}
 
 /* stats live inside the orange zone visually: a slim bar right under it */
 .stats-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px;font-size:14px;color:var(--ink-2)}
@@ -421,7 +430,7 @@ footer a{color:inherit}
  .nav-cats{padding:2px 12px 10px;scroll-padding-inline:12px}.nav-subs{padding:0 12px 2px}
  header{padding:12px 12px 12px 14px;gap:10px}
  .brand h1{font-size:20px}
- .top-right{width:100%;display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px}
+ .top-right{width:100%;display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:8px}
  .select-group span{display:none}
  .select-group .lang-select{width:100%}
  .kl-rule{grid-template-columns:1fr}
@@ -477,6 +486,8 @@ footer a{color:inherit}
         </select>
       </label>
       <button class="theme-btn" id="searchBtn" type="button" title="Search">🔍</button>
+      <button class="auto-speech-btn" id="autoSpeechToggle" type="button" aria-pressed="false"></button>
+      <span id="speechStatus" role="status" aria-live="polite" hidden></span>
       <span id="score" class="score-pill" aria-live="polite">⭐ 0</span>
       <button class="theme-btn" id="themeToggle" type="button">🌙</button>
     </div>
@@ -533,25 +544,25 @@ const NL_ONLY_TABS=["dehet","klanken","vervoegen"];
 const tabVisible=k=>targetLang==="nl"||!NL_ONLY_TABS.includes(k);
 
 const UI={
- uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",repeat:"🔁 Повторити",autoOn:"🔊 Авто: увімкнено",autoOff:"🔇 Авто: вимкнено",autoOnShort:"🔊 Авто",autoOffShort:"🔇 Авто",speechPlaying:"Зараз звучить",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",speechHelp:"Нідерландський голос не знайдено. На Android відкрий Налаштування → Спеціальні можливості → Виведення тексту в мовлення → Встановити голосові дані та завантаж потрібну мову. Потім повернись у Leren.be і натисни «Повторити».",speechAndroidHelp:"Інструкція Android",speechStore:"Speech Services у Google Play",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
   cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
   tabs:{klanken:"Kort / lang",graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Години (Клок)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
   subs:{klanken:"Коротка чи довга голосна?",graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити",toets:"Toets A1"},audioSub:"Послухай і обери переклад",toetsTitle:"Toets A1",toetsChoose:"Обери тест",toetsScore:"Твій результат",toetsPassed:"Склав!",toetsFailed:"Ще трохи практики",toetsNext:"Наступне питання",toetsFinish:"Завершити тест",toetsAgain:"Ще раз цей тест",toetsBack:"До списку тестів",toetsQ:"Питання",toetsOf:"з"},
- en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
+ en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",repeat:"🔁 Replay",autoOn:"🔊 Auto: on",autoOff:"🔇 Auto: off",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Speaking now",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",speechHelp:"No Dutch voice was found. On Android, open Settings → Accessibility → Text-to-speech output → Install voice data, then download the language you need. Return to Leren.be and tap Replay.",speechAndroidHelp:"Android instructions",speechStore:"Speech Services on Google Play",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
   lCat:"Category",lSub:"Subtopic",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
   tabs:{klanken:"Short / long",graag:"Like / don't like",phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)",werk:"Work & bank"},
   subs:{klanken:"Short or long vowel?",graag:"What does this activity mean?",phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word",werk:"Work, office and bank"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review",toets:"Toets A1"},audioSub:"Listen and choose the translation",toetsTitle:"Toets A1",toetsChoose:"Choose a test",toetsScore:"Your score",toetsPassed:"Passed!",toetsFailed:"Need more practice",toetsNext:"Next question",toetsFinish:"Finish test",toetsAgain:"Retry this test",toetsBack:"Back to tests",toetsQ:"Question",toetsOf:"of"},
- fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+ fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",repeat:"🔁 Réécouter",autoOn:"🔊 Auto : activé",autoOff:"🔇 Auto : désactivé",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Lecture en cours",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",speechHelp:"Aucune voix néerlandaise n’a été trouvée. Sur Android, ouvrez Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales, puis téléchargez la langue souhaitée. Revenez dans Leren.be et touchez Réécouter.",speechAndroidHelp:"Instructions Android",speechStore:"Speech Services sur Google Play",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{klanken:"Court / long",graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
   subs:{klanken:"Voyelle courte ou longue ?",graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision",toets:"Toets A1"},audioSub:"Écoute et choisis la traduction",toetsTitle:"Toets A1",toetsChoose:"Choisis un test",toetsScore:"Ton résultat",toetsPassed:"Réussi !",toetsFailed:"Encore un peu de pratique",toetsNext:"Question suivante",toetsFinish:"Terminer le test",toetsAgain:"Refaire ce test",toetsBack:"Liste des tests",toetsQ:"Question",toetsOf:"sur"},
- ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
+ ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",repeat:"🔁 أعد الاستماع",autoOn:"🔊 تلقائي: تشغيل",autoOff:"🔇 تلقائي: إيقاف",autoOnShort:"🔊 تلقائي",autoOffShort:"🔇 تلقائي",speechPlaying:"يُشغَّل الآن",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",speechHelp:"لم يتم العثور على صوت هولندي. على Android افتح الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت، ثم نزّل اللغة المطلوبة. ارجع إلى Leren.be واضغط إعادة الاستماع.",speechAndroidHelp:"تعليمات Android",speechStore:"Speech Services على Google Play",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
   tabs:{klanken:"قصير / طويل",graag:"أحب / لا أحب",phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)",werk:"العمل والبنك"},
@@ -1527,6 +1538,7 @@ function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math
 
 function updateHeader(){
  const u=getUI();
+ const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.textContent=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
  $("tagline").textContent=u.tagline;
  $("targetLabel").textContent=u.target;
  $("uiLabel").textContent=u.ui;
@@ -1703,24 +1715,42 @@ function afterLangChange(){
 function changeTargetLang(l){if(!LANGS.includes(l))return;targetLang=l;if(targetLang===uiLang)uiLang=targetLang==="en"?"uk":"en";afterLangChange()}
 function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang===uiLang)targetLang=uiLang==="en"?"nl":"en";afterLangChange()}
 
-function showSpeechNote(){const c=$("card");if(!c||$("speechNote"))return;const p=el("p","empty",getUI().noSpeech);p.id="speechNote";c.appendChild(p)}
+let autoSpeech=lsGet("leren_auto_speech",false);
+function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>b.classList.remove("is-speaking"));if(active&&button)button.classList.add("is-speaking");const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
+function showSpeechNote(){
+ const c=$("card");if(!c||$("speechNote"))return;
+ const u=getUI(),box=el("div","speech-help");box.id="speechNote";
+ box.appendChild(el("p","",u.speechHelp||u.noSpeech));
+ const how=el("a","",u.speechAndroidHelp||"Android help");how.href="https://support.google.com/accessibility/android/answer/6006983";how.target="_blank";how.rel="noopener noreferrer";
+ const store=el("a","",u.speechStore||"Speech Services");store.href="https://play.google.com/store/apps/details?id=com.google.android.tts";store.target="_blank";store.rel="noopener noreferrer";
+ box.append(how,store);c.appendChild(box)
+}
 let speechVoices=[];
 function refreshSpeechVoices(){try{speechVoices=window.speechSynthesis.getVoices()||[]}catch(e){speechVoices=[]}}
 if("speechSynthesis" in window){refreshSpeechVoices();window.speechSynthesis.addEventListener?.("voiceschanged",refreshSpeechVoices)}
-function say(text){
+let speechToken=0;
+function say(text,button){
  try{
   if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){showSpeechNote();return}
-  const synth=window.speechSynthesis;
+  const synth=window.speechSynthesis,token=++speechToken;
   if(synth.speaking||synth.pending)synth.cancel();
-  const u=new SpeechSynthesisUtterance(text);
+  updateSpeechState(false);
+  const u=new SpeechSynthesisUtterance(String(text||""));
   u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[targetLang]||"nl-BE";u.rate=.92;
   const voices=speechVoices.length?speechVoices:(refreshSpeechVoices(),speechVoices),pre=u.lang.toLowerCase().split("-")[0];
   const v=voices.find(x=>x.lang.toLowerCase()===u.lang.toLowerCase())||voices.find(x=>x.lang.toLowerCase().startsWith(pre));
+  if(voices.length&&!v){showSpeechNote();return}
   if(v)u.voice=v;
-  u.onerror=e=>{if(!["interrupted","canceled","not-allowed"].includes(e.error))showSpeechNote()};
+  u.onstart=()=>{if(token===speechToken)updateSpeechState(true,button)};
+  const done=()=>{if(token===speechToken)updateSpeechState(false)};
+  u.onend=done;
+  u.onerror=e=>{done();if(!["interrupted","canceled","not-allowed"].includes(e.error))showSpeechNote()};
   synth.speak(u);
- }catch(e){showSpeechNote()}
+ }catch(e){updateSpeechState(false);showSpeechNote()}
 }
+function autoSay(text){if(autoSpeech)say(text)}
+$("autoSpeechToggle").addEventListener("click",()=>{autoSpeech=!autoSpeech;lsSet("leren_auto_speech",autoSpeech);updateHeader()});
+
 const spoken=()=>(tab==="dehet"&&mode!=="study"&&!locked)?labelFor(item):shown(item);
 
 function updateProgress(){
@@ -1819,7 +1849,7 @@ function nextQuestion(){
    }
   }
  }
- const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(spoken());top.appendChild(hear);
+ const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(spoken(),hear);top.appendChild(hear);
  card.appendChild(top);
 
  if(mode==="study"){renderStudyControls(card);return}
@@ -1836,14 +1866,14 @@ function nextQuestion(){
   const t=el("span","",o.label);if(o.t)tgt(t);b.appendChild(t);
   b.onclick=()=>answer(o.ok,b);opts.appendChild(b);
  });
- if(mode==="audio")say(spoken());
+ if(mode==="audio")autoSay(spoken());
 }
 
 // Study: speak the new word immediately after rendering it.
 function studyNext(){
- try{const s=window.speechSynthesis;if(s&&(s.speaking||s.pending))s.cancel()}catch(e){}
+ try{const s=window.speechSynthesis;if(s&&(s.speaking||s.pending)){++speechToken;s.cancel();updateSpeechState(false)}}catch(e){}
  nextQuestion();
- if(mode==="study"&&document.querySelector("#card .q"))say(spoken()); // round finished
+ if(autoSpeech&&mode==="study"&&document.querySelector("#card .q"))say(spoken()); // round finished
 }
 function renderStudyControls(card){
  const u=getUI(),fb=el("div","feedback");fb.id="feedback";
@@ -1852,7 +1882,7 @@ function renderStudyControls(card){
  if(item["ex_"+uiLang])fb.appendChild(el("p","",item["ex_"+uiLang]));
  card.appendChild(fb);
  const row=el("div","row");
- const hear=el("button","btn",u.listen);hear.type="button";hear.onclick=()=>say(spoken());row.appendChild(hear);
+ const hear=el("button","btn listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(spoken(),hear);row.appendChild(hear);
  const known=el("button","btn primary",u.markKnown);known.type="button";known.onclick=()=>{
   const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;
   saveStore();updateStats();
@@ -2003,7 +2033,7 @@ function klNext(){
  klQ=klLevel===3?klVerbQuestion(item):null;
  if(klQ)klQ.opts=shuffle([{l:klQ.ok,ok:true},{l:klQ.bad,ok:false}]);
  klRender();
- if(klLevel<3||mode==="audio")say(item.nl);
+ if((klLevel<3||mode==="audio")&&autoSpeech)say(item.nl);
 }
 function klRender(){
  const u=getUI(),k=klU();
@@ -2018,7 +2048,7 @@ function klRender(){
   top.appendChild(el("p","",meaningFor(item)));
  }
  const tools=el("div","row");tools.style.justifyContent="center";
- const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(klLevel===3?(locked?klQ.subj+" "+klQ.ok:item.nl):item.nl);
+ const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(klLevel===3?(locked?klQ.subj+" "+klQ.ok:item.nl):item.nl,hear);
  const rb=el("button","listen",(klShowRule?"✓ ":"")+k.rule);rb.type="button";rb.onclick=()=>{klShowRule=!klShowRule;klRender()};
  tools.append(hear,rb);top.appendChild(tools);
  if(klShowRule)top.appendChild(klRulePanel());
@@ -2180,7 +2210,7 @@ function vhNext(){
  locked=false;item=deck.pop();q++;sessionIds.push(item.id);
  item.opts=shuffle([{l:item.g.ok,ok:true},...item.g.bad.slice(0,3).map(l=>({l,ok:false}))]);
  vhRender();
- if(mode==="audio")say(item.g.v);
+ if(mode==="audio")autoSay(item.g.v);
 }
 function vhRender(){
  const u=getUI(),v=vhU(),st=vhCur(),g=item.g;
@@ -2189,7 +2219,7 @@ function vhRender(){
  const top=el("div","q");const h=el("h2","vh-title",st.title);tgt(h);top.append(el("small","",v.sub),h);
  const text=vhText(st,g.n);top.appendChild(text);
  const now=el("p","vh-ask");now.append(el("span","vh-n big",String(g.n)),el("span","vh-inf2",g.v));tgt(now);top.appendChild(now);
- const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(locked?vhFill(g):g.v);top.appendChild(hear);
+ const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(locked?vhFill(g):g.v,hear);top.appendChild(hear);
  card.appendChild(top);
  const opts=el("div","opts");
  item.opts.forEach(o=>{const bt=el("button","opt");bt.type="button";bt.dataset.ok=o.ok?"1":"";const t=el("span","",o.l);tgt(t);bt.appendChild(t);bt.disabled=locked;bt.onclick=()=>vhAnswer(o.ok,bt);opts.appendChild(bt)});
@@ -2252,7 +2282,7 @@ function sepNext(){
   {a:d.w,b:d.p,ok:false}             // wrong ending
  ]);
  sepRender();
- if(mode==="audio")say(item.nl.split("→")[0].trim());
+ if(mode==="audio")autoSay(item.nl.split("→")[0].trim());
 }
 function sepRender(){
  const u=getUI(),d=item.sep;
@@ -2265,7 +2295,7 @@ function sepRender(){
  h.append(a,el("span","vh-gap"+(locked?" filled":" active"),locked?d.v:"1"),b,el("span","vh-gap"+(locked?" filled":" active"),locked?d.p:"2"),c);
  top.appendChild(h);
  const inf=el("span","vh-inf2 sep-inf","("+item.nl.split("→")[0].trim()+")");tgt(inf);top.appendChild(inf);
- const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(locked?sepFill(d):item.nl.split("→")[0].trim());top.appendChild(hear);
+ const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(locked?sepFill(d):item.nl.split("→")[0].trim(),hear);top.appendChild(hear);
  card.appendChild(top);
  const opts=el("div","opts sep-opts");
  item.opts.forEach(o=>{const bt=el("button","opt");bt.type="button";bt.dataset.ok=o.ok?"1":"";
@@ -2942,7 +2972,7 @@ function renderBuild(){
  const top=el("div","q");top.appendChild(el("small","",u.buildSub));
  if(bAudio&&!bs.done)top.appendChild(el("div","icon-box","🔊"));else top.appendChild(el("h2","sm",s[uiLang]||s.en));
  const tools=el("div","row");tools.style.justifyContent="center";
- const hear=el("button","listen",u.listen);hear.type="button";hear.onclick=()=>say(sentence(s));
+ const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(sentence(s));
  const ear=el("button","listen",(bAudio?"✓ ":"")+u.byEar);ear.type="button";
  ear.onclick=()=>{bAudio=!bAudio;renderBuild();if(bAudio&&!bs.done)say(sentence(s))};
  tools.append(hear,ear);top.appendChild(tools);card.appendChild(top);
