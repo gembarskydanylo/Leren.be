@@ -3,8 +3,12 @@
 // A subscriber gets one push per day, at their chosen local hour, only if today's goal is not done yet.
 import webpush from "web-push";
 import {GoogleAuth} from "google-auth-library";
+import {readFileSync} from "node:fs";
 
-const {FIREBASE_SA, VAPID_PUBLIC, VAPID_PRIVATE} = process.env;
+const {FIREBASE_SA} = process.env;
+const VAPID_PRIVATE = (process.env.VAPID_PRIVATE || "").trim();
+// The public key is taken from the app itself, so it always matches what the phones subscribed with.
+const VAPID_PUBLIC = (readFileSync(new URL("../index.html", import.meta.url), "utf8").match(/vapid:"([A-Za-z0-9_-]{80,})"/) || [])[1] || (process.env.VAPID_PUBLIC || "").trim();
 const FORCE = process.env.FORCE === "true"; // manual test run: send to every subscriber now
 if (!FIREBASE_SA || !VAPID_PUBLIC || !VAPID_PRIVATE) { console.log(`::warning::Reminders are not configured: missing ${[!FIREBASE_SA && "FIREBASE_SA", !VAPID_PUBLIC && "VAPID_PUBLIC", !VAPID_PRIVATE && "VAPID_PRIVATE"].filter(Boolean).join(", ")}`); process.exit(0); }
 process.on("unhandledRejection", e => { console.log(`::error::${String(e && (e.response?.data?.error?.message || e.message) || e).slice(0, 300)}`); process.exit(1); });
