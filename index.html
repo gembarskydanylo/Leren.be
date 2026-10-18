@@ -536,6 +536,45 @@ header{flex-wrap:nowrap}
 .dict-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:700 17px var(--font-body,inherit)}
 .dict-hint{margin:0 4px;color:var(--ink-2);font-size:14px}
 .dict-view .search-results{padding:0;overflow:visible}
+#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}
+.dx-clear{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);color:var(--ink-2);font:700 22px/1 var(--font-body,inherit);cursor:pointer}
+.dx-filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px}.dx-filters::-webkit-scrollbar{display:none}
+.dx-filter{flex:none;min-height:38px;padding:0 14px;border-radius:var(--r-pill);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer}
+.dx-filter.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.dx-meta{margin:-4px 4px 0;color:var(--ink-2);font-size:13px;font-weight:700;min-height:1em}
+.dx-row{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:4px;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);margin-bottom:10px;box-shadow:0 var(--depth-sm) 0 var(--edge);overflow:hidden}
+.dx-row.open{border-color:var(--oranje)}
+.dx-say,.dx-star{width:44px;height:44px;margin:8px 0 8px 8px;border-radius:50%;border:0;background:var(--surface-2);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.dx-say .ico svg{width:20px;height:20px}
+.dx-star{margin:8px 8px 8px 0;background:none;font-size:22px;color:var(--ink-2)}.dx-star.on{color:var(--be-yellow-deep,#E0B400)}
+.dx-main{min-width:0;text-align:start;background:none;border:0;padding:10px 4px 10px 6px;color:var(--ink);font:inherit;cursor:pointer}
+.dx-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.dx-w{font-family:var(--font-display);font-weight:700;font-size:18px;word-break:break-word}
+.dx-w mark,.dx-tr mark{background:color-mix(in srgb,var(--oranje) 28%,transparent);color:inherit;border-radius:3px}
+.dx-art{font-weight:800;font-size:13px;padding:1px 7px;border-radius:6px}
+.dx-art.de{background:#DCEBFF;color:#1648A8}.dx-art.het{background:#FFE1D6;color:#B03A12}.dx-art.both{background:#EFE3FF;color:#5B2BA6}
+.dx-pos{font-size:12px;color:var(--ink-2);font-weight:700}
+.dx-lvl{font-size:11px;font-weight:800;padding:1px 6px;border-radius:6px;border:1.5px solid var(--line);color:var(--ink-2)}
+.dx-tr{margin-top:3px;font-size:15px;color:var(--ink)}
+.dx-sub{margin-top:3px;font-size:13px;color:var(--ink-2)}
+.dx-form{margin-top:4px;font-size:13px;font-weight:700;color:var(--oranje-deep,#B04A00)}
+.dx-detail{grid-column:1/-1;padding:0 14px 14px;display:flex;flex-direction:column;gap:12px;border-top:2px dashed var(--line);padding-top:12px}
+.dx-en{margin:0;font-size:14px;color:var(--ink-2)}
+.dx-block h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2)}
+.dx-table{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center}
+.dx-k{font-size:13px;color:var(--ink-2);font-weight:700}
+.dx-v{justify-self:start;text-align:start;background:var(--surface-2);border:0;border-radius:8px;padding:6px 10px;font:700 15px var(--font-body,inherit);color:var(--ink);cursor:pointer}
+.dx-note{margin:6px 0 0;font-size:13px;color:var(--ink-2)}
+.dx-ex{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:start;background:var(--surface-2);border:0;border-radius:10px;padding:8px 12px;margin-bottom:6px;color:var(--ink);font:inherit;cursor:pointer}
+.dx-ex .nl{font-weight:700}.dx-ex .tr{font-size:14px;color:var(--ink-2)}.dx-ex small{font-size:11px;color:var(--ink-2);font-weight:700}
+.dx-h{margin:6px 4px 8px;font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
+.dx-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.dx-chip{min-height:38px;padding:0 14px;border-radius:var(--r-pill);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 15px var(--font-body,inherit);cursor:pointer}
+.dx-wod .dx-row{border-color:var(--oranje);background:linear-gradient(135deg,color-mix(in srgb,var(--oranje) 10%,var(--surface)),var(--surface))}
+.dx-empty-s,.dx-did,.dx-offline{margin:0 4px 10px;color:var(--ink-2);font-size:14px}
+.dx-did{font-weight:700}
+:root[data-theme="dark"] .dx-art.de{background:#1C3460;color:#BBD5FF}:root[data-theme="dark"] .dx-art.het{background:#4A2214;color:#FFC2AC}:root[data-theme="dark"] .dx-art.both{background:#35204F;color:#DCC6FF}
+
 .search-item{background:var(--surface)}
 .search-item:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
 .pv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -779,8 +818,10 @@ body.sheet-open{overflow:hidden}
 
   <section class="dict-view" id="dictView" data-views="dict" hidden>
     <h2 class="view-title" id="dictTitle"></h2>
-    <div class="dict-search"><span class="ico" aria-hidden="true" data-ico="search"></span><input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" aria-labelledby="dictTitle"></div>
+    <div class="dict-search"><span class="ico" aria-hidden="true" data-ico="search"></span><input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-labelledby="dictTitle"><button type="button" class="dx-clear" id="dictClear" aria-label="Clear" hidden>×</button></div>
+    <div class="dx-filters" id="dictFilters" role="group"></div>
     <p class="dict-hint" id="dictHint"></p>
+    <p class="dx-meta" id="dictMeta" aria-live="polite"></p>
     <div id="searchResults" class="search-results"></div>
   </section>
 
@@ -3455,41 +3496,338 @@ function allVocab(){
 }
 function openSearch(){setView("dict")}
 function closeSearch(){}
-function runSearch(){
-  const u=getUI();
-  const q=($("searchInput").value||"").trim().toLowerCase();
-  const box=$("searchResults");
-  box.replaceChildren();
-  if(q.length<1){return;}
-  const lang=uiLang==="uk"?"uk":uiLang==="fr"?"fr":uiLang==="ar"?"ar":"en";
-  const hits=allVocab().filter(it=>{
-    const fields=[it.nl,it.en,it.fr,it.uk,it.ar,it.ex_nl,it.ex_uk].filter(Boolean).map(s=>String(s).toLowerCase());
-    return fields.some(f=>f.includes(q));
-  }).slice(0,30);
-  if(!hits.length){
-    box.appendChild(el("div","search-empty",u.searchEmpty||"Nothing found"));
-    return;
-  }
-  hits.forEach(it=>{
-    const div=el("div","search-item");
-    const nl=el("div","nl",it.nl||"");
-    div.appendChild(nl);
-    const tr=el("div","tr",(it[lang]||it.en||it.uk||""));
-    div.appendChild(tr);
-    if(it.ex_nl){
-      const ex=el("div","ex",it.ex_nl+(it.ex_uk?" — "+it.ex_uk:""));
-      div.appendChild(ex);
-    }
-    div.tabIndex=0;div.setAttribute("role","button");
-    div.addEventListener("click",()=>{ if(it.nl) say(it.nl); });
-    div.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&it.nl){e.preventDefault();say(it.nl)} });
-    box.appendChild(div);
-  });
+// ========== DICTIONARY ENGINE (source: tools/dict-engine.js) ==========
+const DX={};
+// irregular / strong verbs: base -> [past sg, past pl, participle, aux(h|z|hz), present ik, present jij/hij]
+DX.IRR={zijn:["was","waren","geweest","z","ben","is","bent"],hebben:["had","hadden","gehad","h","heb","heeft","hebt"],
+kunnen:["kon","konden","gekund","h","kan","kan","kunt"],mogen:["mocht","mochten","gemogen","h","mag","mag","mag"],willen:["wilde","wilden","gewild","h","wil","wil","wilt"],
+zullen:["zou","zouden","","h","zal","zal","zult"],moeten:["moest","moesten","gemoeten","h"],gaan:["ging","gingen","gegaan","z","ga","gaat","gaat"],
+staan:["stond","stonden","gestaan","h","sta","staat","staat"],slaan:["sloeg","sloegen","geslagen","h","sla","slaat","slaat"],doen:["deed","deden","gedaan","h","doe","doet","doet"],
+zien:["zag","zagen","gezien","h","zie","ziet","ziet"],komen:["kwam","kwamen","gekomen","z","kom","komt","komt"],worden:["werd","werden","geworden","z"],weten:["wist","wisten","geweten","h"],
+bakken:["bakte","bakten","gebakken","h"],beginnen:["begon","begonnen","begonnen","z"],bedriegen:["bedroog","bedrogen","bedrogen","h"],bieden:["bood","boden","geboden","h"],
+bijten:["beet","beten","gebeten","h"],binden:["bond","bonden","gebonden","h"],blazen:["blies","bliezen","geblazen","h"],blijken:["bleek","bleken","gebleken","z"],
+blijven:["bleef","bleven","gebleven","z"],breken:["brak","braken","gebroken","hz"],brengen:["bracht","brachten","gebracht","h"],buigen:["boog","bogen","gebogen","h"],
+denken:["dacht","dachten","gedacht","h"],dragen:["droeg","droegen","gedragen","h"],drinken:["dronk","dronken","gedronken","h"],eten:["at","aten","gegeten","h"],
+gelden:["gold","golden","gegolden","h"],genezen:["genas","genazen","genezen","hz","genees","geneest","geneest"],genieten:["genoot","genoten","genoten","h"],geven:["gaf","gaven","gegeven","h"],
+gieten:["goot","goten","gegoten","h"],grijpen:["greep","grepen","gegrepen","h"],hangen:["hing","hingen","gehangen","h"],helpen:["hielp","hielpen","geholpen","h"],
+heten:["heette","heetten","geheten","h"],houden:["hield","hielden","gehouden","h"],kiezen:["koos","kozen","gekozen","h"],kijken:["keek","keken","gekeken","h"],
+klimmen:["klom","klommen","geklommen","hz"],kopen:["kocht","kochten","gekocht","h"],krijgen:["kreeg","kregen","gekregen","h"],lachen:["lachte","lachten","gelachen","h"],
+laten:["liet","lieten","gelaten","h"],lezen:["las","lazen","gelezen","h"],liegen:["loog","logen","gelogen","h"],liggen:["lag","lagen","gelegen","h"],lijden:["leed","leden","geleden","h"],
+lijken:["leek","leken","geleken","h"],lopen:["liep","liepen","gelopen","hz"],meten:["mat","maten","gemeten","h"],nemen:["nam","namen","genomen","h"],
+raden:["raadde","raadden","geraden","h"],rijden:["reed","reden","gereden","hz"],roepen:["riep","riepen","geroepen","h"],ruiken:["rook","roken","geroken","h"],
+scheiden:["scheidde","scheidden","gescheiden","hz"],schenken:["schonk","schonken","geschonken","h"],schieten:["schoot","schoten","geschoten","h"],schijnen:["scheen","schenen","geschenen","h"],
+schrijven:["schreef","schreven","geschreven","h"],schrikken:["schrok","schrokken","geschrokken","z"],slapen:["sliep","sliepen","geslapen","h"],sluiten:["sloot","sloten","gesloten","h"],
+snijden:["sneed","sneden","gesneden","h"],spreken:["sprak","spraken","gesproken","h"],springen:["sprong","sprongen","gesprongen","hz"],stelen:["stal","stalen","gestolen","h"],
+sterven:["stierf","stierven","gestorven","z"],stijgen:["steeg","stegen","gestegen","z"],trekken:["trok","trokken","getrokken","h"],vallen:["viel","vielen","gevallen","z"],
+vangen:["ving","vingen","gevangen","h"],vergeten:["vergat","vergaten","vergeten","hz","vergeet","vergeet","vergeet"],verliezen:["verloor","verloren","verloren","h"],verdwijnen:["verdween","verdwenen","verdwenen","z"],
+vinden:["vond","vonden","gevonden","h"],vliegen:["vloog","vlogen","gevlogen","hz"],vragen:["vroeg","vroegen","gevraagd","h"],vriezen:["vroor","vroren","gevroren","h"],
+wassen:["waste","wasten","gewassen","h"],wegen:["woog","wogen","gewogen","h"],werpen:["wierp","wierpen","geworpen","h"],winnen:["won","wonnen","gewonnen","h"],
+zeggen:["zei","zeiden","gezegd","h"],zingen:["zong","zongen","gezongen","h"],zitten:["zat","zaten","gezeten","h"],zoeken:["zocht","zochten","gezocht","h"],
+zwemmen:["zwom","zwommen","gezwommen","hz"],zwijgen:["zweeg","zwegen","gezwegen","h"],bewegen:["bewoog","bewogen","bewogen","h","beweeg","beweegt","beweegt"],mijden:["meed","meden","gemeden","h"],wijzen:["wees","wezen","gewezen","h"],overlijden:["overleed","overleden","overleden","z"],
+verbieden:["verbood","verboden","verboden","h"],vergelijken:["vergeleek","vergeleken","vergeleken","h"],skiën:["skiede","skieden","geskied","h","ski","skiet","skiet"],
+leggen:["legde","legden","gelegd","h"],schuiven:["schoof","schoven","geschoven","h"],steken:["stak","staken","gestoken","h"],strijken:["streek","streken","gestreken","h"],bidden:["bad","baden","gebeden","h"],zeggen_:null};
+DX.INSEP=["be","ge","ver","ont","her","over","onder","achter","mis"];
+DX.NOIRR=new Set(["ontmoeten"]);
+DX.NATIVE_EREN=new Set(["luisteren","veranderen","verbeteren","herinneren","verzekeren","ergeren","hinderen","verhinderen","bewonderen","leveren","afleveren","opleveren","verminderen","vergaderen","schitteren","timmeren","slenteren","bevorderen","veroveren","wapperen","fladderen","plunderen","overleveren","uitleveren","bibberen","inneren","beteren","zekeren","gaderen","minderen","vorderen","wonderen","kletteren","ploeteren","mopperen","sputteren","zwerven_"]);
+DX.NOPREFIX=new Set(["bellen","beven","verven","bergen","geven","gelden","gieten","genezen","genieten","onderhouden_","overleggen_"]);
+DX.vowels=/[aeiouy]/;
+DX.stem=inf=>{
+ if(DX.IRR[inf]&&DX.IRR[inf][4])return{s:DX.IRR[inf][4],raw:DX.IRR[inf][4]};
+ let s=inf.endsWith("ën")?inf.slice(0,-2):inf.endsWith("en")?inf.slice(0,-2):inf.slice(0,-1);
+ const raw=s;
+ if(/([bcdfghjklmnpqrstvwxz])\1$/.test(s))s=s.slice(0,-1);
+ else{
+  const m=s.match(/^(.*?)([^aeiouy]*)([aeou])([^aeiouyjw])$/);
+  if(m){const before=m[1]+m[2],prevIsVowel=/[aeiouy]$/.test(m[1]+m[2]);
+   const groups=(s.match(/[aeiouy]+/g)||[]).length;
+   const nativeLike=/(ei|ui|ij|ou|au|oe|eu)[^aeiouy]+eren$/.test(inf)||/[aeiou][lnm][bcdfgkpst]eren$/.test(inf);
+   const stressedEren=/eren$/.test(inf)&&!DX.NATIVE_EREN.has(inf)&&!nativeLike;
+   const schwa=m[3]==="e"&&groups>1&&!stressedEren;
+   if(!prevIsVowel&&!schwa)s=before+m[3]+m[3]+m[4];}
+ }
+ s=s.replace(/z$/,"s").replace(/v$/,"f");
+ return {s,raw};
+};
+DX.split=(w,sep)=>{ // returns {pre,base,insep}
+ if(sep)return{pre:sep,base:w.slice(sep.length),insep:""};
+ if(DX.IRR[w]||DX.NOPREFIX.has(w))return{pre:"",base:w,insep:""};
+ for(const p of DX.INSEP){if(w.startsWith(p)&&w.length-p.length>=4){const rest=w.slice(p.length);
+  if(/^[aeiouy]/.test(rest)&&p==="ge")continue; if(!DX.vowels.test(rest.slice(0,-2)))continue;
+  if(/^([bcdfghjklmnpqrstvwxz])\1/.test(rest))continue;
+  return{pre:"",base:rest,insep:p}}}
+ return{pre:"",base:w,insep:""};
+};
+DX.conj=(lemma,opts={})=>{
+ let w=lemma.replace(/^zich /,"");if(w.includes(" "))return null;
+ const sep=opts.sep||"",aux0=opts.aux||"";
+ let {pre,base,insep}=DX.split(w,sep);
+ let irr=DX.NOIRR.has(w)?null:DX.IRR[insep+base]?(base=insep+base,insep="",DX.IRR[base]):DX.IRR[base];
+ let pres,pastS,pastP,part,aux,st;
+
+ if(irr){
+  const s0=irr[4]||DX.stem(base).s;
+  pres=[s0,irr[5]||(/t$/.test(s0)?s0:s0+"t"),irr[6]||irr[5]||(/t$/.test(s0)?s0:s0+"t")];
+  pastS=irr[0];pastP=irr[1];part=irr[2];aux=irr[3];
+  if(insep&&!DX.IRR[insep+base]){pastS=insep+pastS;pastP=insep+pastP;part=insep+part.replace(/^ge/,"");pres=pres.map(x=>insep+x)}
+ }else{
+  let {s,raw}=DX.stem(base);s=insep+s;raw=insep+raw;st=s;
+  const last=raw.slice(-2)==="ch"?"ch":raw.slice(-1);
+  const t="tkfspx".includes(last)||last==="ch";
+  pres=[s,/t$/.test(s)?s:s+"t",/t$/.test(s)?s:s+"t"];
+  pastS=s+(t?"te":"de");pastP=s+(t?"ten":"den");
+  const end=t?"t":"d";const gs=insep?s:/^[ei]/.test(s)?"ge"+{e:"ë",i:"ï"}[s[0]]+s.slice(1):"ge"+s;part=gs+(s.endsWith(end)?"":end);
+  aux="h";
+ }
+ if(aux0)aux=aux0==="z"?"z":aux0==="hz"?"hz":"h";
+ const sp=x=>pre?x+" "+pre:x;
+ const partF=opts.part||(part?(pre?pre+part:part):"");
+ return{inf:lemma,ik:sp(pres[0]),jij:sp(pres[2]||pres[1]),hij:sp(pres[1]),wij:sp(w.slice(pre.length)),
+  pastS:sp(pastS),pastP:sp(pastP),part:partF,aux,sep:pre,
+  forms:(pre?[sp(pres[0]),sp(pres[1]),sp(pres[2]),sp(pastS),sp(pastP),partF]:[pres[0],pres[1],pres[2],pastS,pastP,partF]).filter(Boolean)};
+};
+DX.nounForms=e=>{const f=[];if(e.pl)f.push(e.pl);return f};
+DX.adjE=a=>{
+if(/[ e]$|^(oranje|roze|extra|prima|gratis|plastic|beige|tof|privé|kapot)$/.test(a)||/en$/.test(a)&&a.length>=4)return a;
+ if(/(ig|lijk|isch|baar|el|er|ief|end|s)$/.test(a)&&(a.match(/[aeiouy]+/g)||[]).length>1){
+  if(/ief$/.test(a))return a.slice(0,-1)+"ve";if(/[aeiou]s$/.test(a)&&!/(is|us)$/.test(a))return a.slice(0,-1)+"ze";return a+"e"}
+ let m=a.match(/^(.*?)(aa|ee|oo|uu)([^aeiouy])$/);if(m){let c=m[3];if(c==="f")c="v";if(c==="s")c="z";return m[1]+m[2][0]+c+"e"}
+ m=a.match(/^(.*[^aeiouy])([aeiou])([bdfgklmnprst])$/);if(m&&(a.match(/[aeiouy]+/g)||[]).length===1)return a+m[3]+"e";
+ m=a.match(/^(.*)(ie|ij|ui|ei|eu|ou|oe)([fs])$/);if(m)return m[1]+m[2]+(m[3]==="f"?"v":"z")+"e";
+ return a+"e";
+};
+DX.adjForms=e=>{if(e.p!=="adj"||e.w.includes(" "))return[];const f=[DX.adjE(e.w)];
+ const c=(e.f||"").match(/cmp=([^;]+)/);if(c){c[1].split(",").forEach(x=>{f.push(x,x+"e")})}
+ else if(!/^(oranje|roze|extra|prima|gratis|plastic|beige|tof|privé|kapot|dood|moe|open|dicht|klaar|bezet|kwijt|dood|leeg_)$/.test(e.w)&&!/e$/.test(e.w)){const comp=/r$/.test(e.w)?e.w+"der":DX.adjE(e.w).slice(0,-1)+"er";f.push(comp,e.w+(e.w.endsWith("s")?"t":"st"))}
+ return f};
+DX.opt=f=>{const o={};(f||"").split(";").forEach(kv=>{const[k,v]=kv.split("=");if(k)o[k.trim()]=(v||"").trim()});return o};
+// ---------- normalisation & search ----------
+DX.norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/([a-z])[̀-ͯ]+/g,"$1").normalize("NFC").replace(/[’`´ʼ]/g,"'").replace(/[^\p{L}\p{N}' -]/gu," ").replace(/\s+/g," ").trim();
+DX.stripArt=s=>s.replace(/^(de|het|een|'t|to|the|a|an|le|la|les|l')\s+/,"");
+DX.terms=s=>{const out=[];String(s||"").replace(/\([^)]*\)/g," ").split(/[;,/]| or | або /).map(x=>DX.stripArt(DX.norm(x))).filter(Boolean).forEach(t=>{out.push(t);if(/^[ій]ти/.test(t))out.push((t[0]==="і"?"й":"і")+t.slice(1));if(/ґ/.test(t))out.push(t.replace(/ґ/g,"г"))});return out};
+DX.lev=(a,b,max)=>{if(Math.abs(a.length-b.length)>max)return max+1;const d=[];for(let i=0;i<=a.length;i++){d[i]=[i]}for(let j=1;j<=b.length;j++)d[0][j]=j;
+ for(let i=1;i<=a.length;i++){let rowMin=99;for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1);rowMin=Math.min(rowMin,d[i][j])}if(rowMin>max)return max+1}return d[a.length][b.length]};
+DX.build=entries=>{
+ entries.forEach((e,i)=>{e.i=i;const o=DX.opt(e.f);
+  e.h=DX.norm(e.w);e.h2=e.h.replace(/^zich /,"");e.hs=e.h.replace(/ /g,"");
+  let forms=[];
+  if(e.p==="v"){const c=DX.conj(e.w,{sep:o.sep,aux:o.aux,part:o.part});e.cj=c;if(c)forms=c.forms}
+  else if(e.p==="n")forms=DX.nounForms(e);
+  else if(e.p==="adj")forms=DX.adjForms(e);
+  e.fm=[...new Set(forms.map(DX.norm).filter(x=>x&&x!==e.h))];
+  e.tu=DX.terms(e.uk);e.te=DX.terms(e.en);e.tf=DX.terms(e.fr);e.ta=DX.terms(e.ar);
+ });
+ const byForm=new Map();
+ entries.forEach(e=>[...new Set([e.h,e.h2,e.hs,...e.fm])].forEach(f=>{if(!byForm.has(f))byForm.set(f,[]);byForm.get(f).push(e)}));
+ return{entries,byForm};
+};
+DX.script=q=>/[Ѐ-ӿ]/.test(q)?"uk":/[؀-ۿ]/.test(q)?"ar":"lat";
+DX.search=(ix,raw,{lang="uk",pos="",limit=60}={})=>{
+ const q0=DX.norm(raw);if(!q0)return{list:[],q:""};
+ const enOnly=/^to /.test(q0);const q=DX.stripArt(q0),sc=DX.script(q);const res=new Map();
+ const put=(e,s,why)=>{if(pos&&e.p!==pos)return;const o=res.get(e.i);if(!o||o.s>s)res.set(e.i,{e,s,why})};
+ const tl=sc==="uk"?["tu"]:sc==="ar"?["ta"]:["te","tf"];
+ const wb=(t,q)=>t===q?0:t.startsWith(q)?1:(" "+t).includes(" "+q)?2:t.includes(q)?3:9;
+ if(sc==="lat"&&!enOnly){const qs=q.replace(/ /g,"");[...(ix.byForm.get(q)||[]),...(ix.byForm.get(qs)||[])].forEach(e=>{const ex=e.h===q||e.h2===q||e.hs===qs;put(e,ex?0:1,ex?"":"form")})}
+ for(const e of ix.entries){
+  if(sc==="lat"&&!enOnly){const k=Math.min(wb(e.h,q),wb(e.h2,q));
+   if(k===1)put(e,3);else if(k===2)put(e,5);else if(k===3&&q.length>=3)put(e,7);
+   if(q.length>=3)for(const f of e.fm){if(f.startsWith(q)){put(e,6);break}}}
+  for(const f of tl){for(const t of e[f]||[]){const k=wb(t,q);
+   if(k===0)put(e,2);else if(k===1)put(e,4);else if(k===2)put(e,6);else if(k===3&&q.length>=3)put(e,8)}}
+ }
+ let list=[...res.values()];
+ let fuzzy=false;
+ if(!list.some(r=>r.s<=4)&&list.length<5&&q.length>=3){const max=q.length>=7?2:1;let nf=0;
+  for(const e of ix.entries){const cands=sc==="lat"?[e.h2,...e.fm,...e.te]:sc==="uk"?e.tu:e.ta;
+   for(const c of cands){if(Math.abs(c.length-q.length)>max)continue;const dd=DX.lev(c,q,max);if(dd<=max){put(e,10+dd,"fuzzy");fuzzy=true;nf++;break}}if(nf>=8)break}
+  list=[...res.values()];}
+ list.sort((a,b)=>a.s-b.s||a.e.l-b.e.l||(a.e.p==="phr")-(b.e.p==="phr")||a.e.w.length-b.e.w.length||a.e.w.localeCompare(b.e.w,"nl"));
+ return{list:list.slice(0,limit),q,total:list.length,fuzzy:fuzzy&&list.every(r=>r.s>=10)};
+};
+
+// ========== DICTIONARY UI (data: dict/nl.json + lesson words; engine: DX) ==========
+const DICT_UI={
+ uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",
+  words:n=>"У словнику "+n.toLocaleString("uk")+" слів · A1–A2",found:n=>"Знайдено: "+n,none:"Нічого не знайдено",did:"Можливо, ти мав на увазі:",
+  all:"Усі",pos:{n:"ім.",v:"дієсл.",adj:"прикм.",adv:"присл.",prep:"прийм.",conj:"спол.",pron:"займ.",num:"числ.",det:"займ.",int:"виг.",phr:"вираз"},
+  filters:[["","Усі"],["n","Іменники"],["v","Дієслова"],["adj","Прикметники"],["phr","Вирази"]],
+  formOf:(f,w)=>"«"+f+"» — форма слова "+w,pl:"мн.",sg:"одн.",deW:"de-слово",hetW:"het-слово",both:"de або het",
+  present:"Теперішній час",past:"Минулий час",perfect:"Perfectum",sep:p=>"Відокремлюваний префікс «"+p+"»: в реченні він іде в кінець.",refl:"Зворотне дієслово: ik … me, jij … je, hij … zich",
+  irr:"неправильне дієслово",withZijn:"з zijn",withBoth:"з hebben або zijn",adjForm:"Перед іменником",cmp:"Порівняння",
+  ex:"Приклад",fromLessons:"З уроків",en:"Англ.",listen:"Слухати",star:"Додати до «Мої слова»",unstar:"Прибрати з «Мої слова»",
+  wod:"Слово дня",recent:"Нещодавно шукали",mine:"Мої слова",mineEmpty:"Натисни ☆ біля слова, щоб зберегти його тут.",tryT:"Спробуй:",clear:"Очистити"},
+ en:{ph:"Dutch or English word",loading:"Loading dictionary…",offline:"The full dictionary needs an internet connection. Showing lesson words.",
+  words:n=>n.toLocaleString("en")+" words · A1–A2",found:n=>n+" found",none:"Nothing found",did:"Did you mean:",
+  all:"All",pos:{n:"noun",v:"verb",adj:"adj.",adv:"adv.",prep:"prep.",conj:"conj.",pron:"pron.",num:"num.",det:"det.",int:"interj.",phr:"phrase"},
+  filters:[["","All"],["n","Nouns"],["v","Verbs"],["adj","Adjectives"],["phr","Phrases"]],
+  formOf:(f,w)=>"“"+f+"” is a form of "+w,pl:"pl.",sg:"sg.",deW:"de-word",hetW:"het-word",both:"de or het",
+  present:"Present",past:"Past",perfect:"Perfect",sep:p=>"Separable prefix “"+p+"”: it moves to the end of the sentence.",refl:"Reflexive verb: ik … me, jij … je, hij … zich",
+  irr:"irregular verb",withZijn:"with zijn",withBoth:"with hebben or zijn",adjForm:"Before a noun",cmp:"Comparison",
+  ex:"Example",fromLessons:"From lessons",en:"EN",listen:"Listen",star:"Add to My words",unstar:"Remove from My words",
+  wod:"Word of the day",recent:"Recent searches",mine:"My words",mineEmpty:"Tap ☆ next to a word to save it here.",tryT:"Try:",clear:"Clear"}};
+DICT_UI.fr=Object.assign({},DICT_UI.en,{ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
+ filters:[["","Tout"],["n","Noms"],["v","Verbes"],["adj","Adjectifs"],["phr","Expressions"]],wod:"Mot du jour",recent:"Recherches récentes",mine:"Mes mots",mineEmpty:"Touche ☆ à côté d'un mot pour l'enregistrer ici.",tryT:"Essaie :",listen:"Écouter",ex:"Exemple",fromLessons:"Des leçons",present:"Présent",past:"Passé",perfect:"Passé composé"});
+DICT_UI.ar=Object.assign({},DICT_UI.en,{ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
+ filters:[["","الكل"],["n","أسماء"],["v","أفعال"],["adj","صفات"],["phr","عبارات"]],wod:"كلمة اليوم",recent:"عمليات البحث الأخيرة",mine:"كلماتي",mineEmpty:"اضغط ☆ بجانب الكلمة لحفظها هنا.",tryT:"جرّب:",listen:"استمع",ex:"مثال",fromLessons:"من الدروس"});
+const dU=()=>DICT_UI[uiLang]||DICT_UI.en;
+const DICT={ix:null,loading:null,offline:false,pos:"",open:-1,corpus:null};
+function dictTr(e){return uiLang==="uk"?e.uk:uiLang==="fr"?(e.fr||e.en):uiLang==="ar"?(e.ar||e.en):e.en}
+function dictMerge(list){
+ const key=(w,p)=>w.toLowerCase()+"|"+p,byKey=new Map(),byW=new Map(),byPl=new Map();
+ list.forEach(e=>{byKey.set(key(e.w,e.p),e);if(!byW.has(e.w.toLowerCase()))byW.set(e.w.toLowerCase(),e);if(e.pl)byPl.set(e.pl.toLowerCase(),e)});
+ allVocab().forEach(it=>{
+  const m=String(it.nl).match(/^(de|het)\s+(.+)$/i),w=(m?m[2]:it.nl).trim(),g=m?m[1].toLowerCase():"";
+  if(!w||/[.?!]$/.test(w))return;
+  let e=g?byKey.get(key(w,"n")):byW.get(w.toLowerCase());
+  if(!e&&!g)e=byKey.get(key(w,"v"));
+  if(!e)e=byPl.get(w.toLowerCase());
+  if(e){if(!e.x&&it.ex_nl){e.x=it.ex_nl;e.xu=it.ex_uk||""}if(it.fr&&!e.fr)e.fr=it.fr;if(it.ar&&!e.ar)e.ar=it.ar;if(it.icon&&!e.ic)e.ic=it.icon;e.lesson=1;return}
+  const ne={w,g,pl:"",p:g?"n":/\s/.test(w)?"phr":"x",l:1,uk:it.uk||it.en||"",en:it.en||"",fr:it.fr,ar:it.ar,x:it.ex_nl,xu:it.ex_uk,ic:it.icon,lesson:1};
+  list.push(ne);byKey.set(key(w,ne.p),ne);byW.set(w.toLowerCase(),ne);
+ });
+ return list;
 }
+function dictLoad(){
+ if(DICT.ix)return Promise.resolve(DICT.ix);
+ if(DICT.loading)return DICT.loading;
+ DICT.loading=fetch("dict/nl.json").then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
+  .catch(()=>{DICT.offline=true;return[]})
+  .then(list=>{DICT.ix=DX.build(dictMerge(list));DICT.loading=null;return DICT.ix});
+ return DICT.loading;
+}
+function dictCorpus(){
+ if(DICT.corpus)return DICT.corpus;const c=[],seen=new Set();
+ const add=(nl,uk,en)=>{if(!nl||seen.has(nl))return;seen.add(nl);c.push({nl,uk:uk||"",en:en||"",t:new Set(DX.norm(nl).split(" "))})};
+ allVocab().forEach(it=>add(it.ex_nl,it.ex_uk,it.ex_en));
+ if(typeof DIALOGUES!=="undefined")DIALOGUES.forEach(d=>d.lines.forEach(l=>add(l[1],l[2],l[3])));
+ if(typeof SCENES!=="undefined")SCENES.forEach(s=>s.turns.forEach(t=>{add(cx(t[0]),cx(t[1]),cx(t[2]));t[3].forEach(o=>{if(o[1])add(cx(o[0]))})}));
+ return DICT.corpus=c;
+}
+function dictExamples(e,max){
+ const words=[e.h2,...e.fm].filter(w=>w&&!w.includes(" "));if(!words.length)return[];
+ const own=e.x||"",out=[];
+ for(const s of dictCorpus()){if(s.nl===own)continue;if(words.some(w=>s.t.has(w))){out.push(s);if(out.length>=max)break}}
+ return out;
+}
+const dictKey=e=>e.w+"|"+e.p;
+function dictMine(){return lsGet("leren_mywords",[])}
+function dictRecent(){return lsGet("leren_dict_recent",[])}
+function dictRemember(w){const r=dictRecent().filter(x=>x!==w);r.unshift(w);lsSet("leren_dict_recent",r.slice(0,8))}
+function dictHi(text,q){
+ const span=el("span");const t=String(text),n=DX.norm(t),i=q?n.indexOf(q):-1;
+ if(i<0||n.length!==t.length){span.textContent=t;return span}
+ span.append(t.slice(0,i));const m=el("mark","",t.slice(i,i+q.length));span.append(m,t.slice(i+q.length));return span;
+}
+function dictArt(g){if(!g)return null;const a=el("span","dx-art "+(g==="het"?"het":g==="de"?"de":"both"),g==="de,het"?"de/het":g);return a}
+function dictSub(e){
+ const u=dU();
+ if(e.p==="n"&&e.pl)return u.pl+" "+e.pl;
+ if(e.p==="v"&&e.cj){const c=e.cj;return c.pastS+" · "+(c.aux==="z"?"is ":c.aux==="hz"?"heeft/is ":"heeft ")+c.part}
+ if(e.p==="adj"&&e.fm&&e.fm.length)return e.fm.slice(0,2).join(" · ");
+ return "";
+}
+function dictSayBtn(text){const b=el("button","dx-say");b.type="button";b.setAttribute("aria-label",dU().listen+": "+text);b.appendChild(ico("volume"));b.onclick=ev=>{ev.stopPropagation();say(text,b)};return b}
+function dictStarBtn(e,onChange){
+ const u=dU(),k=dictKey(e),on=dictMine().includes(k);const b=el("button","dx-star"+(on?" on":""));b.type="button";
+ b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?u.unstar:u.star);b.textContent=on?"★":"☆";
+ b.onclick=ev=>{ev.stopPropagation();const m=dictMine(),i=m.indexOf(k);if(i>=0)m.splice(i,1);else m.unshift(k);lsSet("leren_mywords",m.slice(0,300));if(onChange)onChange();else runSearch()};return b;
+}
+function dictSpeak(e){return e.p==="n"&&e.g&&e.g!=="de,het"?e.g+" "+e.w:e.w}
+function dictRow(r,q){
+ const e=r.e,u=dU(),row=el("div","dx-row"+(DICT.open===e.i?" open":""));row.dataset.i=e.i;
+ const main=el("button","dx-main");main.type="button";main.setAttribute("aria-expanded",DICT.open===e.i?"true":"false");
+ const head=el("div","dx-head");const a=dictArt(e.g);if(a)head.appendChild(a);
+ const w=tgt(el("strong","dx-w"));w.appendChild(dictHi(e.w,q));head.appendChild(w);
+ head.appendChild(el("span","dx-pos",(u.pos[e.p]||"")));
+ head.appendChild(el("span","dx-lvl l"+e.l,e.l===1?"A1":"A2"));
+ const tr=el("div","dx-tr");tr.appendChild(dictHi(dictTr(e)||"",DX.script(q)!=="lat"?q:""));
+ main.append(head,tr);
+ if(r.why==="form"){main.appendChild(el("div","dx-form",u.formOf(DICT.lastQ,e.w)))}
+ const sub=dictSub(e);if(sub)main.appendChild(tgt(el("div","dx-sub",sub)));
+ main.onclick=()=>{DICT.open=DICT.open===e.i?-1:e.i;if(DICT.open===e.i)dictRemember(e.w);runSearch()};
+ row.append(dictSayBtn(dictSpeak(e)),main,dictStarBtn(e));
+ if(DICT.open===e.i)row.appendChild(dictDetail(e));
+ return row;
+}
+function dictTable(rows){const t=el("div","dx-table");rows.forEach(([a,b])=>{const ra=el("span","dx-k",a),rb=tgt(el("button","dx-v",b));rb.type="button";rb.onclick=()=>say(b);t.append(ra,rb)});return t}
+function dictDetail(e){
+ const u=dU(),d=el("div","dx-detail");
+ if(uiLang==="uk"&&e.en)d.appendChild(el("p","dx-en",u.en+": "+e.en));
+ if(e.p==="n"){
+  const box=el("div","dx-block");
+  if(e.g)box.appendChild(el("p","dx-note",e.g==="het"?u.hetW:e.g==="de"?u.deW:u.both));
+  const rows=[[u.sg,(e.g&&e.g!=="de,het"?e.g+" ":"")+e.w]];if(e.pl)rows.push([u.pl,"de "+e.pl]);
+  box.appendChild(dictTable(rows));d.appendChild(box);
+ }
+ if(e.p==="v"&&e.cj){
+  const c=e.cj,o=DX.opt(e.f),refl=/^zich /.test(e.w),me=["me","je","zich","ons"];
+  const r=(p,f,i)=>p+" "+f+(refl?" "+me[i]:"");
+  const box=el("div","dx-block");
+  box.appendChild(el("h4","",u.present));box.appendChild(dictTable([["ik",r("ik",c.ik,0)],["jij",r("jij",c.jij,1)],["hij/zij",r("hij",c.hij,2)],["wij",r("wij",c.wij,3)]]));
+  box.appendChild(el("h4","",u.past));box.appendChild(dictTable([["ik",r("ik",c.pastS,0)],["wij",r("wij",c.pastP,3)]]));
+  if(c.part){const aux=c.aux==="z"?"ben":"heb";box.appendChild(el("h4","",u.perfect+(c.aux==="z"?" · "+u.withZijn:c.aux==="hz"?" · "+u.withBoth:"")));
+   box.appendChild(dictTable([["ik","ik "+aux+(refl?" me":"")+" "+c.part]]))}
+  if(c.sep)box.appendChild(el("p","dx-note",u.sep(c.sep)));
+  if(refl)box.appendChild(el("p","dx-note",u.refl));
+  d.appendChild(box);
+ }
+ if(e.p==="adj"&&e.fm&&e.fm.length){
+  const box=el("div","dx-block"),rows=[[u.adjForm,"de "+e.fm[0]+" …"]];
+  if(e.fm.length>=3)rows.push([u.cmp,e.fm[1]+" · "+(e.fm[2].endsWith("e")?e.fm[3]||e.fm[2]:e.fm[2])]);
+  box.appendChild(dictTable(rows));d.appendChild(box);
+ }
+ const exs=[];if(e.x)exs.push({nl:e.x,uk:e.xu||""});
+ dictExamples(e,e.x?1:2).forEach(s=>exs.push({nl:s.nl,uk:uiLang==="uk"?s.uk:(s.en||s.uk),lesson:true}));
+ if(exs.length){const box=el("div","dx-block");box.appendChild(el("h4","",u.ex));
+  exs.forEach(x=>{const b=el("button","dx-ex");b.type="button";b.append(tgt(el("span","nl",x.nl)));if(x.uk&&uiLang==="uk")b.append(el("span","tr",x.uk));if(x.lesson)b.append(el("small","",u.fromLessons));b.onclick=()=>say(x.nl,b);box.appendChild(b)});
+  d.appendChild(box)}
+ return d;
+}
+function dictChips(label,items,onPick){const box=el("div","dx-chips-box");box.appendChild(el("h3","dx-h",label));const row=el("div","dx-chips");
+ items.forEach(t=>{const c=tgt(el("button","dx-chip",t));c.type="button";c.onclick=()=>onPick(t);row.appendChild(c)});box.appendChild(row);return box}
+function dictHome(box){
+ const u=dU(),ix=DICT.ix,pick=t=>{$("searchInput").value=t;DICT.open=-1;runSearch()};
+ const pool=ix.entries.filter(e=>(e.p==="n"||e.p==="v"||e.p==="adj")&&e.uk&&(e.x||e.p==="v"));
+ if(pool.length){const d=new Date(),n=d.getFullYear()*372+d.getMonth()*31+d.getDate(),e=pool[(n*7919)%pool.length];
+  const card=el("div","dx-wod");card.appendChild(el("h3","dx-h",u.wod));
+  const r=dictRow({e,s:0},"");card.appendChild(r);box.appendChild(card)}
+ const rec=dictRecent();if(rec.length)box.appendChild(dictChips(u.recent,rec,pick));
+ const mine=dictMine();const mb=el("div","dx-mine");mb.appendChild(el("h3","dx-h",u.mine+(mine.length?" · "+mine.length:"")));
+ if(!mine.length)mb.appendChild(el("p","dx-empty-s",u.mineEmpty));
+ else{const map=new Map(ix.entries.map(e=>[dictKey(e),e]));mine.map(k=>map.get(k)).filter(Boolean).slice(0,50).forEach(e=>mb.appendChild(dictRow({e,s:0},"")))}
+ box.appendChild(mb);
+ box.appendChild(dictChips(u.tryT,uiLang==="uk"?["huizen","ging","лікар","grote","opgestaan","комуна"]:["huizen","ging","to go","grote","opgestaan","doctor"],pick));
+}
+function runSearch(){
+ const u=dU(),box=$("searchResults"),meta=$("dictMeta"),inp=$("searchInput");if(!box)return;
+ inp.placeholder=u.ph;const clr=$("dictClear");if(clr)clr.hidden=!inp.value;
+ dictFilters();
+ if(!DICT.ix){box.replaceChildren(el("div","search-empty",u.loading));dictLoad().then(()=>runSearch());return}
+ box.replaceChildren();
+ if(DICT.offline)box.appendChild(el("p","dx-offline",u.offline));
+ const raw=inp.value||"";
+ const hint=$("dictHint");if(hint)hint.hidden=!!raw.trim();
+ if(!raw.trim()){meta.textContent=u.words(DICT.ix.entries.length);dictHome(box);return}
+ const r=DX.search(DICT.ix,raw,{pos:DICT.pos});DICT.lastQ=raw.trim();DICT.lastRes=r;
+ meta.textContent=r.list.length?u.found(r.total):"";
+ if(!r.list.length){box.appendChild(el("div","search-empty",u.none));return}
+ if(r.fuzzy)box.appendChild(el("p","dx-did",u.did));
+ r.list.slice(0,40).forEach(x=>box.appendChild(dictRow(x,r.q)));
+}
+function dictFilters(){
+ const f=$("dictFilters");if(!f)return;const u=dU();
+ if(f.dataset.lang!==uiLang){f.replaceChildren();u.filters.forEach(([p,l])=>{const b=el("button","dx-filter",l);b.type="button";b.dataset.pos=p;b.onclick=()=>{DICT.pos=p;DICT.open=-1;runSearch()};f.appendChild(b)});f.dataset.lang=uiLang}
+ f.querySelectorAll(".dx-filter").forEach(b=>{const on=b.dataset.pos===DICT.pos;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false")});
+}
+
 $("searchBtn")&&$("searchBtn").addEventListener("click",openSearch);
 $("searchClose")&&$("searchClose").addEventListener("click",closeSearch);
 $("searchModal")&&$("searchModal").addEventListener("click",e=>{ if(e.target===$("searchModal")) closeSearch(); });
-$("searchInput")&&$("searchInput").addEventListener("input",runSearch);
+if($("searchInput")){let dxT=0;const si=$("searchInput");
+ si.addEventListener("input",()=>{clearTimeout(dxT);DICT.open=-1;dxT=setTimeout(runSearch,110)});
+ si.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const r=DICT.lastRes;if(r&&r.list[0]){DICT.open=r.list[0].e.i;dictRemember(r.list[0].e.w);runSearch();try{si.blur()}catch(x){}}}});
+ $("dictClear").addEventListener("click",()=>{si.value="";DICT.open=-1;runSearch();try{si.focus()}catch(x){}});}
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSearch(); const gm=$("goalModal"); if(gm) gm.hidden=true; } });
 
 $("themeToggle").addEventListener("click",()=>{
@@ -3531,10 +3869,10 @@ const ICONS={
 function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
 function fillIcons(root){(root||document).querySelectorAll("[data-ico]").forEach(e=>{if(!e.firstChild)e.replaceWith(Object.assign(ico(e.dataset.ico,e.className.replace(/\bico\b/,"").trim()),{}))})}
 const NAV_UI={
- uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з'являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Введи слово нідерландською або українською. Натисни на результат, щоб почути вимову.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
- en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Type a word in Dutch or in your language. Tap a result to hear it.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
- fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Tape un mot en néerlandais ou dans ta langue. Touche un résultat pour l'écouter.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
- ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"اكتب كلمة بالهولندية أو بلغتك. اضغط على النتيجة لتسمعها.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
+ uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з'являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
+ en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Search in Dutch or English. The dictionary understands word forms (huizen → huis, ging → gaan) and typos.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
+ fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Cherche en néerlandais ou en français. Le dictionnaire reconnaît les formes (huizen → huis, ging → gaan) et les fautes de frappe.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
+ ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"ابحث بالهولندية أو العربية أو الإنجليزية. يفهم القاموس صيغ الكلمات والأخطاء الإملائية.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
 };
 const navU=()=>NAV_UI[uiLang]||NAV_UI.uk;
 const LESSON_MODES=()=>["study","quiz","audio"].concat(targetLang==="nl"?["build"]:[],["review"]);
