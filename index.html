@@ -709,6 +709,26 @@ body.sheet-open{overflow:hidden}
 .st-opt{justify-content:flex-start;text-align:start}
 .ai-chat{max-height:none}
 .ai-fix{display:block;margin-top:4px;white-space:pre-wrap}
+
+.st-place{padding:0;overflow:hidden;min-height:0}
+.st-art{position:relative;width:100%;aspect-ratio:2/1;max-width:100%}
+.st-art .sc-art,.st-banner .sc-art{width:100%;height:100%;display:block}
+.st-lock{position:absolute;inset:0;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.55)}
+.st-meta{display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px}
+.st-banner{margin:-6px 0 12px;border-radius:var(--r-md);overflow:hidden;aspect-ratio:2/0.75;max-width:100%}
+.st-banner.sm{aspect-ratio:2/0.55}
+.st-av.xs{width:38px;height:38px}
+.st-own{margin:10px 0 6px;text-align:center;color:var(--ink-2);font-size:13.5px;font-weight:700}
+.st-fb b{cursor:pointer;text-decoration:underline dotted}
+.ai-row{display:flex;gap:8px;align-items:flex-end}
+.ai-row .g-bub{border:0;font:inherit;text-align:start;color:inherit}
+.ai-fix{align-self:flex-end;max-width:85%;display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--ok) 12%,var(--surface));border:2px solid color-mix(in srgb,var(--ok) 40%,transparent);font-size:13.5px}
+.ai-fix small{font-weight:800;color:var(--ok)}.ai-fix b{font-size:15px;cursor:pointer}
+.ai-typing{letter-spacing:3px;color:var(--ink-2)}
+.ai-consent{padding:14px;border-radius:var(--r-md);background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
+.ai-consent h3{margin:0}.ai-consent p{margin:0;font-size:14px;color:var(--ink-2)}
+.pv-row.mk{flex-direction:column;align-items:flex-start;gap:2px;border:0;background:none;color:inherit;font:inherit;text-align:start;cursor:pointer;width:100%}
+.pv-row.mk span{color:var(--ink-2);font-weight:600;font-size:13px}
 </style>
 </head>
 <body>
@@ -742,6 +762,7 @@ body.sheet-open{overflow:hidden}
     <section class="progress-panel" id="progressPanel" aria-label="Progress"></section>
     <div class="pv-grid" id="pvGrid"></div>
     <div class="pv-toets" id="pvToets"></div>
+    <div class="pv-toets" id="pvMistakes"></div>
   </section>
   <span hidden id="progressLabel"></span><span hidden id="learnedCount"></span><span hidden id="reviewCount"></span>
 </main>
@@ -3576,6 +3597,7 @@ function renderProgressView(){
  TOETS.filter(t=>t.kind!=="leveltest").forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
   r.append(el("span","",t.title[uiLang]||t.title.en||t.id),el("strong","",b!=null?b+" / "+t.questions.length:n.pvNone));if(b==null)r.classList.add("none");list.appendChild(r)});
  tb.appendChild(list);
+ const mk=$("pvMistakes");if(mk&&typeof renderMistakes==="function")renderMistakes(mk);
 }
 
 // ========== GROWTH: first-run level question, rating prompt (Android app), share result ==========
@@ -4160,8 +4182,73 @@ function mdRender(){
  card.appendChild(bank);
 }
 
+// ========== ART: Lotte (3 moods) + scene illustrations ==========
+const LOTTE_SVG=mood=>{
+ const eyes=mood==="think"
+  ?'<path d="M47 55q4-3 8 0M65 55q4-3 8 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>'
+  :'<ellipse cx="51" cy="56" rx="3.6" ry="4.4" fill="#2A1D12"/><ellipse cx="69" cy="56" rx="3.6" ry="4.4" fill="#2A1D12"/><circle cx="52.3" cy="54.4" r="1.3" fill="#fff"/><circle cx="70.3" cy="54.4" r="1.3" fill="#fff"/>';
+ const brows=mood==="think"?'<path d="M45 47q6-4 12-1M63 44q6-3 12 1" stroke="#4A2C1A" stroke-width="2.6" fill="none" stroke-linecap="round"/>':'<path d="M45 47q6-4 12-2M63 45q6-2 12 2" stroke="#4A2C1A" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+ const mouth=mood==="wow"?'<ellipse cx="60" cy="70" rx="5.5" ry="6.5" fill="#7A2B22"/><ellipse cx="60" cy="73" rx="3.5" ry="2.4" fill="#EF6F6F"/>'
+  :mood==="think"?'<path d="M55 71q6 2 11-2" stroke="#7A2B22" stroke-width="3" fill="none" stroke-linecap="round"/>'
+  :'<path d="M50 66q10 11 20 0z" fill="#7A2B22"/><path d="M53 68q7 5 14 0" fill="#fff"/>';
+ const extra=mood==="wow"?'<path d="M18 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM100 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>':mood==="think"?'<circle cx="98" cy="30" r="3" fill="#fff" opacity=".9"/><circle cx="104" cy="20" r="5" fill="#fff" opacity=".9"/>':"";
+ return `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="lt-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#FF9A3D"/></linearGradient><linearGradient id="lt-hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A4A2C"/><stop offset="1" stop-color="#4A2C1A"/></linearGradient></defs>
+ <circle cx="60" cy="60" r="58" fill="url(#lt-bg)"/>${extra}
+ <path d="M30 36c4-20 22-28 34-26 18 2 30 16 28 36l-2 40H32z" fill="url(#lt-hair)"/>
+ <path d="M18 120c3-22 20-32 42-32s39 10 42 32z" fill="#EB6A00"/><path d="M47 89l13 12 13-12-4-4H51z" fill="#fff"/><path d="M52 86h16v8l-8 6-8-6z" fill="#F2B98F"/>
+ <ellipse cx="60" cy="58" rx="23" ry="26" fill="#F6C9A4"/>
+ <path d="M37 52c2-18 14-25 25-25 13 0 22 9 22 22-9-2-17-7-21-14-6 9-15 15-26 17z" fill="url(#lt-hair)"/>
+ <path d="M60 30c8 0 15 4 18 10" stroke="#9A6440" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/>
+ ${brows}${eyes}
+ <path d="M59 58q-2 6 1 7" stroke="#D9A07C" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <ellipse cx="45" cy="65" rx="5" ry="3" fill="#F49B84" opacity=".55"/><ellipse cx="75" cy="65" rx="5" ry="3" fill="#F49B84" opacity=".55"/>
+ ${mouth}
+ <rect x="34" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="34" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="34" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>
+ <rect x="83" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="83" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="83" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>
+ </svg>`};
+const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
+const SCENE_ART={
+ cafe:bg("cafe","#FFEFD8","#FFD49C")+`<path d="M80 0v24M240 0v24" stroke="#5A3622" stroke-width="2"/><path d="M64 38a16 14 0 0 1 32 0zM224 38a16 14 0 0 1 32 0z" fill="#EB6A00"/><ellipse cx="80" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/><ellipse cx="240" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/>
+ <rect x="16" y="56" width="104" height="5" rx="2.5" fill="#B04A00"/><rect x="24" y="44" width="12" height="12" rx="3" fill="#fff"/><rect x="42" y="46" width="12" height="10" rx="3" fill="#16955A"/><rect x="60" y="44" width="12" height="12" rx="3" fill="#fff"/><rect x="78" y="40" width="10" height="16" rx="3" fill="#EF3340"/><rect x="94" y="46" width="14" height="10" rx="3" fill="#FDDA24"/>
+ <rect x="138" y="58" width="68" height="48" rx="10" fill="#C9CED6"/><rect x="146" y="66" width="52" height="14" rx="5" fill="#2A1D12"/><circle cx="156" cy="73" r="3" fill="#16955A"/><circle cx="166" cy="73" r="3" fill="#FDDA24"/><rect x="158" y="84" width="8" height="10" fill="#2A1D12"/><rect x="178" y="84" width="8" height="10" fill="#2A1D12"/>
+ <rect y="104" width="320" height="56" fill="#8A4B2A"/><rect y="100" width="320" height="8" rx="3" fill="#B5643A"/>
+ <path d="M232 76h42v20a17 17 0 0 1-17 17h-8a17 17 0 0 1-17-17z" fill="#fff"/><path d="M274 82h6a8 8 0 0 1 0 16h-6" fill="none" stroke="#fff" stroke-width="5"/><ellipse cx="253" cy="76" rx="21" ry="4.5" fill="#6B3A1E"/>
+ <path d="M246 66q-6-8 0-14t0-14M258 66q-6-8 0-14t0-14" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/>
+ <path d="M28 100c0-14 6-22 14-26-2 10 0 18 4 26z" fill="#16955A"/><rect x="22" y="92" width="24" height="10" rx="3" fill="#EB6A00"/>`,
+ super:bg("super","#E9F7EE","#C9EBD5")+`<rect x="14" y="20" width="200" height="88" rx="6" fill="#fff" opacity=".75"/>
+ ${[30,58,86].map((y,r)=>`<rect x="14" y="${y+16}" width="200" height="4" fill="#9FB8A8"/>`+[0,1,2,3,4,5,6,7].map(i=>`<rect x="${22+i*24}" y="${y}" width="${16+(i+r)%3*2}" height="16" rx="3" fill="${["#EF3340","#FDDA24","#EB6A00","#16955A","#3B82F6","#fff","#B04A00","#E879F9"][(i+r*3)%8]}"/>`).join("")).join("")}
+ <rect y="112" width="320" height="48" fill="#BFD9C8"/>
+ <g transform="translate(222 58)"><path d="M0 8h14l12 44h50l10-34H22" fill="none" stroke="#2A1D12" stroke-width="5" stroke-linejoin="round"/><rect x="24" y="16" width="20" height="18" rx="3" fill="#FDDA24"/><rect x="46" y="12" width="18" height="22" rx="3" fill="#EF3340"/><rect x="66" y="20" width="16" height="14" rx="3" fill="#16955A"/><circle cx="34" cy="64" r="7" fill="#2A1D12"/><circle cx="72" cy="64" r="7" fill="#2A1D12"/></g>`,
+ huisarts:bg("huisarts","#EAF3FF","#CFE3FF")+`<rect x="22" y="22" width="70" height="96" rx="6" fill="#fff"/><rect x="30" y="30" width="54" height="16" rx="3" fill="#3B82F6"/><text x="57" y="42" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" font-family="sans-serif">DOKTER</text><circle cx="80" cy="76" r="4" fill="#9FB0C8"/>
+ <rect x="128" y="34" width="56" height="40" rx="6" fill="#fff" stroke="#9FB0C8" stroke-width="3"/><path d="M146 54h20M156 44v20" stroke="#EF3340" stroke-width="6" stroke-linecap="round"/>
+ <rect y="118" width="320" height="42" fill="#B7CCEA"/><rect x="150" y="96" width="150" height="10" rx="4" fill="#8A6A4A"/><rect x="160" y="106" width="8" height="30" fill="#8A6A4A"/><rect x="284" y="106" width="8" height="30" fill="#8A6A4A"/>
+ <path d="M220 60c0 18 8 26 18 26s18-8 18-26" fill="none" stroke="#2A1D12" stroke-width="5" stroke-linecap="round"/><circle cx="220" cy="56" r="5" fill="#2A1D12"/><circle cx="256" cy="56" r="5" fill="#2A1D12"/><path d="M238 86v4" stroke="#2A1D12" stroke-width="5"/><circle cx="238" cy="94" r="7" fill="#C9CED6" stroke="#2A1D12" stroke-width="3"/>
+ <path d="M282 96c0-16 6-24 12-28-1 10 1 18 4 28z" fill="#16955A"/>`,
+ apotheek:bg("apotheek","#E7FAF1","#BFEFD7")+`<rect x="130" y="10" width="60" height="60" rx="10" fill="#16955A"/><path d="M148 40h24M160 28v24" stroke="#fff" stroke-width="9" stroke-linecap="round"/><circle cx="160" cy="40" r="38" fill="#16955A" opacity=".15"/>
+ ${[0,1].map(r=>`<rect x="14" y="${36+r*34}" width="96" height="4" fill="#7FB89A"/><rect x="214" y="${36+r*34}" width="96" height="4" fill="#7FB89A"/>`+[0,1,2,3].map(i=>`<rect x="${20+i*22}" y="${18+r*34}" width="16" height="18" rx="3" fill="${["#fff","#FDDA24","#EF3340","#3B82F6"][(i+r)%4]}"/><rect x="${220+i*22}" y="${18+r*34}" width="16" height="18" rx="3" fill="${["#3B82F6","#fff","#16955A","#FDDA24"][(i+r)%4]}"/>`).join("")).join("")}
+ <rect y="108" width="320" height="52" fill="#F6F7F2"/><rect y="104" width="320" height="8" rx="3" fill="#16955A"/>
+ <rect x="138" y="84" width="44" height="22" rx="5" fill="#fff" stroke="#16955A" stroke-width="2"/><ellipse cx="152" cy="95" rx="6" ry="3" fill="#EF3340"/><ellipse cx="168" cy="95" rx="6" ry="3" fill="#FDDA24"/>`,
+ gemeente:bg("gemeente","#DDEBFF","#F7FBFF")+`<circle cx="268" cy="34" r="16" fill="#FDDA24" opacity=".9"/>
+ <path d="M70 52 160 18l90 34z" fill="#C9A27A"/><rect x="74" y="52" width="172" height="76" fill="#E8D5BC"/>
+ ${[0,1,2,3,4].map(i=>`<rect x="${86+i*32}" y="62" width="12" height="62" rx="3" fill="#fff"/>`).join("")}
+ <circle cx="160" cy="38" r="8" fill="#fff" stroke="#8A6A4A" stroke-width="2"/><path d="M160 33v5l3 2" stroke="#2A1D12" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <rect x="148" y="100" width="24" height="28" rx="3" fill="#8A4B2A"/>
+ <path d="M44 128V40" stroke="#5A3622" stroke-width="3"/><rect x="44" y="40" width="10" height="20" fill="#1E1712"/><rect x="54" y="40" width="10" height="20" fill="#FDDA24"/><rect x="64" y="40" width="10" height="20" fill="#EF3340"/>
+ <rect y="128" width="320" height="32" fill="#A7B7C9"/><rect x="128" y="124" width="64" height="6" fill="#C9D3DE"/>`,
+ station:bg("station","#E3F0FF","#FFE7C2")+`<rect y="118" width="320" height="42" fill="#9AA6B2"/><rect y="114" width="320" height="6" fill="#FDDA24"/>
+ <g><rect x="40" y="56" width="236" height="56" rx="18" fill="#FDDA24"/><rect x="40" y="94" width="236" height="10" fill="#3B5BDB"/>${[0,1,2,3,4].map(i=>`<rect x="${70+i*40}" y="66" width="28" height="20" rx="5" fill="#BFE0FF"/>`).join("")}<rect x="248" y="64" width="20" height="28" rx="6" fill="#BFE0FF"/><circle cx="90" cy="114" r="7" fill="#2A1D12"/><circle cx="230" cy="114" r="7" fill="#2A1D12"/></g>
+ <path d="M22 118V30" stroke="#5A6B7C" stroke-width="4"/><circle cx="22" cy="30" r="13" fill="#fff" stroke="#2A1D12" stroke-width="3"/><path d="M22 23v7l5 3" stroke="#2A1D12" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+ <rect x="286" y="20" width="26" height="30" rx="5" fill="#3B5BDB"/><text x="299" y="42" font-size="20" font-weight="900" fill="#fff" text-anchor="middle" font-family="sans-serif">3</text>`,
+ buren:bg("buren","#DFF1FF","#F4FBFF")+`<circle cx="44" cy="34" r="16" fill="#FDDA24"/>
+ <path d="M70 70l40-34 40 34z" fill="#7A2B22"/><rect x="76" y="68" width="68" height="56" fill="#C7684A"/>${[0,1,2,3,4,5].map(i=>`<path d="M76 ${76+i*8}h68" stroke="#A9533A" stroke-width="1.2"/>`).join("")}<rect x="86" y="80" width="18" height="16" fill="#BFE0FF" stroke="#fff" stroke-width="2"/><rect x="116" y="96" width="16" height="28" fill="#2A1D12"/>
+ <path d="M170 70l40-34 40 34z" fill="#3D3D3D"/><rect x="176" y="68" width="68" height="56" fill="#E8C9A0"/><rect x="186" y="80" width="18" height="16" fill="#BFE0FF" stroke="#fff" stroke-width="2"/><rect x="216" y="80" width="18" height="16" fill="#BFE0FF" stroke="#fff" stroke-width="2"/><rect x="200" y="100" width="16" height="24" fill="#16955A"/>
+ <rect y="124" width="320" height="36" fill="#7CC489"/>${[0,1,2,3,4,5,6,7,8,9,10,11,12].map(i=>`<rect x="${4+i*24}" y="112" width="6" height="18" rx="2" fill="#fff"/>`).join("")}<rect y="118" width="320" height="4" fill="#fff"/>
+ <circle cx="282" cy="80" r="22" fill="#16955A"/><rect x="279" y="96" width="6" height="28" fill="#7A4A2C"/>`
+};
+const sceneArt=id=>`<svg class="sc-art" viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${SCENE_ART[id]||""}</svg>`;
+
+// ========== STORY MODE: "Een dag in België" with guide Lotte ==========
 // ========== STORY MODE: "Een dag in België" with guide Lotte (offline, no AI) ==========
-const LOTTE_SVG=mood=>`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="58" fill="#FDDA24"/><path d="M22 112c4-24 20-36 38-36s34 12 38 36" fill="#EB6A00"/><path d="M40 82c6 8 34 8 40 0l-4 12H44z" fill="#B04A00"/><circle cx="60" cy="52" r="26" fill="#F6C9A4"/><path d="M33 50c0-20 12-30 27-30s28 10 28 30c-6-8-14-12-22-13-8 8-22 12-33 13z" fill="#5A3622"/><path d="M33 50c-3 12-2 24 3 30l6-24zM88 50c3 12 2 24-3 30l-6-24z" fill="#5A3622"/>${mood==="think"?'<path d="M48 52h8M64 52h8" stroke="#2A1D12" stroke-width="3.5" stroke-linecap="round"/><path d="M54 66q6-3 12 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>':'<circle cx="51" cy="52" r="3.5" fill="#2A1D12"/><circle cx="69" cy="52" r="3.5" fill="#2A1D12"/><path d="M50 63q10 9 20 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>'}<circle cx="44" cy="60" r="4" fill="#F49B84" opacity=".6"/><circle cx="76" cy="60" r="4" fill="#F49B84" opacity=".6"/><rect x="31" y="58" width="4" height="8" rx="2" fill="#EF3340"/><rect x="85" y="58" width="4" height="8" rx="2" fill="#1E1712"/></svg>`;
 // each turn: [Lotte nl, uk, en, options:[[nl, ok, explanation uk, explanation en]] ]
 const SCENES=[
  {id:"cafe",icon:"☕",uk:"У кафе",en:"At the café",role:{uk:"Лотте — бариста",en:"Lotte is the barista"},turns:[
@@ -4186,6 +4273,17 @@ const SCENES=[
    ["Nee, ik heb geen klantenkaart.",1],["Nee, ik heb niet klantenkaart.",0,"З іменником заперечення — «geen», не «niet»: «ik heb geen klantenkaart».","With nouns use “geen”, not “niet”."],["Ja, ik heet klantenkaart.",0,"«heet» — звати. Відповідай «Ja, ik heb…» або «Nee, ik heb geen…».","“heet” means “to be called”."]]],
   ["Geen probleem. Een fijne dag nog!","Без проблем. Гарного дня!","No problem. Have a nice day!",[
    ["Dank u, u ook!",1],["Goedemorgen!",0,"«Goedemorgen» кажуть при зустрічі. На прощання: «Dank u, u ook!»","That's a greeting, not a goodbye."],["Ik ook dag.",0,"Так не кажуть. Правильно: «U ook!» — «Вам теж!»","Say “U ook!” — “You too!”."]]]]},
+ {id:"huisarts",icon:"🩺",uk:"У лікаря",en:"At the GP",role:{uk:"Лотте — асистентка лікаря",en:"Lotte assists the doctor"},turns:[
+  ["Goedemorgen. Wat is het probleem?","Доброго ранку. Що сталося?","Good morning. What's the problem?",[
+   ["Ik heb keelpijn en ik hoest.",1],["Ik heb een probleem auto.",0,"Ти в лікаря — скажи, що болить: «Ik heb keelpijn».","You're at the doctor's — say what hurts."],["Het probleem is morgen.",0,"Не має сенсу. Розкажи про симптоми.","That doesn't make sense. Describe your symptoms."]]],
+  ["Sinds wanneer bent u ziek?","З якого часу ви хворієте?","Since when have you been ill?",[
+   ["Sinds drie dagen.",1],["Om drie uur.",0,"Це час доби. Питають «з якого часу»: «Sinds drie dagen.»","That's a clock time. Use “Sinds…”."],["Drie keer.",0,"Це «три рази». Відповідай «Sinds …».","That means “three times”."]]],
+  ["Doe uw mond open en zeg: aaa.","Відкрийте рота й скажіть «а-а-а».","Open your mouth and say “aaa”.",[
+   ["Aaa…",1],["Nee, ik ben moe.",0,"Лікар просить відкрити рот 🙂","The doctor asks you to open your mouth 🙂"],["Mijn mond is dicht.",0,"«dicht» — закритий. Просто: «Aaa…»","“dicht” means closed."]]],
+  ["U hebt een keelontsteking. Ik geef u een voorschrift.","У вас запалення горла. Я випишу рецепт.","You have a throat infection. I'll give you a prescription.",[
+   ["Moet ik naar de apotheek?",1],["Ik schrijf zelf.",0,"Рецепт виписує лікар. Спитай, куди з ним іти.","The doctor writes it. Ask where to go."],["Hoeveel kost de keel?",0,"😄 Горло не продається. Спитай про аптеку.","😄 Throats aren't for sale."]]],
+  ["Ja. En blijf twee dagen thuis. Beterschap!","Так. І два дні побудьте вдома. Одужуйте!","Yes. And stay home for two days. Get well!",[
+   ["Dank u, dokter. Tot ziens!",1],["Beterschap, dokter!",0,"«Beterschap» кажуть хворому, а хворий тут ти 🙂","You say that to a sick person — that's you 🙂"],["Ik ga morgen werken.",0,"Лікар сказав два дні вдома.","The doctor said two days at home."]]]]},
  {id:"apotheek",icon:"💊",uk:"В аптеці",en:"At the pharmacy",role:{uk:"Лотте — фармацевтка",en:"Lotte is the pharmacist"},turns:[
   ["Goedemiddag, zeg het maar.","Добрий день, слухаю вас.","Good afternoon, how can I help?",[
    ["Ik heb hoofdpijn. Hebt u iets tegen hoofdpijn?",1],["Ik heb een hoofd.",0,"Звісно, у всіх є голова 😄 «hoofdpijn» — головний біль.","Everyone has a head 😄 “hoofdpijn” is headache."],["Hoe laat is het?",0,"В аптеці кажуть, що болить: «Ik heb hoofdpijn.»","Say what hurts."]]],
@@ -4221,7 +4319,7 @@ const SCENES=[
    ["Dank u, tot ziens!",1],["Goede reis!",0,"Так кажуть тому, хто їде. Ти дякуєш: «Dank u!»","You say that to the traveller."],["Ik reis goed.",0,"Просто подякуй: «Dank u, tot ziens!»","Just say thanks."]]]]},
  {id:"buren",icon:"🏡",uk:"Нова сусідка",en:"The new neighbour",role:{uk:"Лотте — твоя сусідка",en:"Lotte is your neighbour"},turns:[
   ["Hallo! Ik ben Lotte, je nieuwe buurvrouw.","Привіт! Я Лотте, твоя нова сусідка.","Hi! I'm Lotte, your new neighbour.",[
-   ["Hallo Lotte! Ik ben Taras. Aangenaam.",1],["Hallo, ik ben buurvrouw.",0,"«buurvrouw» — це вона. Ти називаєш своє ім'я.","She's the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім'я: «Ik ben …»","Greet her and say your name."]]],
+   ["Hallo Lotte! Ik ben Danylo. Aangenaam.",1],["Hallo, ik ben buurvrouw.",0,"«buurvrouw» — це вона. Ти називаєш своє ім'я.","She's the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім'я: «Ik ben …»","Greet her and say your name."]]],
   ["Woon je hier al lang?","Ти давно тут живеш?","Have you lived here long?",[
    ["Nee, ik woon hier sinds maart.",1],["Nee, ik woon hier lang.",0,"«Ні, я живу тут довго» — суперечність. Скажи, з якого часу: «sinds maart».","That contradicts itself."],["Ik woon in een huis.",0,"Питають, як давно. Відповідай з «sinds».","She asks how long."]]],
   ["Leuk! Waar kom je vandaan?","Класно! Звідки ти?","Nice! Where are you from?",[
@@ -4231,80 +4329,125 @@ const SCENES=[
   ["Om drie uur, bij mij. Tot zaterdag!","О третій, у мене. До суботи!","At three, at my place. See you Saturday!",[
    ["Super, tot zaterdag!",1],["Om drie uur slaap ik bij jou.",0,"Ой, це зовсім інше 😅 Просто: «Tot zaterdag!»","Oops, that means something else 😅"],["Tot gisteren!",0,"«gisteren» — учора. Правильно: «Tot zaterdag!»","“gisteren” means yesterday."]]]]}
 ];
+// free-answer keywords per turn (accepted meaning, then Lotte shows the most natural phrasing)
+const ACCEPT={cafe:[["koffie","thee","water","cappuccino","chocolademelk","cola","latte"],["melk","zonder"],["groot","klein","medium"],["kaart","betalen","bancontact","cash","contant"],["dank","bedankt","merci","fijne"]],
+ super:[["waar","zoek","melk"],["dank","bedankt","brood"],["hoeveel","kost","prijs"],["geen","klantenkaart"],["dank","ook","bedankt"]],
+ huisarts:[["pijn","keelpijn","hoofdpijn","buikpijn","ziek","koorts","verkouden","hoest"],["sinds","gisteren","dagen","week"],["aaa","aa"],["apotheek","voorschrift","medicijn"],["dank","bedankt","ziens"]],
+ apotheek:[["pijn","hoofdpijn","keelpijn","buikpijn","ziek","koorts","verkouden","hoest"],["sinds","gisteren","dagen","week"],["koorts","nee","geen"],["eten","voor","na"],["dank","bedankt","ziens"]],
+ gemeente:[["dank","oke","ok"],["adres","verhuizen","veranderen","inschrijven","afspraak"],["straat","laan","plein","dreef","weg"],["alstublieft","hier","kaart"],["dank","bedankt","ziens"]],
+ station:[["naar"],["enkel","heen en terug","retour"],["kaart","betalen","bancontact","cash","hier"],["spoor","dank","bedankt"],["dank","bedankt","ziens"]],
+ buren:[["ik ben","ik heet","aangenaam"],["sinds","jaar","maand","lang"],["kom uit","uit"],["graag","sorry","kan niet"],["tot zaterdag","super","oke"]]};
 const sceneTr=o=>uiLang==="uk"?o.uk:(o.en||o.uk);
+const ST_UI={uk:{hello:"Привіт! Я Лотте 🇧🇪 Проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!",locked:"Спершу пройди попереднє місце",own:"Або скажи / напиши своїми словами",understood:"Зрозуміло! 👍 Ще один природний варіант:",hint:"Підказка:",great:"Супер! Ти впорався.",map:"Далі по карті",free:"💬 Вільна розмова з Лотте тут",mistakes:"Що варто повторити",mistakesNone:"Поки помилок немає — так тримати!"},
+ en:{hello:"Hi! I'm Lotte 🇧🇪 Let's spend a normal day in Belgium. Pick a place and let's speak Dutch!",locked:"Finish the previous place first",own:"Or say / type it in your own words",understood:"Got it! 👍 Another natural way:",hint:"Hint:",great:"Great job!",map:"Back to the map",free:"💬 Free chat with Lotte here",mistakes:"Worth reviewing",mistakesNone:"No mistakes yet — keep going!"}};
+const stU=()=>ST_UI[uiLang]||ST_UI.en;
 function storyState(){return lsGet("leren_story",{done:[],best:{}})}
+function logMistake(nl,why){const m=lsGet("leren_mistakes",[]).filter(x=>x.nl!==nl);m.unshift({nl,why,d:dayStr()});lsSet("leren_mistakes",m.slice(0,30))}
 function storyMap(){
- const g=gU(),st=storyState(),card=gHead("Een dag in België","");
- const head=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");
- head.append(av,el("div","st-say",uiLang==="uk"?"Привіт! Я Лотте 🇧🇪 Проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!":"Hi! I'm Lotte 🇧🇪 Let's spend a normal day in Belgium. Pick a place and let's speak Dutch!"));
- card.appendChild(head);
+ const st=storyState(),card=gHead("Een dag in België","");
+ const head=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
  const grid=el("div","st-map");
  SCENES.forEach((sc,i)=>{const open=i===0||st.done.includes(SCENES[i-1].id),done=st.done.includes(sc.id);
   const b=el("button","st-place"+(done?" done":"")+(open?"":" locked"));b.type="button";
-  b.append(el("span","g-ic",open?sc.icon:"🔒"),el("strong","",sceneTr(sc)),el("small","",done?"⭐".repeat(st.best[sc.id]||1):sceneTr(sc.role)));
-  b.onclick=()=>{if(!open){toast(uiLang==="uk"?"Спершу пройди попереднє місце":"Finish the previous place first");return}storyStart(sc)};grid.appendChild(b)});
+  const art=el("div","st-art");art.innerHTML=sceneArt(sc.id);if(!open)art.appendChild(el("span","st-lock","🔒"));
+  const meta=el("div","st-meta");meta.append(el("strong","",sceneTr(sc)),el("small","",done?"⭐".repeat(st.best[sc.id]||1):sceneTr(sc.role)));
+  b.append(art,meta);
+  b.onclick=()=>{if(!open){toast(stU().locked);return}storyStart(sc)};grid.appendChild(b)});
  card.appendChild(grid);gBar(st.done.length/SCENES.length);
 }
-function storyStart(sc){gState={sc,i:0,miss:0,first:true,fb:null};storyRender();say(sc.turns[0][0])}
+function storyStart(sc){gState={sc,i:0,miss:0,fb:null,tried:[],order:null,mood:"happy"};storyRender();setTimeout(()=>say(sc.turns[0][0]),250)}
 function storyRender(){
  const g=gU(),s=gState,sc=s.sc,card=gHead(sc.icon+" "+sceneTr(sc),Math.min(s.i+1,sc.turns.length)+" / "+sc.turns.length);
  card.querySelector(".g-back").onclick=storyMap;gBar(s.i/sc.turns.length);
+ const banner=el("div","st-banner");banner.innerHTML=sceneArt(sc.id);card.appendChild(banner);
  if(s.i>=sc.turns.length){
   const stars=s.miss===0?3:s.miss<=2?2:1,st=storyState();const first=!st.done.includes(sc.id);
   if(first)st.done.push(sc.id);st.best[sc.id]=Math.max(st.best[sc.id]||0,stars);lsSet("leren_story",st);
   const xp=10*stars+(first?20:0);
-  const end=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");end.append(av,el("div","st-say",(uiLang==="uk"?"Супер! Ти впорався. ":"Great job! ")+"⭐".repeat(stars)));card.appendChild(end);
+  const end=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("wow");end.append(av,el("div","st-say",stU().great+" "+"⭐".repeat(stars)));card.appendChild(end);
   card.appendChild(el("p","g-done",g.pts(xp)));
-  const row=el("div","row");const nx=el("button","btn primary",uiLang==="uk"?"Далі по карті":"Back to the map");nx.type="button";nx.id="nx";nx.onclick=storyMap;row.appendChild(nx);card.appendChild(row);
+  const row=el("div","row");
+  if(AI_ENDPOINT){const f=el("button","btn",stU().free);f.type="button";f.onclick=()=>aiStart(sc);row.appendChild(f)}
+  const nx=el("button","btn primary",stU().map);nx.type="button";nx.id="nx";nx.onclick=storyMap;row.appendChild(nx);card.appendChild(row);
   if(!s.awarded){s.awarded=true;gameDone("story",xp)}revealNext();return;
  }
  const t=sc.turns[s.i];
  const chat=el("div","st-chat");
- const av=el("div","st-av sm");av.innerHTML=LOTTE_SVG(s.fb&&!s.fb.ok?"think":"happy");
+ const av=el("div","st-av sm");av.innerHTML=LOTTE_SVG(s.mood);
  const bub=el("button","st-bub");bub.type="button";bub.append(tgt(el("strong","",t[0])),el("span","",uiLang==="uk"?t[1]:t[2]));bub.onclick=()=>say(t[0],bub);
  chat.append(av,bub);card.appendChild(chat);
- if(s.fb){const f=el("div","st-fb "+(s.fb.ok?"ok":"bad"));f.textContent=s.fb.text;card.appendChild(f)}
+ if(s.fb){const f=el("div","st-fb "+(s.fb.ok?"ok":"bad"));f.append(el("span","",s.fb.text));if(s.fb.nl){const n=tgt(el("b","",s.fb.nl));n.onclick=()=>say(s.fb.nl);f.append(" ",n)}card.appendChild(f)}
  const opts=el("div","g-list");
- (s.order||(s.order=shuffle(t[3].map((_,k)=>k)))).forEach(k=>{const o=t[3][k];const b=el("button","opt st-opt"+(s.tried&&s.tried.includes(k)?" incorrect":""));b.type="button";b.appendChild(tgt(el("span","",o[0])));b.disabled=!!(s.tried&&s.tried.includes(k));
+ (s.order||(s.order=shuffle(t[3].map((_,k)=>k)))).forEach(k=>{const o=t[3][k];const b=el("button","opt st-opt"+(s.tried.includes(k)?" incorrect":""));b.type="button";b.appendChild(tgt(el("span","",o[0])));b.disabled=s.tried.includes(k);
   b.onclick=()=>storyAnswer(k);opts.appendChild(b)});
  card.appendChild(opts);
- card.appendChild(micBox(alts=>{let best=-1,bi=-1;t[3].forEach((o,k)=>{const want=gNorm(o[0]).split(" ");alts.forEach(a=>{const got=new Set(gNorm(a).split(" "));const sc2=want.filter(w=>got.has(w)).length/want.length;if(sc2>best){best=sc2;bi=k}})});
-  if(best>=.6)storyAnswer(bi,true);else toast(g.tryAgain)}));
+ card.appendChild(el("p","st-own",stU().own));
+ card.appendChild(micBox(alts=>storyFree(alts)));
 }
-function storyAnswer(k,spoken){
+function storySim(a,b){const want=gNorm(b).split(" ").filter(Boolean),got=new Set(gNorm(a).split(" "));return want.filter(w=>got.has(w)).length/want.length}
+function storyFree(alts){
+ const s=gState,t=s.sc.turns[s.i],ok=t[3].findIndex(o=>o[1]);
+ let best=0,bi=-1;t[3].forEach((o,k)=>alts.forEach(a=>{const v=storySim(a,o[0]);if(v>best){best=v;bi=k}}));
+ if(best>=.6&&bi===ok)return storyAnswer(ok,true);
+ if(best>=.75&&bi!==ok)return storyAnswer(bi,true);
+ const kw=(ACCEPT[s.sc.id]||[])[s.i]||[],txt=" "+gNorm(alts[0])+" ";
+ const hit=kw.some(k=>txt.includes(" "+gNorm(k)+" ")||txt.includes(gNorm(k)))&&gNorm(alts[0]).split(" ").length>=2;
+ if(hit){s.understood=true;return storyAnswer(ok,true,true)}
+ s.miss++;s.mood="think";const correct=t[3][ok][0];logMistake(correct,uiLang==="uk"?t[1]:t[2]);
+ s.fb={ok:false,text:gU().tryAgain+" · "+stU().hint,nl:correct.split(" ").slice(0,2).join(" ")+" …"};storyRender();
+}
+function storyAnswer(k,spoken,loose){
  const s=gState,t=s.sc.turns[s.i],o=t[3][k];
- if(o[1]){if(!s.tried||!s.tried.length)addXP(spoken?8:5);say(o[0]);s.i++;s.tried=[];s.order=null;s.fb={ok:true,text:(spoken?"🎤 ":"")+(uiLang==="uk"?"Так! ":"Yes! ")+o[0]};
-  const next=s.sc.turns[s.i];storyRender();if(next)setTimeout(()=>say(next[0]),Math.min(3500,700+o[0].length*55));}
- else{s.miss++;s.tried=(s.tried||[]).concat(k);s.fb={ok:false,text:uiLang==="uk"?o[2]:(o[3]||o[2])};storyRender()}
+ if(o[1]){if(!s.tried.length)addXP(spoken?(loose?6:8):5);say(o[0]);s.i++;s.tried=[];s.order=null;s.mood=loose?"happy":"wow";
+  s.fb=loose?{ok:true,text:stU().understood,nl:o[0]}:{ok:true,text:(spoken?"🎤 ":"")+(uiLang==="uk"?"Так! ":"Yes! "),nl:o[0]};
+  const next=s.sc.turns[s.i];storyRender();if(next)setTimeout(()=>{if(gState===s)say(next[0])},Math.min(3600,800+o[0].length*55));}
+ else{s.miss++;s.mood="think";s.tried=s.tried.concat(k);const why=uiLang==="uk"?o[2]:(o[3]||o[2]);logMistake(t[3].find(x=>x[1])[0],why);s.fb={ok:false,text:why};storyRender()}
 }
 
-// ========== AI CHAT with Lotte (variant 2) — hidden until AI_ENDPOINT is set ==========
-const AI_ENDPOINT=""; // e.g. "https://leren-ai.<account>.workers.dev" (tools/ai-worker.js)
-function aiStart(){gState={msgs:[],busy:false};aiRender();aiSend(null)}
+// ========== AI CHAT with Lotte (hidden until AI_ENDPOINT is set; server: tools/ai-worker.js) ==========
+const AI_ENDPOINT="";
+const AI_UI={uk:{title:"Praat met Lotte · AI",sub:"Пиши або говори нідерландською",intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб Лотте могла відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"Лотте зараз недоступна. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!"},
+ en:{title:"Praat met Lotte · AI",sub:"Write or speak Dutch",intro:"Talk to me in simple Dutch. I'll correct and explain your mistakes.",consentT:"Before you start",consent:"The AI chat works online. Your messages are sent to the Leren.be server and an AI model so Lotte can answer. Chats are not stored. Don't type passwords, ID numbers or bank details.",agree:"OK, start",fix:"Better:",tr:"Translation",err:"Lotte is unavailable right now. Check your connection and try again.",limit:"That's enough chatting for today 🙂 Come back tomorrow!"}};
+const aiU=()=>AI_UI[uiLang]||AI_UI.en;
+function aiStart(scene){
+ if(!lsGet("leren_ai_consent",false)){const g=aiU(),card=gHead(g.title,"");const h=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");h.append(av,el("div","st-say",g.intro));card.appendChild(h);
+  const box=el("div","ai-consent");box.append(el("h3","",g.consentT),el("p","",g.consent));const ok=el("button","btn primary",g.agree);ok.type="button";ok.onclick=()=>{lsSet("leren_ai_consent",true);aiStart(scene)};box.appendChild(ok);card.appendChild(box);return}
+ gState={msgs:[],busy:false,scene:scene&&scene.id||null};aiRender();aiSend(null);
+}
 function aiRender(){
- const g=gU(),s=gState,card=gHead(uiLang==="uk"?"Praat met Lotte · AI":"Praat met Lotte · AI",uiLang==="uk"?"Пиши або говори нідерландською":"Write or speak Dutch");
- const head=el("div","st-head");const av=el("div","st-av sm");av.innerHTML=LOTTE_SVG(s.busy?"think":"happy");head.append(av,el("div","st-say",uiLang==="uk"?"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.":"Talk to me in simple Dutch. I'll correct your mistakes."));card.appendChild(head);
+ const g=aiU(),s=gState,card=gHead(g.title,g.sub);
+ if(s.scene){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  const chat=el("div","g-chat ai-chat");
- s.msgs.forEach(m=>{const b=el("div","g-bub "+(m.role==="user"?"me":"them"));
-  const [nl,...fix]=String(m.content).split("\n✏️");const t=tgt(el("span","",nl.trim()));b.appendChild(t);
-  if(fix.length)b.appendChild(el("em","ai-fix","✏️"+fix.join("\n✏️")));
-  if(m.role!=="user")b.onclick=()=>say(nl.trim());chat.appendChild(b)});
- if(s.busy)chat.appendChild(el("div","g-bub them","…"));
+ s.msgs.forEach(m=>{
+  if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
+   if(m.fix){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));chat.appendChild(f)}
+  }else{const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=LOTTE_SVG("happy");const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));
+   if(m.tr){const tr=el("em","",m.tr);tr.hidden=!m.showTr;b.appendChild(tr)}b.onclick=()=>{m.showTr=!m.showTr;say(m.content);aiRender()};row.append(av,b);chat.appendChild(row)}
+ });
+ if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=LOTTE_SVG("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- card.appendChild(micBox(alts=>aiSend(alts[0])));
- const f=card.querySelector(".g-type");if(f)f.hidden=false;
- chat.scrollIntoView({block:"end"});
+ const mb=micBox(alts=>aiSend(alts[0]));const f=mb.querySelector(".g-type");if(f)f.hidden=false;card.appendChild(mb);
+ const last=chat.lastElementChild;if(last)last.scrollIntoView({block:"nearest"});
 }
 async function aiSend(text){
- const s=gState;if(s.busy)return;if(text){s.msgs.push({role:"user",content:String(text).slice(0,300)})}
+ const s=gState;if(s.busy)return;if(text)s.msgs.push({role:"user",content:String(text).trim().slice(0,300)});
  s.busy=true;s.err="";aiRender();
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lang:uiLang,level:curLevel,messages:s.msgs.slice(-12)})});
-  const j=await r.json();if(!r.ok||!j.reply)throw new Error(j.error||("HTTP "+r.status));
-  s.msgs.push({role:"assistant",content:j.reply});s.busy=false;aiRender();say(j.reply.split("\n✏️")[0]);
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lang:uiLang,level:curLevel,scene:s.scene,messages:s.msgs.slice(-12).map(m=>({role:m.role,content:m.content}))})});
+  const j=await r.json().catch(()=>({}));
+  if(r.status===429){s.busy=false;s.err=aiU().limit;aiRender();return}
+  if(!r.ok||!j.reply_nl)throw new Error(j.error||("HTTP "+r.status));
+  const lastUser=[...s.msgs].reverse().find(m=>m.role==="user");
+  if(lastUser&&j.correction&&j.correction.corrected&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix=j.correction;logMistake(j.correction.corrected,j.correction.explanation||"")}
+  s.msgs.push({role:"assistant",content:j.reply_nl,tr:j.translation||""});s.busy=false;aiRender();say(j.reply_nl);
   if(s.msgs.filter(m=>m.role==="user").length===5)gameDone("ai",30);
- }catch(e){s.busy=false;s.err=(uiLang==="uk"?"Лотте зараз недоступна. Перевір інтернет і спробуй ще раз.":"Lotte is unavailable right now. Check your connection and try again.");aiRender()}
+ }catch(e){s.busy=false;s.err=aiU().err;aiRender()}
+}
+function renderMistakes(box){
+ const m=lsGet("leren_mistakes",[]);box.replaceChildren(el("h3","",stU().mistakes));
+ if(!m.length){box.appendChild(el("p","st-own",stU().mistakesNone));return}
+ const list=el("div","pv-list");m.slice(0,6).forEach(x=>{const r=el("button","pv-row mk");r.type="button";const n=tgt(el("strong","","🔊 "+x.nl));r.append(n,el("span","",x.why||""));r.onclick=()=>say(x.nl);list.appendChild(r)});box.appendChild(list);
 }
 
 function start(){
