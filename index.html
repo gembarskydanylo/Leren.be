@@ -1736,7 +1736,7 @@ function say(text,button){
   if(synth.speaking||synth.pending)synth.cancel();
   updateSpeechState(false);
   const u=new SpeechSynthesisUtterance(String(text||""));
-  u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[targetLang]||"nl-BE";u.rate=.92;
+  u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[targetLang]||"nl-BE";u.rate=.75;u.volume=1;
   const voices=speechVoices.length?speechVoices:(refreshSpeechVoices(),speechVoices),pre=u.lang.toLowerCase().split("-")[0];
   const v=voices.find(x=>x.lang.toLowerCase()===u.lang.toLowerCase())||voices.find(x=>x.lang.toLowerCase().startsWith(pre));
   if(voices.length&&!v){showSpeechNote();return}
