@@ -1,6 +1,6 @@
 /* Leren.be offline cache. Relative paths support GitHub Pages project sites. */
 const CACHE_NAME = "leren-be-v39";
-const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./privacy.html", "./fonts/nunito.woff", "./fonts/unbounded.woff"];
+const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./privacy.html", "./fonts/nunito.woff", "./fonts/unbounded.woff", "./img/chars/roel.webp", "./img/chars/lotte.webp"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {

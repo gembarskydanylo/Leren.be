@@ -725,8 +725,8 @@ body.sheet-open{overflow:hidden}
 .ch-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px 14px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge);transition:transform .12s}
 .ch-card:active{transform:translateY(2px)}
 .ch-card.on{border-color:var(--oranje);box-shadow:0 var(--depth-sm) 0 var(--oranje)}
-.ch-fig{width:100%;max-width:130px;aspect-ratio:120/232;border-radius:16px;padding:6px 4px 0}
-.ch-fig svg{width:100%;height:100%;display:block}
+.ch-fig{width:100%;max-width:150px;aspect-ratio:332/650;border-radius:16px;padding:8px 6px 0;overflow:hidden}
+.ch-fig .ch-ph{width:100%;height:100%;display:block}
 .ch-roel{background:linear-gradient(180deg,#D7F5EE,#9ED7EA)}.ch-lotte{background:linear-gradient(180deg,#FFF0B8,#FFC48A)}
 .ch-card strong{font-family:var(--font-display);font-size:18px}
 .ch-card span{font-size:13px;color:var(--ink-2);line-height:1.3}
@@ -734,7 +734,15 @@ body.sheet-open{overflow:hidden}
 .ch-seg{display:flex;gap:6px;flex:none}
 .ch-mini{display:flex;align-items:center;gap:6px;min-height:40px;padding:3px 10px 3px 3px;border-radius:99px;border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 13px var(--font-body,inherit);cursor:pointer}
 .ch-mini.on{border-color:var(--oranje);background:color-mix(in srgb,var(--oranje) 14%,var(--surface))}
-.ch-av{width:30px;height:30px;display:block}.ch-av svg{width:100%;height:100%;display:block}
+.ch-av{width:30px;height:30px;display:block}
+.ch-ph{position:relative;display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(160deg,#C9F1E8,#4FAFD0)}
+.ch-ph.ch-lotte{background:linear-gradient(160deg,#FFE27A,#FF9A3D)}
+.ch-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;user-select:none}
+.ch-ph.full{border-radius:0;background:none;overflow:visible}.ch-ph.full img{object-fit:contain;object-position:50% 0}
+.ch-mood{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ch-ph.m-wow img{animation:ch-hop .5s var(--ease,ease) 1}.ch-ph.m-think img{transform:rotate(-4deg) translateY(2px);transition:transform .3s}
+@keyframes ch-hop{40%{transform:translateY(-6%) scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.ch-ph img{animation:none!important;transition:none!important}}
 @media (max-width:380px){.ch-mini>span:last-child{display:none}.ch-mini{padding:3px}}
 .st-own{margin:10px 0 6px;text-align:center;color:var(--ink-2);font-size:13.5px;font-weight:700}
 .st-fb b{cursor:pointer;text-decoration:underline dotted}
@@ -4203,70 +4211,13 @@ function mdRender(){
 }
 
 // ========== ART: characters Roel + Lotte (3 moods, avatar or full body) + scene illustrations ==========
-const FACE_PARTS=(mood,o)=>{
- const eyes=mood==="think"
-  ?`<path d="M47 56q4-3 8 0M65 56q4-3 8 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>`
-  :`<ellipse cx="51" cy="57" rx="${o.er}" ry="${o.er+.8}" fill="#2A1D12"/><ellipse cx="69" cy="57" rx="${o.er}" ry="${o.er+.8}" fill="#2A1D12"/><circle cx="52.2" cy="55.6" r="1.2" fill="#fff"/><circle cx="70.2" cy="55.6" r="1.2" fill="#fff"/>`;
- const brows=mood==="think"?`<path d="M45 48q6-4 12-1M63 45q6-3 12 1" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`
-  :mood==="wow"?`<path d="M45 46q6-5 12-2M63 44q6-3 12 2" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`
-  :`<path d="M45 48q6-4 12-2M63 46q6-2 12 2" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`;
- const mouth=mood==="wow"?`<ellipse cx="60" cy="72" rx="5" ry="6" fill="#7A2B22"/><ellipse cx="60" cy="75" rx="3.2" ry="2.2" fill="#EF6F6F"/>`
-  :mood==="think"?`<path d="M54 73q6 2 11-2" stroke="#7A2B22" stroke-width="3" fill="none" stroke-linecap="round"/>`
-  :`<path d="M50 68q10 11 20 0z" fill="#7A2B22"/><path d="M53 70q7 5 14 0" fill="#fff"/>`;
- return brows+eyes+mouth;
-};
-const MOOD_EXTRA=mood=>mood==="wow"?'<path d="M18 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM100 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>':mood==="think"?'<circle cx="98" cy="30" r="3" fill="#fff" opacity=".9"/><circle cx="104" cy="20" r="5" fill="#fff" opacity=".9"/>':"";
-// full body (shirt/sweater, jeans, shoes) under a head drawn in avatar coordinates
-const BODY=(top,sleeve,skin,longSleeve)=>`<path d="M30 100q30-16 60 0l4 62H26z" fill="${top}"/>
- <path d="M32 102q-12 12-14 34" stroke="${sleeve}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M88 102q12 12 14 34" stroke="${sleeve}" stroke-width="13" fill="none" stroke-linecap="round"/>
- <path d="M18 134q-1 14 1 24M102 134q1 14-1 24" stroke="${longSleeve?sleeve:skin}" stroke-width="11" fill="none" stroke-linecap="round"/>
- <circle cx="19" cy="162" r="6.5" fill="${skin}"/><circle cx="101" cy="162" r="6.5" fill="${skin}"/>
- <path d="M28 160h64l-3 64H66l-6-52-6 52H31z" fill="#3E5F8E"/><path d="M60 166v8M36 168q8 4 14 0M70 168q8 4 14 0" stroke="#2B4468" stroke-width="2" fill="none"/><path d="M28 160h64v6H28z" fill="#2B4468"/>
- <path d="M30 222h22q4 0 4 5v3H24q0-8 6-8zM68 222h22q6 0 6 8H64v-3q0-5 4-5z" fill="#2A1D12"/>`;
-const CHAR_SVG=(c,mood,full)=>`<svg viewBox="${full?"0 0 120 232":"0 0 120 120"}" aria-hidden="true"><defs>${c.defs}</defs>
- ${full?"":`<circle cx="60" cy="60" r="58" fill="url(#${c.id}-bg)"/>`+MOOD_EXTRA(mood)}
- ${c.back}${full?BODY(c.top,c.sleeve,c.skin,c.long)+c.collar:c.shoulders}${c.face(mood)}</svg>`;
-const LOTTE_PARTS={id:"lt",skin:"#F6C9A4",top:"#EB6A00",sleeve:"#EB6A00",long:true,
- defs:`<linearGradient id="lt-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#FF9A3D"/></linearGradient><linearGradient id="lt-hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A4A2C"/><stop offset="1" stop-color="#4A2C1A"/></linearGradient>`,
- back:`<path d="M30 36c4-20 22-28 34-26 18 2 30 16 28 36l-2 40H32z" fill="url(#lt-hair)"/>`,
- shoulders:`<path d="M18 120c3-22 20-32 42-32s39 10 42 32z" fill="#EB6A00"/><path d="M47 89l13 12 13-12-4-4H51z" fill="#fff"/>`,
- collar:`<path d="M47 93l13 12 13-12-4-4H51z" fill="#fff"/>`,
- face:mood=>`<path d="M52 84h16v10l-8 6-8-6z" fill="#F2B98F"/><ellipse cx="60" cy="58" rx="23" ry="26" fill="#F6C9A4"/>
- <path d="M37 52c2-18 14-25 25-25 13 0 22 9 22 22-9-2-17-7-21-14-6 9-15 15-26 17z" fill="url(#lt-hair)"/>
- <path d="M60 30c8 0 15 4 18 10" stroke="#9A6440" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/>
- ${FACE_PARTS(mood,{er:3.6,brow:"#4A2C1A",bw:2.6})}
- <path d="M59 59q-2 6 1 7" stroke="#D9A07C" stroke-width="2" fill="none" stroke-linecap="round"/>
- <ellipse cx="45" cy="66" rx="5" ry="3" fill="#F49B84" opacity=".55"/><ellipse cx="75" cy="66" rx="5" ry="3" fill="#F49B84" opacity=".55"/>
- <rect x="34" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="34" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="34" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>
- <rect x="83" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="83" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="83" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>`};
-// Roel: ~50, brown dreadlocks tied in a high bun, stubble, navy checked short-sleeve shirt, jeans
-const DREAD=(d,w)=>`<path d="${d}" stroke="#6B4528" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#4A2C1A" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-dasharray="1.6 3.2" opacity=".55"/>`;
-const ROEL_PARTS={id:"rl",skin:"#E9BB93",top:"url(#rl-chk)",sleeve:"url(#rl-chk)",long:false,
- defs:`<linearGradient id="rl-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BDF0E4"/><stop offset="1" stop-color="#3FA7C9"/></linearGradient>
- <pattern id="rl-chk" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#2E3A57"/><path d="M0 .6H7M.6 0V7" stroke="#6A7DA6" stroke-width="1.2"/><path d="M0 3.8H7M3.8 0V7" stroke="#4B5B80" stroke-width=".7"/></pattern>`,
- back:DREAD("M48 18c-13 5-17 20-15 44",5)+DREAD("M72 19c8 5 10 13 10 24",4),
- shoulders:`<path d="M16 120c3-22 20-32 44-32s41 10 44 32z" fill="url(#rl-chk)"/><path d="M49 90l11 12 11-12" fill="#E9BB93"/><path d="M47 88l-6 12 13 0 6-8zM73 88l6 12-13 0-6-8z" fill="#3B4A6E" stroke="#1E2740" stroke-width="1.2" stroke-linejoin="round"/>`,
- collar:`<path d="M49 94l11 12 11-12" fill="#E9BB93"/><path d="M47 92l-6 12 13 0 6-8zM73 92l6 12-13 0-6-8z" fill="#3B4A6E" stroke="#1E2740" stroke-width="1.2" stroke-linejoin="round"/><circle cx="60" cy="118" r="1.6" fill="#C9D3E6"/><circle cx="60" cy="132" r="1.6" fill="#C9D3E6"/><circle cx="60" cy="146" r="1.6" fill="#C9D3E6"/><rect x="95" y="128" width="13" height="5" rx="2.5" fill="#2A1D12"/>`,
- face:mood=>`<path d="M52 82h16v10l-8 6-8-6z" fill="#D9A47C"/>
- <ellipse cx="38" cy="60" rx="4" ry="6" fill="#E3B089"/><ellipse cx="82" cy="60" rx="4" ry="6" fill="#E3B089"/>
- <path d="M38 52c0-17 9-26 22-26s22 9 22 26v10c0 15-10 25-22 25S38 77 38 62z" fill="#E9BB93"/>
- <path d="M39 62c1 13 10 24 21 24s20-11 21-24c-4 8-11 12-21 12s-17-4-21-12z" fill="#8A6A55" opacity=".28"/>
- <path d="M53 66q7-3 14 0" stroke="#8A6A55" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".45"/>
- <path d="M38 50c0-16 10-25 22-25s22 9 22 25c-4-8-11-13-22-13s-18 5-22 13z" fill="#6B4528"/>
- <path d="M46 36q7-5 14-5M62 31q8 1 13 7M52 40q8-4 16 0" stroke="#4A2C1A" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>
- <rect x="55" y="22" width="10" height="9" rx="3" fill="#6B4528"/><rect x="54" y="25" width="12" height="3.5" rx="1.7" fill="#3B5BDB"/>
- <ellipse cx="60" cy="15" rx="15" ry="10" fill="#6B4528"/>
- <path d="M47 15q13-9 26 0M48 19q12-6 24 0M50 11q10-5 20 0" stroke="#4A2C1A" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".75"/>
- <circle cx="48" cy="9" r="3.5" fill="#7A5232"/><circle cx="58" cy="5.5" r="3.5" fill="#7A5232"/><circle cx="69" cy="7" r="3.5" fill="#7A5232"/>
- ${FACE_PARTS(mood,{er:3.2,brow:"#4A2C1A",bw:3.4})}
- <path d="M47 50q-3-1-5 1M73 50q3-1 5 1" stroke="#B98763" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
- <path d="M60 56q-3 8-1 10 2 1 4 0" stroke="#B98763" stroke-width="2" fill="none" stroke-linecap="round"/>
- <path d="M49 67q-2 4 0 7M71 67q2 4 0 7" stroke="#B98763" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
- <path d="M52 38q8-2 16 0" stroke="#B98763" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>`};
-const LOTTE_SVG=(mood,full)=>CHAR_SVG(LOTTE_PARTS,mood,full);
-const ROEL_SVG=(mood,full)=>CHAR_SVG(ROEL_PARTS,mood,full);
+// characters are illustrated images (img/chars); mood shown with a small overlay
+const MOOD_EXTRA=mood=>mood==="wow"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM102 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FDDA24" stroke="#fff" stroke-width="1.5"/></svg>':mood==="think"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><circle cx="100" cy="28" r="4" fill="#fff"/><circle cx="108" cy="14" r="6.5" fill="#fff"/></svg>':"";
+const CHAR_IMG=(id,mood,full)=>`<span class="ch-ph ch-${id} m-${mood}${full?" full":""}"><img src="img/chars/${id}${full?"-card":""}.webp" alt="" decoding="async" draggable="false">${full?"":MOOD_EXTRA(mood)}</span>`;
+const ROEL_SVG=(mood,full)=>CHAR_IMG("roel",mood,full);
+const LOTTE_SVG=(mood,full)=>CHAR_IMG("lotte",mood,full);
 // --- chosen character (Roel is the default guide) ---
-const CHARS={roel:{n:"Roel",u:"Рул",a:"رول",m:true,svg:ROEL_SVG},lotte:{n:"Lotte",u:"Лотте",a:"لوته",m:false,svg:LOTTE_SVG}};
+const CHARS={roel:{n:"Roel",u:"Руль",a:"رول",m:true,svg:ROEL_SVG},lotte:{n:"Lotte",u:"Лотте",a:"لوته",m:false,svg:LOTTE_SVG}};
 const charId=()=>{const c=lsGet("leren_char","roel");return CHARS[c]?c:"roel"};
 const curChar=()=>CHARS[charId()];
 const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
