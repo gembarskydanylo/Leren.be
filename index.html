@@ -569,7 +569,7 @@ body.sheet-open{overflow:hidden}
 .set-row>.ico{color:var(--oranje-deep);width:22px;height:22px}
 :root[data-theme="dark"] .set-row>.ico{color:var(--oranje)}
 .set-l{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:800;font-size:15px}
-.set-l small{color:var(--ink-2);font-weight:700;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-l small{color:var(--ink-2);font-weight:700;font-size:12.5px;line-height:1.3}
 .set-btn{flex:none;min-height:40px;padding:0 14px;border-radius:var(--r-sm);border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer}
 .set-btn:active{transform:translateY(2px)}
 .switch{flex:none;position:relative;width:54px;height:32px;border-radius:99px;border:0;background:var(--line);cursor:pointer;transition:background .15s}
@@ -604,6 +604,8 @@ body.sheet-open{overflow:hidden}
 .grow-modal .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .grow-modal a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .grow-modal .goal-list{grid-template-columns:1fr}
+.set-select{flex:none;min-height:40px;padding:0 8px;border-radius:var(--r-sm);border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body);font-variant-numeric:tabular-nums}
+.set-select[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -676,6 +678,9 @@ body.sheet-open{overflow:hidden}
         <button class="switch" id="themeToggle" type="button" role="switch" aria-checked="false" aria-labelledby="themeRowLabel"><i></i></button></div>
       <div class="set-row"><span class="ico" data-ico="target"></span><span class="set-l" id="goalRowLabel"></span>
         <button class="set-btn" id="goalBtn" type="button"></button></div>
+      <div class="set-row" id="remindRow" hidden><span class="ico" data-ico="bell"></span><span class="set-l"><span id="remindLabel"></span><small id="remindHint"></small></span>
+        <select id="remindHour" class="set-select" hidden></select>
+        <button class="switch" id="remindToggle" type="button" role="switch" aria-checked="false" aria-labelledby="remindLabel"><i></i></button></div>
       <div class="set-row"><span class="ico" data-ico="help"></span><span class="set-l" id="helpRowLabel"></span>
         <button class="set-btn" id="helpBtn" type="button"></button></div>
       <span id="speechStatus" role="status" aria-live="polite" hidden></span>
@@ -1620,6 +1625,7 @@ function addXP(n){
   toast(pgU().goalDone+" · "+pgU().streak(s.n));
  }
  lsSet("poly_daily",d);
+ if(typeof pushSync==="function")pushSync();
  const after=rankInfo().cur;
  if(after.id!==before)toast(pgU().levelUp(after.name),true);
 }
@@ -3340,6 +3346,7 @@ const ICONS={
  help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .9-1 1.6v.5"/><path d="M12 17h.01"/>',
  close:'<path d="M6 6l12 12M18 6 6 18"/>',
  chevron:'<path d="m9 6 6 6-6 6"/>',
+ bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/>',
  share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/>'
 };
 function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
@@ -3426,7 +3433,7 @@ function renderShellText(){
  $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
  const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
  const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)));sc.title=(u.points||"Points")+": "+score;
- fillIcons();renderTopicBar();
+ fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();
 }
 function renderProgressView(){
  const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;
@@ -3516,12 +3523,79 @@ async function shareResult(title,pct,passed){
  try{await navigator.clipboard.writeText(text);toast(g.copied)}catch(e){toast(text)}
 }
 
+// ========== DAILY REMINDERS (Web Push) ==========
+// Off until projectId/apiKey are filled in. Subscriptions are stored in Firestore (collection "subs");
+// .github/workflows/reminders.yml sends the pushes every hour (tools/send-reminders.mjs).
+const PUSH_CONFIG={projectId:"",apiKey:"",vapid:"BHqHq_6dEJdpiYYyj52qWiaCZgJoeW12TGaai1KlvP8KnRyBkVGSCOn6A8r2r5JfA_RBMqzQb9SPy65E2T1_UC0"};
+const PUSH_UI={
+ uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефона для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування"},
+ en:{label:"Reminders",on:h=>"every day at "+h+" if today's goal isn't done yet",off:"I'll remind you to keep your 🔥 streak",denied:"Notifications are blocked. Allow them for Leren.be in your phone settings.",fail:"Couldn't turn on reminders. Check your connection and try again.",ok:"Reminders are on 🔔",time:"Reminder time"},
+ fr:{label:"Rappels",on:h=>"chaque jour à "+h+" si l'objectif du jour n'est pas atteint",off:"je te rappellerai de garder ta série 🔥",denied:"Les notifications sont bloquées. Autorise-les pour Leren.be dans les réglages du téléphone.",fail:"Impossible d'activer les rappels. Vérifie la connexion et réessaie.",ok:"Rappels activés 🔔",time:"Heure du rappel"},
+ ar:{label:"التذكيرات",on:h=>"يوميًا الساعة "+h+" إن لم تحقق هدف اليوم بعد",off:"سأذكّرك بالحفاظ على سلسلتك 🔥",denied:"الإشعارات محظورة. اسمح بها لـ Leren.be في إعدادات الهاتف.",fail:"تعذّر تفعيل التذكيرات. تحقّق من الاتصال وحاول مجددًا.",ok:"تم تفعيل التذكيرات 🔔",time:"وقت التذكير"}
+};
+const pushU=()=>PUSH_UI[uiLang]||PUSH_UI.uk;
+const pushReady=()=>!!(PUSH_CONFIG.projectId&&PUSH_CONFIG.apiKey&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window);
+const pushState=()=>lsGet("leren_push",{on:false,hour:18});
+const hh=h=>String(h).padStart(2,"0")+":00";
+function b64uToBytes(s){const p="=".repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function sha256Hex(t){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+function docUrl(id){return "https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/subs/"+id+"?key="+PUSH_CONFIG.apiKey}
+function pushFields(sub,st){
+ const j=sub.toJSON(),s=lsGet("poly_streak",{n:0,last:""});
+ let tz="Europe/Brussels";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz}catch(e){}
+ const S=v=>({stringValue:String(v)}),I=v=>({integerValue:String(v|0)});
+ return {endpoint:S(j.endpoint),p256dh:S(j.keys.p256dh),auth:S(j.keys.auth),hour:I(st.hour),tz:S(tz),lang:S(uiLang),streak:I(s.n||0),lastActive:S(s.last||"")};
+}
+async function pushWrite(sub,st){
+ const id=await sha256Hex(sub.endpoint),fields=pushFields(sub,st),sig=JSON.stringify(fields);
+ if(st.sig===sig&&st.id===id)return true;
+ const r=await fetch(docUrl(id),{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
+ if(!r.ok)throw new Error("store "+r.status);
+ st.id=id;st.sig=sig;lsSet("leren_push",st);return true;
+}
+async function pushSubscribe(){
+ const reg=await navigator.serviceWorker.ready;
+ return (await reg.pushManager.getSubscription())||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToBytes(PUSH_CONFIG.vapid)});
+}
+async function pushEnable(){
+ const u=pushU(),st=pushState();
+ const perm=await Notification.requestPermission();
+ if(perm!=="granted"){toast(u.denied);return false}
+ try{const sub=await pushSubscribe();st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
+ catch(e){st.on=false;lsSet("leren_push",st);toast(u.fail);return false}
+}
+async function pushDisable(){
+ const st=pushState();st.on=false;
+ try{if(st.id)await fetch(docUrl(st.id),{method:"DELETE"})}catch(e){}
+ try{const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){}
+ delete st.id;delete st.sig;lsSet("leren_push",st);
+}
+let pushTimer=0;
+function pushSync(){ // keeps streak / last activity / language / time up to date on the server
+ if(!pushReady()||!pushState().on||Notification.permission!=="granted")return;
+ clearTimeout(pushTimer);pushTimer=setTimeout(async()=>{try{const st=pushState();await pushWrite(await pushSubscribe(),st)}catch(e){}},1500);
+}
+function renderPushRow(){
+ const row=$("remindRow");if(!row)return;row.hidden=!pushReady();if(row.hidden)return;
+ const u=pushU(),st=pushState(),on=st.on&&Notification.permission==="granted";
+ $("remindLabel").textContent=u.label;$("remindHint").textContent=on?u.on(hh(st.hour)):u.off;
+ const t=$("remindToggle");t.setAttribute("aria-checked",String(on));
+ const sel=$("remindHour");sel.hidden=!on;sel.setAttribute("aria-label",u.time);
+ if(!sel.options.length)for(let h=7;h<=22;h++){const o=document.createElement("option");o.value=h;o.textContent=hh(h);sel.appendChild(o)}
+ sel.value=String(st.hour);
+}
+$("remindToggle").addEventListener("click",async()=>{
+ const t=$("remindToggle");if(t.dataset.busy)return;t.dataset.busy="1";
+ try{if(t.getAttribute("aria-checked")==="true")await pushDisable();else await pushEnable()}finally{delete t.dataset.busy;renderPushRow()}
+});
+$("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Number(e.target.value)||18;lsSet("leren_push",st);renderPushRow();pushSync()});
+
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
- updateHeader();buildNav();newRound();applyView();loadAudioManifest();
+ updateHeader();buildNav();newRound();applyView();loadAudioManifest();pushSync();
 }
 
 if (document.readyState === "loading") {

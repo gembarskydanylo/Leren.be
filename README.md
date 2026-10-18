@@ -53,3 +53,20 @@ python3 -m http.server 8000
 2. У папці репозиторію: `bash tools/make-audio.sh` (≈ 1 600 файлів, 20–40 хв).
 3. Завантаж папку `audio/nl` на GitHub.
 Після додавання нових слів: `node tools/collect-audio-texts.js` (потрібен локальний сервер на :8765), потім знову крок 2.
+
+## Щоденні нагадування (push)
+Як працює: користувач сам вмикає «Нагадування» в ⚙ Налаштуваннях і вибирає годину. Підписка зберігається у Firebase Firestore (колекція `subs`). Робочий процес `.github/workflows/reminders.yml` щогодини запускає `tools/send-reminders.mjs`: тим, у кого зараз вибрана година і ціль дня ще не виконана, надходить одне сповіщення на день (зі згадкою серії 🔥, якщо вона жива). Протерміновані підписки видаляються самі.
+
+Налаштування (один раз):
+1. https://console.firebase.google.com → **Add project** (безкоштовний план Spark, Google Analytics не потрібен).
+2. **Build → Firestore Database → Create database** (production mode, регіон `eur3` або `europe-west1`). Вкладка **Rules** → встав вміст `firestore.rules` → **Publish**.
+3. **Project settings → General → Your apps → Web (</>)** → зареєструй застосунок → скопіюй `projectId` і `apiKey` у `PUSH_CONFIG` в `index.html`.
+4. **Project settings → Service accounts → Generate new private key** → JSON-файл.
+5. GitHub → репозиторій → **Settings → Secrets and variables → Actions → New repository secret**:
+   - `FIREBASE_SA` — увесь вміст JSON-файлу;
+   - `VAPID_PUBLIC` — публічний ключ (такий самий, як `vapid` у `PUSH_CONFIG`);
+   - `VAPID_PRIVATE` — приватний ключ (зберігай лише в секретах).
+6. **Actions → Daily reminders → Run workflow** — перевірка (у журналі: `checked …, sent …`).
+
+Поки `projectId`/`apiKey` порожні, перемикач нагадувань не показується, і жодні дані нікуди не надсилаються.
+У Google Play → «Безпека даних»: «Ідентифікатори пристрою або інші ідентифікатори» — збираються, необов’язково, не передаються третім особам, користувач може видалити (вимкнувши нагадування).

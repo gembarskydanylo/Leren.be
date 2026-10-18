@@ -1,0 +1,23 @@
+rules_version = '2';
+// Leren.be — only the "subs" collection (daily reminder subscriptions).
+// The app may create/replace/delete its own document; nobody can read the list from the app.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /subs/{id} {
+      allow read: if false;
+      allow delete: if id.size() == 64;
+      allow create, update: if id.size() == 64
+        && request.resource.data.keys().hasOnly(['endpoint','p256dh','auth','hour','tz','lang','streak','lastActive','lastSent'])
+        && request.resource.data.endpoint is string && request.resource.data.endpoint.size() < 700
+        && request.resource.data.endpoint.matches('https://.*')
+        && request.resource.data.p256dh is string && request.resource.data.p256dh.size() < 200
+        && request.resource.data.auth is string && request.resource.data.auth.size() < 100
+        && request.resource.data.hour is int && request.resource.data.hour >= 0 && request.resource.data.hour <= 23
+        && request.resource.data.tz is string && request.resource.data.tz.size() < 60
+        && request.resource.data.lang in ['uk','en','fr','ar']
+        && request.resource.data.streak is int && request.resource.data.streak >= 0 && request.resource.data.streak < 10000
+        && request.resource.data.lastActive is string && request.resource.data.lastActive.size() <= 10;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
