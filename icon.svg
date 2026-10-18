@@ -1,8 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#FF8A1F"/>
-  <path d="M92 136c62-22 117-15 164 19v231c-47-34-102-41-164-19z" fill="#fff"/>
-  <path d="M420 136c-62-22-117-15-164 19v231c47-34 102-41 164-19z" fill="#e8ecff"/>
-  <path d="M256 155v231" stroke="#FF8A1F" stroke-width="12" stroke-linecap="round"/>
-  <path d="M126 184c37-8 72-4 103 10M126 226c37-8 72-4 103 10M283 194c31-14 66-18 103-10M283 236c31-14 66-18 103-10" fill="none" stroke="#9aa5ff" stroke-width="10" stroke-linecap="round"/>
-  <circle cx="256" cy="94" r="38" fill="#fff"/><path d="M237 94h38M256 75v38" stroke="#FF8A1F" stroke-width="9" stroke-linecap="round"/>
+ <defs>
+  <clipPath id="ua"><rect x="62" y="82" width="180" height="310" rx="36"/></clipPath>
+  <clipPath id="be"><rect x="270" y="82" width="180" height="310" rx="36"/></clipPath>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#321700" flood-opacity=".24"/></filter>
+ </defs>
+ <rect width="512" height="512" fill="#FFF6EC"/>
+ <circle cx="256" cy="256" r="229" fill="#F7E8D7"/>
+ <g filter="url(#shadow)">
+  <rect x="62" y="82" width="180" height="310" rx="36" fill="#005BBB"/>
+  <g clip-path="url(#ua)"><rect x="62" y="237" width="180" height="155" fill="#FFD500"/></g>
+  <rect x="270" y="82" width="180" height="310" rx="36" fill="#111"/>
+  <g clip-path="url(#be)"><rect x="330" y="82" width="60" height="310" fill="#F7D117"/><rect x="390" y="82" width="60" height="310" fill="#EF3340"/></g>
+ </g>
+ <g filter="url(#shadow)">
+  <path d="M256 269c-39-28-82-33-129-19v133c47-14 90-9 129 19 39-28 82-33 129-19V250c-47-14-90-9-129 19z" fill="#fff" stroke="#EB6A00" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M256 270v131" stroke="#EB6A00" stroke-width="10" stroke-linecap="round"/>
+  <path d="M150 287c28-7 55-5 79 5M150 317c28-7 55-5 79 5M283 292c24-10 51-12 79-5M283 322c24-10 51-12 79-5" fill="none" stroke="#D9A879" stroke-width="8" stroke-linecap="round"/>
+ </g>
+ <path d="M217 440h78" stroke="#EB6A00" stroke-width="12" stroke-linecap="round" opacity=".85"/>
 </svg>
