@@ -15,6 +15,8 @@ const {chromium}=require("playwright");const fs=require("fs");
   VH_STORIES.forEach(st=>st.items.forEach(g=>{add(vhFill(g));add(g.v)}));
   Object.values(SEP).forEach(d=>add(sepFill(d)));
   SENT.forEach(s=>add(sentence(s)));
+  DIALOGUES.forEach(d=>d.lines.forEach(l=>add(l[1])));
+  SPEAK_Q.forEach(q=>{add(q.q);add(q.m)});
   TOETS.forEach(t=>t.questions.forEach(q=>add(toetsSpoken(q))));
   add(speechSampleText());
   return [...T].map(t=>[audioHash(t),t]);

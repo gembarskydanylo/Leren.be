@@ -606,6 +606,87 @@ body.sheet-open{overflow:hidden}
 .grow-modal .goal-list{grid-template-columns:1fr}
 .set-select{flex:none;min-height:40px;padding:0 8px;border-radius:var(--r-sm);border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body);font-variant-numeric:tabular-nums}
 .set-select[hidden]{display:none}
+
+/* ---------- games ---------- */
+.modes-wrapper button{min-width:0}
+.g-top{display:flex;justify-content:flex-start;margin:-6px 0 6px}
+.g-back{border:0;background:none;color:var(--oranje-deep);font:900 14px var(--font-body);padding:6px 2px;cursor:pointer}
+:root[data-theme="dark"] .g-back{color:var(--oranje)}
+.g-home-head h2{margin:0;font-family:var(--font-display);font-size:22px}
+.g-home-head p{margin:4px 0 12px;color:var(--ink-2)}
+.g-week{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:12px 14px;border-radius:var(--r-md);background:var(--surface-2);border:2px solid var(--line);margin-bottom:14px}
+.g-week strong{font-size:15px}.g-week span{grid-column:1;color:var(--ink-2);font-size:13px}
+.g-week .g-dots{grid-row:1/3;grid-column:2;display:flex;gap:5px}
+.g-dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}.g-dots i.on{background:var(--oranje)}
+.g-week.done{border-color:var(--ok)}
+.g-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:132px;padding:14px;text-align:start;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.g-card:active{transform:translateY(var(--depth-sm));box-shadow:none}
+.g-card:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+.g-card .g-ic{font-size:30px;line-height:1}
+.g-card strong{font-size:15.5px;line-height:1.2}
+.g-card .g-s{font-size:12.5px;color:var(--ink-2);line-height:1.3}
+.g-card .g-best{margin-top:auto;font-size:12px;font-weight:800;color:var(--oranje-deep)}
+.g-card.played::after{content:"✓";position:absolute;top:8px;inset-inline-end:10px;width:22px;height:22px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:900}
+.g-card.off{opacity:.5}
+.g-list{display:flex;flex-direction:column;gap:8px}
+.g-pick{justify-content:flex-start;gap:12px;text-align:start}
+.g-pick .g-ic{font-size:22px}
+.g-hint{margin:0 0 10px;color:var(--ink-2);font-size:14px;text-align:center}
+.g-seq{display:flex;flex-direction:column;gap:8px;min-height:20px;margin-bottom:12px}
+.g-line{display:flex;flex-direction:column;gap:2px;max-width:88%;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--ink);text-align:start;font:700 15px var(--font-body);cursor:pointer}
+.g-line small{font-size:11.5px;color:var(--ink-2);font-weight:800}
+.g-line em{font-style:normal;font-size:13px;color:var(--ink-2);font-weight:600}
+.g-line.a{align-self:flex-start;border-end-start-radius:4px}
+.g-line.b{align-self:flex-end;border-end-end-radius:4px;background:var(--surface-2)}
+.g-line.ok{border-color:var(--ok)}
+.g-pool{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:2px dashed var(--line)}
+.g-chip{justify-content:flex-start;text-align:start;min-height:48px;font-size:15px}
+.g-opts-row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.g-seg{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:4px;border-radius:var(--r-md);background:var(--surface-2)}
+.g-seg small{font-weight:800;color:var(--ink-2);padding:0 8px;min-width:70px}
+.g-seg .seg-btn{flex:1 1 auto}
+.g-seg .seg-btn[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--edge),0 0 0 2px var(--oranje) inset}
+.g-chat{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.g-bub{display:flex;flex-direction:column;gap:2px;max-width:85%;padding:9px 13px;border-radius:16px;background:var(--surface-2);cursor:pointer}
+.g-bub small{font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.g-bub em{font-style:normal;font-size:13px;color:var(--ink-2)}
+.g-bub.them{align-self:flex-start;border-end-start-radius:4px}
+.g-bub.me{align-self:flex-end;border-end-end-radius:4px;background:var(--oranje);color:#fff}
+.g-bub.me small,.g-bub.me em{color:rgba(255,255,255,.85)}
+.g-turn{margin:4px 0 10px;font-size:15px;text-align:center}
+.g-built{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:8px;border:2px dashed var(--line);border-radius:var(--r-md);margin-bottom:10px}
+.g-mic{display:flex;flex-direction:column;align-items:center;gap:8px}
+.g-mic-row{justify-content:center}
+.g-mic-btn{min-width:170px}
+.g-mic-btn.rec{animation:speechPulse 1s ease-in-out infinite alternate}
+.g-heard{margin:0;color:var(--ink-2);font-size:14px;text-align:center}
+.g-type{display:flex;gap:8px;width:100%}
+.g-type[hidden]{display:none}
+.g-type input{flex:1;min-width:0;min-height:50px;padding:0 14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);font:700 17px var(--font-body)}
+.g-type input:focus{outline:none;border-color:var(--oranje)}
+.g-bubble{display:inline-block;padding:12px 18px;border-radius:22px;background:var(--surface-2);border:2px solid var(--line)}
+.g-tr{margin:6px 0 4px;color:var(--ink-2)}
+.g-checks{list-style:none;padding:0;margin:6px 0;text-align:start;display:inline-block}
+.g-checks li{font-weight:800;font-size:14px;margin:3px 0}.g-checks .ok{color:var(--ok)}.g-checks .bad{color:var(--be-red)}
+.g-done{text-align:center;font-weight:900;font-size:18px;margin:12px 0}
+.g-big{text-align:center;font:800 54px var(--font-display);margin:10px 0 0}
+.g-blitz{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.g-time{font:800 22px var(--font-display);color:var(--oranje-deep);font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .g-time{color:var(--oranje)}
+.g-score{font-size:18px}
+.g-word{text-align:center;font-size:30px;margin:14px 0 18px;font-family:var(--font-display)}
+.g-mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g-mc{min-height:84px;padding:6px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--oranje);color:#fff;font:800 14px var(--font-body);cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--oranje-deep);overflow-wrap:anywhere}
+.g-mc .g-q{font:800 26px var(--font-display);opacity:.85}
+.g-mc.open{background:var(--surface);color:var(--ink);box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.g-mc.found{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--surface))}
+.g-diff .ok{color:var(--ok);font-weight:800}.g-diff .bad{color:var(--be-red);font-weight:800;text-decoration:underline}
+.g-times{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.g-time-chip{flex:0 1 auto;min-width:90px;font-variant-numeric:tabular-nums}
+.g-story{padding:12px 16px;border-radius:var(--r-md);background:var(--surface-2)}
+.g-story h3{margin:0 0 6px}.g-story p{margin:4px 0;cursor:pointer;font-weight:700}
+@media (max-width:420px){.dock-tx{font-size:10.5px}.g-card{min-height:122px;padding:12px}.g-mc{min-height:76px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -623,9 +704,9 @@ body.sheet-open{overflow:hidden}
   <div class="lesson-modes" id="lessonModes" role="tablist" data-views="lesson"></div>
   <span id="toetsTitle" hidden></span>
 
-  <div class="meta" data-views="lesson toets"><span id="prog"></span><span id="rnd"></span></div>
-  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets"><i id="barfill"></i></div>
-  <section class="card" id="card" aria-live="polite" data-views="lesson toets"></section>
+  <div class="meta" data-views="lesson toets games"><span id="prog"></span><span id="rnd"></span></div>
+  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets games"><i id="barfill"></i></div>
+  <section class="card" id="card" aria-live="polite" data-views="lesson toets games"></section>
 
   <section class="dict-view" id="dictView" data-views="dict" hidden>
     <h2 class="view-title" id="dictTitle"></h2>
@@ -1810,7 +1891,7 @@ function buildNav(){
  allBtn.setAttribute("aria-selected",String(tab==="all"));
  allBtn.onclick=()=>{
   tab="all";
-  if(mode==="toets"){mode=lessonMode;view="lesson"}
+  if(mode==="toets"||view==="games"){mode=lessonMode;view="lesson";cardOwner="lesson"}
   saveStore();
   buildNav();updateModeButtons();
   newRound();closeSheet("topicsSheet");
@@ -1825,7 +1906,7 @@ function buildNav(){
   b.setAttribute("aria-selected",String(isSelected));
   b.onclick=()=>{
    tab=k;
-   if(mode==="toets"){mode=lessonMode;view="lesson"}
+   if(mode==="toets"||view==="games"){mode=lessonMode;view="lesson";cardOwner="lesson"}
    saveStore();
    buildNav();updateModeButtons();
    newRound();closeSheet("topicsSheet");
@@ -2376,6 +2457,30 @@ const VH_STORIES=[
   {t:"Om 22:30 u gaat Bohdan naar huis.",uk:"О 22:30 Богдан іде додому.",en:"At 22:30 Bohdan goes home."},
   {v:"worden",s:"Oksana ___ moe.",ok:"wordt",bad:["word","wort","worden"],r:["dt"],uk:"Оксана втомлюється.",en:"Oksana gets tired."},
   {v:"gaan",s:"Ze ___ slapen. Goedenacht!",ok:"gaat",bad:["gaan","gat","gaatt"],r:["t","irr"],uk:"Вона йде спати. На добраніч!",en:"She goes to bed. Good night!"}
+ ]},
+ {id:"mykola",title:"Een dag van Mykola",items:[
+  {v:"slapen",s:"Het is 6:00 u. Mykola ___ nog.",ok:"slaapt",bad:["slapt","slapen","slaap"],r:["t","vowel"],uk:"Зараз 6:00. Микола ще спить.",en:"It's 6:00. Mykola is still sleeping."},
+  {t:"Hij staat op om 6:30 u.",uk:"Він встає о 6:30.",en:"He gets up at 6:30."},
+  {v:"slapen",s:"De kinderen van Mykola ___ tot 7:00 u.",ok:"slapen",bad:["slaapt","slappen","slaap"],r:["en"],uk:"Діти Миколи сплять до 7:00.",en:"Mykola's children sleep until 7:00."},
+  {v:"hebben",s:"Mykola ___ twee kinderen: een jongen en een meisje.",ok:"heeft",bad:["hebt","heb","hebben"],r:["irr"],uk:"Микола має двох дітей: хлопчика й дівчинку.",en:"Mykola has two children: a boy and a girl."},
+  {v:"heten",s:"Zijn zoon ___ Marko en zijn dochter heet Iryna.",ok:"heet",bad:["heett","heten","het"],r:["tt","vowel"],uk:"Його сина звати Марко, а доньку — Ірина.",en:"His son is called Marko and his daughter Iryna."},
+  {v:"nemen",s:"Mykola ___ een douche om 6:45 u.",ok:"neemt",bad:["nemt","nemen","neem"],r:["t","vowel"],uk:"Микола приймає душ о 6:45.",en:"Mykola takes a shower at 6:45."},
+  {v:"eten",s:"Na de douche ___ Mykola brood en hij drinkt koffie.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу Микола їсть хліб і п'є каву.",en:"After the shower Mykola eats bread and drinks coffee."},
+  {v:"eten",s:"De kinderen ___ cornflakes en ze drinken water.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Діти їдять пластівці й п'ють воду.",en:"The children eat cornflakes and drink water."},
+  {v:"vertrekken",s:"Om 7:45 u ___ Mykola naar zijn werk.",ok:"vertrekt",bad:["vertrekkt","vertrekken","vertrek"],r:["t","dbl"],uk:"О 7:45 Микола вирушає на роботу.",en:"At 7:45 Mykola leaves for work."},
+  {v:"nemen",s:"Marko en Iryna ___ de bus naar school.",ok:"nemen",bad:["neemt","nemmen","neem"],r:["en"],uk:"Марко й Ірина їдуть автобусом до школи.",en:"Marko and Iryna take the bus to school."},
+  {v:"zwemmen",s:"Vandaag doen de kinderen sport op school. Ze ___.",ok:"zwemmen",bad:["zwemt","zwemen","zwemmt"],r:["en"],uk:"Сьогодні в дітей спорт у школі. Вони плавають.",en:"Today the children do sport at school. They swim."},
+  {v:"zwemmen",s:"Mykola ___ niet graag.",ok:"zwemt",bad:["zwemmt","zwemmen","zwem"],r:["t","dbl"],uk:"Микола не любить плавати.",en:"Mykola doesn't like swimming."},
+  {v:"lopen",s:"Hij ___ wel graag.",ok:"loopt",bad:["lopt","lopen","loop"],r:["t","vowel"],uk:"Зате він любить бігати.",en:"But he likes running."},
+  {v:"lezen",s:"De kinderen ___ en schrijven in de klas.",ok:"lezen",bad:["leest","lezzen","lees"],r:["en"],uk:"Діти читають і пишуть у класі.",en:"The children read and write in class."},
+  {v:"spreken",s:"Mykola ___ een beetje Nederlands.",ok:"spreekt",bad:["sprekt","spreken","spreek"],r:["t","vowel"],uk:"Микола трохи розмовляє нідерландською.",en:"Mykola speaks a little Dutch."},
+  {v:"leren",s:"Hij ___ Nederlands in de talenschool CVO.",ok:"leert",bad:["lert","leren","leer"],r:["t","vowel"],uk:"Він вчить нідерландську в мовній школі CVO.",en:"He learns Dutch at the CVO language school."},
+  {v:"komen",s:"Om 16:20 u ___ de kinderen thuis.",ok:"komen",bad:["komt","kommen","koom"],r:["en"],uk:"О 16:20 діти приходять додому.",en:"At 16:20 the children come home."},
+  {v:"spelen",s:"Marko ___ met Lego en Iryna speelt met haar pop.",ok:"speelt",bad:["spelt","spelen","speel"],r:["t","vowel"],uk:"Марко грається з Lego, а Ірина — зі своєю лялькою.",en:"Marko plays with Lego and Iryna plays with her doll."},
+  {v:"verjaren",s:"Vandaag is een speciale dag: Iryna ___!",ok:"verjaart",bad:["verjart","verjaren","verjaar"],r:["t","vowel"],uk:"Сьогодні особливий день: в Ірини день народження!",en:"Today is a special day: it's Iryna's birthday!"},
+  {v:"geven",s:"Mykola ___ een cadeau aan zijn dochter.",ok:"geeft",bad:["geevt","geven","geef"],r:["t","vf"],uk:"Микола дарує доньці подарунок.",en:"Mykola gives his daughter a present."},
+  {v:"lezen",s:"Na het feest ___ Mykola de krant tot 23:30 u.",ok:"leest",bad:["leezt","lezen","lees"],r:["t","zs"],uk:"Після свята Микола читає газету до 23:30.",en:"After the party Mykola reads the newspaper until 23:30."},
+  {t:"Om 23:45 u gaat hij slapen.",uk:"О 23:45 він лягає спати.",en:"At 23:45 he goes to bed."}
  ]}
 ];
 VH_STORIES.forEach(st=>{let n=0;st.items.forEach((it,i)=>{it.i=i;if(it.v)it.n=++n});st.gaps=st.items.filter(it=>it.v)});
@@ -3255,6 +3360,7 @@ const DOCK={uk:{study:"Вчити",quiz:"Тест",audio:"Слухати",build:
 function updateModeButtons(){
  if(mode==="toets"&&view==="lesson")view="toets";
  if(mode!=="toets"&&view==="toets")view="lesson";
+ if(view==="games"&&mode==="toets")view="toets";
  if(mode!=="toets"&&LESSON_MODES().includes(mode))lessonMode=mode;
  renderDock();renderLessonModes();renderTopicBar();applyView();
 }
@@ -3347,6 +3453,7 @@ const ICONS={
  close:'<path d="M6 6l12 12M18 6 6 18"/>',
  chevron:'<path d="m9 6 6 6-6 6"/>',
  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/>',
+ games:'<rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.5" cy="13.8" r="1" fill="currentColor"/>',
  share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/>'
 };
 function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
@@ -3367,9 +3474,11 @@ function applyView(){
  document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
 }
 function setView(v){
- const prev=view;view=v;
- if(v==="toets"){mode="toets";updateModeButtons();newRound()}
- else if(v==="lesson"){const need=mode!==lessonMode;mode=lessonMode;updateModeButtons();if(need)newRound()}
+ const prev=view;view=v;if(typeof gStop==="function")gStop();
+ const wasGames=cardOwner==="games";
+ if(v==="toets"){cardOwner="lesson";mode="toets";updateModeButtons();newRound()}
+ else if(v==="lesson"){const need=mode!==lessonMode||wasGames;cardOwner="lesson";mode=lessonMode;updateModeButtons();if(need)newRound()}
+ else if(v==="games"){if(mode==="toets")mode=lessonMode;updateModeButtons();renderGamesHome()}
  else{updateModeButtons();
   if(v==="dict"){const i=$("searchInput");i.placeholder=getUI().searchPh||"Zoek een woord…";runSearch();if(!matchMedia("(pointer:coarse)").matches)setTimeout(()=>{try{i.focus({preventScroll:true})}catch(e){}},50)}
   if(v==="progress")renderProgressView()}
@@ -3377,7 +3486,7 @@ function setView(v){
 }
 function renderDock(){
  const u=navU(),wrap=$("modeButtons");if(!wrap)return;wrap.replaceChildren();
- [["lesson",u.lesson],["toets",u.toets],["dict",u.dict],["progress",u.progress]].forEach(([v,label])=>{
+ [["lesson",u.lesson],["games",gU().games],["toets",u.toets],["dict",u.dict],["progress",u.progress]].forEach(([v,label])=>{
   const b=el("button",v===view?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
   if(v===view)b.setAttribute("aria-current","page");
   b.append(ico(v,"dock-ic"),el("span","dock-tx",label));
@@ -3590,6 +3699,443 @@ $("remindToggle").addEventListener("click",async()=>{
 });
 $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Number(e.target.value)||18;lsSet("leren_push",st);renderPushRow();pushSync()});
 
+// ========== GAMES: dialogue puzzle, role-play, speaking, blitz, memory, dictation, my day ==========
+const G_UI={
+ uk:{games:"Ігри",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
+  dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Memory",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
+  pick:"Обери діалог",order:"Натискай репліки по порядку — від першої до останньої",check:"Перевірити",again:"Ще раз",wrongOrder:"Майже! Зелені репліки на місці, решту переставимо.",solved:"Правильно! Ось увесь діалог:",play:"▶ Прослухати діалог",clear:"Очистити",
+  role:"Твоя роль",level:"Рівень",l1:"Вибрати",l2:"Скласти",l3:"Сказати",yourTurn:"Твоя черга:",choose:"Обери, що сказати",build:"Склади репліку з карток",say:"Натисни 🎤 і скажи",mic:"🎤 Говорити",listening:"Слухаю…",type:"⌨ Написати",send:"Готово",heard:"Почуто:",tryAgain:"Спробуй ще раз",noMic:"Розпізнавання мови недоступне тут — напиши відповідь.",micDenied:"Немає доступу до мікрофона. Дозволь його в налаштуваннях або напиши відповідь.",wellDone:"Чудова розмова! 🎉",
+  spQ:"Питання",model:"Приклад відповіді",ok:"Правильно!",chkIk:"є «ik»",chkVerb:v=>"дієслово «"+v+"» поруч з «ik»",chkPart:p=>"«"+p+"» у кінці речення",chkForm:(w,v)=>"з «ik» без -t: «ik "+v+"», а не «"+w+"»",chkInf:(w,v)=>"не інфінітив «"+w+"», а «ik "+v+"»",chkLen:"повне речення (3+ слова)",next:"Далі",
+  time:"Час!",score:"Рахунок",start:"Почати",moves:"Ходів",found:"Знайдено всі пари!",
+  write:"Напиши, що почув(-ла)",slow:"🐢 Повільно",correctIs:"Правильно:",
+  mdPick:"О котрій?",mdBuild:"Склади речення",mdRule:"Час на початку → спочатку дієслово, потім «ik»: Om zeven uur sta ik op.",mdAll:"Мій день",
+  pts:n=>"+"+n+" ⭐"},
+ en:{games:"Games",title:"Games",sub:"Speak, listen and play — like in class",back:"← Games",best:"Best",week:"Weekly challenge",weekT:"Play 5 different games this week to earn +100 points",weekDone:"Weekly challenge complete! +100 ⭐",nlOnly:"This game is for Dutch. Choose 🇧🇪 BE in Settings.",
+  dlg:"Dialogue puzzle",dlgS:"Put the lines in the right order",rp:"Role-play",rpS:"Hold the conversation: you are one of the two people",sp:"Answer the question",spS:"Say your answer into the microphone",bl:"60-second blitz",blS:"How many words in one minute?",mm:"Memory",mmS:"Find the pairs: word and translation",dc:"Dictation",dcS:"Listen and type the sentence",md:"My day",mdS:"Tell about your day: “Om 7 uur sta ik op”",
+  pick:"Choose a dialogue",order:"Tap the lines in order — from first to last",check:"Check",again:"Again",wrongOrder:"Almost! Green lines are in place, let's fix the rest.",solved:"Correct! Here is the whole dialogue:",play:"▶ Play dialogue",clear:"Clear",
+  role:"Your role",level:"Level",l1:"Choose",l2:"Build",l3:"Speak",yourTurn:"Your turn:",choose:"Choose what to say",build:"Build the line from cards",say:"Tap 🎤 and speak",mic:"🎤 Speak",listening:"Listening…",type:"⌨ Type",send:"Done",heard:"Heard:",tryAgain:"Try again",noMic:"Speech recognition isn't available here — type your answer.",micDenied:"No microphone access. Allow it in settings or type your answer.",wellDone:"Great conversation! 🎉",
+  spQ:"Question",model:"Example answer",ok:"Correct!",chkIk:"contains “ik”",chkVerb:v=>"verb “"+v+"” next to “ik”",chkPart:p=>"“"+p+"” at the end",chkForm:(w,v)=>"with “ik” no -t: “ik "+v+"”, not “"+w+"”",chkInf:(w,v)=>"not the infinitive “"+w+"” but “ik "+v+"”",chkLen:"a full sentence (3+ words)",next:"Next",
+  time:"Time!",score:"Score",start:"Start",moves:"Moves",found:"All pairs found!",
+  write:"Type what you heard",slow:"🐢 Slow",correctIs:"Correct:",
+  mdPick:"What time?",mdBuild:"Build the sentence",mdRule:"Time first → verb, then “ik”: Om zeven uur sta ik op.",mdAll:"My day",
+  pts:n=>"+"+n+" ⭐"},
+ fr:{games:"Jeux",title:"Jeux",sub:"Parle, écoute et joue — comme en classe",back:"← Jeux",best:"Record",week:"Défi de la semaine",weekT:"Joue à 5 jeux différents cette semaine : +100 points",weekDone:"Défi de la semaine réussi ! +100 ⭐",nlOnly:"Ce jeu est pour le néerlandais. Choisis 🇧🇪 BE dans les réglages.",
+  dlg:"Puzzle de dialogue",dlgS:"Remets les répliques dans l'ordre",rp:"Jeu de rôle",rpS:"Mène la conversation : tu es l'une des deux personnes",sp:"Réponds à la question",spS:"Dis ta réponse au micro",bl:"Blitz 60 secondes",blS:"Combien de mots en une minute ?",mm:"Memory",mmS:"Trouve les paires : mot et traduction",dc:"Dictée",dcS:"Écoute et écris la phrase",md:"Ma journée",mdS:"Raconte ta journée : « Om 7 uur sta ik op »",
+  pick:"Choisis un dialogue",order:"Touche les répliques dans l'ordre",check:"Vérifier",again:"Encore",wrongOrder:"Presque ! Les répliques vertes sont bien placées.",solved:"Correct ! Voici tout le dialogue :",play:"▶ Écouter le dialogue",clear:"Effacer",
+  role:"Ton rôle",level:"Niveau",l1:"Choisir",l2:"Construire",l3:"Parler",yourTurn:"À toi :",choose:"Choisis quoi dire",build:"Construis la réplique",say:"Touche 🎤 et parle",mic:"🎤 Parler",listening:"J'écoute…",type:"⌨ Écrire",send:"OK",heard:"Entendu :",tryAgain:"Réessaie",noMic:"Reconnaissance vocale indisponible — écris ta réponse.",micDenied:"Pas d'accès au micro. Autorise-le ou écris ta réponse.",wellDone:"Belle conversation ! 🎉",
+  spQ:"Question",model:"Exemple de réponse",ok:"Correct !",chkIk:"contient « ik »",chkVerb:v=>"verbe « "+v+" » à côté de « ik »",chkPart:p=>"« "+p+" » à la fin",chkForm:(w,v)=>"avec « ik » sans -t : « ik "+v+" », pas « "+w+" »",chkInf:(w,v)=>"pas l'infinitif « "+w+" » mais « ik "+v+" »",chkLen:"une phrase complète (3+ mots)",next:"Suivant",
+  time:"Temps !",score:"Score",start:"Commencer",moves:"Coups",found:"Toutes les paires trouvées !",
+  write:"Écris ce que tu entends",slow:"🐢 Lent",correctIs:"Correct :",
+  mdPick:"À quelle heure ?",mdBuild:"Construis la phrase",mdRule:"L'heure d'abord → le verbe, puis « ik » : Om zeven uur sta ik op.",mdAll:"Ma journée",
+  pts:n=>"+"+n+" ⭐"},
+ ar:{games:"ألعاب",title:"ألعاب",sub:"تكلّم واستمع والعب — كما في الصف",back:"→ الألعاب",best:"الأفضل",week:"تحدّي الأسبوع",weekT:"العب 5 ألعاب مختلفة هذا الأسبوع لتربح 100 نقطة",weekDone:"أنجزت تحدّي الأسبوع! +100 ⭐",nlOnly:"هذه اللعبة للهولندية. اختر 🇧🇪 BE في الإعدادات.",
+  dlg:"لغز الحوار",dlgS:"رتّب الجمل بالترتيب الصحيح",rp:"لعب الأدوار",rpS:"أدِر الحوار: أنت أحد الشخصين",sp:"أجب عن السؤال",spS:"قل إجابتك في الميكروفون",bl:"تحدّي 60 ثانية",blS:"كم كلمة في دقيقة؟",mm:"الذاكرة",mmS:"اعثر على الأزواج: الكلمة والترجمة",dc:"إملاء",dcS:"استمع واكتب الجملة",md:"يومي",mdS:"احكِ عن يومك: «Om 7 uur sta ik op»",
+  pick:"اختر حوارًا",order:"اضغط الجمل بالترتيب",check:"تحقّق",again:"مرة أخرى",wrongOrder:"تقريبًا! الجمل الخضراء في مكانها.",solved:"صحيح! هذا الحوار كاملًا:",play:"▶ استمع إلى الحوار",clear:"مسح",
+  role:"دورك",level:"المستوى",l1:"اختيار",l2:"تركيب",l3:"نطق",yourTurn:"دورك:",choose:"اختر ما تقوله",build:"ركّب الجملة من البطاقات",say:"اضغط 🎤 وتكلّم",mic:"🎤 تكلّم",listening:"أستمع…",type:"⌨ اكتب",send:"تم",heard:"سمعت:",tryAgain:"حاول مرة أخرى",noMic:"التعرف على الكلام غير متاح هنا — اكتب إجابتك.",micDenied:"لا يوجد إذن للميكروفون. اسمح به أو اكتب إجابتك.",wellDone:"حوار رائع! 🎉",
+  spQ:"السؤال",model:"مثال للإجابة",ok:"صحيح!",chkIk:"فيها «ik»",chkVerb:v=>"الفعل «"+v+"» بجانب «ik»",chkPart:p=>"«"+p+"» في النهاية",chkForm:(w,v)=>"مع «ik» بدون -t: «ik "+v+"» وليس «"+w+"»",chkInf:(w,v)=>"ليس المصدر «"+w+"» بل «ik "+v+"»",chkLen:"جملة كاملة (3 كلمات أو أكثر)",next:"التالي",
+  time:"انتهى الوقت!",score:"النتيجة",start:"ابدأ",moves:"المحاولات",found:"وجدت كل الأزواج!",
+  write:"اكتب ما سمعته",slow:"🐢 ببطء",correctIs:"الصحيح:",
+  mdPick:"في أي ساعة؟",mdBuild:"ركّب الجملة",mdRule:"الوقت أولًا ← ثم الفعل ثم «ik»: Om zeven uur sta ik op.",mdAll:"يومي",
+  pts:n=>"+"+n+" ⭐"}
+};
+const gU=()=>G_UI[uiLang]||G_UI.uk;
+const gTr=o=>o[uiLang]||o.en||o.uk||"";
+
+// --- dialogues (A/B), from CVO class material + everyday situations ---
+const DIALOGUES=[
+ {id:"cinema",icon:"🎬",title:{uk:"Підемо в кіно?",en:"Going to the cinema?"},a:"Suzana",b:"Sina",hint:"🎬 morgenavond · werken",lines:[
+  ["A","Dag Sina! Alles goed?","Привіт, Сіно! Усе добре?","Hi Sina! All good?"],
+  ["B","Ja hoor! En met jou?","Так! А в тебе?","Yes! And you?"],
+  ["A","Prima! Zeg, ik ga morgenavond naar de cinema. Ga je mee?","Чудово! Слухай, я завтра ввечері йду в кіно. Підеш зі мною?","Great! Listen, I'm going to the cinema tomorrow evening. Are you coming?"],
+  ["B","Het spijt me. Morgenavond kan ik niet. Ik moet werken.","Вибач. Завтра ввечері я не можу. Мені треба працювати.","Sorry. I can't tomorrow evening. I have to work."],
+  ["A","Spijtig! Een andere keer misschien. Tot ziens.","Шкода! Може, іншим разом. До побачення.","Too bad! Maybe another time. Goodbye."],
+  ["B","Tot ziens, Suzana!","До побачення, Сузано!","Bye, Suzana!"]]},
+ {id:"zee",icon:"🌊",title:{uk:"Поїдемо на море",en:"Going to the sea"},a:"Olena",b:"Tom",hint:"🌊 zondag · bij mij thuis · om tien uur",lines:[
+  ["A","Ik ga zondag naar de zee. Ga je mee?","У неділю я їду на море. Поїдеш зі мною?","I'm going to the sea on Sunday. Are you coming?"],
+  ["B","Ja, dat is goed. Waar spreken we af?","Так, добре. Де зустрінемось?","Yes, fine. Where shall we meet?"],
+  ["A","Bij mij thuis.","У мене вдома.","At my place."],
+  ["B","Hoe laat?","О котрій?","What time?"],
+  ["A","Om tien uur.","О десятій.","At ten o'clock."],
+  ["B","Dat is goed. Tot zondag!","Добре. До неділі!","Fine. See you on Sunday!"]]},
+ {id:"bakker",icon:"🥖",title:{uk:"У пекарні",en:"At the bakery"},a:"Bakker",b:"Klant",hint:"🥖 bruin brood · gesneden · €2,50",lines:[
+  ["A","Goedemorgen, wat mag het zijn?","Доброго ранку, що бажаєте?","Good morning, what would you like?"],
+  ["B","Een bruin brood, alstublieft.","Сірий хліб, будь ласка.","A brown bread, please."],
+  ["A","Gesneden?","Нарізаний?","Sliced?"],
+  ["B","Ja, graag. Hoeveel kost het?","Так, будь ласка. Скільки коштує?","Yes, please. How much is it?"],
+  ["A","Twee euro vijftig.","Два євро п'ятдесят.","Two euros fifty."],
+  ["B","Alstublieft. Dank u wel, tot ziens!","Ось, будь ласка. Дякую, до побачення!","Here you are. Thank you, goodbye!"]]},
+ {id:"dokter",icon:"🩺",title:{uk:"Запис до лікаря",en:"Doctor's appointment"},a:"Praktijk",b:"Patiënt",hint:"🩺 koorts · hoofdpijn · morgen om tien uur",lines:[
+  ["A","Dokterspraktijk, goedemiddag.","Лікарська практика, добрий день.","Doctor's office, good afternoon."],
+  ["B","Goedemiddag, ik wil graag een afspraak maken.","Добрий день, я хотів би записатися на прийом.","Good afternoon, I'd like to make an appointment."],
+  ["A","Wat is het probleem?","Що вас турбує?","What is the problem?"],
+  ["B","Ik heb koorts en hoofdpijn.","У мене температура й болить голова.","I have a fever and a headache."],
+  ["A","Kunt u morgen om tien uur komen?","Можете прийти завтра о десятій?","Can you come tomorrow at ten?"],
+  ["B","Ja, dat is goed. Dank u wel.","Так, добре. Дякую.","Yes, that's fine. Thank you."]]},
+ {id:"kennis",icon:"👋",title:{uk:"Знайомство",en:"Getting to know each other"},a:"Olena",b:"Tom",hint:"👋 Oekraïne · België · twee jaar",lines:[
+  ["A","Hallo, ik ben Olena. Hoe heet jij?","Привіт, я Олена. Як тебе звати?","Hi, I'm Olena. What's your name?"],
+  ["B","Ik heet Tom. Waar kom je vandaan?","Мене звати Том. Звідки ти?","My name is Tom. Where are you from?"],
+  ["A","Ik kom uit Oekraïne. En jij?","Я з України. А ти?","I'm from Ukraine. And you?"],
+  ["B","Ik kom uit België. Woon je hier al lang?","Я з Бельгії. Ти давно тут живеш?","I'm from Belgium. Have you lived here long?"],
+  ["A","Ik woon hier al twee jaar.","Я живу тут уже два роки.","I've lived here for two years."],
+  ["B","Leuk je te leren kennen!","Приємно познайомитися!","Nice to meet you!"]]},
+ {id:"bus",icon:"🚌",title:{uk:"На зупинці",en:"At the bus stop"},a:"Reiziger",b:"Chauffeur",hint:"🚌 station · lijn 3 · aan de overkant",lines:[
+  ["A","Goedendag, gaat deze bus naar het station?","Добрий день, цей автобус їде до вокзалу?","Hello, does this bus go to the station?"],
+  ["B","Nee, u moet lijn drie nemen.","Ні, вам потрібен третій маршрут.","No, you have to take line three."],
+  ["A","Waar is de halte van lijn drie?","Де зупинка третього маршруту?","Where is the stop for line three?"],
+  ["B","Daar, aan de overkant.","Там, на тому боці вулиці.","Over there, across the street."],
+  ["A","Dank u wel!","Дуже дякую!","Thank you!"],
+  ["B","Graag gedaan.","Будь ласка.","You're welcome."]]},
+ {id:"school",icon:"🏫",title:{uk:"Запізнився на урок",en:"Late for class"},a:"Cursist",b:"Juf",hint:"🏫 te laat · de bus · pagina twaalf",lines:[
+  ["A","Dag juf! Sorry, ik ben te laat.","Добрий день, пані вчителько! Вибачте, я запізнився.","Hello teacher! Sorry, I'm late."],
+  ["B","Geen probleem. Waarom ben je te laat?","Нічого страшного. Чому ти запізнився?","No problem. Why are you late?"],
+  ["A","De bus had vertraging.","Автобус затримався.","The bus was delayed."],
+  ["B","Oké. Neem je boek, pagina twaalf.","Добре. Візьми книжку, сторінка дванадцять.","Okay. Take your book, page twelve."],
+  ["A","Dank u, juf.","Дякую, пані вчителько.","Thank you, teacher."]]}
+];
+const dlgLineTr=l=>uiLang==="uk"?l[2]:l[3];
+
+// --- speaking questions (class "bubbles") ---
+const SPEAK_Q=[
+ {q:"Hoe laat sta jij op?",uk:"О котрій ти встаєш?",en:"What time do you get up?",v:"sta",he:"staat",p:"op",inf:"staan",m:"Ik sta om zeven uur op."},
+ {q:"Hoe laat begin jij te werken?",uk:"О котрій ти починаєш працювати?",en:"What time do you start work?",v:"begin",inf:"beginnen",m:"Ik begin om negen uur te werken."},
+ {q:"Poets jij elke dag?",uk:"Ти прибираєш щодня?",en:"Do you clean every day?",v:"poets",inf:"poetsen",m:"Ja, ik poets elke dag."},
+ {q:"Stofzuig jij graag?",uk:"Ти любиш пилососити?",en:"Do you like vacuuming?",v:"stofzuig",inf:"stofzuigen",m:"Nee, ik stofzuig niet graag."},
+ {q:"Op welke dag doe jij boodschappen?",uk:"У який день ти робиш покупки?",en:"On which day do you do the shopping?",v:"doe",inf:"doen",m:"Ik doe op zaterdag boodschappen."},
+ {q:"Tot hoe laat werk jij?",uk:"До котрої ти працюєш?",en:"Until what time do you work?",v:"werk",inf:"werken",m:"Ik werk tot vijf uur."},
+ {q:"Hoe laat vertrek jij naar school?",uk:"О котрій ти виходиш до школи?",en:"What time do you leave for school?",v:"vertrek",inf:"vertrekken",m:"Ik vertrek om acht uur naar school."},
+ {q:"Wat doe jij 's avonds?",uk:"Що ти робиш увечері?",en:"What do you do in the evening?",open:true,m:"'s Avonds kijk ik tv."},
+ {q:"Hoe laat ga jij slapen?",uk:"О котрій ти лягаєш спати?",en:"What time do you go to bed?",v:"ga",he:"gaat",inf:"gaan",m:"Ik ga om elf uur slapen."},
+ {q:"Kijk jij graag naar de tv?",uk:"Ти любиш дивитися телевізор?",en:"Do you like watching TV?",v:"kijk",inf:"kijken",m:"Ja, ik kijk graag naar de tv."},
+ {q:"Hoe laat ontbijt jij?",uk:"О котрій ти снідаєш?",en:"What time do you have breakfast?",v:"ontbijt",inf:"ontbijten",m:"Ik ontbijt om half acht."},
+ {q:"Zwem jij graag?",uk:"Ти любиш плавати?",en:"Do you like swimming?",v:"zwem",inf:"zwemmen",m:"Nee, ik zwem niet graag."},
+ {q:"Wie brengt jouw kinderen naar school?",uk:"Хто відводить твоїх дітей до школи?",en:"Who takes your children to school?",v:"breng",inf:"brengen",alt:"brengt",m:"Ik breng mijn kinderen naar school."},
+ {q:"Wat doe jij graag?",uk:"Що ти любиш робити?",en:"What do you like doing?",open:true,m:"Ik lees graag."},
+ {q:"Lees jij elke dag de krant?",uk:"Ти щодня читаєш газету?",en:"Do you read the newspaper every day?",v:"lees",inf:"lezen",m:"Nee, ik lees niet elke dag de krant."},
+ {q:"Loop jij graag?",uk:"Ти любиш бігати?",en:"Do you like running?",v:"loop",inf:"lopen",m:"Ja, ik loop graag."},
+ {q:"Leer jij graag Nederlands?",uk:"Ти любиш вчити нідерландську?",en:"Do you like learning Dutch?",v:"leer",inf:"leren",m:"Ja, ik leer graag Nederlands."},
+ {q:"Wanneer eet jij een warme maaltijd?",uk:"Коли ти їси гарячу їжу?",en:"When do you have a hot meal?",v:"eet",inf:"eten",m:"Ik eet om zes uur een warme maaltijd."}
+];
+
+// --- my day ---
+const NL_NUM=["twaalf","een","twee","drie","vier","vijf","zes","zeven","acht","negen","tien","elf","twaalf"];
+function nlTime(h,m){const H=h%12;if(m===30)return "half "+NL_NUM[(H%12)+1];if(m===15)return "kwart over "+NL_NUM[H||12];if(m===45)return "kwart voor "+NL_NUM[(H%12)+1];return NL_NUM[H||12]+" uur"}
+const MYDAY=[
+ {icon:"⏰",uk:"встаю",en:"I get up",times:[[6,0],[6,30],[7,0],[7,30]],v:"sta",rest:["op"]},
+ {icon:"🥐",uk:"снідаю",en:"I have breakfast",times:[[7,0],[7,30],[8,0]],v:"ontbijt",rest:[]},
+ {icon:"🚌",uk:"виходжу до школи",en:"I leave for school",times:[[8,0],[8,30],[9,0]],v:"vertrek",rest:["naar","school"]},
+ {icon:"🥪",uk:"обідаю",en:"I have lunch",times:[[12,0],[12,30],[13,0]],v:"eet",rest:["mijn","lunch"]},
+ {icon:"🏠",uk:"приходжу додому",en:"I come home",times:[[15,30],[16,0],[17,0],[18,0]],v:"kom",rest:["thuis"]},
+ {icon:"🍲",uk:"готую їсти",en:"I cook",times:[[17,30],[18,0],[18,30]],v:"kook",rest:[]},
+ {icon:"📺",uk:"дивлюся телевізор",en:"I watch TV",times:[[19,30],[20,0],[21,0]],v:"kijk",rest:["tv"]},
+ {icon:"😴",uk:"лягаю спати",en:"I go to bed",times:[[22,0],[22,30],[23,0]],v:"ga",rest:["slapen"]}
+];
+
+// --- shared state & helpers ---
+let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
+const GAMES=[["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true]];
+const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
+function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
+function gRecords(){return lsGet("leren_games",{})}
+function gSetRecord(k,v,lower){const r=gRecords();if(r[k]==null||(lower?v<r[k]:v>r[k])){r[k]=v;lsSet("leren_games",r);return true}return false}
+function isoWeek(d=new Date()){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-W"+Math.ceil(((t-y)/864e5+1)/7)}
+function weekState(){const w=lsGet("leren_week",{});return w.w===isoWeek()?w:{w:isoWeek(),played:[],done:false}}
+function gameDone(id,xp){
+ if(xp>0)addXP(xp);
+ const w=weekState();if(!w.played.includes(id))w.played.push(id);
+ if(!w.done&&w.played.length>=5){w.done=true;addXP(100);toast(gU().weekDone,true)}
+ lsSet("leren_week",w);
+}
+function gHead(title,sub,keep){
+ if(!keep)gStop();cardOwner="games";
+ $("prog").textContent=title;$("rnd").textContent=sub||"";$("barfill").style.width="0%";
+ const card=$("card");card.replaceChildren();
+ const top=el("div","g-top");const back=el("button","g-back",gU().back);back.type="button";back.onclick=renderGamesHome;top.appendChild(back);card.appendChild(top);
+ return card;
+}
+function gBar(p){$("barfill").style.width=Math.round(Math.max(0,Math.min(1,p))*100)+"%"}
+function speakSeq(lines,i=0){ // dialogue with two voices
+ try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(audioEl){audioEl.pause();audioEl=null}
+  const voices=s.getVoices().filter(v=>v.lang.toLowerCase().startsWith("nl"));
+  lines.forEach(([who,t])=>{const u=new SpeechSynthesisUtterance(t);u.lang="nl-BE";u.rate=.8;
+   if(voices.length>1)u.voice=voices[who==="A"?0:1];else{const v=voices[0];if(v)u.voice=v;u.pitch=who==="A"?1.15:.8}
+   s.speak(u)});
+ }catch(e){}
+}
+function saySlow(t){try{const s=window.speechSynthesis;s.cancel();if(audioEl){audioEl.pause();audioEl=null}const u=new SpeechSynthesisUtterance(t);u.lang=speechLang();u.rate=.5;const v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith("nl"));if(v)u.voice=v;s.speak(u)}catch(e){}}
+function listenOnce(onText,onFail){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){onFail("unsupported");return}
+ try{try{window.speechSynthesis.cancel()}catch(e){}
+  const r=new SR();gRec=r;r.lang="nl-BE";r.interimResults=false;r.maxAlternatives=4;let got=false;
+  r.onresult=e=>{got=true;onText([...e.results[0]].map(a=>a.transcript))};
+  r.onerror=e=>{got=true;onFail(e.error||"error")};
+  r.onend=()=>{gRec=null;if(!got)onFail("no-speech")};
+  r.start();
+ }catch(e){onFail("error")}
+}
+function micBox(onAnswer){ // mic button + typing fallback; onAnswer(alternatives[])
+ const g=gU(),box=el("div","g-mic"),st=el("p","g-heard");
+ const mic=el("button","btn primary g-mic-btn",g.mic);mic.type="button";
+ const typeB=el("button","btn",g.type);typeB.type="button";
+ const form=el("form","g-type");form.hidden=true;const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.setAttribute("aria-label",g.write);
+ const ok=el("button","btn primary",g.send);ok.type="submit";form.append(inp,ok);
+ form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())onAnswer([inp.value])};
+ const showType=msg=>{form.hidden=false;if(msg)st.textContent=msg;setTimeout(()=>inp.focus(),30)};
+ typeB.onclick=()=>showType();
+ const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+ if(!hasSR){mic.hidden=true;showType(g.noMic)}
+ mic.onclick=()=>{mic.disabled=true;mic.textContent=g.listening;mic.classList.add("rec");
+  listenOnce(alts=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");st.textContent=g.heard+" «"+alts[0]+"»";onAnswer(alts)},
+   err=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");if(err==="not-allowed"||err==="service-not-allowed")showType(g.micDenied);else if(err==="no-speech"||err==="aborted")st.textContent=g.tryAgain;else showType(g.noMic)})};
+ const row=el("div","row g-mic-row");row.append(mic,typeB);box.append(row,st,form);return box;
+}
+
+// --- games home ---
+function renderGamesHome(){
+ gStop();cardOwner="games";const g=gU(),rec=gRecords(),w=weekState();
+ $("prog").textContent=g.title;$("rnd").textContent="";gBar(Math.min(1,w.played.length/5));
+ const card=$("card");card.replaceChildren();
+ const head=el("div","g-home-head");head.append(el("h2","",g.title),el("p","",g.sub));card.appendChild(head);
+ const wk=el("div","g-week"+(w.done?" done":""));
+ const dots=el("div","g-dots");for(let i=0;i<5;i++)dots.appendChild(el("i",i<w.played.length?"on":""));
+ wk.append(el("strong","",(w.done?"✅ ":"🏆 ")+g.week),el("span","",g.weekT),dots);card.appendChild(wk);
+ const grid=el("div","g-grid");
+ GAMES.forEach(([id,icon,nl])=>{
+  const b=el("button","g-card");b.type="button";b.dataset.game=id;
+  const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
+  b.append(el("span","g-ic",icon),el("strong","",g[id]),el("span","g-s",g[id+"S"]));
+  if(best)b.appendChild(el("span","g-best","🏅 "+best));
+  if(w.played.includes(id))b.classList.add("played");
+  if(nl&&targetLang!=="nl")b.classList.add("off");
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart})[id]()};
+  grid.appendChild(b);
+ });
+ card.appendChild(grid);
+}
+
+// --- 1. dialogue puzzle ---
+function dlgPick(){
+ const g=gU(),card=gHead(g.dlg,g.pick);
+ const list=el("div","g-list");
+ DIALOGUES.forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)));b.onclick=()=>dlgStart(d);list.appendChild(b)});
+ card.appendChild(list);
+}
+function dlgStart(d){gState={d,order:shuffle(d.lines.map((_,i)=>i)),placed:[],locked:[],tries:0,done:false};while(gState.order.every((v,i)=>v===i))gState.order=shuffle(gState.order);dlgRender()}
+function dlgRender(){
+ const g=gU(),s=gState,d=s.d,card=gHead(g.dlg,gTr(d.title));
+ card.appendChild(el("p","g-hint",s.done?g.solved:g.order));
+ const seq=el("div","g-seq");
+ s.placed.forEach((li,pos)=>{const l=d.lines[li];const b=el("button","g-line "+(l[0]==="A"?"a":"b")+(s.locked.includes(pos)||s.done?" ok":""));b.type="button";
+  b.append(el("small","",(l[0]==="A"?d.a:d.b)),tgt(el("span","",l[1])));
+  if(s.done)b.appendChild(el("em","",dlgLineTr(l)));
+  b.onclick=()=>{if(s.done){say(l[1],b);return}if(s.locked.includes(pos))return;s.placed.splice(pos);s.locked=s.locked.filter(x=>x<pos);dlgRender()};
+  seq.appendChild(b)});
+ card.appendChild(seq);
+ if(!s.done){
+  const pool=el("div","g-pool");
+  s.order.filter(i=>!s.placed.includes(i)).forEach(i=>{const l=d.lines[i];const b=el("button","opt g-chip");b.type="button";b.appendChild(tgt(el("span","",l[1])));b.onclick=()=>{s.placed.push(i);if(s.placed.length===d.lines.length)dlgCheck();else dlgRender()};pool.appendChild(b)});
+  card.appendChild(pool);
+  const row=el("div","row");const c=el("button","btn",g.clear);c.type="button";c.disabled=!s.placed.length;c.onclick=()=>{s.placed=s.placed.filter((_,p)=>s.locked.includes(p));dlgRender()};row.appendChild(c);card.appendChild(row);
+ }else{
+  const row=el("div","row");const pl=el("button","btn",g.play);pl.type="button";pl.onclick=()=>speakSeq(d.lines);
+  const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=dlgPick;row.append(pl,nx);card.appendChild(row);
+ }
+ gBar(s.placed.length/d.lines.length);
+}
+function dlgCheck(){
+ const s=gState,good=s.placed.map((li,p)=>li===p);
+ if(good.every(Boolean)){s.done=true;const xp=Math.max(10,30-s.tries*10);dlgRender();toast(gU().pts(xp));gameDone("dlg",xp);speakSeq(s.d.lines);revealNext();return}
+ s.tries++;let k=0;while(k<good.length&&good[k])k++;s.locked=[...Array(k).keys()];s.placed=s.placed.slice(0,k);dlgRender();toast(gU().wrongOrder);
+}
+
+// --- 2. role-play ---
+function rpPick(){
+ const g=gU(),card=gHead(g.rp,g.pick);
+ const opts=el("div","g-opts-row");
+ const lvl=lsGet("leren_rp_level",1),role=lsGet("leren_rp_role","B");
+ const mk=(label,vals,cur,key)=>{const w=el("div","g-seg");w.appendChild(el("small","",label));vals.forEach(([v,t])=>{const b=el("button","seg-btn");b.type="button";b.setAttribute("aria-pressed",String(v===cur));b.textContent=t;b.onclick=()=>{lsSet(key,v);rpPick()};w.appendChild(b)});return w};
+ opts.append(mk(g.level,[[1,"1 · "+g.l1],[2,"2 · "+g.l2],[3,"3 · "+g.l3]],lvl,"leren_rp_level"),mk(g.role,[["A","A"],["B","B"]],role,"leren_rp_role"));
+ card.appendChild(opts);
+ const list=el("div","g-list");
+ DIALOGUES.forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)+" · "+(role==="A"?d.a:d.b)));b.onclick=()=>rpStart(d,role,lvl);list.appendChild(b)});
+ card.appendChild(list);
+}
+function rpStart(d,role,lvl){gState={d,role,lvl,i:0,log:[],ok:0,tiles:null,placed:[]};rpStep()}
+function rpStep(){
+ const s=gState,d=s.d;
+ while(s.i<d.lines.length&&d.lines[s.i][0]!==s.role){s.log.push(s.i);s.i++}
+ rpRender();
+ const last=s.log[s.log.length-1];if(last!=null&&d.lines[last][0]!==s.role)say(d.lines[last][1]);
+}
+function rpRender(){
+ const g=gU(),s=gState,d=s.d,card=gHead(g.rp,gTr(d.title));
+ card.appendChild(el("p","g-hint",d.hint));
+ const chat=el("div","g-chat");
+ s.log.forEach(i=>{const l=d.lines[i],mine=l[0]===s.role;const b=el("div","g-bub "+(mine?"me":"them"));b.append(el("small","",mine?(l[0]==="A"?d.a:d.b)+" (jij)":(l[0]==="A"?d.a:d.b)),tgt(el("span","",l[1])),el("em","",dlgLineTr(l)));b.onclick=()=>say(l[1]);chat.appendChild(b)});
+ card.appendChild(chat);gBar(s.log.length/d.lines.length);
+ if(s.i>=d.lines.length){
+  const xp=s.ok*5+10;card.appendChild(el("p","g-done",g.wellDone+" "+g.pts(xp)));
+  const row=el("div","row");const pl=el("button","btn",g.play);pl.type="button";pl.onclick=()=>speakSeq(d.lines);const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=rpPick;row.append(pl,nx);card.appendChild(row);
+  if(!s.awarded){s.awarded=true;gameDone("rp",xp)}revealNext();return;
+ }
+ const line=d.lines[s.i],target=line[1];
+ const turn=el("div","g-turn");turn.append(el("strong","",g.yourTurn+" "),el("span","",dlgLineTr(line)));card.appendChild(turn);
+ const done=()=>{s.ok++;s.log.push(s.i);s.i++;s.tiles=null;s.placed=[];say(target);setTimeout(rpStep,Math.min(4200,900+target.length*55))};
+ if(s.lvl===1){
+  const others=DIALOGUES.flatMap(x=>x.lines.map(l=>l[1])).filter(t=>t!==target);
+  const opts=shuffle([target,...shuffle(others).slice(0,2)]);
+  const box=el("div","g-list");opts.forEach(t=>{const b=el("button","opt");b.type="button";b.appendChild(tgt(el("span","",t)));b.onclick=()=>{if(t===target){b.classList.add("correct");done()}else{b.classList.add("incorrect");b.disabled=true}};box.appendChild(b)});card.appendChild(box);
+ }else if(s.lvl===2){
+  if(!s.tiles)s.tiles=shuffle(target.split(" ").map((w,k)=>({w,k})));
+  const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);rpRender()};slot.appendChild(b)});card.appendChild(slot);
+  const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);if(s.placed.length===s.tiles.length){if(s.placed.map(x=>x.w).join(" ")===target)done();else{toast(g.tryAgain);s.placed=[];rpRender()}}else rpRender()};bank.appendChild(b)});card.appendChild(bank);
+ }else{
+  card.appendChild(micBox(alts=>{const want=gNorm(target).split(" ");let best=0;alts.forEach(a=>{const got=new Set(gNorm(a).split(" "));best=Math.max(best,want.filter(w=>got.has(w)).length/want.length)});
+   if(best>=.7)done();else{toast(g.tryAgain);const h=card.querySelector(".g-heard");if(h)h.append(" → ",tgt(el("b","",target)))}}));
+ }
+}
+
+// --- 3. speaking: answer the question ---
+function spCheck(qd,alts){
+ const g=gU();let best=null;
+ alts.forEach(a=>{const t=gNorm(a).split(" ").filter(Boolean),ch=[];const ik=t.indexOf("ik");
+  if(qd.open){ch.push([g.chkIk,ik>=0],[g.chkLen,t.length>=3])}
+  else{
+   const vi=t.indexOf(qd.v),altOk=qd.alt&&t.includes(qd.alt)&&ik<0;
+   if(altOk){ch.push([g.chkVerb(qd.alt),true])}
+   else{
+    ch.push([g.chkIk,ik>=0]);
+    const heF=qd.he||qd.v+"t",wrongT=!qd.v.endsWith("t")&&t.includes(heF),wrongInf=t.includes(qd.inf)&&vi<0;
+    if(wrongT)ch.push([g.chkForm(heF,qd.v),false]);else if(wrongInf)ch.push([g.chkInf(qd.inf,qd.v),false]);
+    else ch.push([g.chkVerb(qd.v),vi>=0&&ik>=0&&Math.abs(vi-ik)===1]);
+    if(qd.p)ch.push([g.chkPart(qd.p),t[t.length-1]===qd.p]);
+   }
+  }
+  const score=ch.filter(c=>c[1]).length/ch.length;if(!best||score>best.score)best={score,ch,text:a}});
+ return best;
+}
+function spStart(){gState={list:shuffle(SPEAK_Q).slice(0,6),i:0,ok:0};spRender()}
+function spRender(res){
+ const g=gU(),s=gState,card=gHead(g.sp,g.spQ+" "+Math.min(s.i+1,s.list.length)+" / "+s.list.length);gBar(s.i/s.list.length);
+ if(s.i>=s.list.length){const xp=s.ok*10+10;card.appendChild(el("p","g-done",s.ok+" / "+s.list.length+" · "+g.pts(xp)));const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=spStart;row.appendChild(nx);card.appendChild(row);if(!s.awarded){s.awarded=true;gameDone("sp",xp)}return}
+ const qd=s.list[s.i];
+ const top=el("div","q");top.appendChild(el("small","",g.spS));const h=el("h2","g-bubble",qd.q);tgt(h);top.appendChild(h);top.appendChild(el("p","g-tr",qd[uiLang]||qd.en));
+ const hear=el("button","listen",getUI().repeat||"🔊");hear.type="button";hear.onclick=()=>say(qd.q,hear);top.appendChild(hear);card.appendChild(top);
+ if(!res){card.appendChild(micBox(alts=>{const r=spCheck(qd,alts);if(r.score===1)s.ok++;spRender(r)}));if(!s.spoken){s.spoken=true;autoSay(qd.q)}return}
+ const fb=el("div","feedback");fb.id="feedback";
+ fb.appendChild(el("strong","",res.score===1?g.ok:g.tryAgain));
+ fb.appendChild(el("p","g-heard",g.heard+" «"+res.text+"»"));
+ const ul=el("ul","g-checks");res.ch.forEach(([t,ok])=>ul.appendChild(el("li",ok?"ok":"bad",(ok?"✓ ":"✗ ")+t)));fb.appendChild(ul);
+ const m=el("p","example",g.model+": "+qd.m);tgt(m);fb.appendChild(m);card.appendChild(fb);
+ const row=el("div","row");
+ if(res.score<1){const a=el("button","btn",g.tryAgain);a.type="button";a.onclick=()=>spRender();row.appendChild(a)}
+ const nx=el("button","btn primary",g.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;s.spoken=false;spRender()};row.appendChild(nx);card.appendChild(row);
+ autoSay(qd.m);revealNext();
+}
+
+// --- word pool for blitz / memory / dictation ---
+function gPool(){
+ const tabs=levelCats().flatMap(c=>c.tabs).filter(k=>!["klanken","vervoegen","separable"].includes(k)&&tabVisible(k));
+ const seen=new Set();return tabs.flatMap(k=>{try{return itemsFor(k)}catch(e){return []}}).filter(x=>x&&x.id&&!seen.has(x.id)&&seen.add(x.id)&&labelFor(x)&&meaningFor(x));
+}
+
+// --- 4. blitz 60 s ---
+function blStart(){
+ const pool=gPool();gState={pool,score:0,left:60,cur:null,end:false};blNext();
+ gTimer=setInterval(()=>{const s=gState;if(!s||s.end)return;s.left--;const t=$("gTime");if(t)t.textContent=s.left+"s";gBar(s.left/60);if(s.left<=0)blEnd()},1000);
+}
+function blNext(){
+ const s=gState,g=gU();s.cur=s.pool[Math.floor(Math.random()*s.pool.length)];
+ const right=meaningFor(s.cur),wrong=shuffle(s.pool.filter(x=>meaningFor(x)!==right)).slice(0,3).map(meaningFor);
+ const card=gHead(g.bl,"",true);$("rnd").textContent=g.score+": "+s.score;gBar(s.left/60);
+ const top=el("div","g-blitz");top.append(el("span","g-time",""),el("strong","g-score","⭐ "+s.score));top.firstChild.id="gTime";top.firstChild.textContent=s.left+"s";card.appendChild(top);
+ const w=el("h2","g-word",shown(s.cur));tgt(w);card.appendChild(w);
+ const opts=el("div","opts");shuffle([right,...wrong]).forEach(t=>{const b=el("button","opt",t);b.type="button";b.onclick=()=>{if(s.end)return;if(t===right){s.score++;blNext()}else{b.classList.add("incorrect");b.disabled=true;s.left=Math.max(0,s.left-2)}};opts.appendChild(b)});card.appendChild(opts);
+}
+function blEnd(){
+ const s=gState,g=gU();s.end=true;clearInterval(gTimer);gTimer=0;
+ const rec=gSetRecord("bl",s.score);const xp=s.score*2;
+ const card=gHead(g.bl,g.time);gBar(1);
+ card.append(el("p","g-big","⭐ "+s.score),el("p","g-done",(rec?"🏅 "+g.best+"! ":"")+g.pts(xp)));
+ const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=blStart;row.appendChild(nx);card.appendChild(row);
+ gameDone("bl",xp);
+}
+
+// --- 5. memory ---
+function mmStart(){
+ const pairs=shuffle(gPool()).slice(0,6);const cards=shuffle(pairs.flatMap(p=>[{p,nl:true},{p,nl:false}]));
+ gState={cards,open:[],found:new Set(),moves:0,busy:false};mmRender();
+}
+function mmRender(){
+ const g=gU(),s=gState,card=gHead(g.mm,g.moves+": "+s.moves);gBar(s.found.size/6);
+ const grid=el("div","g-mem");
+ s.cards.forEach((c,i)=>{const open=s.open.includes(i)||s.found.has(c.p.id);const b=el("button","g-mc"+(open?" open":"")+(s.found.has(c.p.id)?" found":""));b.type="button";
+  if(open){const t=el("span","",c.nl?shown(c.p):meaningFor(c.p));if(c.nl)tgt(t);b.appendChild(t)}else b.appendChild(el("span","g-q","?"));
+  b.onclick=()=>{if(s.busy||open)return;s.open.push(i);if(c.nl)say(labelFor(c.p));
+   if(s.open.length===2){s.moves++;const [x,y]=s.open.map(k=>s.cards[k]);
+    if(x.p.id===y.p.id&&x.nl!==y.nl){s.found.add(x.p.id);s.open=[];if(s.found.size===6)return mmEnd()}
+    else{s.busy=true;setTimeout(()=>{s.open=[];s.busy=false;mmRender()},900)}}
+   mmRender()};
+  grid.appendChild(b)});
+ card.appendChild(grid);
+}
+function mmEnd(){
+ const s=gState,g=gU();const rec=gSetRecord("mm",s.moves,true);const xp=Math.max(10,40-Math.max(0,s.moves-6)*2);
+ mmRender();const card=$("card");card.appendChild(el("p","g-done",g.found+" "+g.moves+": "+s.moves+" · "+(rec?"🏅 ":"")+g.pts(xp)));
+ const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=mmStart;row.appendChild(nx);card.appendChild(row);
+ gameDone("mm",xp);revealNext();
+}
+
+// --- 6. dictation ---
+function dcStart(){
+ const pool=gPool();const sents=pool.filter(x=>x.ex_nl&&targetLang==="nl"&&x.ex_nl.split(" ").length<=8).map(x=>({t:x.ex_nl,tr:x["ex_"+uiLang]||x.ex_uk||""}));
+ const words=pool.map(x=>({t:shown(x),tr:meaningFor(x)}));
+ const list=shuffle(sents.length>=6?sents:words).slice(0,6);gState={list,i:0,ok:0};dcRender();
+}
+function dcRender(res){
+ const g=gU(),s=gState,card=gHead(g.dc,(Math.min(s.i+1,s.list.length))+" / "+s.list.length);gBar(s.i/s.list.length);
+ if(s.i>=s.list.length){const xp=s.ok*10;card.appendChild(el("p","g-done",s.ok+" / "+s.list.length+" · "+g.pts(xp)));const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=dcStart;row.appendChild(nx);card.appendChild(row);if(!s.awarded){s.awarded=true;gameDone("dc",xp)}return}
+ const it=s.list[s.i];
+ const top=el("div","q");top.appendChild(el("small","",g.write));top.appendChild(el("div","icon-box","🎧"));
+ const row1=el("div","row");const h=el("button","listen",getUI().repeat||"🔊");h.type="button";h.onclick=()=>say(it.t,h);const sl=el("button","listen",g.slow);sl.type="button";sl.onclick=()=>saySlow(it.t);row1.append(h,sl);top.appendChild(row1);card.appendChild(top);
+ if(!res){
+  const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.setAttribute("aria-label",g.write);
+  const ok=el("button","btn primary",g.check);ok.type="submit";form.append(inp,ok);
+  form.onsubmit=e=>{e.preventDefault();if(!inp.value.trim())return;const a=gNorm(inp.value),b=gNorm(it.t);const good=a===b;if(good)s.ok++;dcRender({good,typed:inp.value})};
+  card.appendChild(form);if(!s.played){s.played=true;setTimeout(()=>say(it.t),300)}return;
+ }
+ const fb=el("div","feedback");fb.id="feedback";fb.appendChild(el("strong","",res.good?g.ok:g.correctIs));
+ const want=it.t.split(" "),typed=gNorm(res.typed).split(" ");const p=el("p","g-diff");tgt(p);
+ want.forEach((w,k)=>{p.appendChild(el("span",gNorm(w)===(typed[k]||"")?"ok":"bad",w));p.append(" ")});fb.appendChild(p);
+ if(it.tr)fb.appendChild(el("p","",it.tr));card.appendChild(fb);
+ const row=el("div","row");const nx=el("button","btn primary",g.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;s.played=false;dcRender()};row.appendChild(nx);card.appendChild(row);revealNext();
+}
+
+// --- 7. my day ---
+function mdStart(){gState={i:0,picked:null,tiles:null,placed:[],done:[]};mdRender()}
+function mdSentence(st,t){const [h,m]=t;return ["Om "+nlTime(h,m),st.v,"ik",...st.rest]}
+function mdRender(){
+ const g=gU(),s=gState,card=gHead(g.md,(Math.min(s.i+1,MYDAY.length))+" / "+MYDAY.length);gBar(s.i/MYDAY.length);
+ if(s.i>=MYDAY.length){
+  const text=s.done.join(" ");const box=el("div","g-story");box.appendChild(el("h3","","🗓️ "+g.mdAll));s.done.forEach(t=>{const p=el("p","",t);tgt(p);p.onclick=()=>say(t);box.appendChild(p)});card.appendChild(box);
+  card.appendChild(el("p","g-done",g.pts(40)));
+  const row=el("div","row");const pl=el("button","btn","▶ "+g.mdAll);pl.type="button";pl.onclick=()=>say(text,pl);const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=mdStart;row.append(pl,nx);card.appendChild(row);
+  if(!s.awarded){s.awarded=true;gameDone("md",40);say(text)}revealNext();return;
+ }
+ const st=MYDAY[s.i];
+ const top=el("div","q");top.appendChild(el("div","icon-box",st.icon));top.appendChild(el("h2","sm",st[uiLang]||st.en));card.appendChild(top);
+ card.appendChild(el("p","g-hint",g.mdRule));
+ if(!s.picked){
+  card.appendChild(el("p","g-turn",g.mdPick));
+  const row=el("div","g-times");st.times.forEach(t=>{const b=el("button","opt g-time-chip",String(t[0]).padStart(2,"0")+":"+String(t[1]).padStart(2,"0"));b.type="button";b.onclick=()=>{s.picked=t;s.tiles=shuffle(mdSentence(st,t).map((w,k)=>({w,k})));s.placed=[];mdRender()};row.appendChild(b)});card.appendChild(row);return;
+ }
+ card.appendChild(el("p","g-turn",g.mdBuild));
+ const want=mdSentence(st,s.picked);
+ const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);mdRender()};slot.appendChild(b)});card.appendChild(slot);
+ const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);
+   if(s.placed.length===s.tiles.length){const got=s.placed.map(x=>x.w).join(" ");if(got===want.join(" ")){const sent=got+".";s.done.push(sent);say(sent);s.i++;s.picked=null;mdRender()}else{toast(g.tryAgain+" — "+g.mdRule);s.placed=[];mdRender()}}else mdRender()};bank.appendChild(b)});
+ card.appendChild(bank);
+}
+
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
@@ -3642,10 +4188,10 @@ const TOUR_STEPS=[
   fr:["L'exercice","Ici, la question et les réponses. « 🔊 Encore » relit le mot. Après ta réponse, tu vois une explication et le bouton « Suivant »."],
   ar:["التمرين","هنا السؤال وخيارات الإجابة. زر «🔊 مرة أخرى» ينطق الكلمة من جديد. بعد الإجابة يظهر شرح وزر «التالي»."]},
  {id:"dock",at:["#modeButtons"],
-  uk:["Чотири розділи","<b>Урок</b> — навчання за темами · <b>Toets</b> — міні-іспити, як на курсі · <b>Словник</b> — знайди будь-яке слово й послухай його · <b>Прогрес</b> — бали, серія днів, результати іспитів."],
-  en:["Four sections","<b>Lesson</b> — learn by topic · <b>Toets</b> — mini exams like in class · <b>Dictionary</b> — look up any word and hear it · <b>Progress</b> — points, streak and exam results."],
-  fr:["Quatre rubriques","<b>Leçon</b> — apprendre par thème · <b>Toets</b> — mini-examens comme en classe · <b>Dico</b> — cherche un mot et écoute-le · <b>Progrès</b> — points, série et résultats."],
-  ar:["أربعة أقسام","<b>الدرس</b> — التعلّم حسب الموضوع · <b>Toets</b> — امتحانات قصيرة كما في الصف · <b>القاموس</b> — ابحث عن كلمة واستمع إليها · <b>التقدّم</b> — النقاط والسلسلة والنتائج."]},
+  uk:["П'ять розділів","<b>Урок</b> — навчання за темами · <b>Ігри</b> — діалоги, говоріння, бліц, Memory, диктант · <b>Toets</b> — міні-іспити, як на курсі · <b>Словник</b> — знайди будь-яке слово й послухай його · <b>Прогрес</b> — бали, серія днів, результати іспитів."],
+  en:["Five sections","<b>Lesson</b> — learn by topic · <b>Games</b> — dialogues, speaking, blitz, memory, dictation · <b>Toets</b> — mini exams like in class · <b>Dictionary</b> — look up any word and hear it · <b>Progress</b> — points, streak and exam results."],
+  fr:["Cinq rubriques","<b>Leçon</b> — apprendre par thème · <b>Jeux</b> — dialogues, oral, blitz, memory, dictée · <b>Toets</b> — mini-examens comme en classe · <b>Dico</b> — cherche un mot et écoute-le · <b>Progrès</b> — points, série et résultats."],
+  ar:["خمسة أقسام","<b>الدرس</b> — التعلّم حسب الموضوع · <b>ألعاب</b> — حوارات ونطق وتحدٍّ وذاكرة وإملاء · <b>Toets</b> — امتحانات قصيرة كما في الصف · <b>القاموس</b> — ابحث عن كلمة واستمع إليها · <b>التقدّم</b> — النقاط والسلسلة والنتائج."]},
  {id:"stats",at:["#streakPill","#score"],
   uk:["🔥 Серія і ⭐ бали","🔥 — скільки днів поспіль ти виконуєш ціль дня. ⭐ — твої бали: нове або забуте слово дає 10, вже добре відоме — 2. Натисни на 🔥, щоб відкрити прогрес."],
   en:["🔥 Streak and ⭐ points","🔥 is how many days in a row you've reached your daily goal. ⭐ are your points: a new or forgotten word gives 10, a well-known one gives 2. Tap 🔥 to open your progress."],
