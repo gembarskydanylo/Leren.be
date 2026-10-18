@@ -694,7 +694,7 @@ body.sheet-open{overflow:hidden}
 .g-card.wide .g-ic{font-size:40px}
 .g-card.wide strong{font-size:17px}
 .st-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.st-av{flex:none;width:72px;height:72px}.st-av.sm{width:54px;height:54px}.st-av svg{width:100%;height:100%;display:block}
+.st-av{flex:none;width:72px;height:72px}.st-av.sm{width:66px;height:66px}.st-av svg{width:100%;height:100%;display:block}
 .st-say{flex:1;padding:10px 14px;border-radius:16px;border-start-start-radius:4px;background:var(--surface-2);font-weight:700;font-size:14.5px}
 .st-map{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .st-place{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:96px;padding:12px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:start;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge)}
@@ -740,7 +740,8 @@ body.sheet-open{overflow:hidden}
 .ch-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;user-select:none}
 .ch-ph.full{border-radius:0;background:none;overflow:visible}.ch-ph.full img{object-fit:contain;object-position:50% 0}
 .ch-mood{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.ch-ph.m-wow img{animation:ch-hop .5s var(--ease,ease) 1}.ch-ph.m-think img{transform:rotate(-4deg) translateY(2px);transition:transform .3s}
+.ch-ph.m-wow img{animation:ch-hop .5s var(--ease,ease) 1}.ch-ph.m-sad img{animation:ch-sad .6s ease 1}
+@keyframes ch-sad{30%{transform:translateX(-3%)}60%{transform:translateX(3%)}}
 @keyframes ch-hop{40%{transform:translateY(-6%) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.ch-ph img{animation:none!important;transition:none!important}}
 @media (max-width:380px){.ch-mini>span:last-child{display:none}.ch-mini{padding:3px}}
@@ -4212,8 +4213,9 @@ function mdRender(){
 
 // ========== ART: characters Roel + Lotte (3 moods, avatar or full body) + scene illustrations ==========
 // characters are illustrated images (img/chars); mood shown with a small overlay
-const MOOD_EXTRA=mood=>mood==="wow"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM102 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FDDA24" stroke="#fff" stroke-width="1.5"/></svg>':mood==="think"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><circle cx="100" cy="28" r="4" fill="#fff"/><circle cx="108" cy="14" r="6.5" fill="#fff"/></svg>':"";
-const CHAR_IMG=(id,mood,full)=>`<span class="ch-ph ch-${id} m-${mood}${full?" full":""}"><img src="img/chars/${id}${full?"-card":""}.webp" alt="" decoding="async" draggable="false">${full?"":MOOD_EXTRA(mood)}</span>`;
+const MOOD_EXTRA=mood=>mood==="wow_"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM102 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FDDA24" stroke="#fff" stroke-width="1.5"/></svg>':mood==="think"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><circle cx="100" cy="28" r="4" fill="#fff"/><circle cx="108" cy="14" r="6.5" fill="#fff"/></svg>':"";
+const MOOD_FILE={happy:"",wow:"-wow",think:"-think",sad:"-sad"};
+const CHAR_IMG=(id,mood,full)=>`<span class="ch-ph ch-${id} m-${mood}${full?" full":""}"><img src="img/chars/${id}${full?"-card":(MOOD_FILE[mood]||"")}.webp" alt="" decoding="async" draggable="false">${full?"":MOOD_EXTRA(mood)}</span>`;
 const ROEL_SVG=(mood,full)=>CHAR_IMG("roel",mood,full);
 const LOTTE_SVG=(mood,full)=>CHAR_IMG("lotte",mood,full);
 // --- chosen character (Roel is the default guide) ---
@@ -4436,7 +4438,7 @@ function storyFree(alts){
  const kw=(ACCEPT[s.sc.id]||[])[s.i]||[],txt=" "+gNorm(alts[0])+" ";
  const hit=kw.some(k=>txt.includes(" "+gNorm(k)+" ")||txt.includes(gNorm(k)))&&gNorm(alts[0]).split(" ").length>=2;
  if(hit){s.understood=true;return storyAnswer(ok,true,true)}
- s.miss++;s.mood="think";const correct=t[3][ok][0];logMistake(correct,uiLang==="uk"?t[1]:t[2]);
+ s.miss++;s.mood="sad";const correct=t[3][ok][0];logMistake(correct,uiLang==="uk"?t[1]:t[2]);
  s.fb={ok:false,text:gU().tryAgain+" · "+stU().hint,nl:correct.split(" ").slice(0,2).join(" ")+" …"};storyRender();
 }
 function storyAnswer(k,spoken,loose){
@@ -4444,7 +4446,7 @@ function storyAnswer(k,spoken,loose){
  if(o[1]){if(!s.tried.length)addXP(spoken?(loose?6:8):5);say(o[0]);s.i++;s.tried=[];s.order=null;s.mood=loose?"happy":"wow";
   s.fb=loose?{ok:true,text:stU().understood,nl:o[0]}:{ok:true,text:(spoken?"🎤 ":"")+(uiLang==="uk"?"Так! ":"Yes! "),nl:o[0]};
   const next=s.sc.turns[s.i];storyRender();if(next)setTimeout(()=>{if(gState===s)say(next[0])},Math.min(3600,800+o[0].length*55));}
- else{s.miss++;s.mood="think";s.tried=s.tried.concat(k);const why=uiLang==="uk"?o[2]:(o[3]||o[2]);logMistake(t[3].find(x=>x[1])[0],why);s.fb={ok:false,text:why};storyRender()}
+ else{s.miss++;s.mood="sad";s.tried=s.tried.concat(k);const why=uiLang==="uk"?o[2]:(o[3]||o[2]);logMistake(t[3].find(x=>x[1])[0],why);s.fb={ok:false,text:why};storyRender()}
 }
 
 // ========== AI CHAT with {N} (hidden until AI_ENDPOINT is set; server: tools/ai-worker.js) ==========
