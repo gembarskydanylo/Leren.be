@@ -3550,7 +3550,7 @@ async function pushWrite(sub,st){
  const id=await sha256Hex(sub.endpoint),fields=pushFields(sub,st),sig=JSON.stringify(fields);
  if(st.sig===sig&&st.id===id)return true;
  const r=await fetch(docUrl(id),{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
- if(!r.ok)throw new Error("store "+r.status);
+ if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(e){}throw new Error("Firestore "+r.status+(m?": "+m:""))}
  st.id=id;st.sig=sig;lsSet("leren_push",st);return true;
 }
 async function pushSubscribe(){
@@ -3562,7 +3562,7 @@ async function pushEnable(){
  const perm=await Notification.requestPermission();
  if(perm!=="granted"){toast(u.denied);return false}
  try{const sub=await pushSubscribe();st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
- catch(e){st.on=false;lsSet("leren_push",st);toast(u.fail);return false}
+ catch(e){st.on=false;lsSet("leren_push",st);toast(u.fail+" ("+String(e&&e.message||e).slice(0,140)+")");return false}
 }
 async function pushDisable(){
  const st=pushState();st.on=false;
