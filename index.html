@@ -1538,7 +1538,7 @@ function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math
 
 function updateHeader(){
  const u=getUI();
- const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.textContent=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
+ const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.textContent=autoSpeech?(u.autoOnShort||"🔊 Auto"):(u.autoOffShort||"🔇 Auto");autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-label",autoBtn.title);autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
  $("tagline").textContent=u.tagline;
  $("targetLabel").textContent=u.target;
  $("uiLabel").textContent=u.ui;
