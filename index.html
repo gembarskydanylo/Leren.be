@@ -3526,7 +3526,7 @@ async function shareResult(title,pct,passed){
 // ========== DAILY REMINDERS (Web Push) ==========
 // Off until projectId/apiKey are filled in. Subscriptions are stored in Firestore (collection "subs");
 // .github/workflows/reminders.yml sends the pushes every hour (tools/send-reminders.mjs).
-const PUSH_CONFIG={projectId:"",apiKey:"",vapid:"BHqHq_6dEJdpiYYyj52qWiaCZgJoeW12TGaai1KlvP8KnRyBkVGSCOn6A8r2r5JfA_RBMqzQb9SPy65E2T1_UC0"};
+const PUSH_CONFIG={projectId:"leren-be",apiKey:"AIzaSyA-v4mkpSlmpjwM5s34nD6jlgRZfVuxOwQ",vapid:"BHqHq_6dEJdpiYYyj52qWiaCZgJoeW12TGaai1KlvP8KnRyBkVGSCOn6A8r2r5JfA_RBMqzQb9SPy65E2T1_UC0"};
 const PUSH_UI={
  uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефона для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування"},
  en:{label:"Reminders",on:h=>"every day at "+h+" if today's goal isn't done yet",off:"I'll remind you to keep your 🔥 streak",denied:"Notifications are blocked. Allow them for Leren.be in your phone settings.",fail:"Couldn't turn on reminders. Check your connection and try again.",ok:"Reminders are on 🔔",time:"Reminder time"},

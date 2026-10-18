@@ -5,6 +5,7 @@ import webpush from "web-push";
 import {GoogleAuth} from "google-auth-library";
 
 const {FIREBASE_SA, VAPID_PUBLIC, VAPID_PRIVATE} = process.env;
+const FORCE = process.env.FORCE === "true"; // manual test run: send to every subscriber now
 if (!FIREBASE_SA || !VAPID_PUBLIC || !VAPID_PRIVATE) { console.log("Reminders are not configured yet (secrets missing) — nothing to do."); process.exit(0); }
 const sa = JSON.parse(FIREBASE_SA);
 const BASE = `https://firestore.googleapis.com/v1/projects/${sa.project_id}/databases/(default)/documents`;
@@ -33,7 +34,7 @@ do {
     checked++;
     const f = doc.fields || {}, s = Object.fromEntries(Object.keys(f).map(k => [k, val(f[k])]));
     let now; try { now = localNow(s.tz || "Europe/Brussels"); } catch { now = localNow("Europe/Brussels"); }
-    if (now.hour !== s.hour || s.lastActive === now.date || s.lastSent === now.date) continue;
+    if (!FORCE && (now.hour !== s.hour || s.lastActive === now.date || s.lastSent === now.date)) continue;
     const t = TEXT[s.lang] || TEXT.uk, alive = s.lastActive === now.yesterday && s.streak > 0;
     const [title, body] = alive ? t.alive(s.streak) : t.start;
     try {
