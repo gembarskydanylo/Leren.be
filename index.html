@@ -92,7 +92,22 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .lang-select option{background:#fff;color:#2A1D12}
 .lang-select{background:#FFFFFF;color:#2A1D12;padding:0 8px;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35);cursor:pointer}
 #themeToggle{position:absolute;top:12px;inset-inline-end:12px;z-index:2}
-.brand{padding-inline-end:52px}
+.brand{padding-inline-end:104px}
+#helpBtn{position:absolute;top:12px;inset-inline-end:60px;z-index:2;font-size:16px}
+/* language pickers drawn as flags with the code written on them */
+.flag-pick{position:relative;display:inline-flex;min-width:66px;height:38px;border-radius:var(--r-sm);overflow:hidden;
+ box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35),inset 0 0 0 2px rgba(255,255,255,.95);cursor:pointer}
+.flag-face{flex:1;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 6px;border-radius:inherit;
+ font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:.04em;color:#fff;white-space:nowrap;
+ text-shadow:0 0 2px #000,0 0 2px #000,0 1px 3px rgba(0,0,0,.8);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95)}
+.flag-face::after{content:"▾";font-size:11px;opacity:.95}
+.flag-pick select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
+.flag-pick:focus-within{outline:3px solid #fff;outline-offset:2px}
+.flag-face[data-flag="be"]{background:linear-gradient(90deg,#1E1712 0 33.4%,#FDDA24 33.4% 66.6%,#EF3340 66.6%)}
+.flag-face[data-flag="ua"]{background:linear-gradient(180deg,#0057B7 0 50%,#FFD500 50%)}
+.flag-face[data-flag="fr"]{background:linear-gradient(90deg,#0055A4 0 33.4%,#fff 33.4% 66.6%,#EF4135 66.6%)}
+.flag-face[data-flag="gb"]{background:linear-gradient(#C8102E,#C8102E) center/100% 20% no-repeat,linear-gradient(#C8102E,#C8102E) center/14% 100% no-repeat,linear-gradient(#fff,#fff) center/100% 40% no-repeat,linear-gradient(#fff,#fff) center/26% 100% no-repeat,#012169}
+.flag-face[data-flag="sa"]{background:#006C35}
 .theme-btn{min-width:40px;background:rgba(60,25,0,.22);color:#fff;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
 #searchBtn{background:#fff;color:#2A1D12;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
 #searchBtn:active{transform:translateY(var(--depth-sm));box-shadow:none}
@@ -429,6 +444,25 @@ footer a{color:inherit}
 @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.05)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
+
+/* ---------- onboarding tour ---------- */
+.tour{position:fixed;inset:0;z-index:1000}
+.tour-spot{position:fixed;border-radius:16px;box-shadow:0 0 0 200vmax rgba(20,12,6,.74),0 0 0 3px var(--be-yellow);pointer-events:none;transition:left .25s,top .25s,width .25s,height .25s}
+.tour-card{position:fixed;background:var(--surface);color:var(--ink);border-radius:var(--r-md);padding:18px 18px 14px;box-shadow:0 6px 0 rgba(0,0,0,.25),0 18px 50px rgba(0,0,0,.35);max-height:calc(100vh - 24px);overflow:auto;transition:left .25s,top .25s}
+.tour-card h2{font-family:var(--font-display);font-size:19px;line-height:1.25;margin:2px 0 8px;text-wrap:balance}
+.tour-card p{margin:0 0 9px;font-size:15px;line-height:1.45;color:var(--ink-2)}
+.tour-card p b{color:var(--ink)}
+.tour-count{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--oranje)}
+.tour-actions{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 10px}
+.tour-actions .btn{min-height:42px;padding:0 14px;font-size:14px}
+.tour-dots{display:flex;gap:5px;justify-content:center;margin:6px 0 10px}
+.tour-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.tour-dots i.on{width:20px;border-radius:4px;background:var(--oranje)}
+.tour-row{display:flex;gap:8px;align-items:center}
+.tour-row .btn{min-height:44px;padding:0 16px}
+.tour-row .btn.primary{margin-inline-start:auto}
+.tour-skip{background:none;border:0;color:var(--ink-2);font:inherit;font-weight:800;font-size:14px;padding:10px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:420px){.tour-row .btn{padding:0 12px}.tour-card h2{font-size:18px}}
 /* ---------- RTL (Arabic explanations) ---------- */
 [dir="rtl"] .nav-fade-wrap::after{right:auto;left:0;background:linear-gradient(270deg,transparent,var(--bg))}
 
@@ -439,8 +473,12 @@ footer a{color:inherit}
  .nav-cats{padding:2px 12px 10px;scroll-padding-inline:12px}.nav-subs{padding:0 12px 2px}
  header{padding:12px 12px 12px 14px;gap:10px}
  .brand h1{font-size:20px}
- .top-right{width:100%;display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:8px}
- .select-group span{display:none}
+ .top-right{width:100%;display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:7px;padding-inline-end:0}
+ .flag-pick{min-width:0;width:100%}
+ .auto-speech-btn{min-width:40px;padding:0 6px}
+ .auto-speech-btn .at{display:none}
+ .score-pill{padding:0 9px}
+ #targetLabel,#uiLabel{display:none}
  .select-group .lang-select{width:100%}
  .kl-rule{grid-template-columns:1fr}
  .opts{gap:10px}
@@ -485,14 +523,14 @@ footer a{color:inherit}
     <div class="brand"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
     <div class="top-right">
       <label class="select-group"><span id="targetLabel"></span>
-        <select id="targetLangPicker" class="lang-select" aria-label="Target language">
+        <span class="flag-pick" id="targetPick"><span class="flag-face" id="targetFace" aria-hidden="true"></span><select id="targetLangPicker" class="lang-select" aria-label="Target language">
           <option value="nl">🇧🇪 BE</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option>
-        </select>
+        </select></span>
       </label>
       <label class="select-group"><span id="uiLabel"></span>
-        <select id="uiLangPicker" class="lang-select" aria-label="Explanation language">
+        <span class="flag-pick" id="uiPick"><span class="flag-face" id="uiFace" aria-hidden="true"></span><select id="uiLangPicker" class="lang-select" aria-label="Explanation language">
           <option value="uk">🇺🇦 UKR</option><option value="en">🇬🇧 ENG</option><option value="fr">🇫🇷 FRA</option><option value="ar">🇸🇦 AR</option>
-        </select>
+        </select></span>
       </label>
       <button class="theme-btn" id="searchBtn" type="button" title="Search">🔍</button>
       <div class="speech-controls">
@@ -502,6 +540,7 @@ footer a{color:inherit}
       </div>
       <span id="score" class="score-pill" aria-live="polite">⭐ 0</span>
       <button class="theme-btn" id="themeToggle" type="button">🌙</button>
+      <button class="theme-btn" id="helpBtn" type="button" aria-label="Help">❓</button>
     </div>
   </header>
 
@@ -1561,9 +1600,11 @@ function openGoalModal(){
 
 function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 
+const FLAG_OF={nl:"be",uk:"ua",en:"gb",fr:"fr",ar:"sa"};
+function syncFlagFaces(){[["targetLangPicker","targetFace"],["uiLangPicker","uiFace"]].forEach(([s,f])=>{const sel=$(s),face=$(f);if(!sel||!face)return;const o=sel.options[sel.selectedIndex];face.dataset.flag=FLAG_OF[sel.value]||"";face.textContent=o?o.textContent.replace(/^\S+\s*/,""):"";face.parentNode.title=sel.getAttribute("aria-label")||""})}
 function updateHeader(){
  const u=getUI();
- const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.textContent=autoSpeech?(u.autoOnShort||"🔊 Auto"):(u.autoOffShort||"🔇 Auto");autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-label",autoBtn.title);autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
+ const autoBtn=$("autoSpeechToggle");if(autoBtn){{const t=autoSpeech?(u.autoOnShort||"🔊 Auto"):(u.autoOffShort||"🔇 Auto"),i=t.indexOf(" ");autoBtn.replaceChildren(el("span","ai",i>0?t.slice(0,i):t),el("span","at",i>0?t.slice(i):""))}autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off");autoBtn.setAttribute("aria-label",autoBtn.title);autoBtn.setAttribute("aria-pressed",String(autoSpeech))}
  const voiceBtn=$("voiceSettingsBtn");if(voiceBtn){voiceBtn.textContent="🎙️";voiceBtn.title=u.voiceTitle||"Voice settings";voiceBtn.setAttribute("aria-label",voiceBtn.title)}
  const voiceTitle=$("voiceDialogTitle"),voiceLabel=$("voiceSelectLabel"),voiceHint=$("voiceHint"),voicePreview=$("voicePreviewBtn"),voiceClose=$("voiceCloseBtn");
  if(voiceTitle)voiceTitle.textContent=u.voiceTitle||"Voice settings";
@@ -1618,6 +1659,8 @@ function updateHeader(){
  $("lblMode").textContent=u.lMode;
  $("targetLangPicker").value=targetLang;
  $("uiLangPicker").value=uiLang;
+ syncFlagFaces();
+ if(typeof updateHelpBtn==="function")updateHelpBtn();
  document.documentElement.lang=uiLang;
  if(uiLang==="ar")document.documentElement.setAttribute("dir","rtl");else document.documentElement.removeAttribute("dir");
  const th=document.documentElement.dataset.theme==="dark"?"dark":"light";
@@ -3159,6 +3202,175 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
     });
   });
 }
+
+// ========== ONBOARDING TOUR: step-by-step explanation of every control ==========
+const TOUR_UI={
+ uk:{next:"Далі",back:"Назад",skip:"Пропустити",start:"Почати навчання",of:"з",pickVoice:"🎙️ Вибрати голос",sample:"▶ Прослухати",autoOn:"🔊 Увімкнути Авто",autoOff:"🔇 Вимкнути Авто"},
+ en:{next:"Next",back:"Back",skip:"Skip",start:"Start learning",of:"of",pickVoice:"🎙️ Choose a voice",sample:"▶ Play sample",autoOn:"🔊 Turn Auto on",autoOff:"🔇 Turn Auto off"},
+ fr:{next:"Suivant",back:"Retour",skip:"Passer",start:"Commencer",of:"sur",pickVoice:"🎙️ Choisir une voix",sample:"▶ Écouter",autoOn:"🔊 Activer Auto",autoOff:"🔇 Désactiver Auto"},
+ ar:{next:"التالي",back:"رجوع",skip:"تخطٍّ",start:"ابدأ التعلّم",of:"من",pickVoice:"🎙️ اختر صوتًا",sample:"▶ استمع",autoOn:"🔊 شغّل التلقائي",autoOff:"🔇 أوقف التلقائي"}
+};
+const TOUR_STEPS=[
+ {id:"welcome",at:null,
+  uk:["Вітаю в Leren.be! 👋","Тренажер нідерландської рівня A1, як на курсах CVO та inburgering. За хвилину покажу, для чого кожна кнопка. Цю інструкцію можна пропустити й відкрити пізніше кнопкою ❓ угорі."],
+  en:["Welcome to Leren.be! 👋","A Dutch A1 trainer, just like the CVO and inburgering courses. In one minute I'll show you what every button does. You can skip this and open it later with the ❓ button at the top."],
+  fr:["Bienvenue sur Leren.be ! 👋","Un entraîneur de néerlandais A1, comme aux cours CVO et inburgering. En une minute, je te montre à quoi sert chaque bouton. Tu peux passer et revenir plus tard avec le bouton ❓ en haut."],
+  ar:["مرحبًا بك في Leren.be! 👋","مدرّب للغة الهولندية بمستوى A1، مثل دروس CVO والاندماج. خلال دقيقة سأشرح لك وظيفة كل زر. يمكنك التخطي وفتح هذا الشرح لاحقًا بزر ❓ في الأعلى."]},
+ {id:"target",at:["#targetPick"],
+  uk:["Яку мову ти вчиш","Прапор 🇧🇪 BE — нідерландська, як говорять у Бельгії. Натисни на прапор, щоб замість неї вчити англійську (ENG) або французьку (FRA)."],
+  en:["The language you learn","The 🇧🇪 BE flag means Dutch as spoken in Belgium. Tap the flag to learn English (ENG) or French (FRA) instead."],
+  fr:["La langue que tu apprends","Le drapeau 🇧🇪 BE, c'est le néerlandais parlé en Belgique. Touche le drapeau pour apprendre plutôt l'anglais (ENG) ou le français (FRA)."],
+  ar:["اللغة التي تتعلّمها","علم 🇧🇪 BE يعني الهولندية كما تُتحدث في بلجيكا. اضغط على العلم لتتعلّم الإنجليزية (ENG) أو الفرنسية (FRA) بدلًا منها."]},
+ {id:"ui",at:["#uiPick"],
+  uk:["Мова пояснень","Тут вибираєш, якою мовою показувати переклад і правила: 🇺🇦 українська (UKR), англійська, французька або арабська."],
+  en:["Explanation language","Choose the language for translations and rules: Ukrainian (UKR), English, French or Arabic."],
+  fr:["Langue des explications","Choisis la langue des traductions et des règles : ukrainien (UKR), anglais, français ou arabe."],
+  ar:["لغة الشرح","اختر لغة الترجمة والقواعد: الأوكرانية (UKR) أو الإنجليزية أو الفرنسية أو العربية."]},
+ {id:"search",at:["#searchBtn"],
+  uk:["🔍 Пошук слова","Маленький словник. Введи слово нідерландською або українською, і побачиш переклад та приклад."],
+  en:["🔍 Word search","A small dictionary. Type a word in Dutch or in your language to see the translation and an example."],
+  fr:["🔍 Recherche","Un petit dictionnaire. Tape un mot en néerlandais ou dans ta langue pour voir la traduction et un exemple."],
+  ar:["🔍 البحث عن كلمة","قاموس صغير. اكتب كلمة بالهولندية أو بلغتك لترى الترجمة ومثالًا."]},
+ {id:"voice",at:["#voiceSettingsBtn"],actions:["pickVoice","sample"],
+  uk:["🎙️ Хто озвучує слова",
+   "Слова читає не записаний диктор, а голос, вбудований у твій телефон чи комп'ютер. Тому на різних пристроях звучання різне.",
+   "Натисни 🎙️, вибери голос з позначкою <b>nl-BE</b> (бельгійський) або <b>nl-NL</b> (нідерландський) і натисни «▶ Прослухати зразок». Вибір збережеться.",
+   "Немає нідерландського голосу? <b>Android:</b> Налаштування → Спеціальні можливості → Синтез мовлення → Встановити голосові дані → Nederlands. <b>iPhone:</b> Параметри → Доступність → Усний вміст → Голоси → Nederlands."],
+  en:["🎙️ Who reads the words",
+   "The words are not read by a recorded speaker but by the voice built into your phone or computer. That's why it sounds different on every device.",
+   "Tap 🎙️, choose a voice marked <b>nl-BE</b> (Belgian) or <b>nl-NL</b> (Netherlands) and press “▶ Play sample”. Your choice is saved.",
+   "No Dutch voice? <b>Android:</b> Settings → Accessibility → Text-to-speech → Install voice data → Nederlands. <b>iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Dutch."],
+  fr:["🎙️ Qui lit les mots",
+   "Les mots ne sont pas lus par un enregistrement, mais par la voix intégrée à ton téléphone ou ordinateur. Le son change donc d'un appareil à l'autre.",
+   "Touche 🎙️, choisis une voix marquée <b>nl-BE</b> (belge) ou <b>nl-NL</b> (Pays-Bas) et appuie sur « ▶ Écouter un exemple ». Ton choix est enregistré.",
+   "Pas de voix néerlandaise ? <b>Android :</b> Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales → Nederlands. <b>iPhone :</b> Réglages → Accessibilité → Contenu énoncé → Voix → Néerlandais."],
+  ar:["🎙️ من يقرأ الكلمات",
+   "لا يقرأ الكلمات قارئ مسجَّل، بل الصوت المدمج في هاتفك أو حاسوبك، لذلك يختلف الصوت من جهاز لآخر.",
+   "اضغط 🎙️ واختر صوتًا مكتوبًا عليه <b>nl-BE</b> (بلجيكي) أو <b>nl-NL</b> (هولندي) ثم اضغط «▶ استمع إلى عيّنة». سيُحفظ اختيارك.",
+   "لا يوجد صوت هولندي؟ <b>أندرويد:</b> الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت ← Nederlands. <b>آيفون:</b> الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← الهولندية."]},
+ {id:"auto",at:["#autoSpeechToggle"],actions:["auto"],
+  uk:["🔊 Авто — озвучувати самому","<b>Увімкнено 🔊:</b> нове слово звучить одразу, щойно з'являється. <b>Вимкнено 🔇:</b> тиша, слово звучить лише коли натиснеш «🔁 Повторити». Для режиму «Слухати» краще ввімкнути."],
+  en:["🔊 Auto — speak by itself","<b>On 🔊:</b> each new word is spoken as soon as it appears. <b>Off 🔇:</b> silence; a word is spoken only when you press “🔁 Repeat”. Turn it on for the Listening mode."],
+  fr:["🔊 Auto — lecture automatique","<b>Activé 🔊 :</b> chaque nouveau mot est lu dès qu'il apparaît. <b>Désactivé 🔇 :</b> silence ; le mot n'est lu que si tu appuies sur « 🔁 Répéter ». Active-le pour le mode Écoute."],
+  ar:["🔊 تلقائي — النطق وحده","<b>مُفعَّل 🔊:</b> تُنطق كل كلمة جديدة فور ظهورها. <b>مُطفأ 🔇:</b> صمت، ولا تُنطق الكلمة إلا عند الضغط على «🔁 إعادة». فعّله لوضع الاستماع."]},
+ {id:"score",at:["#score"],
+  uk:["⭐ Бали","За кожну правильну відповідь отримуєш бали: нове або забуте слово дає 10, слово, яке ти вже добре знаєш, дає 2."],
+  en:["⭐ Points","Every correct answer earns points: a new or forgotten word gives 10, a word you already know well gives 2."],
+  fr:["⭐ Points","Chaque bonne réponse rapporte des points : un mot nouveau ou oublié donne 10, un mot que tu connais déjà bien donne 2."],
+  ar:["⭐ النقاط","كل إجابة صحيحة تمنحك نقاطًا: الكلمة الجديدة أو المنسية تعطي 10، والكلمة التي تعرفها جيدًا تعطي 2."]},
+ {id:"theme",at:["#themeToggle"],
+  uk:["🌙 Світла чи темна тема","Перемикає оформлення. Темна тема зручніша ввечері."],
+  en:["🌙 Light or dark","Switches the look. The dark theme is easier on the eyes in the evening."],
+  fr:["🌙 Clair ou sombre","Change l'apparence. Le thème sombre repose les yeux le soir."],
+  ar:["🌙 فاتح أو داكن","يبدّل المظهر. الوضع الداكن أريح للعين في المساء."]},
+ {id:"progress",at:["#progressPanel"],
+  uk:["Твій прогрес","🔥 — скільки днів поспіль ти займаєшся. <b>Ціль дня</b> — скільки балів набрати сьогодні (натисни, щоб змінити). Смужка внизу показує, скільки балів лишилось до наступного рівня."],
+  en:["Your progress","🔥 shows how many days in a row you've practised. <b>Daily goal</b> is how many points to earn today (tap to change). The bar shows how many points are left until the next level."],
+  fr:["Ta progression","🔥 indique combien de jours d'affilée tu t'entraînes. <b>Objectif du jour</b> : les points à gagner aujourd'hui (touche pour changer). La barre montre les points restants avant le niveau suivant."],
+  ar:["تقدّمك","🔥 عدد الأيام المتتالية التي تدرّبت فيها. <b>هدف اليوم</b> هو عدد النقاط المطلوبة اليوم (اضغط لتغييره). يوضح الشريط النقاط المتبقية حتى المستوى التالي."]},
+ {id:"levels",at:["#levelNav"],
+  uk:["Рівні","A1.1 відкритий одразу. A1.2 відкривається, коли набереш 1000 балів. Якщо вже знаєш матеріал, натисни на замок 🔒 і склади тест на рівень. A2 — скоро."],
+  en:["Levels","A1.1 is open from the start. A1.2 opens at 1000 points. Already know the material? Tap the lock 🔒 and take the level test. A2 is coming soon."],
+  fr:["Niveaux","A1.1 est ouvert dès le départ. A1.2 s'ouvre à 1000 points. Tu connais déjà ? Touche le cadenas 🔒 et passe le test de niveau. A2 arrive bientôt."],
+  ar:["المستويات","المستوى A1.1 مفتوح من البداية. يُفتح A1.2 عند 1000 نقطة. إن كنت تعرف المادة، اضغط على القفل 🔒 وأدِّ اختبار المستوى. المستوى A2 قريبًا."]},
+ {id:"topics",at:["#catNav","#subNav"],
+  uk:["Розділи й теми","Спочатку вибери розділ (Спілкування, Граматика…), а під ним — тему. Список довший за екран: гортай пальцем убік або тягни помаранчевий повзунок."],
+  en:["Sections and topics","First pick a section (Communication, Grammar…), then a topic below it. The list is wider than the screen: swipe sideways or drag the orange slider."],
+  fr:["Rubriques et thèmes","Choisis d'abord une rubrique (Communication, Grammaire…), puis un thème en dessous. La liste dépasse l'écran : glisse sur le côté ou tire le curseur orange."],
+  ar:["الأقسام والمواضيع","اختر أولًا قسمًا (التواصل، القواعد…) ثم موضوعًا تحته. القائمة أعرض من الشاشة: اسحب بإصبعك جانبيًا أو حرّك الشريط البرتقالي."]},
+ {id:"card",at:["#card .q"],
+  uk:["Завдання","Тут питання й варіанти відповідей. Кнопка «🔁 Повторити» ще раз озвучує слово. Після відповіді з'являється пояснення та кнопка «Далі»."],
+  en:["The exercise","Here you see the question and the answer options. “🔁 Repeat” reads the word again. After you answer you get an explanation and a “Next” button."],
+  fr:["L'exercice","Ici, la question et les réponses possibles. « 🔁 Répéter » relit le mot. Après ta réponse, tu vois une explication et le bouton « Suivant »."],
+  ar:["التمرين","هنا السؤال وخيارات الإجابة. زر «🔁 إعادة» ينطق الكلمة مرة أخرى. بعد الإجابة يظهر شرح وزر «التالي»."]},
+ {id:"dock",at:["#modeButtons"],
+  uk:["Режими навчання","📖 <b>Вчити</b> — нове слово з прикладом<br>✅ <b>Тест</b> — вибери правильний переклад<br>🎧 <b>Слухати</b> — почуй слово й вибери значення<br>🧩 <b>Речення</b> — склади речення з карток<br>📝 <b>Toets</b> — міні-іспит, як на курсі<br>🔁 <b>Повтор</b> — слова, у яких ти помилявся"],
+  en:["Practice modes","📖 <b>Study</b> — a new word with an example<br>✅ <b>Quiz</b> — pick the right translation<br>🎧 <b>Listen</b> — hear the word and pick its meaning<br>🧩 <b>Sentences</b> — build a sentence from cards<br>📝 <b>Toets</b> — a mini exam like in class<br>🔁 <b>Review</b> — words you got wrong"],
+  fr:["Modes d'entraînement","📖 <b>Apprendre</b> — un mot nouveau avec un exemple<br>✅ <b>Quiz</b> — choisis la bonne traduction<br>🎧 <b>Écoute</b> — écoute le mot et choisis son sens<br>🧩 <b>Phrases</b> — construis une phrase avec des cartes<br>📝 <b>Toets</b> — mini-examen comme en classe<br>🔁 <b>Révision</b> — les mots où tu t'es trompé"],
+  ar:["أوضاع التدريب","📖 <b>تعلّم</b> — كلمة جديدة مع مثال<br>✅ <b>اختبار</b> — اختر الترجمة الصحيحة<br>🎧 <b>استماع</b> — اسمع الكلمة واختر معناها<br>🧩 <b>جمل</b> — ركّب جملة من البطاقات<br>📝 <b>Toets</b> — امتحان قصير كما في الصف<br>🔁 <b>مراجعة</b> — الكلمات التي أخطأت فيها"]},
+ {id:"help",at:["#helpBtn"],
+  uk:["Готово! 🎉","Ця інструкція завжди тут, під кнопкою ❓. Succes met Nederlands leren!"],
+  en:["All set! 🎉","This guide is always here, under the ❓ button. Succes met Nederlands leren!"],
+  fr:["C'est parti ! 🎉","Ce guide est toujours ici, sous le bouton ❓. Succes met Nederlands leren !"],
+  ar:["جاهز! 🎉","هذا الشرح موجود دائمًا هنا تحت زر ❓. Succes met Nederlands leren!"]}
+];
+let tourIdx=-1,tourRoot=null,tourTimer=0;
+function tourT(){return TOUR_UI[uiLang]||TOUR_UI.uk}
+function tourRect(step){
+ if(!step.at)return null;
+ const rs=step.at.map(s=>document.querySelector(s)).filter(e=>e&&e.offsetParent!==null||e&&getComputedStyle(e).position==="fixed").map(e=>e.getBoundingClientRect()).filter(r=>r.width||r.height);
+ if(!rs.length)return null;
+ const pad=6,vw=innerWidth,vh=innerHeight;
+ let l=Math.min(...rs.map(r=>r.left))-pad,t=Math.min(...rs.map(r=>r.top))-pad,r=Math.max(...rs.map(r=>r.right))+pad,b=Math.max(...rs.map(r=>r.bottom))+pad;
+ l=Math.max(4,l);t=Math.max(4,t);r=Math.min(vw-4,r);b=Math.min(vh-4,b);
+ return {left:l,top:t,width:Math.max(0,r-l),height:Math.max(0,b-t),right:r,bottom:b};
+}
+function tourPlace(){
+ if(!tourRoot)return;
+ const step=TOUR_STEPS[tourIdx],spot=tourRoot.querySelector(".tour-spot"),card=tourRoot.querySelector(".tour-card");
+ const r=tourRect(step),vw=innerWidth,vh=innerHeight,gap=12;
+ const w=Math.min(420,vw-24);card.style.width=w+"px";
+ const h=card.offsetHeight;
+ if(!r){spot.style.cssText="left:50%;top:50%;width:0;height:0";card.style.left=Math.round((vw-w)/2)+"px";card.style.top=Math.max(12,Math.round((vh-h)/2))+"px";return}
+ spot.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+ let left=Math.min(Math.max(12,r.left+r.width/2-w/2),vw-w-12),top;
+ if(vh-r.bottom>=h+gap+8)top=r.bottom+gap;
+ else if(r.top>=h+gap+8)top=r.top-h-gap;
+ else top=r.top+r.height/2<vh/2?vh-h-12:12;
+ card.style.left=Math.round(left)+"px";card.style.top=Math.round(Math.max(12,top))+"px";
+}
+function tourShow(i){
+ tourIdx=Math.max(0,Math.min(TOUR_STEPS.length-1,i));
+ const step=TOUR_STEPS[tourIdx],tx=step[uiLang]||step.uk,u=tourT(),last=tourIdx===TOUR_STEPS.length-1;
+ const card=tourRoot.querySelector(".tour-card");card.replaceChildren();
+ card.appendChild(el("div","tour-count",(tourIdx+1)+" / "+TOUR_STEPS.length));
+ const h=el("h2","",tx[0]);h.id="tourTitle";card.appendChild(h);
+ tx.slice(1).forEach(p=>{const e=el("p","");e.innerHTML=p;card.appendChild(e)});
+ if(step.actions){const a=el("div","tour-actions");step.actions.forEach(k=>{
+  const b=el("button","btn");b.type="button";
+  if(k==="pickVoice"){b.textContent=u.pickVoice;b.onclick=()=>{updateHeader();populateVoicePicker();$("voiceDialog").showModal()}}
+  else if(k==="sample"){b.textContent=u.sample;b.onclick=()=>say(speechSampleText(),b)}
+  else if(k==="auto"){const lab=()=>b.textContent=autoSpeech?u.autoOff:u.autoOn;lab();b.onclick=()=>{autoSpeech=!autoSpeech;lsSet("leren_auto_speech",autoSpeech);updateHeader();lab()}}
+  a.appendChild(b)});card.appendChild(a)}
+ const dots=el("div","tour-dots");TOUR_STEPS.forEach((_,j)=>dots.appendChild(el("i",j===tourIdx?"on":"")));card.appendChild(dots);
+ const row=el("div","tour-row");
+ const skip=el("button","tour-skip",u.skip);skip.type="button";skip.onclick=()=>tourEnd();if(last)skip.style.visibility="hidden";
+ const back=el("button","btn",u.back);back.type="button";back.disabled=tourIdx===0;back.onclick=()=>tourShow(tourIdx-1);
+ const next=el("button","btn primary",last?u.start:u.next);next.type="button";next.onclick=()=>last?tourEnd():tourShow(tourIdx+1);
+ row.append(skip,back,next);card.appendChild(row);
+ // bring the target into view, then place spotlight and card
+ const t=step.at&&document.querySelector(step.at[0]);
+ if(t&&getComputedStyle(t).position!=="fixed"&&getComputedStyle(t).position!=="absolute"){const b=t.getBoundingClientRect();if(b.top<70||b.bottom>innerHeight-200)t.scrollIntoView({block:"center",behavior:"smooth"})}
+ if(t&&t.id==="themeToggle"||t&&t.id==="helpBtn"||t&&t.closest&&t.closest("header"))window.scrollTo({top:0,behavior:"smooth"});
+ tourPlace();clearTimeout(tourTimer);tourTimer=setTimeout(tourPlace,420);
+ next.focus({preventScroll:true});
+}
+function tourKey(e){
+ if(!tourRoot||$("voiceDialog")?.open)return;
+ if(e.key==="Escape"){e.preventDefault();tourEnd()}
+ else if(e.key==="ArrowRight"&&!e.target.closest?.("select"))tourShow(tourIdx+(document.documentElement.dir==="rtl"?-1:1));
+ else if(e.key==="ArrowLeft"&&!e.target.closest?.("select"))tourShow(tourIdx+(document.documentElement.dir==="rtl"?1:-1));
+}
+function startTour(){
+ if(tourRoot)return;
+ const sd=$("searchModal");if(sd&&!sd.hidden)return;
+ tourRoot=el("div","tour");tourRoot.setAttribute("role","dialog");tourRoot.setAttribute("aria-modal","true");tourRoot.setAttribute("aria-labelledby","tourTitle");
+ tourRoot.append(el("div","tour-spot"),el("div","tour-card"));
+ document.body.appendChild(tourRoot);
+ addEventListener("resize",tourPlace);addEventListener("scroll",tourPlace,{passive:true});document.addEventListener("keydown",tourKey);
+ tourShow(0);
+}
+function tourEnd(){
+ if(!tourRoot)return;
+ lsSet("leren_tour_done",true);
+ removeEventListener("resize",tourPlace);removeEventListener("scroll",tourPlace);document.removeEventListener("keydown",tourKey);
+ tourRoot.remove();tourRoot=null;tourIdx=-1;clearTimeout(tourTimer);
+ $("helpBtn")?.focus({preventScroll:true});
+}
+$("helpBtn").addEventListener("click",startTour);
+function updateHelpBtn(){const b=$("helpBtn");if(!b)return;const t={uk:"Інструкція",en:"Guide",fr:"Guide",ar:"الشرح"}[uiLang]||"Guide";b.title=t;b.setAttribute("aria-label",t)}
+updateHelpBtn();
+if(!lsGet("leren_tour_done",false))setTimeout(startTour,700);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
 </body>
