@@ -718,6 +718,24 @@ body.sheet-open{overflow:hidden}
 .st-banner{margin:-6px 0 12px;border-radius:var(--r-md);overflow:hidden;aspect-ratio:2/0.75;max-width:100%}
 .st-banner.sm{aspect-ratio:2/0.55}
 .st-av.xs{width:38px;height:38px}
+.st-av-btn{padding:0;border:0;background:none;border-radius:50%;cursor:pointer;transition:transform .15s}.st-av-btn:active{transform:scale(.94)}
+.g-card .g-av{width:72px;height:72px;font-size:0}.g-card .g-av svg{width:100%;height:100%;display:block}
+.kl-who{margin-bottom:10px}
+.ch-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.ch-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px 14px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge);transition:transform .12s}
+.ch-card:active{transform:translateY(2px)}
+.ch-card.on{border-color:var(--oranje);box-shadow:0 var(--depth-sm) 0 var(--oranje)}
+.ch-fig{width:100%;max-width:130px;aspect-ratio:120/232;border-radius:16px;padding:6px 4px 0}
+.ch-fig svg{width:100%;height:100%;display:block}
+.ch-roel{background:linear-gradient(180deg,#D7F5EE,#9ED7EA)}.ch-lotte{background:linear-gradient(180deg,#FFF0B8,#FFC48A)}
+.ch-card strong{font-family:var(--font-display);font-size:18px}
+.ch-card span{font-size:13px;color:var(--ink-2);line-height:1.3}
+.ch-badge{position:absolute;top:8px;inset-inline-end:8px;font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:var(--oranje);color:#fff}
+.ch-seg{display:flex;gap:6px;flex:none}
+.ch-mini{display:flex;align-items:center;gap:6px;min-height:40px;padding:3px 10px 3px 3px;border-radius:99px;border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 13px var(--font-body,inherit);cursor:pointer}
+.ch-mini.on{border-color:var(--oranje);background:color-mix(in srgb,var(--oranje) 14%,var(--surface))}
+.ch-av{width:30px;height:30px;display:block}.ch-av svg{width:100%;height:100%;display:block}
+@media (max-width:380px){.ch-mini>span:last-child{display:none}.ch-mini{padding:3px}}
 .st-own{margin:10px 0 6px;text-align:center;color:var(--ink-2);font-size:13.5px;font-weight:700}
 .st-fb b{cursor:pointer;text-decoration:underline dotted}
 .ai-row{display:flex;gap:8px;align-items:flex-end}
@@ -796,6 +814,7 @@ body.sheet-open{overflow:hidden}
         </select></span></div>
       <div class="set-row" id="voiceRow"><span class="ico" data-ico="mic"></span><span class="set-l"><span id="voiceRowLabel"></span><small id="voiceRowValue"></small></span>
         <button class="set-btn" id="voiceSettingsBtn" type="button"></button></div>
+      <div class="set-row" id="charRow"><span class="ico" data-ico="chat"></span><span class="set-l" id="charLabel"></span><span class="ch-seg" id="charSeg"></span></div>
       <div class="set-row"><span class="ico" data-ico="volume"></span><span class="set-l"><span id="autoRowLabel"></span><small id="autoRowHint"></small></span>
         <button class="switch" id="autoSpeechToggle" type="button" role="switch" aria-checked="false" aria-labelledby="autoRowLabel"><i></i></button></div>
       <div class="set-row"><span class="ico" data-ico="moon"></span><span class="set-l" id="themeRowLabel"></span>
@@ -2309,10 +2328,10 @@ function endRound(){
 
 // ========== KORT / LANG game (two columns, as on the class board) ==========
 const KL_UI={
- uk:{levels:["1 склад","2 склади","Дієслово"],sortSub:"Послухай і постав слово в правильну колонку",verbSub:"Обери правильне написання",kortSub:"коротка голосна",langSub:"довга голосна",rule:"📋 Правило",hear:"чуємо",write:"пишемо",r1k:"1 голосна",r1l:"2 голосні",r2k:"1 голосна + 2 приголосні",r2l:"1 голосна + 1 приголосна",syl1:"1 склад",syl2:"2 склади",tap:"Натисни на слово, щоб почути",verbRule:"Це правило діє і для дієслів!",why1k:"1 склад, коротка → 1 голосна",why1l:"1 склад, довга → 2 голосні",why2k:"2 склади, коротка → 1 голосна + 2 приголосні",why2l:"2 склади, довга → 1 голосна + 1 приголосна"},
- en:{levels:["1 syllable","2 syllables","Verbs"],sortSub:"Listen and put the word in the right column",verbSub:"Choose the correct spelling",kortSub:"short vowel",langSub:"long vowel",rule:"📋 Rule",hear:"we hear",write:"we write",r1k:"1 vowel",r1l:"2 vowels",r2k:"1 vowel + 2 consonants",r2l:"1 vowel + 1 consonant",syl1:"1 syllable",syl2:"2 syllables",tap:"Tap a word to hear it",verbRule:"This rule also works for verbs!",why1k:"1 syllable, short → 1 vowel",why1l:"1 syllable, long → 2 vowels",why2k:"2 syllables, short → 1 vowel + 2 consonants",why2l:"2 syllables, long → 1 vowel + 1 consonant"},
- fr:{levels:["1 syllabe","2 syllabes","Verbes"],sortSub:"Écoute et place le mot dans la bonne colonne",verbSub:"Choisis la bonne orthographe",kortSub:"voyelle courte",langSub:"voyelle longue",rule:"📋 Règle",hear:"on entend",write:"on écrit",r1k:"1 voyelle",r1l:"2 voyelles",r2k:"1 voyelle + 2 consonnes",r2l:"1 voyelle + 1 consonne",syl1:"1 syllabe",syl2:"2 syllabes",tap:"Touche un mot pour l'entendre",verbRule:"Cette règle vaut aussi pour les verbes !",why1k:"1 syllabe, courte → 1 voyelle",why1l:"1 syllabe, longue → 2 voyelles",why2k:"2 syllabes, courte → 1 voyelle + 2 consonnes",why2l:"2 syllabes, longue → 1 voyelle + 1 consonne"},
- ar:{levels:["مقطع واحد","مقطعان","الأفعال"],sortSub:"استمع وضع الكلمة في العمود الصحيح",verbSub:"اختر الكتابة الصحيحة",kortSub:"حرف علة قصير",langSub:"حرف علة طويل",rule:"📋 القاعدة",hear:"نسمع",write:"نكتب",r1k:"حرف علة واحد",r1l:"حرفا علة",r2k:"حرف علة + حرفان ساكنان",r2l:"حرف علة + حرف ساكن",syl1:"مقطع واحد",syl2:"مقطعان",tap:"اضغط على الكلمة لسماعها",verbRule:"هذه القاعدة تنطبق على الأفعال أيضاً!",why1k:"مقطع واحد، قصير ← حرف علة واحد",why1l:"مقطع واحد، طويل ← حرفا علة",why2k:"مقطعان، قصير ← حرف علة + حرفان ساكنان",why2l:"مقطعان، طويل ← حرف علة + حرف ساكن"}
+ uk:{explain:"Dat is {N}! Дивись, як на дошці: чуємо коротко чи довго — і так пишемо.",levels:["1 склад","2 склади","Дієслово"],sortSub:"Послухай і постав слово в правильну колонку",verbSub:"Обери правильне написання",kortSub:"коротка голосна",langSub:"довга голосна",rule:"📋 Правило",hear:"чуємо",write:"пишемо",r1k:"1 голосна",r1l:"2 голосні",r2k:"1 голосна + 2 приголосні",r2l:"1 голосна + 1 приголосна",syl1:"1 склад",syl2:"2 склади",tap:"Натисни на слово, щоб почути",verbRule:"Це правило діє і для дієслів!",why1k:"1 склад, коротка → 1 голосна",why1l:"1 склад, довга → 2 голосні",why2k:"2 склади, коротка → 1 голосна + 2 приголосні",why2l:"2 склади, довга → 1 голосна + 1 приголосна"},
+ en:{explain:"Dat is {N}! Like on the whiteboard: hear short or long — and write it that way.",levels:["1 syllable","2 syllables","Verbs"],sortSub:"Listen and put the word in the right column",verbSub:"Choose the correct spelling",kortSub:"short vowel",langSub:"long vowel",rule:"📋 Rule",hear:"we hear",write:"we write",r1k:"1 vowel",r1l:"2 vowels",r2k:"1 vowel + 2 consonants",r2l:"1 vowel + 1 consonant",syl1:"1 syllable",syl2:"2 syllables",tap:"Tap a word to hear it",verbRule:"This rule also works for verbs!",why1k:"1 syllable, short → 1 vowel",why1l:"1 syllable, long → 2 vowels",why2k:"2 syllables, short → 1 vowel + 2 consonants",why2l:"2 syllables, long → 1 vowel + 1 consonant"},
+ fr:{explain:"Dat is {N} ! Comme au tableau : on entend court ou long, et on écrit ainsi.",levels:["1 syllabe","2 syllabes","Verbes"],sortSub:"Écoute et place le mot dans la bonne colonne",verbSub:"Choisis la bonne orthographe",kortSub:"voyelle courte",langSub:"voyelle longue",rule:"📋 Règle",hear:"on entend",write:"on écrit",r1k:"1 voyelle",r1l:"2 voyelles",r2k:"1 voyelle + 2 consonnes",r2l:"1 voyelle + 1 consonne",syl1:"1 syllabe",syl2:"2 syllabes",tap:"Touche un mot pour l'entendre",verbRule:"Cette règle vaut aussi pour les verbes !",why1k:"1 syllabe, courte → 1 voyelle",why1l:"1 syllabe, longue → 2 voyelles",why2k:"2 syllabes, courte → 1 voyelle + 2 consonnes",why2l:"2 syllabes, longue → 1 voyelle + 1 consonne"},
+ ar:{explain:"Dat is {N}! كما على السبورة: نسمع قصيرًا أو طويلًا ونكتب هكذا.",levels:["مقطع واحد","مقطعان","الأفعال"],sortSub:"استمع وضع الكلمة في العمود الصحيح",verbSub:"اختر الكتابة الصحيحة",kortSub:"حرف علة قصير",langSub:"حرف علة طويل",rule:"📋 القاعدة",hear:"نسمع",write:"نكتب",r1k:"حرف علة واحد",r1l:"حرفا علة",r2k:"حرف علة + حرفان ساكنان",r2l:"حرف علة + حرف ساكن",syl1:"مقطع واحد",syl2:"مقطعان",tap:"اضغط على الكلمة لسماعها",verbRule:"هذه القاعدة تنطبق على الأفعال أيضاً!",why1k:"مقطع واحد، قصير ← حرف علة واحد",why1l:"مقطع واحد، طويل ← حرفا علة",why2k:"مقطعان، قصير ← حرف علة + حرفان ساكنان",why2l:"مقطعان، طويل ← حرف علة + حرف ساكن"}
 };
 const klU=()=>KL_UI[uiLang]||KL_UI.uk;
 let klLevel=Number(validStored("poly_klLevel",["1","2","3"],"1"))||1,klBoard={kort:[],lang:[]},klShowRule=false,klQ=null;
@@ -2328,6 +2347,7 @@ function klCard(word,{vowels=true,cls=""}={}){
 }
 function klRulePanel(){
  const k=klU(),box=el("div","kl-rule");
+ const who=el("div","st-head kl-who");const av=el("div","st-av sm");av.innerHTML=charSvg("happy");who.append(av,el("div","st-say",cx(k.explain)));box.appendChild(who);
  const table=(title,kk,lk,ex1,ex2)=>{const t=el("div","kl-rt");t.appendChild(el("div","kl-rt-h",title));
   const g=el("div","kl-rt-g");
   g.append(el("div","kl-rt-c","👂 kort"),el("div","kl-rt-c","👂 lang"));
@@ -3585,7 +3605,7 @@ function renderShellText(){
  $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
  const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
  const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)));sc.title=(u.points||"Points")+": "+score;
- fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();
+ fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();if(typeof renderCharRow==="function")renderCharRow();
 }
 function renderProgressView(){
  const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;
@@ -3634,7 +3654,7 @@ function firstRun(){
   const list=el("div","goal-list");
   [[g.lvlNew,g.lvlNewS,false],[g.lvlKnow,g.lvlKnowS,true]].forEach(([t,sub,test])=>{
    const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
-   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(startTour,250)};list.appendChild(b)});
+   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(startTour),250)};list.appendChild(b)});
   panel.appendChild(list);
  });
 }
@@ -3745,7 +3765,7 @@ $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Numbe
 
 // ========== GAMES: dialogue puzzle, role-play, speaking, blitz, memory, dictation, my day ==========
 const G_UI={
- uk:{games:"Ігри",story:"Een dag in België",storyS:"Лотте проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, сусідка",ai:"Praat met Lotte · AI",aiS:"Вільна розмова з AI: пиши або говори, Лотте виправить помилки",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
+ uk:{games:"Ігри",story:"Een dag in België",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
   dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Memory",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
   pick:"Обери діалог",order:"Натискай репліки по порядку — від першої до останньої",check:"Перевірити",again:"Ще раз",wrongOrder:"Майже! Зелені репліки на місці, решту переставимо.",solved:"Правильно! Ось увесь діалог:",play:"▶ Прослухати діалог",clear:"Очистити",
   role:"Твоя роль",level:"Рівень",l1:"Вибрати",l2:"Скласти",l3:"Сказати",yourTurn:"Твоя черга:",choose:"Обери, що сказати",build:"Склади репліку з карток",say:"Натисни 🎤 і скажи",mic:"🎤 Говорити",listening:"Слухаю…",type:"⌨ Написати",send:"Готово",heard:"Почуто:",tryAgain:"Спробуй ще раз",noMic:"Розпізнавання мови недоступне тут — напиши відповідь.",micDenied:"Немає доступу до мікрофона. Дозволь його в налаштуваннях або напиши відповідь.",wellDone:"Чудова розмова! 🎉",
@@ -3754,7 +3774,7 @@ const G_UI={
   write:"Напиши, що почув(-ла)",slow:"🐢 Повільно",correctIs:"Правильно:",
   mdPick:"О котрій?",mdBuild:"Склади речення",mdRule:"Час на початку → спочатку дієслово, потім «ik»: Om zeven uur sta ik op.",mdAll:"Мій день",
   pts:n=>"+"+n+" ⭐"},
- en:{games:"Games",story:"Een dag in België",storyS:"Lotte takes you through a day in Belgium: café, shop, pharmacy, town hall, station, neighbour",ai:"Praat met Lotte · AI",aiS:"Free conversation with AI: write or speak, Lotte corrects you",title:"Games",sub:"Speak, listen and play — like in class",back:"← Games",best:"Best",week:"Weekly challenge",weekT:"Play 5 different games this week to earn +100 points",weekDone:"Weekly challenge complete! +100 ⭐",nlOnly:"This game is for Dutch. Choose 🇧🇪 BE in Settings.",
+ en:{games:"Games",story:"Een dag in België",storyS:"{N} takes you through a day in Belgium: café, shop, pharmacy, town hall, station, neighbour",ai:"Praat met {N} · AI",aiS:"Free conversation with AI: write or speak, {N} corrects you",title:"Games",sub:"Speak, listen and play — like in class",back:"← Games",best:"Best",week:"Weekly challenge",weekT:"Play 5 different games this week to earn +100 points",weekDone:"Weekly challenge complete! +100 ⭐",nlOnly:"This game is for Dutch. Choose 🇧🇪 BE in Settings.",
   dlg:"Dialogue puzzle",dlgS:"Put the lines in the right order",rp:"Role-play",rpS:"Hold the conversation: you are one of the two people",sp:"Answer the question",spS:"Say your answer into the microphone",bl:"60-second blitz",blS:"How many words in one minute?",mm:"Memory",mmS:"Find the pairs: word and translation",dc:"Dictation",dcS:"Listen and type the sentence",md:"My day",mdS:"Tell about your day: “Om 7 uur sta ik op”",
   pick:"Choose a dialogue",order:"Tap the lines in order — from first to last",check:"Check",again:"Again",wrongOrder:"Almost! Green lines are in place, let's fix the rest.",solved:"Correct! Here is the whole dialogue:",play:"▶ Play dialogue",clear:"Clear",
   role:"Your role",level:"Level",l1:"Choose",l2:"Build",l3:"Speak",yourTurn:"Your turn:",choose:"Choose what to say",build:"Build the line from cards",say:"Tap 🎤 and speak",mic:"🎤 Speak",listening:"Listening…",type:"⌨ Type",send:"Done",heard:"Heard:",tryAgain:"Try again",noMic:"Speech recognition isn't available here — type your answer.",micDenied:"No microphone access. Allow it in settings or type your answer.",wellDone:"Great conversation! 🎉",
@@ -3763,7 +3783,7 @@ const G_UI={
   write:"Type what you heard",slow:"🐢 Slow",correctIs:"Correct:",
   mdPick:"What time?",mdBuild:"Build the sentence",mdRule:"Time first → verb, then “ik”: Om zeven uur sta ik op.",mdAll:"My day",
   pts:n=>"+"+n+" ⭐"},
- fr:{games:"Jeux",story:"Een dag in België",storyS:"Lotte t'emmène à travers une journée en Belgique : café, magasin, pharmacie, commune, gare, voisine",ai:"Praat met Lotte · AI",aiS:"Conversation libre avec l'IA : Lotte corrige tes erreurs",title:"Jeux",sub:"Parle, écoute et joue — comme en classe",back:"← Jeux",best:"Record",week:"Défi de la semaine",weekT:"Joue à 5 jeux différents cette semaine : +100 points",weekDone:"Défi de la semaine réussi ! +100 ⭐",nlOnly:"Ce jeu est pour le néerlandais. Choisis 🇧🇪 BE dans les réglages.",
+ fr:{games:"Jeux",story:"Een dag in België",storyS:"{N} t'emmène à travers une journée en Belgique : café, magasin, pharmacie, commune, gare, {voisin|voisine}",ai:"Praat met {N} · AI",aiS:"Conversation libre avec l'IA : {N} corrige tes erreurs",title:"Jeux",sub:"Parle, écoute et joue — comme en classe",back:"← Jeux",best:"Record",week:"Défi de la semaine",weekT:"Joue à 5 jeux différents cette semaine : +100 points",weekDone:"Défi de la semaine réussi ! +100 ⭐",nlOnly:"Ce jeu est pour le néerlandais. Choisis 🇧🇪 BE dans les réglages.",
   dlg:"Puzzle de dialogue",dlgS:"Remets les répliques dans l'ordre",rp:"Jeu de rôle",rpS:"Mène la conversation : tu es l'une des deux personnes",sp:"Réponds à la question",spS:"Dis ta réponse au micro",bl:"Blitz 60 secondes",blS:"Combien de mots en une minute ?",mm:"Memory",mmS:"Trouve les paires : mot et traduction",dc:"Dictée",dcS:"Écoute et écris la phrase",md:"Ma journée",mdS:"Raconte ta journée : « Om 7 uur sta ik op »",
   pick:"Choisis un dialogue",order:"Touche les répliques dans l'ordre",check:"Vérifier",again:"Encore",wrongOrder:"Presque ! Les répliques vertes sont bien placées.",solved:"Correct ! Voici tout le dialogue :",play:"▶ Écouter le dialogue",clear:"Effacer",
   role:"Ton rôle",level:"Niveau",l1:"Choisir",l2:"Construire",l3:"Parler",yourTurn:"À toi :",choose:"Choisis quoi dire",build:"Construis la réplique",say:"Touche 🎤 et parle",mic:"🎤 Parler",listening:"J'écoute…",type:"⌨ Écrire",send:"OK",heard:"Entendu :",tryAgain:"Réessaie",noMic:"Reconnaissance vocale indisponible — écris ta réponse.",micDenied:"Pas d'accès au micro. Autorise-le ou écris ta réponse.",wellDone:"Belle conversation ! 🎉",
@@ -3772,7 +3792,7 @@ const G_UI={
   write:"Écris ce que tu entends",slow:"🐢 Lent",correctIs:"Correct :",
   mdPick:"À quelle heure ?",mdBuild:"Construis la phrase",mdRule:"L'heure d'abord → le verbe, puis « ik » : Om zeven uur sta ik op.",mdAll:"Ma journée",
   pts:n=>"+"+n+" ⭐"},
- ar:{games:"ألعاب",story:"Een dag in België",storyS:"تأخذك لوته في يوم ببلجيكا: مقهى، متجر، صيدلية، بلدية، محطة، جارة",ai:"Praat met Lotte · AI",aiS:"محادثة حرة مع الذكاء الاصطناعي تصحح أخطاءك",title:"ألعاب",sub:"تكلّم واستمع والعب — كما في الصف",back:"→ الألعاب",best:"الأفضل",week:"تحدّي الأسبوع",weekT:"العب 5 ألعاب مختلفة هذا الأسبوع لتربح 100 نقطة",weekDone:"أنجزت تحدّي الأسبوع! +100 ⭐",nlOnly:"هذه اللعبة للهولندية. اختر 🇧🇪 BE في الإعدادات.",
+ ar:{games:"ألعاب",story:"Een dag in België",storyS:"{يأخذك|تأخذك} {Na} في يوم ببلجيكا: مقهى، متجر، صيدلية، بلدية، محطة، {جار|جارة}",ai:"Praat met {N} · AI",aiS:"محادثة حرة مع الذكاء الاصطناعي تصحح أخطاءك",title:"ألعاب",sub:"تكلّم واستمع والعب — كما في الصف",back:"→ الألعاب",best:"الأفضل",week:"تحدّي الأسبوع",weekT:"العب 5 ألعاب مختلفة هذا الأسبوع لتربح 100 نقطة",weekDone:"أنجزت تحدّي الأسبوع! +100 ⭐",nlOnly:"هذه اللعبة للهولندية. اختر 🇧🇪 BE في الإعدادات.",
   dlg:"لغز الحوار",dlgS:"رتّب الجمل بالترتيب الصحيح",rp:"لعب الأدوار",rpS:"أدِر الحوار: أنت أحد الشخصين",sp:"أجب عن السؤال",spS:"قل إجابتك في الميكروفون",bl:"تحدّي 60 ثانية",blS:"كم كلمة في دقيقة؟",mm:"الذاكرة",mmS:"اعثر على الأزواج: الكلمة والترجمة",dc:"إملاء",dcS:"استمع واكتب الجملة",md:"يومي",mdS:"احكِ عن يومك: «Om 7 uur sta ik op»",
   pick:"اختر حوارًا",order:"اضغط الجمل بالترتيب",check:"تحقّق",again:"مرة أخرى",wrongOrder:"تقريبًا! الجمل الخضراء في مكانها.",solved:"صحيح! هذا الحوار كاملًا:",play:"▶ استمع إلى الحوار",clear:"مسح",
   role:"دورك",level:"المستوى",l1:"اختيار",l2:"تركيب",l3:"نطق",yourTurn:"دورك:",choose:"اختر ما تقوله",build:"ركّب الجملة من البطاقات",say:"اضغط 🎤 وتكلّم",mic:"🎤 تكلّم",listening:"أستمع…",type:"⌨ اكتب",send:"تم",heard:"سمعت:",tryAgain:"حاول مرة أخرى",noMic:"التعرف على الكلام غير متاح هنا — اكتب إجابتك.",micDenied:"لا يوجد إذن للميكروفون. اسمح به أو اكتب إجابتك.",wellDone:"حوار رائع! 🎉",
@@ -3782,7 +3802,7 @@ const G_UI={
   mdPick:"في أي ساعة؟",mdBuild:"ركّب الجملة",mdRule:"الوقت أولًا ← ثم الفعل ثم «ik»: Om zeven uur sta ik op.",mdAll:"يومي",
   pts:n=>"+"+n+" ⭐"}
 };
-const gU=()=>G_UI[uiLang]||G_UI.uk;
+const gU=()=>{const o=G_UI[uiLang]||G_UI.uk;return {...o,storyS:cx(o.storyS),ai:cx(o.ai),aiS:cx(o.aiS)}};
 const gTr=o=>o[uiLang]||o.en||o.uk||"";
 
 // --- dialogues (A/B), from CVO class material + everyday situations ---
@@ -3951,7 +3971,7 @@ function renderGamesHome(){
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if(id==="ai"&&!AI_ENDPOINT)return;
-  if(id==="story")b.classList.add("wide");
+  if(id==="story"){b.classList.add("wide");const ic=b.querySelector(".g-ic");ic.classList.add("g-av");ic.innerHTML=charSvg("happy")}
   b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart})[id]()};
   grid.appendChild(b);
  });
@@ -4182,30 +4202,101 @@ function mdRender(){
  card.appendChild(bank);
 }
 
-// ========== ART: Lotte (3 moods) + scene illustrations ==========
-const LOTTE_SVG=mood=>{
+// ========== ART: characters Roel + Lotte (3 moods, avatar or full body) + scene illustrations ==========
+const FACE_PARTS=(mood,o)=>{
  const eyes=mood==="think"
-  ?'<path d="M47 55q4-3 8 0M65 55q4-3 8 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>'
-  :'<ellipse cx="51" cy="56" rx="3.6" ry="4.4" fill="#2A1D12"/><ellipse cx="69" cy="56" rx="3.6" ry="4.4" fill="#2A1D12"/><circle cx="52.3" cy="54.4" r="1.3" fill="#fff"/><circle cx="70.3" cy="54.4" r="1.3" fill="#fff"/>';
- const brows=mood==="think"?'<path d="M45 47q6-4 12-1M63 44q6-3 12 1" stroke="#4A2C1A" stroke-width="2.6" fill="none" stroke-linecap="round"/>':'<path d="M45 47q6-4 12-2M63 45q6-2 12 2" stroke="#4A2C1A" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
- const mouth=mood==="wow"?'<ellipse cx="60" cy="70" rx="5.5" ry="6.5" fill="#7A2B22"/><ellipse cx="60" cy="73" rx="3.5" ry="2.4" fill="#EF6F6F"/>'
-  :mood==="think"?'<path d="M55 71q6 2 11-2" stroke="#7A2B22" stroke-width="3" fill="none" stroke-linecap="round"/>'
-  :'<path d="M50 66q10 11 20 0z" fill="#7A2B22"/><path d="M53 68q7 5 14 0" fill="#fff"/>';
- const extra=mood==="wow"?'<path d="M18 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM100 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>':mood==="think"?'<circle cx="98" cy="30" r="3" fill="#fff" opacity=".9"/><circle cx="104" cy="20" r="5" fill="#fff" opacity=".9"/>':"";
- return `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="lt-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#FF9A3D"/></linearGradient><linearGradient id="lt-hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A4A2C"/><stop offset="1" stop-color="#4A2C1A"/></linearGradient></defs>
- <circle cx="60" cy="60" r="58" fill="url(#lt-bg)"/>${extra}
- <path d="M30 36c4-20 22-28 34-26 18 2 30 16 28 36l-2 40H32z" fill="url(#lt-hair)"/>
- <path d="M18 120c3-22 20-32 42-32s39 10 42 32z" fill="#EB6A00"/><path d="M47 89l13 12 13-12-4-4H51z" fill="#fff"/><path d="M52 86h16v8l-8 6-8-6z" fill="#F2B98F"/>
- <ellipse cx="60" cy="58" rx="23" ry="26" fill="#F6C9A4"/>
+  ?`<path d="M47 56q4-3 8 0M65 56q4-3 8 0" stroke="#2A1D12" stroke-width="3" fill="none" stroke-linecap="round"/>`
+  :`<ellipse cx="51" cy="57" rx="${o.er}" ry="${o.er+.8}" fill="#2A1D12"/><ellipse cx="69" cy="57" rx="${o.er}" ry="${o.er+.8}" fill="#2A1D12"/><circle cx="52.2" cy="55.6" r="1.2" fill="#fff"/><circle cx="70.2" cy="55.6" r="1.2" fill="#fff"/>`;
+ const brows=mood==="think"?`<path d="M45 48q6-4 12-1M63 45q6-3 12 1" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`
+  :mood==="wow"?`<path d="M45 46q6-5 12-2M63 44q6-3 12 2" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`
+  :`<path d="M45 48q6-4 12-2M63 46q6-2 12 2" stroke="${o.brow}" stroke-width="${o.bw}" fill="none" stroke-linecap="round"/>`;
+ const mouth=mood==="wow"?`<ellipse cx="60" cy="72" rx="5" ry="6" fill="#7A2B22"/><ellipse cx="60" cy="75" rx="3.2" ry="2.2" fill="#EF6F6F"/>`
+  :mood==="think"?`<path d="M54 73q6 2 11-2" stroke="#7A2B22" stroke-width="3" fill="none" stroke-linecap="round"/>`
+  :`<path d="M50 68q10 11 20 0z" fill="#7A2B22"/><path d="M53 70q7 5 14 0" fill="#fff"/>`;
+ return brows+eyes+mouth;
+};
+const MOOD_EXTRA=mood=>mood==="wow"?'<path d="M18 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM100 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>':mood==="think"?'<circle cx="98" cy="30" r="3" fill="#fff" opacity=".9"/><circle cx="104" cy="20" r="5" fill="#fff" opacity=".9"/>':"";
+// full body (shirt/sweater, jeans, shoes) under a head drawn in avatar coordinates
+const BODY=(top,sleeve,skin,longSleeve)=>`<path d="M30 100q30-16 60 0l4 62H26z" fill="${top}"/>
+ <path d="M32 102q-12 12-14 34" stroke="${sleeve}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M88 102q12 12 14 34" stroke="${sleeve}" stroke-width="13" fill="none" stroke-linecap="round"/>
+ <path d="M18 134q-1 14 1 24M102 134q1 14-1 24" stroke="${longSleeve?sleeve:skin}" stroke-width="11" fill="none" stroke-linecap="round"/>
+ <circle cx="19" cy="162" r="6.5" fill="${skin}"/><circle cx="101" cy="162" r="6.5" fill="${skin}"/>
+ <path d="M28 160h64l-3 64H66l-6-52-6 52H31z" fill="#3E5F8E"/><path d="M60 166v8M36 168q8 4 14 0M70 168q8 4 14 0" stroke="#2B4468" stroke-width="2" fill="none"/><path d="M28 160h64v6H28z" fill="#2B4468"/>
+ <path d="M30 222h22q4 0 4 5v3H24q0-8 6-8zM68 222h22q6 0 6 8H64v-3q0-5 4-5z" fill="#2A1D12"/>`;
+const CHAR_SVG=(c,mood,full)=>`<svg viewBox="${full?"0 0 120 232":"0 0 120 120"}" aria-hidden="true"><defs>${c.defs}</defs>
+ ${full?"":`<circle cx="60" cy="60" r="58" fill="url(#${c.id}-bg)"/>`+MOOD_EXTRA(mood)}
+ ${c.back}${full?BODY(c.top,c.sleeve,c.skin,c.long)+c.collar:c.shoulders}${c.face(mood)}</svg>`;
+const LOTTE_PARTS={id:"lt",skin:"#F6C9A4",top:"#EB6A00",sleeve:"#EB6A00",long:true,
+ defs:`<linearGradient id="lt-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#FF9A3D"/></linearGradient><linearGradient id="lt-hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A4A2C"/><stop offset="1" stop-color="#4A2C1A"/></linearGradient>`,
+ back:`<path d="M30 36c4-20 22-28 34-26 18 2 30 16 28 36l-2 40H32z" fill="url(#lt-hair)"/>`,
+ shoulders:`<path d="M18 120c3-22 20-32 42-32s39 10 42 32z" fill="#EB6A00"/><path d="M47 89l13 12 13-12-4-4H51z" fill="#fff"/>`,
+ collar:`<path d="M47 93l13 12 13-12-4-4H51z" fill="#fff"/>`,
+ face:mood=>`<path d="M52 84h16v10l-8 6-8-6z" fill="#F2B98F"/><ellipse cx="60" cy="58" rx="23" ry="26" fill="#F6C9A4"/>
  <path d="M37 52c2-18 14-25 25-25 13 0 22 9 22 22-9-2-17-7-21-14-6 9-15 15-26 17z" fill="url(#lt-hair)"/>
  <path d="M60 30c8 0 15 4 18 10" stroke="#9A6440" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/>
- ${brows}${eyes}
- <path d="M59 58q-2 6 1 7" stroke="#D9A07C" stroke-width="2" fill="none" stroke-linecap="round"/>
- <ellipse cx="45" cy="65" rx="5" ry="3" fill="#F49B84" opacity=".55"/><ellipse cx="75" cy="65" rx="5" ry="3" fill="#F49B84" opacity=".55"/>
- ${mouth}
+ ${FACE_PARTS(mood,{er:3.6,brow:"#4A2C1A",bw:2.6})}
+ <path d="M59 59q-2 6 1 7" stroke="#D9A07C" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <ellipse cx="45" cy="66" rx="5" ry="3" fill="#F49B84" opacity=".55"/><ellipse cx="75" cy="66" rx="5" ry="3" fill="#F49B84" opacity=".55"/>
  <rect x="34" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="34" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="34" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>
- <rect x="83" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="83" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="83" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>
- </svg>`};
+ <rect x="83" y="64" width="3" height="9" rx="1.5" fill="#1E1712"/><rect x="83" y="72" width="3" height="5" rx="1.5" fill="#FDDA24"/><rect x="83" y="76" width="3" height="4" rx="1.5" fill="#EF3340"/>`};
+// Roel: ~50, brown dreadlocks tied in a high bun, stubble, navy checked short-sleeve shirt, jeans
+const DREAD=(d,w)=>`<path d="${d}" stroke="#6B4528" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#4A2C1A" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-dasharray="1.6 3.2" opacity=".55"/>`;
+const ROEL_PARTS={id:"rl",skin:"#E9BB93",top:"url(#rl-chk)",sleeve:"url(#rl-chk)",long:false,
+ defs:`<linearGradient id="rl-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BDF0E4"/><stop offset="1" stop-color="#3FA7C9"/></linearGradient>
+ <pattern id="rl-chk" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#2E3A57"/><path d="M0 .6H7M.6 0V7" stroke="#6A7DA6" stroke-width="1.2"/><path d="M0 3.8H7M3.8 0V7" stroke="#4B5B80" stroke-width=".7"/></pattern>`,
+ back:DREAD("M48 18c-13 5-17 20-15 44",5)+DREAD("M72 19c8 5 10 13 10 24",4),
+ shoulders:`<path d="M16 120c3-22 20-32 44-32s41 10 44 32z" fill="url(#rl-chk)"/><path d="M49 90l11 12 11-12" fill="#E9BB93"/><path d="M47 88l-6 12 13 0 6-8zM73 88l6 12-13 0-6-8z" fill="#3B4A6E" stroke="#1E2740" stroke-width="1.2" stroke-linejoin="round"/>`,
+ collar:`<path d="M49 94l11 12 11-12" fill="#E9BB93"/><path d="M47 92l-6 12 13 0 6-8zM73 92l6 12-13 0-6-8z" fill="#3B4A6E" stroke="#1E2740" stroke-width="1.2" stroke-linejoin="round"/><circle cx="60" cy="118" r="1.6" fill="#C9D3E6"/><circle cx="60" cy="132" r="1.6" fill="#C9D3E6"/><circle cx="60" cy="146" r="1.6" fill="#C9D3E6"/><rect x="95" y="128" width="13" height="5" rx="2.5" fill="#2A1D12"/>`,
+ face:mood=>`<path d="M52 82h16v10l-8 6-8-6z" fill="#D9A47C"/>
+ <ellipse cx="38" cy="60" rx="4" ry="6" fill="#E3B089"/><ellipse cx="82" cy="60" rx="4" ry="6" fill="#E3B089"/>
+ <path d="M38 52c0-17 9-26 22-26s22 9 22 26v10c0 15-10 25-22 25S38 77 38 62z" fill="#E9BB93"/>
+ <path d="M39 62c1 13 10 24 21 24s20-11 21-24c-4 8-11 12-21 12s-17-4-21-12z" fill="#8A6A55" opacity=".28"/>
+ <path d="M53 66q7-3 14 0" stroke="#8A6A55" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".45"/>
+ <path d="M38 50c0-16 10-25 22-25s22 9 22 25c-4-8-11-13-22-13s-18 5-22 13z" fill="#6B4528"/>
+ <path d="M46 36q7-5 14-5M62 31q8 1 13 7M52 40q8-4 16 0" stroke="#4A2C1A" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/>
+ <rect x="55" y="22" width="10" height="9" rx="3" fill="#6B4528"/><rect x="54" y="25" width="12" height="3.5" rx="1.7" fill="#3B5BDB"/>
+ <ellipse cx="60" cy="15" rx="15" ry="10" fill="#6B4528"/>
+ <path d="M47 15q13-9 26 0M48 19q12-6 24 0M50 11q10-5 20 0" stroke="#4A2C1A" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".75"/>
+ <circle cx="48" cy="9" r="3.5" fill="#7A5232"/><circle cx="58" cy="5.5" r="3.5" fill="#7A5232"/><circle cx="69" cy="7" r="3.5" fill="#7A5232"/>
+ ${FACE_PARTS(mood,{er:3.2,brow:"#4A2C1A",bw:3.4})}
+ <path d="M47 50q-3-1-5 1M73 50q3-1 5 1" stroke="#B98763" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+ <path d="M60 56q-3 8-1 10 2 1 4 0" stroke="#B98763" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <path d="M49 67q-2 4 0 7M71 67q2 4 0 7" stroke="#B98763" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>
+ <path d="M52 38q8-2 16 0" stroke="#B98763" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>`};
+const LOTTE_SVG=(mood,full)=>CHAR_SVG(LOTTE_PARTS,mood,full);
+const ROEL_SVG=(mood,full)=>CHAR_SVG(ROEL_PARTS,mood,full);
+// --- chosen character (Roel is the default guide) ---
+const CHARS={roel:{n:"Roel",u:"Рул",a:"رول",m:true,svg:ROEL_SVG},lotte:{n:"Lotte",u:"Лотте",a:"لوته",m:false,svg:LOTTE_SVG}};
+const charId=()=>{const c=lsGet("leren_char","roel");return CHARS[c]?c:"roel"};
+const curChar=()=>CHARS[charId()];
+const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
+// text templates: {N}=name (nl/en/fr), {Nu}=Ukrainian name, {Na}=Arabic name, {male|female}
+const cx=t=>{if(typeof t!=="string")return t;const c=curChar();return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g,(_,m,f)=>c.m?m:f).replace(/\{Nu\}/g,c.u).replace(/\{Na\}/g,c.a).replace(/\{N\}/g,c.n)};
+const cxDeep=o=>typeof o==="string"?cx(o):Array.isArray(o)?o.map(cxDeep):o&&typeof o==="object"?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,typeof v==="function"?v:cxDeep(v)])):o;
+const CHAR_UI={uk:{pick:"Обери свого персонажа",pickHint:"Він або вона вестиме тебе через діалоги й ігри. Змінити можна в налаштуваннях.",row:"Персонаж",roel:"Вчитель. Пояснює правила спокійно, як на дошці",lotte:"Бельгійка. Весела й швидка, як у житті",chosen:"Обрано",go:"Далі"},
+ en:{pick:"Choose your character",pickHint:"They'll guide you through dialogues and games. You can change this in Settings.",row:"Character",roel:"Teacher. Explains rules calmly, like on the whiteboard",lotte:"Belgian. Cheerful and quick, like real life",chosen:"Chosen",go:"Next"},
+ fr:{pick:"Choisis ton personnage",pickHint:"Il ou elle te guidera dans les dialogues et les jeux. Modifiable dans les réglages.",row:"Personnage",roel:"Professeur. Explique calmement, comme au tableau",lotte:"Belge. Joyeuse et rapide, comme dans la vraie vie",chosen:"Choisi",go:"Suivant"},
+ ar:{pick:"اختر شخصيتك",pickHint:"سيرافقك في الحوارات والألعاب. يمكنك تغييره من الإعدادات.",row:"الشخصية",roel:"معلّم. يشرح القواعد بهدوء كما على السبورة",lotte:"بلجيكية. مرحة وسريعة كما في الحياة",chosen:"تم الاختيار",go:"التالي"}};
+const chU=()=>CHAR_UI[uiLang]||CHAR_UI.uk;
+function charPicker(onPick){
+ const u=chU(),wrap=el("div","ch-pick");wrap.setAttribute("role","radiogroup");wrap.setAttribute("aria-label",u.pick);
+ Object.entries(CHARS).forEach(([id,c])=>{const on=charId()===id&&lsGet("leren_char",null)!=null;
+  const b=el("button","ch-card"+(on?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("role","radio");b.setAttribute("aria-checked",on?"true":"false");
+  const fig=el("div","ch-fig ch-"+id);fig.innerHTML=c.svg("happy",true);
+  b.append(fig,el("strong","",c.n),el("span","",u[id]));if(on)b.appendChild(el("em","ch-badge","✓ "+u.chosen));
+  b.onclick=()=>{lsSet("leren_char",id);onPick&&onPick(id)};wrap.appendChild(b)});
+ return wrap;
+}
+function pickCharPopup(then){
+ const u=chU();popup((panel,close,m)=>{m.dataset.lock="1";panel.classList.add("ch-panel");panel.append(el("h2","goal-title",u.pick),el("p","goal-hint",u.pickHint),charPicker(()=>{close();renderCharRow();if(then)setTimeout(then,200)}))});
+}
+function renderCharRow(){
+ const row=$("charRow");if(!row)return;const u=chU();$("charLabel").textContent=u.row;
+ const box=$("charSeg");box.replaceChildren();
+ Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");
+  const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
+  b.onclick=()=>{lsSet("leren_char",id);renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
+}
 const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
 const SCENE_ART={
  cafe:bg("cafe","#FFEFD8","#FFD49C")+`<path d="M80 0v24M240 0v24" stroke="#5A3622" stroke-width="2"/><path d="M64 38a16 14 0 0 1 32 0zM224 38a16 14 0 0 1 32 0z" fill="#EB6A00"/><ellipse cx="80" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/><ellipse cx="240" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/>
@@ -4247,24 +4338,24 @@ const SCENE_ART={
 };
 const sceneArt=id=>`<svg class="sc-art" viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${SCENE_ART[id]||""}</svg>`;
 
-// ========== STORY MODE: "Een dag in België" with guide Lotte ==========
-// ========== STORY MODE: "Een dag in België" with guide Lotte (offline, no AI) ==========
-// each turn: [Lotte nl, uk, en, options:[[nl, ok, explanation uk, explanation en]] ]
+// ========== STORY MODE: "Een dag in België" with guide {N} ==========
+// ========== STORY MODE: "Een dag in België" with guide {N} (offline, no AI) ==========
+// each turn: [{N} nl, uk, en, options:[[nl, ok, explanation uk, explanation en]] ]
 const SCENES=[
- {id:"cafe",icon:"☕",uk:"У кафе",en:"At the café",role:{uk:"Лотте — бариста",en:"Lotte is the barista"},turns:[
+ {id:"cafe",icon:"☕",uk:"У кафе",en:"At the café",role:{uk:"{Nu} — бариста",en:"{N} is the barista"},turns:[
   ["Goedemorgen! Wat wil je drinken?","Доброго ранку! Що будеш пити?","Good morning! What would you like to drink?",[
-   ["Ik wil graag een koffie.",1],["Ik ben acht jaar.",0,"Це відповідь на «Скільки тобі років?». Тут питають, що ти будеш пити.","That answers “How old are you?”. She asks what you want to drink."],["Waar is het station?",0,"Це питання про дорогу. Відповідай, що хочеш випити: «Ik wil graag een koffie.»","That's asking for directions. Say what you'd like to drink."]]],
+   ["Ik wil graag een koffie.",1],["Ik ben acht jaar.",0,"Це відповідь на «Скільки тобі років?». Тут питають, що ти будеш пити.","That answers “How old are you?”. {He|She} asks what you want to drink."],["Waar is het station?",0,"Це питання про дорогу. Відповідай, що хочеш випити: «Ik wil graag een koffie.»","That's asking for directions. Say what you'd like to drink."]]],
   ["Met melk of zonder melk?","З молоком чи без?","With or without milk?",[
    ["Met melk, alstublieft.",1],["Ja, melk.",0,"«Так» не підходить: питання «з чи без». Кажи «Met melk» або «Zonder melk».","“Yes” doesn't fit an either/or question. Say “Met melk” or “Zonder melk”."],["Ik melk graag.",0,"«melk» — іменник, не дієслово. Правильно: «Met melk, alstublieft.»","“melk” is a noun, not a verb."]]],
   ["Klein of groot?","Маленьку чи велику?","Small or large?",[
    ["Groot, graag.",1],["Ik heb groot.",0,"Так не кажуть. Досить одного слова: «Groot, graag.»","Not natural. Just say “Groot, graag.”"],["Twee uur.",0,"Це про час. Тут питають розмір.","That's about time, not size."]]],
   ["Dat is drie euro twintig.","Це три євро двадцять.","That's three euros twenty.",[
-   ["Kan ik met de kaart betalen?",1],["Hoeveel kost het?",0,"Ціну вже назвали: €3,20. Можна спитати про оплату карткою.","She already told you the price."],["Ik heet Olena.",0,"Тут не знайомляться — треба розплатитися.","This isn't an introduction — you need to pay."]]],
+   ["Kan ik met de kaart betalen?",1],["Hoeveel kost het?",0,"Ціну вже назвали: €3,20. Можна спитати про оплату карткою.","{He|She} already told you the price."],["Ik heet Olena.",0,"Тут не знайомляться — треба розплатитися.","This isn't an introduction — you need to pay."]]],
   ["Natuurlijk. Alstublieft, je koffie!","Звісно. Ось твоя кава!","Of course. Here's your coffee!",[
    ["Dank u wel! Een fijne dag!",1],["Graag gedaan.",0,"«Graag gedaan» — відповідь на «дякую». Тут дякуєш ти: «Dank u wel!»","“Graag gedaan” replies to thanks. Here you say thank you."],["Goedenacht!",0,"«Goedenacht» кажуть перед сном. Зараз ранок: «Een fijne dag!»","“Goedenacht” is for bedtime."]]]]},
- {id:"super",icon:"🛒",uk:"У супермаркеті",en:"At the supermarket",role:{uk:"Лотте працює в магазині",en:"Lotte works in the shop"},turns:[
+ {id:"super",icon:"🛒",uk:"У супермаркеті",en:"At the supermarket",role:{uk:"{Nu} працює в магазині",en:"{N} works in the shop"},turns:[
   ["Goedendag! Kan ik u helpen?","Добрий день! Вам допомогти?","Hello! Can I help you?",[
-   ["Ja, graag. Waar is de melk?",1],["Ja, ik ben moe.",0,"Відповідь не про покупки. Спитай, де товар: «Waar is de melk?»","Not about shopping. Ask where something is."],["Nee, ik woon in Gent.",0,"Тебе питають про допомогу в магазині, а не про місто.","She's offering help, not asking where you live."]]],
+   ["Ja, graag. Waar is de melk?",1],["Ja, ik ben moe.",0,"Відповідь не про покупки. Спитай, де товар: «Waar is de melk?»","Not about shopping. Ask where something is."],["Nee, ik woon in Gent.",0,"Тебе питають про допомогу в магазині, а не про місто.","{He|She}'s offering help, not asking where you live."]]],
   ["De melk staat in rij vier, naast de kaas.","Молоко в четвертому ряду, поруч із сиром.","The milk is in aisle four, next to the cheese.",[
    ["Dank u. En het brood?",1],["Wat is rij?",0,"«rij» — ряд. Краще подякуй і спитай про наступний товар.","“rij” means aisle/row."],["Ik wil rij vier.",0,"Так не кажуть. Подякуй: «Dank u.»","Not natural here."]]],
   ["Het brood ligt daar, bij de ingang.","Хліб там, біля входу.","The bread is over there, by the entrance.",[
@@ -4273,7 +4364,7 @@ const SCENES=[
    ["Nee, ik heb geen klantenkaart.",1],["Nee, ik heb niet klantenkaart.",0,"З іменником заперечення — «geen», не «niet»: «ik heb geen klantenkaart».","With nouns use “geen”, not “niet”."],["Ja, ik heet klantenkaart.",0,"«heet» — звати. Відповідай «Ja, ik heb…» або «Nee, ik heb geen…».","“heet” means “to be called”."]]],
   ["Geen probleem. Een fijne dag nog!","Без проблем. Гарного дня!","No problem. Have a nice day!",[
    ["Dank u, u ook!",1],["Goedemorgen!",0,"«Goedemorgen» кажуть при зустрічі. На прощання: «Dank u, u ook!»","That's a greeting, not a goodbye."],["Ik ook dag.",0,"Так не кажуть. Правильно: «U ook!» — «Вам теж!»","Say “U ook!” — “You too!”."]]]]},
- {id:"huisarts",icon:"🩺",uk:"У лікаря",en:"At the GP",role:{uk:"Лотте — асистентка лікаря",en:"Lotte assists the doctor"},turns:[
+ {id:"huisarts",icon:"🩺",uk:"У лікаря",en:"At the GP",role:{uk:"{Nu} — {асистент|асистентка} лікаря",en:"{N} assists the doctor"},turns:[
   ["Goedemorgen. Wat is het probleem?","Доброго ранку. Що сталося?","Good morning. What's the problem?",[
    ["Ik heb keelpijn en ik hoest.",1],["Ik heb een probleem auto.",0,"Ти в лікаря — скажи, що болить: «Ik heb keelpijn».","You're at the doctor's — say what hurts."],["Het probleem is morgen.",0,"Не має сенсу. Розкажи про симптоми.","That doesn't make sense. Describe your symptoms."]]],
   ["Sinds wanneer bent u ziek?","З якого часу ви хворієте?","Since when have you been ill?",[
@@ -4284,18 +4375,18 @@ const SCENES=[
    ["Moet ik naar de apotheek?",1],["Ik schrijf zelf.",0,"Рецепт виписує лікар. Спитай, куди з ним іти.","The doctor writes it. Ask where to go."],["Hoeveel kost de keel?",0,"😄 Горло не продається. Спитай про аптеку.","😄 Throats aren't for sale."]]],
   ["Ja. En blijf twee dagen thuis. Beterschap!","Так. І два дні побудьте вдома. Одужуйте!","Yes. And stay home for two days. Get well!",[
    ["Dank u, dokter. Tot ziens!",1],["Beterschap, dokter!",0,"«Beterschap» кажуть хворому, а хворий тут ти 🙂","You say that to a sick person — that's you 🙂"],["Ik ga morgen werken.",0,"Лікар сказав два дні вдома.","The doctor said two days at home."]]]]},
- {id:"apotheek",icon:"💊",uk:"В аптеці",en:"At the pharmacy",role:{uk:"Лотте — фармацевтка",en:"Lotte is the pharmacist"},turns:[
+ {id:"apotheek",icon:"💊",uk:"В аптеці",en:"At the pharmacy",role:{uk:"{Nu} — {фармацевт|фармацевтка}",en:"{N} is the pharmacist"},turns:[
   ["Goedemiddag, zeg het maar.","Добрий день, слухаю вас.","Good afternoon, how can I help?",[
    ["Ik heb hoofdpijn. Hebt u iets tegen hoofdpijn?",1],["Ik heb een hoofd.",0,"Звісно, у всіх є голова 😄 «hoofdpijn» — головний біль.","Everyone has a head 😄 “hoofdpijn” is headache."],["Hoe laat is het?",0,"В аптеці кажуть, що болить: «Ik heb hoofdpijn.»","Say what hurts."]]],
   ["Hoelang hebt u al hoofdpijn?","Як довго у вас болить голова?","How long have you had a headache?",[
-   ["Sinds gisteren.",1],["Morgen.",0,"«morgen» — завтра. Біль уже є, тож «sinds gisteren» — з учора.","“morgen” means tomorrow."],["Twee euro.",0,"Питають про час, а не ціну.","She's asking about time, not price."]]],
+   ["Sinds gisteren.",1],["Morgen.",0,"«morgen» — завтра. Біль уже є, тож «sinds gisteren» — з учора.","“morgen” means tomorrow."],["Twee euro.",0,"Питають про час, а не ціну.","{He|She}'s asking about time, not price."]]],
   ["Hebt u ook koorts?","У вас ще й температура?","Do you also have a fever?",[
    ["Nee, ik heb geen koorts.",1],["Nee, ik ben geen koorts.",0,"Температуру «маєш», а не «є»: «ik heb geen koorts».","Use “hebben” with koorts."],["Ja, ik ben blij.",0,"«blij» — радий. Відповідай про температуру.","“blij” means happy."]]],
   ["Neem deze tabletten, twee keer per dag.","Приймайте ці таблетки двічі на день.","Take these tablets twice a day.",[
-   ["Voor of na het eten?",1],["Twee keer per jaar?",0,"Лотте сказала «per dag» — на день. Можна спитати, до чи після їжі.","She said per day."],["Ik eet geen tabletten graag.",0,"Краще спитай, як приймати: «Voor of na het eten?»","Better ask how to take them."]]],
+   ["Voor of na het eten?",1],["Twee keer per jaar?",0,"{Nu} {сказав|сказала} «per dag» — на день. Можна спитати, до чи після їжі.","{He|She} said per day."],["Ik eet geen tabletten graag.",0,"Краще спитай, як приймати: «Voor of na het eten?»","Better ask how to take them."]]],
   ["Na het eten. Beterschap!","Після їжі. Одужуйте!","After meals. Get well soon!",[
    ["Dank u wel. Tot ziens!",1],["Beterschap!",0,"«Beterschap» кажуть хворому. Ти відповідаєш: «Dank u wel!»","You say that to someone who's ill."],["Ik ben beter dan jij.",0,"Це грубо 😅 Подякуй: «Dank u wel.»","That's rude 😅"]]]]},
- {id:"gemeente",icon:"🏛️",uk:"У комуні",en:"At the town hall",role:{uk:"Лотте працює в комуні",en:"Lotte works at the town hall"},turns:[
+ {id:"gemeente",icon:"🏛️",uk:"У комуні",en:"At the town hall",role:{uk:"{Nu} працює в комуні",en:"{N} works at the town hall"},turns:[
   ["Goedemorgen. Neem een nummertje, alstublieft.","Доброго ранку. Візьміть номерок, будь ласка.","Good morning. Please take a number.",[
    ["Oké, dank u.",1],["Mijn nummer is 0492…",0,"Номерок — це талончик у черзі, не телефон.","It's a queue ticket, not your phone number."],["Ik neem twee nummertjes.",0,"Одного номерка достатньо 🙂","One ticket is enough 🙂"]]],
   ["Nummer 35! Wat kan ik voor u doen?","Номер 35! Чим можу допомогти?","Number 35! What can I do for you?",[
@@ -4306,7 +4397,7 @@ const SCENES=[
    ["Ja, alstublieft.",1],["Ja, ik heb hem thuis.",0,"«thuis» — вдома, тобто не з собою. Скажи «Ja, alstublieft» і дай картку.","“thuis” means at home — not with you."],["Nee, ik heb geen kaart nodig.",0,"Без посвідчення адресу не змінять.","They need your ID."]]],
   ["Dank u. De wijkagent komt binnenkort bij u langs.","Дякую. Дільничний скоро прийде до вас.","Thank you. The local police officer will visit you soon.",[
    ["Oké, dank u wel. Tot ziens.",1],["Waarom? Ik ben niet slecht!",0,"Не хвилюйся 🙂 Дільничний просто перевіряє, що ти живеш за новою адресою.","Don't worry — it's a normal address check."],["Komt hij vandaag om middernacht?",0,"Він прийде в робочий час. Просто подякуй.","He'll come during office hours."]]]]},
- {id:"station",icon:"🚆",uk:"На вокзалі",en:"At the station",role:{uk:"Лотте в касі",en:"Lotte at the ticket desk"},turns:[
+ {id:"station",icon:"🚆",uk:"На вокзалі",en:"At the station",role:{uk:"{Nu} в касі",en:"{N} at the ticket desk"},turns:[
   ["Goedendag. Waar wilt u naartoe?","Добрий день. Куди їдете?","Hello. Where would you like to go?",[
    ["Naar Antwerpen, alstublieft.",1],["Ik wil naar huis slapen.",0,"Назви місто: «Naar Antwerpen, alstublieft.»","Name a city."],["Ik kom uit Antwerpen.",0,"«uit» — звідки ти. Куди їдеш — «naar».","“uit” = from, “naar” = to."]]],
   ["Enkel of heen en terug?","В один бік чи туди й назад?","Single or return?",[
@@ -4314,14 +4405,14 @@ const SCENES=[
   ["Dat is achttien euro veertig.","Це вісімнадцять євро сорок.","That's eighteen euros forty.",[
    ["Hier is mijn kaart.",1],["Achttien? Dat is mijn leeftijd!",0,"Мило, але треба заплатити 🙂","Cute, but you need to pay 🙂"],["Ik betaal morgen.",0,"Квиток оплачують зараз.","You pay now."]]],
   ["Uw trein vertrekt om 10.15 uur van spoor 3.","Ваш потяг відправляється о 10:15 з колії 3.","Your train leaves at 10:15 from platform 3.",[
-   ["Spoor drie? Dank u.",1],["Om tien uur vijftien slaap ik.",0,"Перепитай колію: «Spoor drie?»","Check the platform instead."],["Waar is spoor tien?",0,"Лотте сказала колія 3, а 10:15 — це час.","Platform 3; 10:15 is the time."]]],
+   ["Spoor drie? Dank u.",1],["Om tien uur vijftien slaap ik.",0,"Перепитай колію: «Spoor drie?»","Check the platform instead."],["Waar is spoor tien?",0,"{Nu} {сказав|сказала} колія 3, а 10:15 — це час.","Platform 3; 10:15 is the time."]]],
   ["Ja, spoor drie. Goede reis!","Так, колія три. Щасливої дороги!","Yes, platform three. Have a good trip!",[
    ["Dank u, tot ziens!",1],["Goede reis!",0,"Так кажуть тому, хто їде. Ти дякуєш: «Dank u!»","You say that to the traveller."],["Ik reis goed.",0,"Просто подякуй: «Dank u, tot ziens!»","Just say thanks."]]]]},
- {id:"buren",icon:"🏡",uk:"Нова сусідка",en:"The new neighbour",role:{uk:"Лотте — твоя сусідка",en:"Lotte is your neighbour"},turns:[
-  ["Hallo! Ik ben Lotte, je nieuwe buurvrouw.","Привіт! Я Лотте, твоя нова сусідка.","Hi! I'm Lotte, your new neighbour.",[
-   ["Hallo Lotte! Ik ben Danylo. Aangenaam.",1],["Hallo, ik ben buurvrouw.",0,"«buurvrouw» — це вона. Ти називаєш своє ім'я.","She's the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім'я: «Ik ben …»","Greet her and say your name."]]],
+ {id:"buren",icon:"🏡",uk:"{Новий сусід|Нова сусідка}",en:"The new neighbour",role:{uk:"{Nu} — {твій сусід|твоя сусідка}",en:"{N} is your neighbour"},turns:[
+  ["Hallo! Ik ben {N}, je nieuwe {buurman|buurvrouw}.","Привіт! Я {Nu}, {твій новий сусід|твоя нова сусідка}.","Hi! I'm {N}, your new neighbour.",[
+   ["Hallo {N}! Ik ben Danylo. Aangenaam.",1],["Hallo, ik ben {buurman|buurvrouw}.",0,"«{buurman|buurvrouw}» — це {він|вона}. Ти називаєш своє ім'я.","{He|She}'s the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім'я: «Ik ben …»","Greet {him|her} and say your name."]]],
   ["Woon je hier al lang?","Ти давно тут живеш?","Have you lived here long?",[
-   ["Nee, ik woon hier sinds maart.",1],["Nee, ik woon hier lang.",0,"«Ні, я живу тут довго» — суперечність. Скажи, з якого часу: «sinds maart».","That contradicts itself."],["Ik woon in een huis.",0,"Питають, як давно. Відповідай з «sinds».","She asks how long."]]],
+   ["Nee, ik woon hier sinds maart.",1],["Nee, ik woon hier lang.",0,"«Ні, я живу тут довго» — суперечність. Скажи, з якого часу: «sinds maart».","That contradicts itself."],["Ik woon in een huis.",0,"Питають, як давно. Відповідай з «sinds».","{He|She} asks how long."]]],
   ["Leuk! Waar kom je vandaan?","Класно! Звідки ти?","Nice! Where are you from?",[
    ["Ik kom uit Oekraïne.",1],["Ik kom naar Oekraïne.",0,"Звідки — «uit»: «Ik kom uit Oekraïne.»","Use “uit” for origin."],["Ik ben Oekraïne.",0,"Ти не країна 🙂 «Ik kom uit Oekraïne» або «Ik ben Oekraïner».","You're not a country 🙂"]]],
   ["Heb je zin om zaterdag koffie te drinken?","Хочеш у суботу випити кави?","Would you like to have coffee on Saturday?",[
@@ -4329,7 +4420,7 @@ const SCENES=[
   ["Om drie uur, bij mij. Tot zaterdag!","О третій, у мене. До суботи!","At three, at my place. See you Saturday!",[
    ["Super, tot zaterdag!",1],["Om drie uur slaap ik bij jou.",0,"Ой, це зовсім інше 😅 Просто: «Tot zaterdag!»","Oops, that means something else 😅"],["Tot gisteren!",0,"«gisteren» — учора. Правильно: «Tot zaterdag!»","“gisteren” means yesterday."]]]]}
 ];
-// free-answer keywords per turn (accepted meaning, then Lotte shows the most natural phrasing)
+// free-answer keywords per turn (accepted meaning, then {N} shows the most natural phrasing)
 const ACCEPT={cafe:[["koffie","thee","water","cappuccino","chocolademelk","cola","latte"],["melk","zonder"],["groot","klein","medium"],["kaart","betalen","bancontact","cash","contant"],["dank","bedankt","merci","fijne"]],
  super:[["waar","zoek","melk"],["dank","bedankt","brood"],["hoeveel","kost","prijs"],["geen","klantenkaart"],["dank","ook","bedankt"]],
  huisarts:[["pijn","keelpijn","hoofdpijn","buikpijn","ziek","koorts","verkouden","hoest"],["sinds","gisteren","dagen","week"],["aaa","aa"],["apotheek","voorschrift","medicijn"],["dank","bedankt","ziens"]],
@@ -4337,15 +4428,16 @@ const ACCEPT={cafe:[["koffie","thee","water","cappuccino","chocolademelk","cola"
  gemeente:[["dank","oke","ok"],["adres","verhuizen","veranderen","inschrijven","afspraak"],["straat","laan","plein","dreef","weg"],["alstublieft","hier","kaart"],["dank","bedankt","ziens"]],
  station:[["naar"],["enkel","heen en terug","retour"],["kaart","betalen","bancontact","cash","hier"],["spoor","dank","bedankt"],["dank","bedankt","ziens"]],
  buren:[["ik ben","ik heet","aangenaam"],["sinds","jaar","maand","lang"],["kom uit","uit"],["graag","sorry","kan niet"],["tot zaterdag","super","oke"]]};
-const sceneTr=o=>uiLang==="uk"?o.uk:(o.en||o.uk);
-const ST_UI={uk:{hello:"Привіт! Я Лотте 🇧🇪 Проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!",locked:"Спершу пройди попереднє місце",own:"Або скажи / напиши своїми словами",understood:"Зрозуміло! 👍 Ще один природний варіант:",hint:"Підказка:",great:"Супер! Ти впорався.",map:"Далі по карті",free:"💬 Вільна розмова з Лотте тут",mistakes:"Що варто повторити",mistakesNone:"Поки помилок немає — так тримати!"},
- en:{hello:"Hi! I'm Lotte 🇧🇪 Let's spend a normal day in Belgium. Pick a place and let's speak Dutch!",locked:"Finish the previous place first",own:"Or say / type it in your own words",understood:"Got it! 👍 Another natural way:",hint:"Hint:",great:"Great job!",map:"Back to the map",free:"💬 Free chat with Lotte here",mistakes:"Worth reviewing",mistakesNone:"No mistakes yet — keep going!"}};
-const stU=()=>ST_UI[uiLang]||ST_UI.en;
+const sceneTr=o=>cx(uiLang==="uk"?o.uk:(o.en||o.uk));
+const ST_UI={uk:{hello:"Привіт! Я {Nu} 🇧🇪 Проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!",locked:"Спершу пройди попереднє місце",own:"Або скажи / напиши своїми словами",understood:"Зрозуміло! 👍 Ще один природний варіант:",hint:"Підказка:",great:"Супер! Ти впорався.",map:"Далі по карті",free:"💬 Вільна розмова з {Nu} тут",mistakes:"Що варто повторити",mistakesNone:"Поки помилок немає — так тримати!"},
+ en:{hello:"Hi! I'm {N} 🇧🇪 Let's spend a normal day in Belgium. Pick a place and let's speak Dutch!",locked:"Finish the previous place first",own:"Or say / type it in your own words",understood:"Got it! 👍 Another natural way:",hint:"Hint:",great:"Great job!",map:"Back to the map",free:"💬 Free chat with {N} here",mistakes:"Worth reviewing",mistakesNone:"No mistakes yet — keep going!"}};
+const stU=()=>cxDeep(ST_UI[uiLang]||ST_UI.en);
 function storyState(){return lsGet("leren_story",{done:[],best:{}})}
 function logMistake(nl,why){const m=lsGet("leren_mistakes",[]).filter(x=>x.nl!==nl);m.unshift({nl,why,d:dayStr()});lsSet("leren_mistakes",m.slice(0,30))}
 function storyMap(){
  const st=storyState(),card=gHead("Een dag in België","");
- const head=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
+ if(lsGet("leren_char",null)==null){pickCharPopup(storyMap);return}
+ const head=el("div","st-head");const av=el("button","st-av st-av-btn");av.type="button";av.title=chU().row;av.setAttribute("aria-label",chU().pick);av.innerHTML=charSvg("happy");av.onclick=()=>pickCharPopup(storyMap);head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
  const grid=el("div","st-map");
  SCENES.forEach((sc,i)=>{const open=i===0||st.done.includes(SCENES[i-1].id),done=st.done.includes(sc.id);
   const b=el("button","st-place"+(done?" done":"")+(open?"":" locked"));b.type="button";
@@ -4355,7 +4447,7 @@ function storyMap(){
   b.onclick=()=>{if(!open){toast(stU().locked);return}storyStart(sc)};grid.appendChild(b)});
  card.appendChild(grid);gBar(st.done.length/SCENES.length);
 }
-function storyStart(sc){gState={sc,i:0,miss:0,fb:null,tried:[],order:null,mood:"happy"};storyRender();setTimeout(()=>say(sc.turns[0][0]),250)}
+function storyStart(sc){sc=cxDeep(sc);gState={sc,i:0,miss:0,fb:null,tried:[],order:null,mood:"happy"};storyRender();setTimeout(()=>say(sc.turns[0][0]),250)}
 function storyRender(){
  const g=gU(),s=gState,sc=s.sc,card=gHead(sc.icon+" "+sceneTr(sc),Math.min(s.i+1,sc.turns.length)+" / "+sc.turns.length);
  card.querySelector(".g-back").onclick=storyMap;gBar(s.i/sc.turns.length);
@@ -4364,7 +4456,7 @@ function storyRender(){
   const stars=s.miss===0?3:s.miss<=2?2:1,st=storyState();const first=!st.done.includes(sc.id);
   if(first)st.done.push(sc.id);st.best[sc.id]=Math.max(st.best[sc.id]||0,stars);lsSet("leren_story",st);
   const xp=10*stars+(first?20:0);
-  const end=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("wow");end.append(av,el("div","st-say",stU().great+" "+"⭐".repeat(stars)));card.appendChild(end);
+  const end=el("div","st-head");const av=el("div","st-av");av.innerHTML=charSvg("wow");end.append(av,el("div","st-say",stU().great+" "+"⭐".repeat(stars)));card.appendChild(end);
   card.appendChild(el("p","g-done",g.pts(xp)));
   const row=el("div","row");
   if(AI_ENDPOINT){const f=el("button","btn",stU().free);f.type="button";f.onclick=()=>aiStart(sc);row.appendChild(f)}
@@ -4373,7 +4465,7 @@ function storyRender(){
  }
  const t=sc.turns[s.i];
  const chat=el("div","st-chat");
- const av=el("div","st-av sm");av.innerHTML=LOTTE_SVG(s.mood);
+ const av=el("div","st-av sm");av.innerHTML=charSvg(s.mood);
  const bub=el("button","st-bub");bub.type="button";bub.append(tgt(el("strong","",t[0])),el("span","",uiLang==="uk"?t[1]:t[2]));bub.onclick=()=>say(t[0],bub);
  chat.append(av,bub);card.appendChild(chat);
  if(s.fb){const f=el("div","st-fb "+(s.fb.ok?"ok":"bad"));f.append(el("span","",s.fb.text));if(s.fb.nl){const n=tgt(el("b","",s.fb.nl));n.onclick=()=>say(s.fb.nl);f.append(" ",n)}card.appendChild(f)}
@@ -4404,13 +4496,13 @@ function storyAnswer(k,spoken,loose){
  else{s.miss++;s.mood="think";s.tried=s.tried.concat(k);const why=uiLang==="uk"?o[2]:(o[3]||o[2]);logMistake(t[3].find(x=>x[1])[0],why);s.fb={ok:false,text:why};storyRender()}
 }
 
-// ========== AI CHAT with Lotte (hidden until AI_ENDPOINT is set; server: tools/ai-worker.js) ==========
+// ========== AI CHAT with {N} (hidden until AI_ENDPOINT is set; server: tools/ai-worker.js) ==========
 const AI_ENDPOINT="";
-const AI_UI={uk:{title:"Praat met Lotte · AI",sub:"Пиши або говори нідерландською",intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб Лотте могла відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"Лотте зараз недоступна. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!"},
- en:{title:"Praat met Lotte · AI",sub:"Write or speak Dutch",intro:"Talk to me in simple Dutch. I'll correct and explain your mistakes.",consentT:"Before you start",consent:"The AI chat works online. Your messages are sent to the Leren.be server and an AI model so Lotte can answer. Chats are not stored. Don't type passwords, ID numbers or bank details.",agree:"OK, start",fix:"Better:",tr:"Translation",err:"Lotte is unavailable right now. Check your connection and try again.",limit:"That's enough chatting for today 🙂 Come back tomorrow!"}};
-const aiU=()=>AI_UI[uiLang]||AI_UI.en;
+const AI_UI={uk:{title:"Praat met {N} · AI",sub:"Пиши або говори нідерландською",intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!"},
+ en:{title:"Praat met {N} · AI",sub:"Write or speak Dutch",intro:"Talk to me in simple Dutch. I'll correct and explain your mistakes.",consentT:"Before you start",consent:"The AI chat works online. Your messages are sent to the Leren.be server and an AI model so {N} can answer. Chats are not stored. Don't type passwords, ID numbers or bank details.",agree:"OK, start",fix:"Better:",tr:"Translation",err:"{N} is unavailable right now. Check your connection and try again.",limit:"That's enough chatting for today 🙂 Come back tomorrow!"}};
+const aiU=()=>cxDeep(AI_UI[uiLang]||AI_UI.en);
 function aiStart(scene){
- if(!lsGet("leren_ai_consent",false)){const g=aiU(),card=gHead(g.title,"");const h=el("div","st-head");const av=el("div","st-av");av.innerHTML=LOTTE_SVG("happy");h.append(av,el("div","st-say",g.intro));card.appendChild(h);
+ if(!lsGet("leren_ai_consent",false)){const g=aiU(),card=gHead(g.title,"");const h=el("div","st-head");const av=el("div","st-av");av.innerHTML=charSvg("happy");h.append(av,el("div","st-say",g.intro));card.appendChild(h);
   const box=el("div","ai-consent");box.append(el("h3","",g.consentT),el("p","",g.consent));const ok=el("button","btn primary",g.agree);ok.type="button";ok.onclick=()=>{lsSet("leren_ai_consent",true);aiStart(scene)};box.appendChild(ok);card.appendChild(box);return}
  gState={msgs:[],busy:false,scene:scene&&scene.id||null};aiRender();aiSend(null);
 }
@@ -4421,10 +4513,10 @@ function aiRender(){
  s.msgs.forEach(m=>{
   if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
    if(m.fix){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));chat.appendChild(f)}
-  }else{const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=LOTTE_SVG("happy");const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));
+  }else{const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("happy");const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));
    if(m.tr){const tr=el("em","",m.tr);tr.hidden=!m.showTr;b.appendChild(tr)}b.onclick=()=>{m.showTr=!m.showTr;say(m.content);aiRender()};row.append(av,b);chat.appendChild(row)}
  });
- if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=LOTTE_SVG("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
+ if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
  const mb=micBox(alts=>aiSend(alts[0]));const f=mb.querySelector(".g-type");if(f)f.hidden=false;card.appendChild(mb);
@@ -4434,7 +4526,7 @@ async function aiSend(text){
  const s=gState;if(s.busy)return;if(text)s.msgs.push({role:"user",content:String(text).trim().slice(0,300)});
  s.busy=true;s.err="";aiRender();
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lang:uiLang,level:curLevel,scene:s.scene,messages:s.msgs.slice(-12).map(m=>({role:m.role,content:m.content}))})});
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lang:uiLang,level:curLevel,scene:s.scene,char:charId(),messages:s.msgs.slice(-12).map(m=>({role:m.role,content:m.content}))})});
   const j=await r.json().catch(()=>({}));
   if(r.status===429){s.busy=false;s.err=aiU().limit;aiRender();return}
   if(!r.ok||!j.reply_nl)throw new Error(j.error||("HTTP "+r.status));

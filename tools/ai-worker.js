@@ -1,4 +1,4 @@
-// Leren.be — "Praat met Lotte" AI tutor proxy (Cloudflare Worker). Keeps API keys off the website.
+// Leren.be — "Praat met Roel / Lotte" AI tutor proxy (Cloudflare Worker). Keeps API keys off the website.
 // Deploy: Cloudflare → Workers & Pages → Create → Worker → paste this file → Deploy.
 // Choose ONE provider with the variable PROVIDER:
 //   "anthropic"  — Claude (best Dutch + Ukrainian explanations). Secret ANTHROPIC_KEY. Optional MODEL (default claude-haiku-5-5).
@@ -26,7 +26,11 @@ const GRAMMAR = `- Main clause: verb in 2nd position (Ik woon in België). After
 - Questions: question word + verb + subject (Waar woon jij?); yes/no: verb first (Woon jij in Gent?).
 - Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het.
 - Polite: u (formal), alstublieft / alsjeblieft, graag (Ik wil graag een koffie).`;
-const system = (lang, level, scene) => `You are Lotte, a warm, patient Flemish woman who helps an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise Dutch as spoken in Belgium (nl-BE). You are an AI tutor, not a human.
+const PERSONA = {
+  roel: "Roel, a calm, friendly Flemish Dutch teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
+  lotte: "Lotte, a warm, cheerful young Flemish woman"
+};
+const system = (lang, level, scene, char) => `You are ${PERSONA[char] || PERSONA.roel}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise Dutch as spoken in Belgium (nl-BE). You are an AI tutor, not a human.
 ${scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about everyday life in Belgium (family, work, CVO school, shopping, weather, hobbies, transport)."}
 Course grammar (follow it when correcting):
 ${GRAMMAR}
@@ -66,7 +70,7 @@ export default {
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
       .map(m => ({role: m.role, content: m.content.slice(0, 400)}));
     if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: "(Start: greet me in Dutch and ask one easy question that fits the situation.)"});
-    const sys = system(body.lang, body.level, body.scene);
+    const sys = system(body.lang, body.level, body.scene, body.char);
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     try {
       let text = "";
