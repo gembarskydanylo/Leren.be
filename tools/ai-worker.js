@@ -115,12 +115,15 @@ export default {
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
 
     // daily limit per visitor (optional KV binding RATE)
+    // KV on the free plan allows ~1000 writes a day: if KV fails, keep the chat working
+    // (the monthly spend limit in the Anthropic Console is the hard cap).
     if (env.RATE) {
       const ip = req.headers.get("CF-Connecting-IP") || "x";
       const key = new Date().toISOString().slice(0, 10) + ":" + ip;
-      const n = Number(await env.RATE.get(key)) || 0;
+      let n = 0;
+      try { n = Number(await env.RATE.get(key)) || 0; } catch (e) { console.log("rate get", String(e)); }
       if (n >= Number(env.DAILY_LIMIT || 60)) return json({error: "limit"}, 429);
-      await env.RATE.put(key, String(n + 1), {expirationTtl: 90000});
+      try { await env.RATE.put(key, String(n + 1), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
     }
 
     let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }

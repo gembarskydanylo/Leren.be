@@ -26,18 +26,18 @@ while IFS=$'\t' read -r h t; do
   grep -qx "$h" "$DONE" && continue
   ssml="<speak version='1.0' xml:lang='nl-BE'><voice name='$VOICE'><prosody rate='$RATE'>$(esc "$t")</prosody></voice></speak>"
   for try in $(seq 1 30); do
-    code=$(curl -s -o "/tmp/leren-$h.wav" -w '%{http_code}' -X POST \
+    code=$(curl -s --max-time 60 -o "/tmp/leren-$h.wav" -w '%{http_code}' -X POST \
       "https://$REGION.tts.speech.microsoft.com/cognitiveservices/v1" \
       -H "Ocp-Apim-Subscription-Key: $AZURE_SPEECH_KEY" \
       -H "Content-Type: application/ssml+xml; charset=utf-8" \
       -H "X-Microsoft-OutputFormat: riff-24khz-16bit-mono-pcm" \
-      -H "User-Agent: leren-be" --data-binary "$ssml")
+      -H "User-Agent: leren-be" --data-binary "$ssml") || code=000   # dropped connection: retry instead of quitting
     [ "$code" = 200 ] && break
     [ "$code" = 401 ] && { echo; echo "Wrong key or region (HTTP 401)."; exit 1; }
     if [ "$code" = 429 ]; then sleep 15; else sleep $((try*3)); fi   # 429: free tier allows ~20 requests a minute
   done
-  [ "$code" = 200 ] || { echo; echo "Failed on \"$t\" (HTTP $code). Run again to resume."; exit 1; }
-  afconvert -f m4af -d aac -b 48000 "/tmp/leren-$h.wav" "$OUT/$h.m4a"
+  [ "$code" = 200 ] || { echo; echo "Failed on \"$t\" (HTTP $code): $(head -c 300 "/tmp/leren-$h.wav" 2>/dev/null | tr -cd '[:print:]'). Run again to resume."; exit 1; }
+  afconvert -f m4af -d aac -b 48000 "/tmp/leren-$h.wav" "$OUT/$h.m4a" || { echo; echo "Could not convert \"$t\". Run again to resume."; exit 1; }
   rm -f "/tmp/leren-$h.wav"; echo "$h" >> "$DONE"
   printf "\r%d / %d" "$n" "$total"
 done < "$OUT/texts.tsv"
