@@ -4883,6 +4883,16 @@ const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландськ�
   askTitle:"اسأل {Na} · AI",askSub:"الهولندية، الإنجليزية، الفرنسية",askIntro:"مرحبًا! أنا {Na}. اسألني عن القواعد أو الكلمات أو الترجمة أو النطق، أو اطلب تمرينًا.",askPh:"سؤالك…",send:"إرسال",ex:"أمثلة (اضغط للاستماع)",
   chips:{nl:["متى نستخدم «de» ومتى «het»؟","اشرح القلب: «Om 7 uur sta ik op»","كيف يُصاغ الـ perfectum؟","أعطني تمرينًا على «zijn»"],en:["متى «do» ومتى «does»؟","ما الفرق بين «a» و«the»؟","كيف يُصاغ الماضي البسيط؟","أعطني تمرينًا على «to be»"],fr:["متى «le» ومتى «la»؟","كيف يُصرَّف «être»؟","ما معنى «septante» و«nonante»؟","أعطني تمرينًا على «avoir»"]}}};
 const aiU=()=>cxDeep(AI_UI[uiLang]||AI_UI.en);
+// What the tutor knows about the learner (learning data only, read from this device): level, topic, weak words, recent mistakes.
+function aiProfile(){
+ const u=getUI(),k=x=>{const s=store[x.id];return s?s.wrong-s.correct/2:0};
+ const weak=allItems().filter(x=>store[x.id]&&store[x.id].wrong>0&&x[targetLang]).sort((a,b)=>k(b)-k(a)).slice(0,8).map(x=>x[targetLang]);
+ const mistakes=targetLang==="nl"?lsGet("leren_mistakes",[]).slice(0,5).map(m=>m.nl):[];
+ const topic=tab==="all"?((u.cats||{})[currentCat]||""):String((u.tabs||{})[tab]||tab).replace(/^\d+\.\s*/,"");
+ return {level:curLevel,topic,learned:learnedCount(),weak,mistakes};
+}
+// Voice input: send the other transcriptions too, so the tutor can guess what was really said.
+const aiMsgs=msgs=>msgs.slice(-12).map(m=>({role:m.role,content:m.alts&&m.alts.length>1?m.content+"\n[spoken; other possible transcriptions: "+m.alts.slice(1,4).join(" | ")+"]":m.content}));
 function aiConsent(title,go){
  if(lsGet("leren_ai_consent18",false))return true; // AI chat is for adults: consent includes 18+
  {const g=aiU(),card=gHead(title,"");const h=el("div","st-head");const av=el("div","st-av");av.innerHTML=charSvg("happy");h.append(av,el("div","st-say",g.intro));card.appendChild(h);
@@ -4909,14 +4919,14 @@ function aiRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- const mb=micBox(alts=>aiSend(alts[0]));const f=mb.querySelector(".g-type");if(f)f.hidden=false;card.appendChild(mb);
+ const mb=micBox(alts=>aiSend(alts[0],alts));const f=mb.querySelector(".g-type");if(f)f.hidden=false;card.appendChild(mb);
  const key=s.msgs.length+(s.busy?"b":"");const last=chat.lastElementChild;if(last&&s.seen!==key){s.seen=key;last.scrollIntoView({block:"nearest"})}
 }
-async function aiSend(text){
- const s=gState;if(s.busy)return;if(text)s.msgs.push({role:"user",content:String(text).trim().slice(0,300)});
+async function aiSend(text,alts){
+ const s=gState;if(s.busy)return;if(text)s.msgs.push({role:"user",content:String(text).trim().slice(0,300),alts:alts||null});
  s.busy=true;s.err="";aiRender();
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"chat",target:targetLang,lang:uiLang,level:curLevel,scene:s.scene,char:charId(),messages:s.msgs.slice(-12).map(m=>({role:m.role,content:m.content}))})});
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"chat",target:targetLang,lang:uiLang,level:curLevel,scene:s.scene,char:charId(),profile:aiProfile(),messages:aiMsgs(s.msgs)})});
   const j=await r.json().catch(()=>({}));
   if(r.status===429){s.busy=false;s.err=aiU().limit;aiRender();return}
   const reply=j.reply||j.reply_nl;
@@ -4962,18 +4972,18 @@ function askRender(){
  if(window.SpeechRecognition||window.webkitSpeechRecognition){ // questions are asked in the interface language
   const gg=gU(),st=el("p","g-heard"),mic=el("button","btn g-mic-btn",gg.mic);mic.type="button";mic.disabled=s.busy;
   mic.onclick=()=>{mic.disabled=true;mic.textContent=gg.listening;mic.classList.add("rec");
-   listenOnce(alts=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");askSend(alts[0])},
+   listenOnce(alts=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");askSend(alts[0],alts)},
     err=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");st.textContent=(err==="not-allowed"||err==="service-not-allowed")?gg.micDenied:gg.tryAgain},
     {uk:"uk-UA",en:"en-GB",fr:"fr-BE",ar:"ar-SA"}[uiLang]||"uk-UA")};
   const row=el("div","row g-mic-row");row.appendChild(mic);card.append(row,st)}
  card.appendChild(form);
  const last=chat.lastElementChild;if(last&&s.msgs.length)last.scrollIntoView({block:"nearest"});
 }
-async function askSend(text){
- const s=gState;if(s.busy||!s.ask)return;s.msgs.push({role:"user",content:String(text).trim().slice(0,600)});
+async function askSend(text,alts){
+ const s=gState;if(s.busy||!s.ask)return;s.msgs.push({role:"user",content:String(text).trim().slice(0,600),alts:alts||null});
  s.busy=true;s.err="";askRender();
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",target:targetLang,lang:uiLang,level:curLevel,char:charId(),messages:s.msgs.slice(-12).map(m=>({role:m.role,content:m.content}))})});
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",target:targetLang,lang:uiLang,level:curLevel,char:charId(),profile:aiProfile(),messages:aiMsgs(s.msgs)})});
   const j=await r.json().catch(()=>({}));
   if(gState!==s)return;
   if(r.status===429){s.msgs.pop();s.busy=false;s.err=aiU().limit;askRender();return}

@@ -57,7 +57,7 @@ const PERSONA = {
 const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
 - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
 
-function chatSystem(t, lang, level, scene, char) {
+function chatSystem(t, lang, level, scene, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
   return `You are ${PERSONA[char] || PERSONA.roel}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
@@ -68,12 +68,12 @@ Rules:
 - reply: very simple ${T.name}, max 2 short sentences, common words; continue the conversation and ask exactly ONE simple question. Always write reply in the target language, even if the learner writes in another language.
 - translation: translation of reply into ${L}.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
-- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
+${extra}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
 LANGUAGE RULE: "reply" and "corrected" are in the target language; "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
 
-function askSystem(t, lang, level, char) {
+function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   return `You are ${PERSONA[char] || PERSONA.roel}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
@@ -84,8 +84,27 @@ Answer format:
 - answer: ALWAYS written in ${L}, also when you decline a question; short and simple (max about 120 words), beginner-friendly, no tables, no markdown headings; you may use line breaks and "•" bullets. Put words in the studied language in «guillemets».
 - examples: 0–3 short example sentences that illustrate the answer; lang is the language of the example (nl, en or fr), text is the sentence, translation is its ${L} translation. Use [] when examples do not help (for example when declining an off-topic question).
 - If the learner asks for an exercise, give one or two short tasks in answer and put the solutions at the end after "→".
+${extra}
 ${SAFETY}
 LANGUAGE RULE: the whole "answer" is written in ${L}, including when you decline; only the words you quote in «guillemets» and the example sentences are in Dutch, English or French.`;
+}
+
+// Learner profile sent by the app (learning data from the device) + how to read voice input.
+function learnerNotes(p, mode) {
+  const clean = (s, n) => String(s || "").replace(/[\r\n{}<>]/g, " ").slice(0, n).trim();
+  const list = (a, n) => (Array.isArray(a) ? a : []).slice(0, n).map(x => clean(x, 80)).filter(Boolean);
+  const lines = [];
+  if (p && typeof p === "object") {
+    if (p.topic) lines.push(`current lesson topic in the app: ${clean(p.topic, 60)}`);
+    if (Number.isFinite(p.learned)) lines.push(`words practised so far: ${Math.max(0, Math.min(100000, Math.round(p.learned)))}`);
+    const weak = list(p.weak, 8), mist = list(p.mistakes, 5);
+    if (weak.length) lines.push(`words the learner often gets wrong: ${weak.join("; ")}`);
+    if (mist.length) lines.push(`sentences the learner recently got corrected: ${mist.join("; ")}`);
+  }
+  let s = "";
+  if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${mode === "ask" ? "Use it to pick examples that fit the learner." : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level."} Never list the profile back to the learner.\n`;
+  s += `- A user message ending with "[spoken; other possible transcriptions: …]" came from speech recognition and may contain recognition errors: work out what the learner most likely said from all versions. ${mode === "ask" ? "" : "Only correct a grammar or word mistake if every transcription has it; never correct pure recognition errors."}\n`;
+  return s;
 }
 
 const STR = {type: "string"};
@@ -135,7 +154,8 @@ export default {
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));
     if (mode === "ask") { while (msgs.length && msgs[0].role !== "user") msgs.shift(); if (!msgs.length) return json({error: "empty"}, 400); }
     else if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: "(Start: greet me in the target language and ask one easy question that fits the situation.)"});
-    const sys = mode === "ask" ? askSystem(target, body.lang, body.level, body.char) : chatSystem(target, body.lang, body.level, body.scene, body.char);
+    const notes = learnerNotes(body.profile, mode);
+    const sys = mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     try {
