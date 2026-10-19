@@ -76,3 +76,10 @@ python3 -m http.server 8000
 - Дані: `dict/src/*.tsv` (формат `lemma|de/het|множина|частина мови|рівень 1=A1 2=A2|uk|en|форми|приклад nl|приклад uk`), збірка: `node tools/build-dict.mjs` → `dict/nl.json`.
 - Форми слів (дієвідміна, множина, прикметники) і пошук: `tools/dict-engine.js` — та сама логіка вбудована в `index.html` (блок DICTIONARY ENGINE).
 - Поле `форми`: `sep=op` (відокремлюваний префікс), `aux=z` / `aux=hz` (perfectum із zijn / hebben або zijn), `part=…` (свій дієприкметник), `cmp=beter,best` (неправильне порівняння).
+
+## Perplexity (пошук в інтернеті для Claude Code)
+Офіційний MCP-сервер Perplexity ([perplexityai/modelcontextprotocol](https://github.com/perplexityai/modelcontextprotocol)) підключено у файлі `.mcp.json`. Ключ у репозиторії НЕ зберігається — його бере зі змінної середовища:
+```
+export PERPLEXITY_API_KEY="pplx-..."   # ключ з https://console.perplexity.ai
+cd ~/Documents/Leren.be && claude      # Claude Code сам запропонує увімкнути сервер perplexity
+```
