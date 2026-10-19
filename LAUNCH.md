@@ -19,6 +19,8 @@
 - Точний загальний денний ліміт (наприклад, 2000 повідомлень) потребує Durable Object і деплою через `wrangler`.
 
 ## Як оновити код сервера
+Звичайно — **автоматично**: зміни в `tools/ai-worker.js` (або `wrangler.toml`) потрапляють у Cloudflare після push у `main` (GitHub Actions «Deploy AI worker»). Нижче — запасний ручний шлях.
+
 У Терміналі з папки репозиторію скопіювати ASCII-версію (неанглійські символи як `\uXXXX`, щоб буфер обміну їх не зіпсував):
 ```bash
 python3 -c "import sys;s=open('tools/ai-worker.js',encoding='utf-8').read();sys.stdout.write(s.encode('ascii','backslashreplace').decode().replace('\\\\x','\\\\u00'))" | pbcopy

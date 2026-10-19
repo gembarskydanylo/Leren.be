@@ -1,5 +1,5 @@
 // Leren.be — "Praat met Roel / Lotte" AI tutor proxy (Cloudflare Worker). Keeps API keys off the website.
-// Deploy: Cloudflare → Workers & Pages → Create → Worker → paste this file → Deploy.
+// Deploy: automatic — every push to main that changes this file runs .github/workflows/deploy-worker.yml (wrangler.toml).
 // Choose ONE provider with the variable PROVIDER:
 //   "anthropic"  — Claude (best Dutch + Ukrainian explanations). Secret ANTHROPIC_KEY. Optional MODEL (default claude-haiku-5-5).
 //   "gemini"     — Google Gemini PAID tier (the free tier may not be used for apps serving EU users). Secret GEMINI_KEY. Optional MODEL.
@@ -11,6 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
+const WORKER_VERSION = "2026-10-19.1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -147,7 +148,7 @@ export default {
     const origin = req.headers.get("Origin") || "";
     const cors = {"Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0], "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin"};
     if (req.method === "OPTIONS") return new Response(null, {headers: cors});
-    const json = (o, status = 200) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json"}});
+    const json = (o, status = 200) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION}});
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
 
     // daily limit per visitor (optional KV binding RATE)

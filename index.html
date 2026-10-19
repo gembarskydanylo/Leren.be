@@ -635,6 +635,20 @@ body.sheet-open{overflow:hidden}
  .seg-btn{padding:0 6px;font-size:13.5px}
  .seg-btn .ico{display:none}
 }
+@media (max-width:380px){ /* narrow phones (360 px): keep "Leren.be" whole next to a 4–5 digit score */
+ header{padding:10px 10px 10px 12px;gap:6px}
+ .hdr-stats{gap:6px}
+ .hdr-pill{padding:0 8px;gap:4px;font-size:13px;min-height:38px}
+ .hdr-pill .ico{width:16px;height:16px}
+ .hdr-btn{width:38px;height:38px}
+ .brand{gap:7px}.brand::before{width:18px;height:23px}
+ .brand h1{font-size:17px}
+}
+@media (max-width:340px){ /* 320 px phones */
+ .brand::before{display:none}
+ .brand h1{font-size:15px}
+ .hdr-pill{padding:0 6px}
+}
 .sheet .nav-fade-wrap,.sheet .sub-wrapper{margin:0}
 .sheet .nav-fade-wrap::after{display:none}
 .progress-view .pp-stats{display:none}

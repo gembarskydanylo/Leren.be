@@ -26,7 +26,7 @@
 |---|---|---|---|---|
 | **GitHub** — репозиторій `gembarskydanylo/Leren.be` | GitHub gembarskydanylo | Увесь код і дані застосунку (гілка `main`) | Джерело правди для сайту; історія змін | Безкоштовно |
 | **GitHub Pages** | той самий | Зібраний сайт з гілки `main` | Хостинг **lerenbe.com** (файл `CNAME`) | Безкоштовно |
-| **GitHub Actions** | той самий | `.github/workflows/reminders.yml`; секрети `FIREBASE_SA`, `VAPID_PUBLIC`, `VAPID_PRIVATE` (Settings → Secrets) | Щогодини надсилає push-нагадування; також збирає Pages | Безкоштовно |
+| **GitHub Actions** | той самий | `reminders.yml` (секрети `FIREBASE_SA`, `VAPID_PUBLIC`, `VAPID_PRIVATE`), `deploy-worker.yml` (секрет `CLOUDFLARE_API_TOKEN`) | Щогодини надсилає push-нагадування; деплоїть сервер AI в Cloudflare; збирає Pages | Безкоштовно |
 | **Cloudflare** — DNS | gembarsky.d@gmail.com | DNS-записи **lerenbe.com** → GitHub Pages (копія: `lerenbe.com.txt`) | Домен веде на сайт | Безкоштовно |
 | **Cloudflare Workers** — `leren-ai` | той самий | Код = `tools/ai-worker.js`; секрет `ANTHROPIC_KEY`; KV `leren-ai-rate` (binding `RATE`); журнали (скарги `AI_REPORT`) | Сервер AI-чату: інструкції для Claude, ліміт 60 повідомлень/день з IP, пам'ять, скарги. Адреса: `https://leren-ai.gembarsky-d.workers.dev/` | Безкоштовний тариф |
 | **Anthropic Console** — platform.claude.com | особистий акаунт | API-ключ `leren-be-worker`; кредити; місячний ліміт $10; автопоповнення вимкнене | Модель **Claude Haiku 5.5**, що відповідає в чаті | Оплата за використання (~$0.0003–0.0005 за повідомлення) |
@@ -42,6 +42,7 @@
 | Секрет | Де живе | Як оновити |
 |---|---|---|
 | `ANTHROPIC_KEY` | Cloudflare → leren-ai → Settings → Variables and Secrets (тип **Secret**) | Новий ключ в Anthropic Console → замінити Secret → Deploy |
+| `CLOUDFLARE_API_TOKEN` | GitHub → Settings → Secrets and variables → Actions | Cloudflare → My Profile → API Tokens → шаблон «Edit Cloudflare Workers» |
 | `FIREBASE_SA` (service account JSON) | GitHub → Settings → Secrets and variables → Actions | Firebase → Project settings → Service accounts → Generate new key |
 | `VAPID_PUBLIC` / `VAPID_PRIVATE` | GitHub Actions secrets (публічний також у `index.html`) | Нову пару генерувати лише разом зі скиданням усіх підписок |
 | Ключ Azure Speech | Azure → leren-be-speech → Keys and Endpoint (лише вводиться в Термінал) | Regenerate Key1 |
@@ -52,7 +53,7 @@
 | Що змінилося | Що зробити |
 |---|---|
 | Сайт (`index.html`, `privacy.html`, аудіо, словник) | Коміт у `main` → push; **підняти `CACHE_NAME` у `sw.js`**; GitHub Pages збирає 1–5 хв |
-| Сервер AI (`tools/ai-worker.js`) | Скопіювати ASCII-версію (команда в `LAUNCH.md`) → Cloudflare → Edit code → ⌘A ⌘V → Deploy |
+| Сервер AI (`tools/ai-worker.js`, `wrangler.toml`) | **Автоматично:** push у `main` → GitHub Actions «Deploy AI worker» (`.github/workflows/deploy-worker.yml`) → Cloudflare. Піднімай `WORKER_VERSION` у коді: після деплою вона видна в заголовку `X-Leren-AI`. Запасний ручний шлях — у `LAUNCH.md` |
 | Правила Firestore (`firestore.rules`) | Firebase → Firestore Database → Rules → вставити → Publish |
 | Озвучення | `bash tools/run-azure.sh` (Arnaud) → коміт `audio/nl` → підняти кеш |
 | Сторінка в Google Play | Тексти й відповіді — `store/store-listing.md`; графіка — `store/`, `screenshots/` |

@@ -1,0 +1,17 @@
+# Cloudflare Worker "leren-ai" (AI tutor proxy). Deployed by .github/workflows/deploy-worker.yml.
+# Secrets are NOT here: ANTHROPIC_KEY stays in Cloudflare (Settings → Variables and Secrets) and survives deploys.
+name = "leren-ai"
+main = "tools/ai-worker.js"
+account_id = "b0bf56f30d5188f0da28d699847e793d"
+compatibility_date = "2025-09-01"
+workers_dev = true
+keep_vars = true
+
+# Daily per-IP message limit (KV "leren-ai-rate")
+[[kv_namespaces]]
+binding = "RATE"
+id = "09641fb73afe40d69bf47f75a7c15bf5"
+
+# Workers Logs (AI_REPORT complaints are read here)
+[observability]
+enabled = true
