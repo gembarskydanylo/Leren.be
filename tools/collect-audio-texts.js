@@ -4,7 +4,7 @@ const {chromium}=require("playwright");const fs=require("fs");
 (async()=>{
  const b=await chromium.launch();const p=await b.newPage();
  await p.goto("http://localhost:8765/index.html");await p.waitForTimeout(500);
- const rows=await p.evaluate(()=>{
+ const rows=await p.evaluate(async()=>{
   targetLang="nl";const T=new Set(),add=t=>{t=String(t||"").trim();if(t&&/[a-z]/i.test(t))T.add(t)};
   Object.values(DATA).forEach(d=>(d.items||[]).forEach(it=>{add(it.nl);add(shown(it));add(labelFor(it));add(it.ex_nl);if(String(it.nl).includes("→"))add(it.nl.split("→")[0])}));
   (DATA.klanken?.items||[]).filter(x=>x.stem).forEach(x=>{
@@ -19,6 +19,8 @@ const {chromium}=require("playwright");const fs=require("fs");
   SPEAK_Q.forEach(q=>{add(q.q);add(q.m)});
   TOETS.forEach(t=>t.questions.forEach(q=>add(toetsSpoken(q))));
   add(speechSampleText());
+  for(const c of ["roel","lotte"]){lsSet("leren_char",c);cxDeep(SCENES).forEach(sc=>sc.turns.forEach(t=>{add(t[0]);t[3].forEach(o=>add(o[0]))}))}
+  await dictLoad();DICT.ix.entries.forEach(e=>{add(dictSpeak(e));add(e.x)});
   return [...T].map(t=>[audioHash(t),t]);
  });
  const uniq=new Map(rows);
