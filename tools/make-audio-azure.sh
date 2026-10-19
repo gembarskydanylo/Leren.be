@@ -1,5 +1,5 @@
 #!/bin/bash
-# Records every Dutch text of Leren.be with an Azure neural voice (Flemish by default)
+# Records every Dutch text of Leren.be with an Azure neural voice (Flemish male voice Arnaud by default)
 # and writes audio/nl/<hash>.m4a + audio/nl/manifest.json — same files as make-audio.sh,
 # so the app needs no changes.
 #
@@ -12,7 +12,7 @@ set -e
 cd "$(dirname "$0")/.."
 : "${AZURE_SPEECH_KEY:?Set AZURE_SPEECH_KEY first (Azure portal → Speech resource → Keys and Endpoint)}"
 REGION="${AZURE_SPEECH_REGION:-westeurope}"
-VOICE="${VOICE:-nl-BE-DenaNeural}"
+VOICE="${VOICE:-nl-BE-ArnaudNeural}"
 RATE="${RATE:--10%}"        # a bit slower than normal for beginners
 LIMIT="${LIMIT:-0}"         # 0 = all
 OUT=audio/nl
@@ -25,7 +25,7 @@ while IFS=$'\t' read -r h t; do
   [ "$LIMIT" -gt 0 ] && [ "$n" -gt "$LIMIT" ] && break
   grep -qx "$h" "$DONE" && continue
   ssml="<speak version='1.0' xml:lang='nl-BE'><voice name='$VOICE'><prosody rate='$RATE'>$(esc "$t")</prosody></voice></speak>"
-  for try in 1 2 3; do
+  for try in $(seq 1 30); do
     code=$(curl -s -o "/tmp/leren-$h.wav" -w '%{http_code}' -X POST \
       "https://$REGION.tts.speech.microsoft.com/cognitiveservices/v1" \
       -H "Ocp-Apim-Subscription-Key: $AZURE_SPEECH_KEY" \
@@ -34,7 +34,7 @@ while IFS=$'\t' read -r h t; do
       -H "User-Agent: leren-be" --data-binary "$ssml")
     [ "$code" = 200 ] && break
     [ "$code" = 401 ] && { echo; echo "Wrong key or region (HTTP 401)."; exit 1; }
-    sleep $((try*3))   # 429 = too many requests on the free tier: wait and retry
+    if [ "$code" = 429 ]; then sleep 15; else sleep $((try*3)); fi   # 429: free tier allows ~20 requests a minute
   done
   [ "$code" = 200 ] || { echo; echo "Failed on \"$t\" (HTTP $code). Run again to resume."; exit 1; }
   afconvert -f m4af -d aac -b 48000 "/tmp/leren-$h.wav" "$OUT/$h.m4a"
