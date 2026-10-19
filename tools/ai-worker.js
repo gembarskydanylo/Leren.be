@@ -10,6 +10,7 @@
 // Response: chat → {reply, reply_nl, translation, correction|null}
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
+//           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -162,6 +163,10 @@ export default {
     }
 
     let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }
+    if (body.mode === "report") { // Google Play: users can flag AI content inside the app; read them in Cloudflare → leren-ai → Logs
+      console.log("AI_REPORT " + JSON.stringify({at: new Date().toISOString(), kind: String(body.kind || "").slice(0, 10), target: String(body.target || "").slice(0, 5), lang: String(body.lang || "").slice(0, 5), text: String(body.text || "").slice(0, 1500)}));
+      return json({ok: true});
+    }
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch

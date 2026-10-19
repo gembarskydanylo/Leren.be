@@ -44,39 +44,46 @@
   ],
   "screenshots": [
     {
-      "src": "./screenshots/quiz.png",
+      "src": "./screenshots/1-chat.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Тест: обери правильне слово"
+      "label": "Praat met Roel: розмова з AI, що виправляє помилки"
     },
     {
-      "src": "./screenshots/kortlang.png",
+      "src": "./screenshots/2-ask.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Kort / lang: довгі й короткі голосні"
+      "label": "Запитай Руля: граматика й слова з прикладами"
     },
     {
-      "src": "./screenshots/study.png",
+      "src": "./screenshots/3-study.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Вивчення нових слів"
+      "label": "Тест: обери правильне значення"
     },
     {
-      "src": "./screenshots/build.png",
+      "src": "./screenshots/4-toets.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Складання питань із карток"
+      "label": "Міні-іспити Toets A1 і тест на рівень A1.2"
     },
     {
-      "src": "./screenshots/toets.png",
+      "src": "./screenshots/5-games.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Міні-іспит Toets A1"
+      "label": "Ігри: історія, діалоги, говоріння"
+    },
+    {
+      "src": "./screenshots/6-dict.png",
+      "sizes": "1080x2160",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Словник: понад 2700 слів з артиклем і формами"
     }
   ]
 }
