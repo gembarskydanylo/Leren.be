@@ -605,6 +605,7 @@ body.sheet-open{overflow:hidden}
 .set-list{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
 .set-row{display:flex;align-items:center;gap:12px;min-height:62px;padding:10px 14px}
 .set-row+.set-row{border-top:1px solid var(--line)}
+.acct-btns{display:flex;flex-direction:column;gap:6px;align-items:stretch;flex:none}.acct-del{font-size:12px;opacity:.8}#acctHint{overflow-wrap:anywhere}
 .set-row>.ico{color:var(--oranje-deep);width:22px;height:22px}
 :root[data-theme="dark"] .set-row>.ico{color:var(--oranje)}
 .set-l{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:800;font-size:15px}
@@ -885,6 +886,8 @@ body.sheet-open{overflow:hidden}
       <div class="set-row" id="remindRow" hidden><span class="ico" data-ico="bell"></span><span class="set-l"><span id="remindLabel"></span><small id="remindHint"></small></span>
         <select id="remindHour" class="set-select" hidden></select>
         <button class="switch" id="remindToggle" type="button" role="switch" aria-checked="false" aria-labelledby="remindLabel"><i></i></button></div>
+      <div class="set-row" id="acctRow"><span class="ico" data-ico="user"></span><span class="set-l"><span id="acctLabel"></span><small id="acctHint"></small></span>
+        <span class="acct-btns"><button class="set-btn" id="acctBtn" type="button"></button><button class="set-btn acct-del" id="acctDelBtn" type="button" hidden></button></span></div>
       <div class="set-row"><span class="ico" data-ico="help"></span><span class="set-l" id="helpRowLabel"></span>
         <button class="set-btn" id="helpBtn" type="button"></button></div>
       <span id="speechStatus" role="status" aria-live="polite" hidden></span>
@@ -3910,6 +3913,7 @@ const ICONS={
  lesson:'<path d="M12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.6 9 2.6 12 0v-5"/>',
  toets:'<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V2.8h6V4M9 10h6M9 14h6M9 18h3"/>',
  dict:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
  progress:'<path d="M5 20V11M11 20V5M17 20v-7M3 20h18"/>',
  study:'<path d="M2.5 5.5c3.2-1.6 6.3-1.4 9.5 1 3.2-2.4 6.3-2.6 9.5-1v13c-3.2-1.6-6.3-1.4-9.5 1-3.2-2.4-6.3-2.6-9.5-1z"/><path d="M12 6.5v13"/>',
@@ -4001,7 +4005,7 @@ document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{i
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeSheet(b.dataset.close)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
-$("settingsBtn").addEventListener("click",()=>openSheet("settingsSheet"));
+$("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
 $("streakPill").addEventListener("click",()=>setView("progress"));
 $("goalBtn").addEventListener("click",openGoalModal);
 function renderShellText(){
@@ -5015,12 +5019,91 @@ function renderMistakes(box){
  const list=el("div","pv-list");m.slice(0,6).forEach(x=>{const r=el("button","pv-row mk");r.type="button";const n=tgt(el("strong","","🔊 "+x.nl));r.append(n,el("span","",x.why||""));r.onclick=()=>say(x.nl);list.appendChild(r)});box.appendChild(list);
 }
 
+// ========== ACCOUNT (optional): Google sign-in; progress, settings and AI memory synced to Firestore users/{uid} ==========
+// Without signing in nothing changes. Firebase is loaded only when the user signs in (or signed in before on this device).
+const FB_SDK="https://www.gstatic.com/firebasejs/10.12.2/";
+const ACCT_UI={
+ uk:{label:"Акаунт (необов’язково)",out:"Прогрес і пам’ять AI на всіх пристроях. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",signOut:"Вийти",del:"Видалити акаунт",
+  delQ:"Видалити акаунт і всі дані в хмарі? Прогрес на цьому пристрої залишиться.",deleted:"Акаунт і дані в хмарі видалено.",err:"Не вдалося. Перевір інтернет і спробуй ще раз.",
+  keepQ:"В акаунті вже є прогрес: {c} балів. На цьому пристрої: {l} балів.\n\nOK: взяти прогрес з акаунта.\nСкасувати: залишити прогрес цього пристрою (він замінить дані в акаунті)."},
+ en:{label:"Account (optional)",out:"Progress and AI memory on all your devices. Without it everything works as before.",signIn:"Sign in with Google",synced:"synced",never:"not synced yet",signOut:"Sign out",del:"Delete account",
+  delQ:"Delete your account and all cloud data? Progress on this device stays.",deleted:"Account and cloud data deleted.",err:"That didn't work. Check your connection and try again.",
+  keepQ:"Your account already has progress: {c} points. This device: {l} points.\n\nOK: use the progress from your account.\nCancel: keep this device's progress (it will replace the account data)."},
+ fr:{label:"Compte (facultatif)",out:"Progression et mémoire de l’IA sur tous tes appareils. Sans compte, tout fonctionne comme avant.",signIn:"Se connecter avec Google",synced:"synchronisé",never:"pas encore synchronisé",signOut:"Se déconnecter",del:"Supprimer le compte",
+  delQ:"Supprimer ton compte et toutes les données en ligne ? La progression sur cet appareil reste.",deleted:"Compte et données en ligne supprimés.",err:"Échec. Vérifie ta connexion et réessaie.",
+  keepQ:"Ton compte a déjà une progression : {c} points. Cet appareil : {l} points.\n\nOK : prendre la progression du compte.\nAnnuler : garder celle de cet appareil (elle remplacera les données du compte)."},
+ ar:{label:"الحساب (اختياري)",out:"تقدّمك وذاكرة الذكاء الاصطناعي على كل أجهزتك. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",signOut:"تسجيل الخروج",del:"حذف الحساب",
+  delQ:"حذف حسابك وكل البيانات السحابية؟ يبقى التقدّم على هذا الجهاز.",deleted:"تم حذف الحساب والبيانات السحابية.",err:"لم ينجح ذلك. تحقّق من الاتصال وحاول مرة أخرى.",
+  keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب)."}};
+const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
+const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct"]);
+const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
+function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
+function syncApply(o){Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
+const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false};
+async function acctLoad(){
+ if(acct.mod)return acct.mod;
+ const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
+ acct.auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId},"acct"));
+ b.onAuthStateChanged(acct.auth,u=>{acct.user=u;acctRender();if(u)syncPull().catch(()=>{})});
+ acct.mod=b;return b;
+}
+async function fsUserDoc(method,body){
+ const t=await acct.user.getIdToken();
+ return fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid,{method,headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+}
+async function syncPush(){
+ if(!acct.user)return;const snap=JSON.stringify(syncSnapshot());if(snap===acct.lastSnap)return;
+ const ts=Date.now(),r=await fsUserDoc("PATCH",{fields:{blob:{stringValue:snap},updated:{integerValue:String(ts)},v:{integerValue:"1"}}});
+ if(r.ok){acct.lastSnap=snap;lsSet("leren_sync_at",ts);acctRender()}
+}
+async function syncPull(){ // newest copy wins; the first sign-in on a device asks when both sides have progress
+ const r=await fsUserDoc("GET");if(r.status===404){await syncPush();return}if(!r.ok)return;
+ const d=await r.json(),cloudTs=Number(d.fields&&d.fields.updated&&d.fields.updated.integerValue||0);let cloud={};try{cloud=JSON.parse(d.fields.blob.stringValue)}catch(e){}
+ const localAt=Number(lsGet("leren_sync_at",0)),take=()=>{syncApply(cloud);lsSet("leren_sync_at",cloudTs);location.reload()};
+ if(!localAt){
+  const c=Number(cloud.poly_score||0),l=Number(localStorage.getItem("poly_score")||0);
+  if(c>0&&(l===0||confirm(acctU().keepQ.replace("{c}",c).replace("{l}",l)))){take();return}
+  acct.lastSnap="";await syncPush();return;
+ }
+ if(cloudTs>localAt){take();return}
+ await syncPush();
+}
+async function acctSignIn(){
+ const u=acctU();try{const b=await acctLoad(),p=new b.GoogleAuthProvider();
+  try{await b.signInWithPopup(acct.auth,p)}catch(e){if(e&&(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")){lsSet("leren_acct",true);await b.signInWithRedirect(acct.auth,p);return}throw e}
+  lsSet("leren_acct",true);
+ }catch(e){if(!(e&&e.code==="auth/popup-closed-by-user"||e&&e.code==="auth/cancelled-popup-request"))toast(u.err)}
+}
+async function acctSignOut(){try{await acct.mod.signOut(acct.auth)}catch(e){}lsSet("leren_acct",false);localStorage.removeItem("leren_sync_at");acct.lastSnap="";acctRender()}
+async function acctDelete(){
+ const u=acctU();if(!acct.user||!confirm(u.delQ))return;
+ try{const r=await fsUserDoc("DELETE");if(!r.ok&&r.status!==404)throw new Error("fs "+r.status);
+  try{await acct.user.delete()}catch(e){if(e&&e.code==="auth/requires-recent-login"){await acct.mod.reauthenticateWithPopup(acct.user,new acct.mod.GoogleAuthProvider());await acct.user.delete()}else throw e}
+  await acctSignOut();toast(u.deleted,true);
+ }catch(e){toast(u.err)}
+}
+function acctRender(){
+ const u=acctU(),lab=$("acctLabel");if(!lab)return;lab.textContent=u.label;
+ const btn=$("acctBtn"),del=$("acctDelBtn"),hint=$("acctHint"),user=acct.user;
+ if(user){const at=Number(lsGet("leren_sync_at",0));
+  hint.textContent=(user.email||user.displayName||"")+" · "+(at?u.synced+" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):u.never);
+  btn.textContent=u.signOut;btn.onclick=acctSignOut;del.hidden=false;del.textContent=u.del;del.onclick=acctDelete;
+ }else{hint.textContent=u.out;btn.textContent=u.signIn;btn.onclick=acctSignIn;del.hidden=true}
+}
+function acctInit(){
+ acctRender();
+ if(lsGet("leren_acct",false))acctLoad().catch(()=>{}); // signed in before on this device: restore the session
+ setInterval(()=>{if(acct.user)syncPush().catch(()=>{})},60000);
+ document.addEventListener("visibilitychange",()=>{if(document.hidden&&acct.user)syncPush().catch(()=>{})});
+}
+
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
- updateHeader();buildNav();newRound();applyView();loadAudioManifest();pushSync();
+ updateHeader();buildNav();newRound();applyView();loadAudioManifest();pushSync();acctInit();
 }
 
 if (document.readyState === "loading") {
