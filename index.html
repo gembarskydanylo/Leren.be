@@ -4350,10 +4350,10 @@ function speakSeq(lines,i=0){ // dialogue with two voices
  }catch(e){}
 }
 function saySlow(t){try{const s=window.speechSynthesis;s.cancel();if(audioEl){audioEl.pause();audioEl=null}const u=new SpeechSynthesisUtterance(t);u.lang=speechLang();u.rate=.5;const v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith("nl"));if(v)u.voice=v;s.speak(u)}catch(e){}}
-function listenOnce(onText,onFail){
+function listenOnce(onText,onFail,lang){ // lang: recognition language, default = the studied language
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){onFail("unsupported");return}
  try{try{window.speechSynthesis.cancel()}catch(e){}
-  const r=new SR();gRec=r;r.lang=speechLang();r.interimResults=false;r.maxAlternatives=4;let got=false;
+  const r=new SR();gRec=r;r.lang=lang||speechLang();r.interimResults=false;r.maxAlternatives=4;let got=false;
   r.onresult=e=>{got=true;onText([...e.results[0]].map(a=>a.transcript))};
   r.onerror=e=>{got=true;onFail(e.error||"error")};
   r.onend=()=>{gRec=null;if(!got)onFail("no-speech")};
@@ -4952,7 +4952,15 @@ function askRender(){
  if(!s.msgs.length){const chips=el("div","ai-chips");(g.chips[targetLang]||g.chips.nl).forEach(q=>{const c=el("button","btn ai-chip",q);c.type="button";c.onclick=()=>askSend(q);chips.appendChild(c)});card.appendChild(chips)}
  const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.maxLength=600;inp.placeholder=g.askPh;inp.setAttribute("aria-label",g.askPh);
  const ok=el("button","btn primary",g.send);ok.type="submit";ok.disabled=s.busy;form.append(inp,ok);
- form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())askSend(inp.value)};card.appendChild(form);
+ form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())askSend(inp.value)};
+ if(window.SpeechRecognition||window.webkitSpeechRecognition){ // questions are asked in the interface language
+  const gg=gU(),st=el("p","g-heard"),mic=el("button","btn g-mic-btn",gg.mic);mic.type="button";mic.disabled=s.busy;
+  mic.onclick=()=>{mic.disabled=true;mic.textContent=gg.listening;mic.classList.add("rec");
+   listenOnce(alts=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");askSend(alts[0])},
+    err=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");st.textContent=(err==="not-allowed"||err==="service-not-allowed")?gg.micDenied:gg.tryAgain},
+    {uk:"uk-UA",en:"en-GB",fr:"fr-BE",ar:"ar-SA"}[uiLang]||"uk-UA")};
+  const row=el("div","row g-mic-row");row.appendChild(mic);card.append(row,st)}
+ card.appendChild(form);
  const last=chat.lastElementChild;if(last&&s.msgs.length)last.scrollIntoView({block:"nearest"});
 }
 async function askSend(text){
