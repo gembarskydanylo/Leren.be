@@ -4025,7 +4025,7 @@ function renderProgressView(){
 
 // ========== GROWTH: first-run level question, rating prompt (Android app), share result ==========
 const PLAY_PACKAGE="io.github.gembarskydanylo.twa"; // change here if the Play package name changes
-const SITE_URL="https://gembarskydanylo.github.io/Leren.be/";
+const SITE_URL="https://lerenbe.com/";
 const GROW_UI={
  uk:{lvlQ:"З чого почнемо?",lvlHint:"Можна змінити будь-коли через «Змінити» над уроком.",lvlNew:"Я тільки починаю",lvlNewS:"Рівень A1.1 з перших слів",lvlKnow:"Я вже знаю основи A1.1",lvlKnowS:"Тест на рівень A1.2 (15 питань)",rateQ:"Подобається Leren.be?",rateT:"Оціни застосунок у Google Play. Це допоможе іншим українцям у Бельгії його знайти.",rateYes:"⭐ Оцінити",rateLater:"Пізніше",share:"Поділитися",shareTxt:(t,p)=>"Я склав «"+t+"» на "+p+" % у Leren.be 🇧🇪 Вчу нідерландську: ",shareTry:(t,p)=>"Мій результат «"+t+"»: "+p+" % у Leren.be 🇧🇪 Вчу нідерландську: ",copied:"Текст скопійовано — встав його в чат",passed:"Склав!",result:"Мій результат"},
  en:{lvlQ:"Where shall we start?",lvlHint:"You can change it anytime with “Change” above the lesson.",lvlNew:"I'm just starting",lvlNewS:"Level A1.1 from the first words",lvlKnow:"I already know A1.1 basics",lvlKnowS:"Level test for A1.2 (15 questions)",rateQ:"Enjoying Leren.be?",rateT:"Rate the app on Google Play. It helps other learners in Belgium find it.",rateYes:"⭐ Rate",rateLater:"Later",share:"Share",shareTxt:(t,p)=>"I passed “"+t+"” with "+p+"% on Leren.be 🇧🇪 Learning Dutch: ",shareTry:(t,p)=>"My result on “"+t+"”: "+p+"% on Leren.be 🇧🇪 Learning Dutch: ",copied:"Text copied — paste it in a chat",passed:"Passed!",result:"My result"},
@@ -4084,7 +4084,7 @@ function shareCard(title,pct,passed){
  x.font="800 260px Unbounded, Nunito, sans-serif";x.textAlign="center";x.fillText(pct+"%",540,520);
  x.font="800 64px Nunito, sans-serif";x.fillText(passed?growU().passed:growU().result,540,720);
  x.font="700 46px Nunito, sans-serif";const t=title.length>34?title.slice(0,33)+"…":title;x.fillText(t,540,810);
- x.fillStyle="#1E1712";x.fillRect(0,960,1080,120);x.fillStyle="#FDDA24";x.font="800 40px Nunito, sans-serif";x.fillText("gembarskydanylo.github.io/Leren.be",540,1020);
+ x.fillStyle="#1E1712";x.fillRect(0,960,1080,120);x.fillStyle="#FDDA24";x.font="800 40px Nunito, sans-serif";x.fillText("lerenbe.com",540,1020);
  return new Promise(r=>c.toBlob(r,"image/png"));
 }
 async function shareResult(title,pct,passed){

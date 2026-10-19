@@ -5,7 +5,7 @@
 //   "gemini"     — Google Gemini PAID tier (the free tier may not be used for apps serving EU users). Secret GEMINI_KEY. Optional MODEL.
 //   "workers-ai" — Cloudflare Workers AI (free daily allowance). Add a Workers AI binding named AI. Optional MODEL.
 // Optional: KV binding RATE (daily limit per visitor, DAILY_LIMIT default 60 messages).
-const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "http://localhost:8765"];
+const ALLOWED_ORIGINS = ["https://lerenbe.com", "https://www.lerenbe.com", "https://gembarskydanylo.github.io", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
   cafe: "You are a barista in a Flemish café. The learner orders a drink, chooses milk/size and pays.",
