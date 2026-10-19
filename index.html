@@ -951,7 +951,7 @@ const CATEGORIES=[
  {id:"home",lvl:"a11", tabs:["home", "shop", "clothes", "colors", "animals"]},
  {id:"city",lvl:"a11", tabs:["city", "transport", "gemeente", "cvo", "werk"]},
  {id:"dag",lvl:"a12", tabs:["routine","separable"]},
- {id:"plans",lvl:"a12", tabs:["modal","afspraak"]},
+ {id:"plans",lvl:"a12", tabs:["modal","toekomst","afspraak"]},
  {id:"past",lvl:"a12", tabs:["perfectum","verleden"]},
  {id:"wonen",lvl:"a12", tabs:["huren"]},
  {id:"contact",lvl:"a12", tabs:["telefoon","mail"]},
@@ -960,17 +960,17 @@ const CATEGORIES=[
 // A1.2 labels for all explanation languages
 (()=>{const T={
  uk:{cats:{dag:"☀️ Мій день",plans:"📅 Плани",past:"⏪ Минулий час",wonen:"🏡 Житло",contact:"✉️ Телефон і лист",grammar2:"📘 Граматика 2"},
-  tabs:{vervoegen:"Дієслово в історії",routine:"Розпорядок дня",separable:"Дієслова, що розділяються",modal:"Модальні дієслова",afspraak:"Домовитися про зустріч",perfectum:"Perfectum (минулий час)",verleden:"Коли це було?",huren:"Оренда житла",telefoon:"Телефон",mail:"Лист, e-mail",bezit:"Присвійні займенники",niet:"Заперечення niet / geen",objpron:"Кого? Кому?"},
-  subs:{vervoegen:"Обери правильну форму дієслова",routine:"Що ти робиш протягом дня?",separable:"Обери правильне дієслово",modal:"Обери модальне дієслово",afspraak:"Обери правильну фразу",perfectum:"Що ти робив?",verleden:"Коли це було?",huren:"Обери слово про житло",telefoon:"Розмова телефоном",mail:"Обери фразу для листа",bezit:"Чий це?",niet:"Як сказати «ні»?",objpron:"Кого? Кому?"}},
+  tabs:{toekomst:"Майбутнє: gaan + інфінітив",vervoegen:"Дієслово в історії",routine:"Розпорядок дня",separable:"Дієслова, що розділяються",modal:"Модальні дієслова",afspraak:"Домовитися про зустріч",perfectum:"Perfectum (минулий час)",verleden:"Коли це було?",huren:"Оренда житла",telefoon:"Телефон",mail:"Лист, e-mail",bezit:"Присвійні займенники",niet:"Заперечення niet / geen",objpron:"Кого? Кому?"},
+  subs:{toekomst:"Що ти будеш робити?",vervoegen:"Обери правильну форму дієслова",routine:"Що ти робиш протягом дня?",separable:"Обери правильне дієслово",modal:"Обери модальне дієслово",afspraak:"Обери правильну фразу",perfectum:"Що ти робив?",verleden:"Коли це було?",huren:"Обери слово про житло",telefoon:"Розмова телефоном",mail:"Обери фразу для листа",bezit:"Чий це?",niet:"Як сказати «ні»?",objpron:"Кого? Кому?"}},
  en:{cats:{dag:"☀️ My day",plans:"📅 Plans",past:"⏪ Past tense",wonen:"🏡 Housing",contact:"✉️ Phone & e-mail",grammar2:"📘 Grammar 2"},
-  tabs:{vervoegen:"Verbs in a story",routine:"Daily routine",separable:"Separable verbs",modal:"Modal verbs",afspraak:"Appointments",perfectum:"Perfect tense",verleden:"When was it?",huren:"Renting a home",telefoon:"Phone",mail:"E-mail",bezit:"Possessives",niet:"Negation niet / geen",objpron:"Object pronouns"},
-  subs:{vervoegen:"Choose the right form of the verb",routine:"What do you do during the day?",separable:"Choose the right verb",modal:"Choose the modal verb",afspraak:"Choose the right phrase",perfectum:"What did you do?",verleden:"When was it?",huren:"Choose the housing word",telefoon:"On the phone",mail:"Choose a phrase for the e-mail",bezit:"Whose is it?",niet:"How do you say “no”?",objpron:"Whom?"}},
+  tabs:{toekomst:"Future: gaan + infinitive",vervoegen:"Verbs in a story",routine:"Daily routine",separable:"Separable verbs",modal:"Modal verbs",afspraak:"Appointments",perfectum:"Perfect tense",verleden:"When was it?",huren:"Renting a home",telefoon:"Phone",mail:"E-mail",bezit:"Possessives",niet:"Negation niet / geen",objpron:"Object pronouns"},
+  subs:{toekomst:"What are you going to do?",vervoegen:"Choose the right form of the verb",routine:"What do you do during the day?",separable:"Choose the right verb",modal:"Choose the modal verb",afspraak:"Choose the right phrase",perfectum:"What did you do?",verleden:"When was it?",huren:"Choose the housing word",telefoon:"On the phone",mail:"Choose a phrase for the e-mail",bezit:"Whose is it?",niet:"How do you say “no”?",objpron:"Whom?"}},
  fr:{cats:{dag:"☀️ Ma journée",plans:"📅 Projets",past:"⏪ Passé",wonen:"🏡 Logement",contact:"✉️ Téléphone & e-mail",grammar2:"📘 Grammaire 2"},
-  tabs:{vervoegen:"Verbes en histoire",routine:"Routine",separable:"Verbes séparables",modal:"Verbes modaux",afspraak:"Rendez-vous",perfectum:"Passé composé",verleden:"C'était quand ?",huren:"Louer un logement",telefoon:"Téléphone",mail:"E-mail",bezit:"Possessifs",niet:"Négation niet / geen",objpron:"Pronoms objets"},
-  subs:{vervoegen:"Choisis la bonne forme du verbe",routine:"Que fais-tu pendant la journée ?",separable:"Choisis le bon verbe",modal:"Choisis le verbe modal",afspraak:"Choisis la bonne phrase",perfectum:"Qu'as-tu fait ?",verleden:"C'était quand ?",huren:"Choisis le mot sur le logement",telefoon:"Au téléphone",mail:"Choisis une phrase pour l'e-mail",bezit:"À qui est-ce ?",niet:"Comment dire « non » ?",objpron:"Qui ? À qui ?"}},
+  tabs:{toekomst:"Futur : gaan + infinitif",vervoegen:"Verbes en histoire",routine:"Routine",separable:"Verbes séparables",modal:"Verbes modaux",afspraak:"Rendez-vous",perfectum:"Passé composé",verleden:"C'était quand ?",huren:"Louer un logement",telefoon:"Téléphone",mail:"E-mail",bezit:"Possessifs",niet:"Négation niet / geen",objpron:"Pronoms objets"},
+  subs:{toekomst:"Qu'est-ce que tu vas faire ?",vervoegen:"Choisis la bonne forme du verbe",routine:"Que fais-tu pendant la journée ?",separable:"Choisis le bon verbe",modal:"Choisis le verbe modal",afspraak:"Choisis la bonne phrase",perfectum:"Qu'as-tu fait ?",verleden:"C'était quand ?",huren:"Choisis le mot sur le logement",telefoon:"Au téléphone",mail:"Choisis une phrase pour l'e-mail",bezit:"À qui est-ce ?",niet:"Comment dire « non » ?",objpron:"Qui ? À qui ?"}},
  ar:{cats:{dag:"☀️ يومي",plans:"📅 الخطط",past:"⏪ الماضي",wonen:"🏡 السكن",contact:"✉️ الهاتف والبريد",grammar2:"📘 القواعد 2"},
-  tabs:{vervoegen:"الأفعال في قصة",routine:"الروتين اليومي",separable:"أفعال منفصلة",modal:"الأفعال المساعدة",afspraak:"المواعيد",perfectum:"الماضي التام",verleden:"متى كان ذلك؟",huren:"استئجار السكن",telefoon:"الهاتف",mail:"البريد الإلكتروني",bezit:"ضمائر الملكية",niet:"النفي niet / geen",objpron:"ضمائر المفعول"},
-  subs:{vervoegen:"اختر الصيغة الصحيحة للفعل",routine:"ماذا تفعل خلال اليوم؟",separable:"اختر الفعل الصحيح",modal:"اختر الفعل المساعد",afspraak:"اختر العبارة الصحيحة",perfectum:"ماذا فعلت؟",verleden:"متى كان ذلك؟",huren:"اختر كلمة عن السكن",telefoon:"على الهاتف",mail:"اختر عبارة للرسالة",bezit:"لمن هذا؟",niet:"كيف تقول «لا»؟",objpron:"مَن؟ لِمَن؟"}}};
+  tabs:{toekomst:"المستقبل: gaan + المصدر",vervoegen:"الأفعال في قصة",routine:"الروتين اليومي",separable:"أفعال منفصلة",modal:"الأفعال المساعدة",afspraak:"المواعيد",perfectum:"الماضي التام",verleden:"متى كان ذلك؟",huren:"استئجار السكن",telefoon:"الهاتف",mail:"البريد الإلكتروني",bezit:"ضمائر الملكية",niet:"النفي niet / geen",objpron:"ضمائر المفعول"},
+  subs:{toekomst:"ماذا ستفعل؟",vervoegen:"اختر الصيغة الصحيحة للفعل",routine:"ماذا تفعل خلال اليوم؟",separable:"اختر الفعل الصحيح",modal:"اختر الفعل المساعد",afspraak:"اختر العبارة الصحيحة",perfectum:"ماذا فعلت؟",verleden:"متى كان ذلك؟",huren:"اختر كلمة عن السكن",telefoon:"على الهاتف",mail:"اختر عبارة للرسالة",bezit:"لمن هذا؟",niet:"كيف تقول «لا»؟",objpron:"مَن؟ لِمَن؟"}}};
  for(const l in T){for(const k of ["cats","tabs","subs"])Object.assign(UI[l][k],T[l][k])}})();
 
 const ERASER='<svg viewBox="4 4 56 56" width="50" height="50" role="img" aria-label="eraser"><g transform="rotate(-35 32 32)"><rect x="6" y="20" width="52" height="24" rx="5" fill="#F4A6B5"/><path d="M34 20h19a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H34z" fill="#5B7BD9"/><rect x="6" y="20" width="52" height="24" rx="5" fill="none" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/><path d="M34 20v24" stroke="#20243A" stroke-opacity=".35" stroke-width="2"/></g></svg>';
@@ -1119,6 +1119,9 @@ const DATA={
   ["doc_12","ziek","ill / sick","malade","хворий","مريض","🤒","Ik voel me ziek.","Я почуваюся хворим."],
   ["doc_13","beter","better","mieux","краще","أفضل","😊","Ik voel me al beter.","Мені вже краще."],
   ["doc_14","de keel","throat","la gorge","горло","الحلق","🗣️","Mijn keel doet pijn.","У мене болить горло."],
+  ["doc_16","Wat scheelt er?","What's wrong?","Qu'est-ce qui ne va pas ?","Що з вами? Що болить?","ما المشكلة؟","🩺","Dag mevrouw, wat scheelt er?","Добрий день, пані, що з вами?"],
+  ["doc_17","verkouden","having a cold","enrhumé","застуджений","مصاب بالزكام","🤧","Ik ben verkouden.","Я застудився."],
+  ["doc_18","de keelpijn","sore throat","le mal de gorge","біль у горлі","ألم الحلق","😖","Zij heeft keelpijn.","У неї болить горло."],
   ["doc_15","de buik","belly / stomach","le ventre","живіт","البطن","🤢","Ik heb pijn in mijn buik.","У мене болить живіт."]
  ]),
  shop:R([
@@ -1366,7 +1369,15 @@ Object.assign(DATA,{
   ["bod_9", "de arm", "arm", "le bras", "рука (від плеча)", "الذراع", "💪", "Mijn arm doet pijn.", "У мене болить рука."],
   ["bod_10", "het been", "leg", "la jambe", "нога", "الساق / الرجل", "🦵", "Mijn been doet pijn.", "У мене болить нога."],
   ["bod_11", "de voet", "foot", "le pied", "стопа", "القدم", "🦶", "Mijn voet doet pijn.", "У мене болить стопа."],
-  ["bod_12", "het hart", "heart", "le cœur", "серце", "القلب", "❤️", "Mijn hart klopt snel.", "Моє серце б'ється швидко."]
+  ["bod_12", "het hart", "heart", "le cœur", "серце", "القلب", "❤️", "Mijn hart klopt snel.", "Моє серце б'ється швидко."],
+  ["bod_13", "het lichaam", "body", "le corps", "тіло", "الجسم", "🧍", "Sport is goed voor je lichaam.", "Спорт корисний для тіла."],
+  ["bod_14", "de schouder", "shoulder", "l'épaule", "плече", "الكتف", "🤷", "Mijn schouder doet pijn.", "У мене болить плече."],
+  ["bod_15", "de buik", "belly", "le ventre", "живіт", "البطن", "🫃", "Ik heb pijn in mijn buik.", "У мене болить живіт."],
+  ["bod_16", "de rug", "back", "le dos", "спина", "الظهر", "🧎", "Mijn rug doet pijn.", "У мене болить спина."],
+  ["bod_17", "de knie", "knee", "le genou", "коліно", "الركبة", "🦵", "Ik heb twee knieën.", "У мене два коліна."],
+  ["bod_18", "de vinger", "finger", "le doigt", "палець (на руці)", "الإصبع", "☝️", "Ik heb tien vingers.", "У мене десять пальців."],
+  ["bod_19", "de teen", "toe", "l'orteil", "палець (на нозі)", "إصبع القدم", "🦶", "Mijn teen doet pijn.", "У мене болить палець на нозі."],
+  ["bod_20", "de keel", "throat", "la gorge", "горло", "الحلق", "🗣️", "Ik heb pijn in mijn keel.", "У мене болить горло."]
  ]),
  clothes:R([
   ["clo_1", "de jas", "coat / jacket", "le manteau", "куртка / пальто", "المعطف", "🧥", "Het is koud, trek je jas aan.", "Холодно, одягни куртку."],
@@ -1597,6 +1608,21 @@ DATA.modal=R([
  ["b_kanniet","Ik kan niet.","I can't.","Je ne peux pas.","Я не можу.","لا أستطيع.","🚫","Sorry, ik kan vandaag niet.","Вибач, сьогодні я не можу."],
  ["b_kunnenwij","wij kunnen, jullie kunnen","we can, you (pl.) can","nous pouvons, vous pouvez","ми можемо, ви можете","نستطيع، تستطيعون","👥","Kunnen jullie morgen komen?","Ви можете прийти завтра?"]
 ]);
+DATA.toekomst=R([
+ ["b_tk_ik","ik ga + infinitief","I'm going to …","je vais + infinitif","я буду / я збираюся …","سوف + الفعل","🔜","Ik ga om elf uur slapen.","Я ляжу спати об одинадцятій."],
+ ["b_tk_jij","jij gaat … / ga jij …?","you're going to …","tu vas …","ти будеш …","أنت سوف …","👉","Wat ga jij doen?","Що ти будеш робити?"],
+ ["b_tk_hij","hij / zij gaat …","he / she is going to …","il / elle va …","він / вона буде …","هو / هي سوف …","🧑","Zij gaat lopen.","Вона піде бігати."],
+ ["b_tk_wij","wij / jullie / zij gaan …","we / you / they are going to …","nous allons / vous allez / ils vont …","ми / ви / вони будуть …","نحن / أنتم / هم سوف …","👥","Wij gaan voetballen.","Ми підемо грати у футбол."],
+ ["b_tk_eind","De infinitief staat achteraan.","The infinitive goes at the end.","L'infinitif va à la fin.","Інфінітив стоїть у кінці речення.","المصدر يأتي في آخر الجملة.","🔚","Ik ga morgen met de trein naar Gent rijden.","Завтра я поїду потягом до Гента."],
+ ["b_tk_zwemt","Hij zwemt. ↔ Hij gaat zwemmen.","He's swimming. ↔ He's going to swim.","Il nage. ↔ Il va nager.","Він плаває (зараз). ↔ Він піде плавати.","هو يسبح. ↔ سوف يسبح.","🏊","Nu zwemt hij, morgen gaat hij fietsen.","Зараз він плаває, а завтра поїде кататися на велосипеді."],
+ ["b_tk_watdoen","Wat ga je doen?","What are you going to do?","Qu'est-ce que tu vas faire ?","Що ти будеш робити?","ماذا ستفعل؟","❓","Wat ga je dit weekend doen?","Що ти робитимеш на цих вихідних?"],
+ ["b_tk_bellen","Ik ga mijn vrouw bellen.","I'm going to call my wife.","Je vais appeler ma femme.","Я подзвоню дружині.","سأتصل بزوجتي.","📞"],
+ ["b_tk_gamee","Ga je mee?","Are you coming along?","Tu viens avec moi ?","Підеш зі мною?","هل تأتي معي؟","🙋","Ik ga dinsdag zwemmen. Ga je mee?","У вівторок я йду плавати. Підеш зі мною?"],
+ ["b_tk_morgen","Morgen ga ik werken.","Tomorrow I'm going to work.","Demain je vais travailler.","Завтра я буду працювати.","غداً سأعمل.","📆","Morgen ga ik niet werken.","Завтра я не працюватиму."],
+ ["b_tk_geentijd","Ik heb geen tijd.","I don't have time.","Je n'ai pas le temps.","У мене немає часу.","ليس لدي وقت.","⏱️","Sorry, ik heb geen tijd.","Вибач, у мене немає часу."],
+ ["b_tk_geenzin","Ik heb geen zin.","I don't feel like it.","Je n'ai pas envie.","Мені не хочеться.","ليست لدي رغبة.","🙅","Ik loop niet graag. Ik heb geen zin.","Я не люблю бігати. Мені не хочеться."],
+ ["b_tk_anderekeer","Een andere keer misschien.","Maybe another time.","Une autre fois peut-être.","Може, іншим разом.","ربما مرة أخرى.","🔁"]
+]);
 DATA.afspraak=R([
  ["b_afspraakmaken","Ik wil graag een afspraak maken.","I'd like to make an appointment.","Je voudrais prendre rendez-vous.","Я хотів би записатися на прийом.","أود حجز موعد.","📅","Goedemorgen, ik wil graag een afspraak maken bij de dokter.","Доброго ранку, я хотів би записатися до лікаря."],
  ["b_wanneerpast","Wanneer past het?","When suits you?","Quand est-ce que ça vous convient ?","Коли вам зручно?","متى يناسبك؟","🗓️"],
@@ -1672,6 +1698,8 @@ DATA.telefoon=R([
  ["b_bericht","een bericht sturen","to send a message","envoyer un message","надіслати повідомлення","يرسل رسالة","💬","Ik stuur je straks een bericht.","Я пізніше надішлю тобі повідомлення."]
 ]);
 DATA.mail=R([
+ ["b_proficiat","Proficiat!","Congratulations!","Félicitations !","Вітаю!","مبروك!","🎉","Proficiat met je nieuwe job!","Вітаю з новою роботою!"],
+ ["b_spijt","Het spijt me.","I'm sorry.","Je suis désolé.","Мені шкода. Вибач.","أنا آسف.","😔","Het spijt me, ik kan niet komen.","Вибач, я не можу прийти."],
  ["b_beste","Beste Jan,","Dear Jan,","Cher Jan,","Привіт, Яне! (на початку листа)","عزيزي يان،","✉️"],
  ["b_geachte","Geachte heer, mevrouw,","Dear Sir or Madam,","Madame, Monsieur,","Шановні пане / пані,","السيد / السيدة المحترم(ة)،","🎩"],
  ["b_bedankt","Bedankt voor je mail.","Thanks for your e-mail.","Merci pour ton e-mail.","Дякую за твій лист.","شكراً على رسالتك.","🙏"],
@@ -3282,7 +3310,11 @@ Object.assign(BUILD_BANK,{
   [2,"moet|je|vandaag|werken","VSRR","Тобі сьогодні треба працювати?","Do you have to work today?","Dois-tu travailler aujourd'hui ?","هل يجب أن تعمل اليوم؟"],
   [2,"wanneer|past|het|voor jou","QVSR","Коли тобі зручно?","When suits you?","Quand est-ce que ça te convient ?","متى يناسبك؟"],
   [2,"kunnen|we|de afspraak|verplaatsen","VSRR","Можемо перенести зустріч?","Can we move the appointment?","Pouvons-nous déplacer le rendez-vous ?","هل يمكننا تغيير الموعد؟"],
-  [2,"om hoe laat|spreken|we|af","QVSR","О котрій ми зустрічаємося?","What time are we meeting?","À quelle heure on se voit ?","في أي ساعة نلتقي؟"]
+  [2,"om hoe laat|spreken|we|af","QVSR","О котрій ми зустрічаємося?","What time are we meeting?","À quelle heure on se voit ?","في أي ساعة نلتقي؟"],
+  [1,"wat|ga|je|doen","QVSR","Що ти будеш робити?","What are you going to do?","Qu'est-ce que tu vas faire ?","ماذا ستفعل؟"],
+  [1,"ga|je|mee","VSR","Підеш зі мною?","Are you coming along?","Tu viens ?","هل تأتي معي؟"],
+  [2,"wanneer|ga|je|zwemmen","QVSR","Коли ти підеш плавати?","When are you going swimming?","Quand vas-tu nager ?","متى ستذهب للسباحة؟"],
+  [2,"hoe laat|ga|je|slapen","QVSR","О котрій ти ляжеш спати?","What time are you going to bed?","À quelle heure vas-tu dormir ?","في أي ساعة ستنام؟"]
  ],
  past:[
   [1,"wat|heb|je|gedaan","QVSR","Що ти робив?","What did you do?","Qu'as-tu fait ?","ماذا فعلت؟"],
@@ -3361,6 +3393,24 @@ TOETS.push(
    {type:"mc",q:Q("Яке речення правильне?","Which sentence is correct?","Quelle phrase est correcte ?","أي جملة صحيحة؟"),opts:["Ik neem een paraplu mee.","Ik meeneem een paraplu.","Ik neem mee een paraplu.","Ik mee neem een paraplu."],ok:0},
    {type:"gap",sentence:"Wij ___ morgen niet komen.",q:GAP,opts:["kunnen","kan","kunt","kunnt"],ok:0},
    {type:"mc",q:Q("«Past dinsdag?» означає:","«Past dinsdag?» means:","« Past dinsdag? » signifie :","«Past dinsdag?» تعني:"),opts:[Q("Вівторок підходить?","Is Tuesday OK?","Mardi, ça va ?","هل يناسبك الثلاثاء؟"),Q("Вівторок минув?","Is Tuesday over?","Mardi est passé ?","هل انتهى الثلاثاء؟"),Q("Що у вівторок?","What's on Tuesday?","Quoi mardi ?","ماذا يوم الثلاثاء؟"),Q("Ти був у вівторок?","Were you there on Tuesday?","Tu étais là mardi ?","هل كنت هناك الثلاثاء؟")],ok:0}
+  ]},
+ {id:"t10",lvl:"a12",
+  title:Q("Тест A1.2 · Тіло, здоров'я, gaan + інфінітив","Test A1.2 · Body, health, gaan + infinitive","Test A1.2 · Corps, santé, gaan + infinitif","اختبار A1.2 · الجسم، الصحة، gaan + المصدر"),
+  questions:[
+   {type:"mc",q:Q("Обери правильний артикль: ___ been (нога)","Choose the article: ___ been (leg)","Choisis l'article : ___ been (jambe)","اختر الأداة: ___ been (الساق)"),opts:["het","de","een","—"],ok:0},
+   {type:"mc",q:Q("Обери правильний артикль: ___ knie","Choose the article: ___ knie","Choisis l'article : ___ knie","اختر الأداة: ___ knie"),opts:["de","het","een","—"],ok:0},
+   {type:"mc",q:Q("Множина від «het oog»:","Plural of «het oog»:","Pluriel de « het oog » :","جمع «het oog»:"),opts:["de ogen","de oogen","de oogs","de oog"],ok:0},
+   {type:"mc",q:Q("«de teen» — це:","«de teen» is:","« de teen » c'est :","«de teen» هو:"),opts:[Q("палець на нозі","toe","l'orteil","إصبع القدم"),Q("палець на руці","finger","le doigt","إصبع اليد"),Q("коліно","knee","le genou","الركبة"),Q("зуб","tooth","la dent","السن")],ok:0},
+   {type:"mc",q:Q("Лікар питає «Wat scheelt er?». Що він хоче знати?","The doctor asks «Wat scheelt er?». What does he want to know?","Le médecin demande « Wat scheelt er? ». Que veut-il savoir ?","يسأل الطبيب «Wat scheelt er?». ماذا يريد أن يعرف؟"),opts:[Q("Що з тобою, що болить","What's wrong with you","Ce qui ne va pas","ما مشكلتك"),Q("Як тебе звати","Your name","Ton nom","اسمك"),Q("Скільки тобі років","Your age","Ton âge","عمرك"),Q("Де ти живеш","Where you live","Où tu habites","أين تسكن")],ok:0},
+   {type:"gap",sentence:"Ik ben ___. Ik heb keelpijn en ik hoest.",q:GAP,opts:["verkouden","koorts","keel","moe gaan"],ok:0},
+   {type:"gap",sentence:"Wat ___ jij morgen doen?",q:GAP,opts:["ga","gaat","gaan","gegaan"],ok:0},
+   {type:"gap",sentence:"Wij ___ zaterdag voetballen.",q:GAP,opts:["gaan","ga","gaat","gaand"],ok:0},
+   {type:"gap",sentence:"Zij gaat morgen ___.",q:GAP,opts:["lopen","loopt","loop","gelopen"],ok:0},
+   {type:"mc",q:Q("Яке речення правильне?","Which sentence is correct?","Quelle phrase est correcte ?","أي جملة صحيحة؟"),opts:["Ik ga om elf uur slapen.","Ik ga slapen om elf uur.","Ik slapen ga om elf uur.","Ik om elf uur ga slapen."],ok:0},
+   {type:"mc",q:Q("Що відбувається ЗАРАЗ?","What is happening NOW?","Qu'est-ce qui se passe MAINTENANT ?","ماذا يحدث الآن؟"),opts:["Hij fietst.","Hij gaat fietsen.","Hij gaat morgen fietsen.","Hij gaat straks fietsen."],ok:0},
+   {type:"mc",q:Q("Як ввічливо відмовитись?","How do you politely say no?","Comment refuser poliment ?","كيف ترفض بأدب؟"),opts:["Het spijt me, ik heb geen tijd.","Proficiat!","Ik ga mee!","Graag gedaan."],ok:0},
+   {type:"read",text:"Beste Victor en Marie,\nProficiat met jullie nieuwe huis! Het spijt me, zaterdag kan ik niet komen. Ik moet werken.\nGroetjes, Anna",q:Q("Чому Анна не прийде в суботу?","Why can't Anna come on Saturday?","Pourquoi Anna ne peut-elle pas venir samedi ?","لماذا لا تستطيع آنا المجيء يوم السبت؟"),opts:[Q("Їй треба працювати","She has to work","Elle doit travailler","يجب أن تعمل"),Q("Вона хвора","She's ill","Elle est malade","هي مريضة"),Q("Вона переїжджає","She's moving","Elle déménage","ستنتقل"),Q("У неї немає машини","She has no car","Elle n'a pas de voiture","ليست لديها سيارة")],ok:0},
+   {type:"read",text:"Beste Victor en Marie,\nProficiat met jullie nieuwe huis! Het spijt me, zaterdag kan ik niet komen. Ik moet werken.\nGroetjes, Anna",q:Q("Що означає «Proficiat»?","What does «Proficiat» mean?","Que signifie « Proficiat » ?","ماذا تعني «Proficiat»؟"),opts:[Q("Вітаю!","Congratulations!","Félicitations !","مبروك!"),Q("Вибач!","Sorry!","Pardon !","آسف!"),Q("Дякую!","Thanks!","Merci !","شكراً!"),Q("До побачення!","Goodbye!","Au revoir !","وداعاً!")],ok:0}
   ]},
  {id:"t6",lvl:"a12",
   title:Q("Тест A1.2 · Минулий час і житло","Test A1.2 · Past tense and housing","Test A1.2 · Passé et logement","اختبار A1.2 · الماضي والسكن"),
@@ -4154,6 +4204,19 @@ const gTr=o=>o[uiLang]||o.en||o.uk||"";
 
 // --- dialogues (A/B), from CVO class material + everyday situations ---
 const DIALOGUES=[
+ {id:"eric_roel",icon:"💬",title:{uk:"Чат: Ерік і Руль",en:"Chat: Eric and Roel"},a:"Eric",b:"Roel",hint:"🏊 dinsdag · 🏃 woensdag · 🚴 donderdag",lines:[
+  ["A","Hey Roel! Hoe gaat het?","Привіт, Руль! Як справи?","Hey Roel! How are you?"],
+  ["B","Goed. En met jou?","Добре. А в тебе?","Fine. And you?"],
+  ["A","Het gaat wel. Ik ga dinsdag zwemmen. Ga jij mee?","Та нічого. У вівторок я йду плавати. Підеш зі мною?","Not bad. I'm going swimming on Tuesday. Are you coming?"],
+  ["B","Nee, het spijt me. Ik kan niet. Ik heb geen tijd.","Ні, вибач. Я не можу. У мене немає часу.","No, sorry. I can't. I don't have time."],
+  ["A","Waarom niet?","Чому ні?","Why not?"],
+  ["B","Ik moet werken en ik moet mijn kinderen naar school brengen.","Мені треба працювати і відводити дітей до школи.","I have to work and take my children to school."],
+  ["A","Spijtig. Woensdag ga ik lopen. Ga je mee?","Шкода. У середу я піду бігати. Підеш?","Too bad. On Wednesday I'm going running. Are you coming?"],
+  ["B","Nee. Ik loop niet graag. Ik heb geen zin.","Ні. Я не люблю бігати. Мені не хочеться.","No. I don't like running. I don't feel like it."],
+  ["A","Ik ga donderdag fietsen. Ga je mee?","У четвер я поїду кататися на велосипеді. Підеш?","I'm going cycling on Thursday. Are you coming?"],
+  ["B","Nee. Ik fiets graag, maar ik ben moe.","Ні. Я люблю кататися, але я втомився.","No. I like cycling, but I'm tired."],
+  ["A","Moe? Dan moet je vroeg gaan slapen! Een andere keer misschien?","Втомився? Тоді треба рано лягати спати! Може, іншим разом?","Tired? Then you should go to bed early! Maybe another time?"],
+  ["B","Ja, een andere keer. Tot ziens!","Так, іншим разом. До побачення!","Yes, another time. Bye!"]]},
  {id:"cinema",icon:"🎬",title:{uk:"Підемо в кіно?",en:"Going to the cinema?"},a:"Suzana",b:"Sina",hint:"🎬 morgenavond · werken",lines:[
   ["A","Dag Sina! Alles goed?","Привіт, Сіно! Усе добре?","Hi Sina! All good?"],
   ["B","Ja hoor! En met jou?","Так! А в тебе?","Yes! And you?"],
