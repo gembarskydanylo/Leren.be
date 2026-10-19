@@ -6,9 +6,10 @@
 //   "workers-ai" — Cloudflare Workers AI (free daily allowance). Add a Workers AI binding named AI. Optional MODEL.
 // Optional: KV binding RATE (daily limit per visitor, DAILY_LIMIT default 60 messages).
 //
-// Request:  {mode: "chat"|"ask", target: "nl"|"en"|"fr", lang: UI language, level, scene, char, messages: [{role, content}]}
+// Request:  {mode: "chat"|"ask"|"memo", target: "nl"|"en"|"fr", lang: UI language, level, scene, char, profile, memory, messages: [{role, content}]}
 // Response: chat → {reply, reply_nl, translation, correction|null}
 //           ask  → {answer, examples: [{lang, text, translation}]}
+//           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -90,7 +91,7 @@ LANGUAGE RULE: the whole "answer" is written in ${L}, including when you decline
 }
 
 // Learner profile sent by the app (learning data from the device) + how to read voice input.
-function learnerNotes(p, mode) {
+function learnerNotes(p, mode, memory) {
   const clean = (s, n) => String(s || "").replace(/[\r\n{}<>]/g, " ").slice(0, n).trim();
   const list = (a, n) => (Array.isArray(a) ? a : []).slice(0, n).map(x => clean(x, 80)).filter(Boolean);
   const lines = [];
@@ -102,13 +103,25 @@ function learnerNotes(p, mode) {
     if (mist.length) lines.push(`sentences the learner recently got corrected: ${mist.join("; ")}`);
   }
   let s = "";
+  if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
   if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${mode === "ask" ? "Use it to pick examples that fit the learner." : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level."} Never list the profile back to the learner.\n`;
   s += `- A user message ending with "[spoken; other possible transcriptions: …]" came from speech recognition and may contain recognition errors: work out what the learner most likely said from all versions. ${mode === "ask" ? "" : "Only correct a grammar or word mistake if every transcription has it; never correct pure recognition errors."}\n`;
   return s;
 }
 
+function memoSystem(lang) {
+  const L = LANG[lang] || "Ukrainian";
+  return `You keep short notes about a language learner so their AI tutor can remember them in the next conversation.
+Update the old notes with what the learner said about themselves in the new conversation.
+Keep only stable, useful facts the learner told about themselves: name, where they live and where they come from, work or studies, family situation (no names of other people), hobbies and interests, why and for what they learn the language, and recurring language difficulties.
+Never keep: health or medical details, religion, political opinions, sexual orientation, exact addresses, phone numbers, e-mail addresses, ID, bank or card numbers, passwords, or anything about other people beyond their relation to the learner. Never invent facts; the tutor's own lines are not facts about the learner.
+Write in ${L}: at most 8 short lines, each starting with "• ", at most 500 characters in total. If there is nothing new, return the old notes unchanged (or an empty string if there are none).`;
+}
+
 const STR = {type: "string"};
-const schemaFor = (mode, L) => mode === "ask"
+const schemaFor = (mode, L) => mode === "memo"
+  ? {type: "object", additionalProperties: false, required: ["memory"], properties: {memory: {type: "string", description: `Notes about the learner in ${L}.`}}}
+  : mode === "ask"
   ? {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
       answer: {type: "string", description: `Written in ${L}.`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
@@ -146,16 +159,21 @@ export default {
     }
 
     let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }
-    const mode = body.mode === "ask" ? "ask" : "chat";
+    const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
+    const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
-    const maxLen = mode === "ask" ? 600 : 400;
+    const maxLen = mode === "chat" ? 400 : 600;
     const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-12)
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));
-    if (mode === "ask") { while (msgs.length && msgs[0].role !== "user") msgs.shift(); if (!msgs.length) return json({error: "empty"}, 400); }
+    if (mode !== "chat") { while (msgs.length && msgs[0].role !== "user") msgs.shift(); if (!msgs.length) return json({error: "empty"}, 400); }
     else if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: "(Start: greet me in the target language and ask one easy question that fits the situation.)"});
-    const notes = learnerNotes(body.profile, mode);
-    const sys = mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
+    if (mode === "memo") { // one user message with the old notes and the conversation transcript
+      const transcript = msgs.map(m => (m.role === "user" ? "Learner: " : "Tutor: ") + m.content).join("\n");
+      msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
+    }
+    const notes = learnerNotes(body.profile, mode, memory);
+    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     try {
@@ -178,6 +196,7 @@ export default {
         text = typeof r?.response === "string" ? r.response : JSON.stringify(r?.response || "");
       }
       const o = parseJSON(text);
+      if (mode === "memo") return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)});
       if (mode === "ask") {
         if (!o || !o.answer) return json({error: "format"}, 502);
         const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr"].includes(e.lang)).slice(0, 3)
