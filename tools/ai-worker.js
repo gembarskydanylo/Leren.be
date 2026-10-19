@@ -137,6 +137,9 @@ function parseJSON(t) {
   try { return JSON.parse(m ? m[0] : t); } catch { return null; }
 }
 const cut = (s, n) => String(s || "").slice(0, n);
+// Replies in Dutch/English/French must be in Latin script: transliterate any Cyrillic the model mixes in (Данило → Danylo).
+const TRANSLIT = {а:"a",б:"b",в:"v",г:"h",ґ:"g",д:"d",е:"e",є:"ie",ж:"zh",з:"z",и:"y",і:"i",ї:"i",й:"i",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"kh",ц:"ts",ч:"ch",ш:"sh",щ:"shch",ь:"",ю:"iu",я:"ia",ы:"y",э:"e",ё:"io",ъ:"","'":"'"};
+const latin = s => String(s || "").replace(/[\u0400-\u04FF]/g, ch => { const l = ch.toLowerCase(), r = TRANSLIT[l] ?? ""; return ch !== l && r ? r[0].toUpperCase() + r.slice(1) : r; });
 
 export default {
   async fetch(req, env) {
@@ -206,8 +209,8 @@ export default {
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
       const k = o.correction;
-      const c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(k.corrected, 300), explanation: cut(k.explanation, 300)} : null;
-      return json({reply: cut(reply, 400), reply_nl: cut(reply, 400), translation: cut(o.translation, 400), correction: c});
+      const c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
     } catch (e) { return json({error: "ai"}, 502); }
   }
 };
