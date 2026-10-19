@@ -71,7 +71,7 @@ Rules:
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
 ${extra}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
-LANGUAGE RULE: "reply" and "corrected" are in the target language; "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
+LANGUAGE RULE: "reply" and "corrected" are in the target language and use only Latin letters (write names in Latin script, e.g. Danylo, never mixed with Cyrillic); "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
 
 function askSystem(t, lang, level, char, extra = "") {
@@ -114,7 +114,7 @@ function memoSystem(lang) {
   return `You keep short notes about a language learner so their AI tutor can remember them in the next conversation.
 Update the old notes with what the learner said about themselves in the new conversation.
 Keep only stable, useful facts the learner told about themselves: name, where they live and where they come from, work or studies, family situation (no names of other people), hobbies and interests, why and for what they learn the language, and recurring language difficulties.
-Never keep: health or medical details, religion, political opinions, sexual orientation, exact addresses, phone numbers, e-mail addresses, ID, bank or card numbers, passwords, or anything about other people beyond their relation to the learner. Never invent facts; the tutor's own lines are not facts about the learner.
+Never keep: health or medical details, religion, political opinions, sexual orientation, exact addresses, phone numbers, e-mail addresses, ID, bank or card numbers, passwords, or anything about other people beyond their relation to the learner. Never invent facts; the tutor's own lines are not facts about the learner. Write the learner's name exactly as they wrote it (keep the Latin spelling, e.g. "Danylo").
 Write in ${L}: at most 8 short lines, each starting with "• ", at most 500 characters in total. If there is nothing new, return the old notes unchanged (or an empty string if there are none).`;
 }
 
