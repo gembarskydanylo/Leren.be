@@ -4865,7 +4865,7 @@ function storyAnswer(k,spoken,loose){
 
 // ========== AI CHAT with {N} (hidden until AI_ENDPOINT is set; server: tools/ai-worker.js) ==========
 // For local testing of tools/ai-worker.js: localStorage.leren_ai_endpoint="http://localhost:8787" (works on localhost only).
-const AI_ENDPOINT=""||(location.hostname==="localhost"&&lsGet("leren_ai_endpoint",""))||"";
+const AI_ENDPOINT=(location.hostname==="localhost"&&lsGet("leren_ai_endpoint",""))||"https://leren-ai.gembarsky-d.workers.dev/";
 const AI_TITLE={nl:"Praat met {N} · AI",en:"Talk to {N} · AI",fr:"Parle avec {N} · IA"};
 const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландською",en:"Пиши або говори англійською",fr:"Пиши або говори французькою"},intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!",
   askTitle:"Запитай {Руля|Лотте} · AI",askSub:"Нідерландська, англійська, французька",askIntro:"Привіт! Я {Nu}. Питай мене про граматику, слова, переклад чи вимову, або попроси вправу.",askPh:"Твоє питання…",send:"Надіслати",ex:"Приклади (натисни, щоб послухати)",
@@ -4939,7 +4939,7 @@ function askRender(){
  s.msgs.forEach(m=>{
   if(m.role==="user"){chat.appendChild(el("div","g-bub me ai-ans",m.content));return}
   const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("happy");
-  const b=el("div","g-bub them ai-ans",m.content);
+  const b=el("div","g-bub them ai-ans",m.content.replace(/\s+•\s*/g,"\n• "));
   if(m.examples&&m.examples.length){const ex=el("div","ai-ex");ex.appendChild(el("small","",g.ex));
    m.examples.forEach(e=>{const x=el("button");x.type="button";const t=el("b","","🔊 "+e.text);t.lang=e.lang;t.dir="ltr";x.append(t);if(e.translation)x.append(el("span","",e.translation));x.onclick=()=>sayIn(e.text,e.lang);ex.appendChild(x)});
    b.appendChild(ex)}

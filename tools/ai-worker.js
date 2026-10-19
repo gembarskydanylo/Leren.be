@@ -60,43 +60,44 @@ const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisi
 function chatSystem(t, lang, level, scene, char) {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
-  return `You are ${PERSONA[char] || PERSONA.roel}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human.
+  return `You are ${PERSONA[char] || PERSONA.roel}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
 Course grammar (follow it when correcting):
 ${T.grammar}
 Rules:
 - reply: very simple ${T.name}, max 2 short sentences, common words; continue the conversation and ask exactly ONE simple question. Always write reply in the target language, even if the learner writes in another language.
 - translation: translation of reply into ${L}.
-- correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence in ${L} explaining the rule. Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
-- Stay on language practice. If the learner asks about something unrelated to learning languages, answer in one short line that you only help with language practice and steer back.
-${SAFETY}`;
+- correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
+- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
+${SAFETY}
+LANGUAGE RULE: "reply" and "corrected" are in the target language; "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
 
 function askSystem(t, lang, level, char) {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
-  return `You are ${PERSONA[char] || PERSONA.roel}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.roel}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
-If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in one sentence that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
+If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
 Grammar notes for ${T.name} (keep explanations consistent with them):
 ${T.grammar}
 Answer format:
-- answer: in ${L}, short and simple (max about 120 words), beginner-friendly, no tables, no markdown headings; you may use line breaks and "•" bullets. Put words in the studied language in «guillemets».
+- answer: ALWAYS written in ${L}, also when you decline a question; short and simple (max about 120 words), beginner-friendly, no tables, no markdown headings; you may use line breaks and "•" bullets. Put words in the studied language in «guillemets».
 - examples: 0–3 short example sentences that illustrate the answer; lang is the language of the example (nl, en or fr), text is the sentence, translation is its ${L} translation. Use [] when examples do not help (for example when declining an off-topic question).
 - If the learner asks for an exercise, give one or two short tasks in answer and put the solutions at the end after "→".
-${SAFETY}`;
+${SAFETY}
+LANGUAGE RULE: the whole "answer" is written in ${L}, including when you decline; only the words you quote in «guillemets» and the example sentences are in Dutch, English or French.`;
 }
 
 const STR = {type: "string"};
-const SCHEMA = {
-  chat: {type: "object", additionalProperties: false, required: ["reply", "translation", "correction"], properties: {
-    reply: STR, translation: STR,
-    correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation"],
-      properties: {has_error: {type: "boolean"}, original: STR, corrected: STR, explanation: STR}}}},
-  ask: {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
-    answer: STR,
-    examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
-      properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: STR}}}}}
-};
+const schemaFor = (mode, L) => mode === "ask"
+  ? {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
+      answer: {type: "string", description: `Written in ${L}.`},
+      examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
+        properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L}.`}}}}}}
+  : {type: "object", additionalProperties: false, required: ["reply", "translation", "correction"], properties: {
+      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Translation of reply into ${L}.`},
+      correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation"],
+        properties: {has_error: {type: "boolean"}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
 
 function parseJSON(t) {
   if (!t) return null;
@@ -132,7 +133,7 @@ export default {
     if (mode === "ask") { while (msgs.length && msgs[0].role !== "user") msgs.shift(); if (!msgs.length) return json({error: "empty"}, 400); }
     else if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: "(Start: greet me in the target language and ask one easy question that fits the situation.)"});
     const sys = mode === "ask" ? askSystem(target, body.lang, body.level, body.char) : chatSystem(target, body.lang, body.level, body.scene, body.char);
-    const schema = SCHEMA[mode];
+    const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     try {
       let text = "";
@@ -140,7 +141,7 @@ export default {
         // Structured outputs guarantee valid JSON; low effort keeps replies fast and cheap.
         const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
           body: JSON.stringify({model: env.MODEL || "claude-haiku-5-5", max_tokens: 4000, system: sys, messages: msgs,
-            output_config: {effort: env.EFFORT || "low", format: {type: "json_schema", schema}}})});
+            output_config: {effort: env.EFFORT || (mode === "ask" ? "medium" : "low"), format: {type: "json_schema", schema}}})});
         const j = await r.json();
         if (!r.ok) { console.log("anthropic", r.status, JSON.stringify(j).slice(0, 300)); return json({error: "ai"}, 502); }
         if (j.stop_reason === "refusal") return json({error: "refusal"}, 502);
