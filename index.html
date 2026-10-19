@@ -5023,20 +5023,20 @@ function renderMistakes(box){
 // Without signing in nothing changes. Firebase is loaded only when the user signs in (or signed in before on this device).
 const FB_SDK="https://www.gstatic.com/firebasejs/10.12.2/";
 const ACCT_UI={
- uk:{label:"Акаунт (необов’язково)",out:"Прогрес і пам’ять AI на всіх пристроях. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",signOut:"Вийти",del:"Видалити акаунт",
+ uk:{label:"Акаунт (необов’язково)",out:"Прогрес і пам’ять AI на всіх пристроях. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",emailIn:"Увійти через e-mail",emailQ:"Твоя e-mail адреса:",emailSent:"Лист із посиланням для входу надіслано на {e}. Відкрий його на цьому пристрої.",emailAgain:"Підтвердь e-mail, на який прийшов лист:",signOut:"Вийти",del:"Видалити акаунт",
   delQ:"Видалити акаунт і всі дані в хмарі? Прогрес на цьому пристрої залишиться.",deleted:"Акаунт і дані в хмарі видалено.",err:"Не вдалося. Перевір інтернет і спробуй ще раз.",
   keepQ:"В акаунті вже є прогрес: {c} балів. На цьому пристрої: {l} балів.\n\nOK: взяти прогрес з акаунта.\nСкасувати: залишити прогрес цього пристрою (він замінить дані в акаунті)."},
- en:{label:"Account (optional)",out:"Progress and AI memory on all your devices. Without it everything works as before.",signIn:"Sign in with Google",synced:"synced",never:"not synced yet",signOut:"Sign out",del:"Delete account",
+ en:{label:"Account (optional)",out:"Progress and AI memory on all your devices. Without it everything works as before.",signIn:"Sign in with Google",synced:"synced",never:"not synced yet",emailIn:"Sign in with e-mail",emailQ:"Your e-mail address:",emailSent:"A sign-in link was sent to {e}. Open it on this device.",emailAgain:"Confirm the e-mail address the link was sent to:",signOut:"Sign out",del:"Delete account",
   delQ:"Delete your account and all cloud data? Progress on this device stays.",deleted:"Account and cloud data deleted.",err:"That didn't work. Check your connection and try again.",
   keepQ:"Your account already has progress: {c} points. This device: {l} points.\n\nOK: use the progress from your account.\nCancel: keep this device's progress (it will replace the account data)."},
- fr:{label:"Compte (facultatif)",out:"Progression et mémoire de l’IA sur tous tes appareils. Sans compte, tout fonctionne comme avant.",signIn:"Se connecter avec Google",synced:"synchronisé",never:"pas encore synchronisé",signOut:"Se déconnecter",del:"Supprimer le compte",
+ fr:{label:"Compte (facultatif)",out:"Progression et mémoire de l’IA sur tous tes appareils. Sans compte, tout fonctionne comme avant.",signIn:"Se connecter avec Google",synced:"synchronisé",never:"pas encore synchronisé",emailIn:"Se connecter par e-mail",emailQ:"Ton adresse e-mail :",emailSent:"Un lien de connexion a été envoyé à {e}. Ouvre-le sur cet appareil.",emailAgain:"Confirme l’adresse e-mail qui a reçu le lien :",signOut:"Se déconnecter",del:"Supprimer le compte",
   delQ:"Supprimer ton compte et toutes les données en ligne ? La progression sur cet appareil reste.",deleted:"Compte et données en ligne supprimés.",err:"Échec. Vérifie ta connexion et réessaie.",
   keepQ:"Ton compte a déjà une progression : {c} points. Cet appareil : {l} points.\n\nOK : prendre la progression du compte.\nAnnuler : garder celle de cet appareil (elle remplacera les données du compte)."},
- ar:{label:"الحساب (اختياري)",out:"تقدّمك وذاكرة الذكاء الاصطناعي على كل أجهزتك. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",signOut:"تسجيل الخروج",del:"حذف الحساب",
+ ar:{label:"الحساب (اختياري)",out:"تقدّمك وذاكرة الذكاء الاصطناعي على كل أجهزتك. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",emailIn:"تسجيل الدخول عبر البريد الإلكتروني",emailQ:"بريدك الإلكتروني:",emailSent:"أُرسل رابط تسجيل الدخول إلى {e}. افتحه على هذا الجهاز.",emailAgain:"أكّد البريد الإلكتروني الذي وصل إليه الرابط:",signOut:"تسجيل الخروج",del:"حذف الحساب",
   delQ:"حذف حسابك وكل البيانات السحابية؟ يبقى التقدّم على هذا الجهاز.",deleted:"تم حذف الحساب والبيانات السحابية.",err:"لم ينجح ذلك. تحقّق من الاتصال وحاول مرة أخرى.",
   keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب)."}};
 const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
-const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct"]);
+const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
 function syncApply(o){Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
@@ -5075,6 +5075,19 @@ async function acctSignIn(){
   lsSet("leren_acct",true);
  }catch(e){if(!(e&&e.code==="auth/popup-closed-by-user"||e&&e.code==="auth/cancelled-popup-request"))toast(u.err)}
 }
+async function acctEmailIn(){ // passwordless: Firebase e-mails a one-time link back to this page
+ const u=acctU(),email=(prompt(u.emailQ,lsGet("leren_acct_email",""))||"").trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return;
+ try{const b=await acctLoad();await b.sendSignInLinkToEmail(acct.auth,email,{url:location.origin+location.pathname,handleCodeInApp:true});
+  lsSet("leren_acct_email",email);toast(u.emailSent.replace("{e}",email),true);
+ }catch(e){toast(u.err)}
+}
+async function acctEmailLinkReturn(){ // the page was opened from the sign-in e-mail
+ const u=acctU();try{const b=await acctLoad();if(!b.isSignInWithEmailLink(acct.auth,location.href))return;
+  let email=lsGet("leren_acct_email","");if(!email)email=(prompt(u.emailAgain)||"").trim();if(!email)return;
+  await b.signInWithEmailLink(acct.auth,email,location.href);lsSet("leren_acct",true);
+ }catch(e){toast(u.err)}
+ history.replaceState(null,"",location.origin+location.pathname); // drop the one-time code from the address
+}
 async function acctSignOut(){try{await acct.mod.signOut(acct.auth)}catch(e){}lsSet("leren_acct",false);localStorage.removeItem("leren_sync_at");acct.lastSnap="";acctRender()}
 async function acctDelete(){
  const u=acctU();if(!acct.user||!confirm(u.delQ))return;
@@ -5089,11 +5102,12 @@ function acctRender(){
  if(user){const at=Number(lsGet("leren_sync_at",0));
   hint.textContent=(user.email||user.displayName||"")+" · "+(at?u.synced+" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):u.never);
   btn.textContent=u.signOut;btn.onclick=acctSignOut;del.hidden=false;del.textContent=u.del;del.onclick=acctDelete;
- }else{hint.textContent=u.out;btn.textContent=u.signIn;btn.onclick=acctSignIn;del.hidden=true}
+ }else{hint.textContent=u.out;btn.textContent=u.signIn;btn.onclick=acctSignIn;del.hidden=false;del.textContent=u.emailIn;del.onclick=acctEmailIn}
 }
 function acctInit(){
  acctRender();
- if(lsGet("leren_acct",false))acctLoad().catch(()=>{}); // signed in before on this device: restore the session
+ if(/[?&]oobCode=/.test(location.search)&&/[?&]mode=signIn/.test(location.search))acctEmailLinkReturn();
+ else if(lsGet("leren_acct",false))acctLoad().catch(()=>{}); // signed in before on this device: restore the session
  setInterval(()=>{if(acct.user)syncPush().catch(()=>{})},60000);
  document.addEventListener("visibilitychange",()=>{if(document.hidden&&acct.user)syncPush().catch(()=>{})});
 }
