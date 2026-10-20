@@ -673,6 +673,28 @@ body.sheet-open{overflow:hidden}
 .g-week .g-dots{grid-row:1/3;grid-column:2;display:flex;gap:5px}
 .g-dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}.g-dots i.on{background:var(--oranje)}
 .g-week.done{border-color:var(--ok)}
+.ks-hero{text-align:center;padding:6px 4px 12px}.ks-hero h2{font-family:var(--font-display);font-size:22px;margin:0 0 6px}.ks-hero p{margin:0 0 10px;color:var(--ink-2);font-weight:700}
+.ks-formula{display:inline-block;padding:8px 14px;border-radius:var(--r-pill);background:var(--be-yellow);color:#1E1712;font-weight:800;box-shadow:0 var(--depth-sm) 0 #C9A800}
+.ks-steps{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px;counter-reset:ks}
+.ks-steps li{counter-increment:ks;display:grid;grid-template-columns:40px 1fr;column-gap:10px;padding:10px 12px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);text-align:start}
+.ks-steps .ks-ic{grid-row:span 2;font-size:26px;align-self:center;text-align:center}.ks-steps strong::before{content:counter(ks) ". "}.ks-steps p{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
+.ks-h{font-size:16px;margin:14px 0 8px;text-align:start}
+.ks-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+.ks-tab{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;line-height:1.25;direction:ltr;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.ks-tab th{background:var(--surface-2);font-size:11px;text-align:left;padding:6px 5px;color:var(--ink-2);overflow-wrap:anywhere}.ks-tab th:first-child,.ks-tab td:first-child{width:31%}
+.ks-tab td{padding:8px 5px;border-top:1px solid var(--line);text-align:left;font-weight:700}
+.ks-tab th+th,.ks-tab td+td{border-left:2px dashed var(--oranje)}
+.ks-tab .keep{background:color-mix(in srgb,var(--be-yellow) 22%,var(--surface))}
+.ks-tab th.hid{opacity:.45}
+.ks-tab td.ks-folded{background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--line) 8px 10px);color:var(--ink-2);font-size:12px;text-align:center;font-weight:800}
+.ks-tab tr.tap{cursor:pointer}.ks-tab tr.tap:hover .ks-tab td.ks-folded{filter:brightness(.97)}
+.ks-tab tr.ok td.shown,.ks-tab tr.ok td.keep{box-shadow:inset 0 -3px 0 var(--ok)}.ks-tab tr.bad td{box-shadow:inset 0 -3px 0 var(--bad)}
+.ks-tab td.shown{color:var(--oranje-deep);cursor:pointer}
+.ks-tab .ks-judge td{background:var(--surface-2);border-left:0;padding:8px}.ks-judge td{display:table-cell}.ks-judge .ks-jrow{display:flex;gap:8px;justify-content:center}.ks-judge .btn{flex:1;max-width:160px;min-height:44px;padding:8px 10px}
+.ks-judge .btn.ks-yes{border-color:var(--ok);color:var(--ok)}.ks-judge .btn.ks-no{border-color:var(--bad);color:var(--bad)}
+.ks-mini .ks-foldrow td{font-size:12px;font-weight:800;color:var(--oranje-deep);background:var(--surface)}.ks-mini td.ks-fold{text-align:center}
+.ks-sets{display:flex;flex-wrap:wrap;gap:6px}.ks-go{margin-top:14px}.ks-left{text-align:center;color:var(--ink-2);font-weight:700;margin:8px 0 0}
+.ks-end{text-align:center}.ks-big{font-size:46px}.ks-score{font-weight:800;font-size:18px}
 .g-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .g-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:132px;padding:14px;text-align:start;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge)}
 .g-card:active{transform:translateY(var(--depth-sm));box-shadow:none}
@@ -4426,7 +4448,7 @@ const MYDAY=[
 
 // --- shared state & helpers ---
 let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
-const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true]];
+const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["ks","📄",true]];
 const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
 function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
 function gRecords(){return lsGet("leren_games",{})}
@@ -4483,6 +4505,171 @@ function micBox(onAnswer){ // mic button + typing fallback; onAnswer(alternative
  const row=el("div","row g-mic-row");row.append(mic,typeB);box.append(row,st,form);return box;
 }
 
+// --- 11. Korean fold sheet: learn verb forms on an A4 sheet folded like an accordion ---
+const KS_UI={
+ uk:{title:"Корейський аркуш",sub:"Формула, щоб швидко запам'ятати дієслова",hook:"Хочеш швидко запам'ятати дієслова?",hookS:"Ось тобі формула та інструкція. Починай!",formula:"1 аркуш A4 × 10 дієслів × 4 колонки × 5 хвилин на день",
+  steps:[["📄","Підготовка","Візьми звичайний аркуш A4 і ручку."],["✍️","Перша колонка","Випиши дієслова в інфінітиві з перекладом: gaan — йти. Одне дієслово — один рядок."],["🪗","Наступні колонки","Склади аркуш гармошкою на 4 смуги. На тому ж рядку пиши інші форми: ik ga · ik ging · ik ben gegaan."],["🧠","Тренування","Загни колонки 2–4 назад — видно лише першу. Згадай форми вголос, розгорни й перевір. Помилки познач і повтори. Потім навпаки: сховай першу колонку."]],
+  scheme:"Як розкреслити аркуш",cInf:"Інфінітив — переклад",cIk:"Теперішній",cPast:"Imperfectum",cPerf:"Perfectum",foldL:"загни ↶",always:"завжди видно",
+  pickSet:"Обери 10 дієслів",sets:{top:"Топ A1",irr:"Неправильні",day:"Мій день",mine:"Мої слова",rnd:"Випадкові"},mineFew:"У «Моїх словах» мало дієслів (треба 4+). Додай їх ☆ у словнику.",
+  go:"▶ Починай на екрані",print:"🖨 Аркуш для друку",loading:"Готую аркуш…",offline:"Словник не завантажився. Перевір інтернет.",
+  r1:"Крок 1 · Колонки 2–4 загнуті",r1h:"Згадай вголос три форми, потім натисни рядок і перевір.",r2:"Крок 2 · Навпаки: перша колонка загнута",r2h:"Згадай інфінітив і переклад, потім натисни рядок.",
+  folded:"загнуто · торкнись",knew:"✓ Знав",didnt:"✗ Ні",left:n=>"Ще "+n,
+  done:"Аркуш пройдено!",score:(a,b)=>a+" з "+b+" правильно",repeat:"Повтори ці дієслова:",perfect:"Без жодної помилки! Візьми наступні 10 дієслів.",onlyMist:"🔁 Тільки помилки",again:"Новий аркуш",tip:"Порада: повторюй аркуш 5 хвилин щодня — через тиждень форми згадуватимуться самі.",
+  pTitle:"Корейський аркуш · Leren.be",pHow:"Склади аркуш гармошкою по пунктирних лініях. Заповни колонки 2–4 від руки, загни їх і перевіряй себе. Відповіді — на другій сторінці.",pKey:"Відповіді"},
+ en:{title:"Korean fold sheet",sub:"A formula to learn verbs fast",hook:"Want to learn verbs fast?",hookS:"Here's the formula and the instructions. Let's go!",formula:"1 A4 sheet × 10 verbs × 4 columns × 5 minutes a day",
+  steps:[["📄","Preparation","Take an ordinary A4 sheet and a pen."],["✍️","First column","Write the verbs in the infinitive with the translation: gaan — to go. One verb per line."],["🪗","Next columns","Fold the sheet like an accordion into 4 strips. On the same line write the other forms: ik ga · ik ging · ik ben gegaan."],["🧠","Training","Fold columns 2–4 back so only the first is visible. Say the forms out loud, unfold and check. Mark mistakes and repeat them. Then the other way: hide the first column."]],
+  scheme:"How to lay out the sheet",cInf:"Infinitive — translation",cIk:"Present",cPast:"Imperfectum",cPerf:"Perfectum",foldL:"fold ↶",always:"always visible",
+  pickSet:"Choose 10 verbs",sets:{top:"Top A1",irr:"Irregular",day:"My day",mine:"My words",rnd:"Random"},mineFew:"Too few verbs in “My words” (4+ needed). Add them with ☆ in the dictionary.",
+  go:"▶ Start on screen",print:"🖨 Printable sheet",loading:"Preparing the sheet…",offline:"The dictionary did not load. Check your connection.",
+  r1:"Step 1 · Columns 2–4 folded",r1h:"Say the three forms out loud, then tap the row to check.",r2:"Step 2 · The other way: column 1 folded",r2h:"Recall the infinitive and translation, then tap the row.",
+  folded:"folded · tap",knew:"✓ Knew it",didnt:"✗ No",left:n=>n+" left",
+  done:"Sheet complete!",score:(a,b)=>a+" of "+b+" correct",repeat:"Repeat these verbs:",perfect:"Not a single mistake! Take the next 10 verbs.",onlyMist:"🔁 Mistakes only",again:"New sheet",tip:"Tip: go through the sheet for 5 minutes every day — in a week the forms will come by themselves.",
+  pTitle:"Korean fold sheet · Leren.be",pHow:"Fold the sheet like an accordion along the dashed lines. Fill in columns 2–4 by hand, fold them back and test yourself. Answers on page 2.",pKey:"Answers"},
+ fr:{title:"Feuille coréenne",sub:"La formule pour retenir les verbes vite",hook:"Tu veux retenir les verbes rapidement ?",hookS:"Voici la formule et le mode d'emploi. C'est parti !",formula:"1 feuille A4 × 10 verbes × 4 colonnes × 5 minutes par jour",
+  steps:[["📄","Préparation","Prends une feuille A4 et un stylo."],["✍️","Première colonne","Écris les verbes à l'infinitif avec la traduction : gaan — aller. Un verbe par ligne."],["🪗","Colonnes suivantes","Plie la feuille en accordéon en 4 bandes. Sur la même ligne, écris les autres formes : ik ga · ik ging · ik ben gegaan."],["🧠","Entraînement","Replie les colonnes 2–4 : seule la première reste visible. Dis les formes à voix haute, déplie et vérifie. Note les erreurs et répète-les. Ensuite, dans l'autre sens : cache la première colonne."]],
+  scheme:"Comment tracer la feuille",cInf:"Infinitif — traduction",cIk:"Présent",cPast:"Imperfectum",cPerf:"Perfectum",foldL:"plie ↶",always:"toujours visible",
+  pickSet:"Choisis 10 verbes",sets:{top:"Top A1",irr:"Irréguliers",day:"Ma journée",mine:"Mes mots",rnd:"Au hasard"},mineFew:"Trop peu de verbes dans « Mes mots » (4+). Ajoute-les avec ☆ dans le dictionnaire.",
+  go:"▶ Commencer à l'écran",print:"🖨 Feuille à imprimer",loading:"Je prépare la feuille…",offline:"Le dictionnaire ne s'est pas chargé. Vérifie ta connexion.",
+  r1:"Étape 1 · Colonnes 2–4 pliées",r1h:"Dis les trois formes à voix haute, puis touche la ligne pour vérifier.",r2:"Étape 2 · Dans l'autre sens : colonne 1 pliée",r2h:"Retrouve l'infinitif et la traduction, puis touche la ligne.",
+  folded:"plié · touche",knew:"✓ Je savais",didnt:"✗ Non",left:n=>"Encore "+n,
+  done:"Feuille terminée !",score:(a,b)=>a+" sur "+b+" justes",repeat:"Répète ces verbes :",perfect:"Aucune erreur ! Prends les 10 verbes suivants.",onlyMist:"🔁 Seulement les erreurs",again:"Nouvelle feuille",tip:"Astuce : repasse la feuille 5 minutes par jour — en une semaine, les formes viendront toutes seules.",
+  pTitle:"Feuille coréenne · Leren.be",pHow:"Plie la feuille en accordéon le long des pointillés. Remplis les colonnes 2–4 à la main, replie-les et teste-toi. Réponses en page 2.",pKey:"Réponses"},
+ ar:{title:"الورقة الكورية",sub:"معادلة لحفظ الأفعال بسرعة",hook:"تريد أن تحفظ الأفعال بسرعة؟",hookS:"إليك المعادلة والتعليمات. ابدأ!",formula:"ورقة A4 واحدة × 10 أفعال × 4 أعمدة × 5 دقائق يوميًا",
+  steps:[["📄","التحضير","خذ ورقة A4 عادية وقلمًا."],["✍️","العمود الأول","اكتب الأفعال بصيغة المصدر مع الترجمة: gaan — يذهب. فعل واحد في كل سطر."],["🪗","الأعمدة التالية","اطوِ الورقة كالأكورديون إلى 4 أشرطة. في السطر نفسه اكتب الصيغ الأخرى: ik ga · ik ging · ik ben gegaan."],["🧠","التدريب","اطوِ الأعمدة 2–4 للخلف ليبقى الأول ظاهرًا فقط. قل الصيغ بصوت عالٍ، ثم افتح الورقة وتحقق. علّم الأخطاء وكرّرها. ثم بالعكس: أخفِ العمود الأول."]],
+  scheme:"كيف تقسّم الورقة",cInf:"المصدر — الترجمة",cIk:"المضارع",cPast:"Imperfectum",cPerf:"Perfectum",foldL:"اطوِ ↶",always:"ظاهر دائمًا",
+  pickSet:"اختر 10 أفعال",sets:{top:"الأهم A1",irr:"الشاذة",day:"يومي",mine:"كلماتي",rnd:"عشوائي"},mineFew:"عدد الأفعال في «كلماتي» قليل (يلزم 4+). أضفها بـ ☆ في القاموس.",
+  go:"▶ ابدأ على الشاشة",print:"🖨 ورقة للطباعة",loading:"أجهّز الورقة…",offline:"لم يتم تحميل القاموس. تحقّق من الاتصال.",
+  r1:"الخطوة 1 · الأعمدة 2–4 مطوية",r1h:"قل الصيغ الثلاث بصوت عالٍ ثم المس السطر للتحقق.",r2:"الخطوة 2 · بالعكس: العمود 1 مطوي",r2h:"تذكّر المصدر والترجمة ثم المس السطر.",
+  folded:"مطوي · المس",knew:"✓ عرفته",didnt:"✗ لا",left:n=>"باقي "+n,
+  done:"أنهيت الورقة!",score:(a,b)=>a+" من "+b+" صحيح",repeat:"كرّر هذه الأفعال:",perfect:"بلا أي خطأ! خذ الأفعال العشرة التالية.",onlyMist:"🔁 الأخطاء فقط",again:"ورقة جديدة",tip:"نصيحة: راجع الورقة 5 دقائق يوميًا — بعد أسبوع ستتذكر الصيغ وحدها.",
+  pTitle:"الورقة الكورية · Leren.be",pHow:"اطوِ الورقة كالأكورديون على الخطوط المنقطة. املأ الأعمدة 2–4 بخط يدك، ثم اطوها واختبر نفسك. الإجابات في الصفحة الثانية.",pKey:"الإجابات"}
+};
+Object.keys(G_UI).forEach(l=>{const k=KS_UI[l]||KS_UI.en;G_UI[l].ks=k.title;G_UI[l].ksS=k.sub});
+const ksU=()=>KS_UI[uiLang]||KS_UI.en;
+const KS_SETS={
+ top:["zijn","hebben","gaan","komen","doen","maken","eten","drinken","werken","wonen"],
+ irr:["zien","lezen","schrijven","spreken","slapen","nemen","geven","kopen","krijgen","vinden"],
+ day:["opstaan","ontbijten","fietsen","beginnen","koken","wassen","lopen","kijken","leren","slapen"]
+};
+function ksShort(t){return String(t||"").split(/[;,]/)[0].trim()}
+const KS_SKIP=new Set(["sneeuwen","regenen","vriezen","waaien","gebeuren","lukken","bliksemen","donderen","hagelen","dooien","blijken","gelden","duren","kosten"]);
+function ksRow(e){
+ const c=e.cj;if(!c)return null;
+ const aux=c.aux==="z"?"ben":c.aux==="hz"?"heb/ben":"heb";
+ return{w:e.w,tr:ksShort(dictTr(e)),ik:"ik "+c.ik,past:"ik "+c.pastS,perf:"ik "+aux+" "+c.part};
+}
+function ksPick(set,ix){
+ const verbs=ix.entries.filter(e=>e.p==="v"&&e.cj&&!/\s/.test(e.w));
+ const by=new Map();verbs.forEach(e=>{if(!by.has(e.w))by.set(e.w,e)});
+ let list;
+ if(set==="mine")list=dictMine().filter(k=>k.endsWith("|v")).map(k=>by.get(k.slice(0,-2))).filter(Boolean);
+ else if(set==="rnd")list=shuffle(verbs.filter(e=>e.l===1&&!KS_SKIP.has(e.w)&&!e.w.startsWith("zich"))).slice(0,10);
+ else list=KS_SETS[set].map(w=>by.get(w)).filter(Boolean);
+ return list.slice(0,10).map(ksRow).filter(Boolean);
+}
+function ksScheme(rows){ // mini visual: how the sheet is laid out and folded
+ const u=ksU(),t=el("table","ks-tab ks-mini");
+ const h=el("tr");[[u.cInf,"keep"],[u.cIk,""],[u.cPast,""],[u.cPerf,""]].forEach(([x,c])=>h.appendChild(el("th",c,x)));t.appendChild(h);
+ rows.slice(0,3).forEach(r=>{const tr=el("tr");[r.w+" — "+r.tr,r.ik,r.past,r.perf].forEach((x,i)=>{const td=tgt(el("td",i?"":"keep",x));if(!i)td.dir="auto";tr.appendChild(td)});t.appendChild(tr)});
+ const f=el("tr","ks-foldrow");f.appendChild(el("td","keep","👁 "+u.always));const fd=el("td","ks-fold","↶ "+u.foldL+" (2–4)");fd.colSpan=3;f.appendChild(fd);t.appendChild(f);
+ const w=el("div","ks-scroll");w.appendChild(t);return w;
+}
+function ksStart(){
+ const u=ksU(),card=gHead(u.title,"");
+ const hero=el("div","ks-hero");hero.append(el("h2","",u.hook),el("p","",u.hookS),el("div","ks-formula",u.formula));card.appendChild(hero);
+ const st=el("ol","ks-steps");u.steps.forEach(([ic,t,d])=>{const li=el("li");li.append(el("span","ks-ic",ic),el("strong","",t),el("p","",d));st.appendChild(li)});card.appendChild(st);
+ card.appendChild(el("h3","ks-h",u.scheme));
+ const sample=[{w:"gaan",tr:ksShort(uiLang==="uk"?"йти":uiLang==="fr"?"aller":uiLang==="ar"?"يذهب":"to go"),ik:"ik ga",past:"ik ging",perf:"ik ben gegaan"},
+  {w:"eten",tr:uiLang==="uk"?"їсти":uiLang==="fr"?"manger":uiLang==="ar"?"يأكل":"to eat",ik:"ik eet",past:"ik at",perf:"ik heb gegeten"},
+  {w:"werken",tr:uiLang==="uk"?"працювати":uiLang==="fr"?"travailler":uiLang==="ar"?"يعمل":"to work",ik:"ik werk",past:"ik werkte",perf:"ik heb gewerkt"}];
+ card.appendChild(ksScheme(sample));
+ card.appendChild(el("h3","ks-h",u.pickSet));
+ const cur=lsGet("leren_ks_set","top"),seg=el("div","ks-sets");
+ Object.entries(u.sets).forEach(([k,t])=>{const b=el("button","seg-btn",t);b.type="button";b.dataset.set=k;b.setAttribute("aria-pressed",String(k===cur));b.onclick=()=>{lsSet("leren_ks_set",k);seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)))};seg.appendChild(b)});
+ card.appendChild(seg);
+ const row=el("div","row ks-go");const go=el("button","btn primary",u.go);go.type="button";go.id="ksGo";const pr=el("button","btn",u.print);pr.type="button";pr.id="ksPrint";row.append(go,pr);card.appendChild(row);
+ const load=fn=>{go.disabled=pr.disabled=true;dictLoad().then(ix=>{go.disabled=pr.disabled=false;
+  if(!ix.entries.length){toast(u.offline);return}
+  const set=lsGet("leren_ks_set","top"),rows=ksPick(set,ix);
+  if(set==="mine"&&rows.length<4){toast(u.mineFew);return}
+  fn(rows)})};
+ go.onclick=()=>load(rows=>{gState={ks:1,rows,round:1,i:0,res:{},open:-1};ksRender()});
+ pr.onclick=()=>load(ksPrint);
+ gBar(0);
+}
+function ksRender(){
+ const u=ksU(),s=gState,card=gHead(u.title,s.round===1?u.r1:u.r2);
+ card.appendChild(el("p","g-hint",s.round===1?u.r1h:u.r2h));
+ const t=el("table","ks-tab ks-train");
+ const h=el("tr");[u.cInf,u.cIk,u.cPast,u.cPerf].forEach((x,i)=>h.appendChild(el("th",(s.round===1?i:!i)?"hid":"",x)));t.appendChild(h);
+ const key=s.round===1?"a":"b";let left=0;
+ s.rows.forEach((r,ri)=>{
+  const done=s.res[key+ri]!=null,open=done||s.open===ri;if(!done)left++;
+  const tr=el("tr",done?(s.res[key+ri]?"ok":"bad"):"");
+  const cells=[r.w+" — "+r.tr,r.ik,r.past,r.perf];
+  if(s.round===1){const td=el("td","keep");td.appendChild(tgt(el("span","",cells[0])));td.lastChild.dir="auto";tr.appendChild(td);
+   if(open)cells.slice(1).forEach(x=>{const c=tgt(el("td","shown",x));c.onclick=()=>say(x.replace(/^ik /,"ik "));tr.appendChild(c)});
+   else{const c=el("td","ks-folded",u.folded);c.colSpan=3;tr.appendChild(c)}}
+  else{
+   if(open){const c=el("td","shown");c.appendChild(tgt(el("span","",cells[0])));c.lastChild.dir="auto";c.onclick=()=>say(r.w);tr.appendChild(c)}
+   else tr.appendChild(el("td","ks-folded",u.folded));
+   cells.slice(1).forEach(x=>tr.appendChild(tgt(el("td","keep",x))))}
+  if(!done&&!open){tr.classList.add("tap");tr.onclick=()=>{s.open=ri;ksRender();say(s.round===1?r.ik+". "+r.past+". "+r.perf:r.w)}}
+  t.appendChild(tr);
+  if(s.open===ri&&!done){const jr=el("tr","ks-judge"),jd=el("td");jd.colSpan=4;
+   const y=el("button","btn ks-yes",u.knew),n=el("button","btn ks-no",u.didnt);y.type=n.type="button";
+   y.onclick=()=>{s.res[key+ri]=true;s.open=-1;ksNext()};n.onclick=()=>{s.res[key+ri]=false;s.open=-1;ksNext()};
+   const jw=el("div","ks-jrow");jw.append(y,n);jd.appendChild(jw);jr.appendChild(jd);t.appendChild(jr)}
+ });
+ const w=el("div","ks-scroll");w.appendChild(t);card.appendChild(w);
+ card.appendChild(el("p","ks-left",u.left(left)));
+ const all=s.rows.length*2,doneN=Object.keys(s.res).length;gBar(doneN/all);
+}
+function ksNext(){
+ const s=gState,key=s.round===1?"a":"b";
+ if(s.rows.every((_,i)=>s.res[key+i]!=null)){if(s.round===1){s.round=2;toast("👍");ksRender()}else ksEnd()}
+ else ksRender();
+}
+function ksEnd(){
+ const u=ksU(),s=gState,card=gHead(u.title,u.done);
+ const ok=Object.values(s.res).filter(Boolean).length,all=s.rows.length*2;
+ const bad=s.rows.filter((_,i)=>s.res["a"+i]===false||s.res["b"+i]===false);
+ bad.forEach(r=>logMistake(r.w+": "+r.ik+" · "+r.past+" · "+r.perf,"ks"));
+ const xp=ok*2;gBar(1);
+ const box=el("div","ks-end");box.append(el("div","ks-big",bad.length?"💪":"🏆"),el("h2","",u.done),el("p","ks-score",u.score(ok,all)+" · +"+xp+" ⭐"));
+ if(bad.length){box.appendChild(el("h3","ks-h",u.repeat));const t=el("table","ks-tab");bad.forEach(r=>{const tr=el("tr");[r.w+" — "+r.tr,r.ik,r.past,r.perf].forEach(x=>{const td=tgt(el("td","",x));td.dir="auto";tr.appendChild(td)});tr.onclick=()=>say(r.ik+". "+r.past+". "+r.perf);t.appendChild(tr)});const w=el("div","ks-scroll");w.appendChild(t);box.appendChild(w)}
+ else box.appendChild(el("p","",u.perfect));
+ box.appendChild(el("p","g-hint",u.tip));card.appendChild(box);
+ const row=el("div","row");
+ if(bad.length){const m=el("button","btn primary",u.onlyMist);m.type="button";m.id="nx";m.onclick=()=>{gState={ks:1,rows:bad,round:1,i:0,res:{},open:-1};ksRender()};row.appendChild(m)}
+ const pr=el("button","btn",u.print);pr.type="button";pr.onclick=()=>ksPrint(s.rows);
+ const ag=el("button","btn"+(bad.length?"":" primary"),u.again);ag.type="button";if(!bad.length)ag.id="nx";ag.onclick=ksStart;row.append(pr,ag);card.appendChild(row);
+ if(xp)toast(gU().pts(xp));gameDone("ks",xp);
+}
+function ksPrint(rows){
+ const u=ksU(),esc=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+ const head="<tr><th>"+esc(u.cInf)+"</th><th>"+esc(u.cIk)+"</th><th>"+esc(u.cPast)+"</th><th>"+esc(u.cPerf)+"</th></tr>";
+ const pad=rows.concat(Array(Math.max(0,12-rows.length)).fill(null));
+ const blank=pad.map(r=>"<tr><td>"+(r?"<b>"+esc(r.w)+"</b> — "+esc(r.tr):"")+"</td><td></td><td></td><td></td></tr>").join("");
+ const key=rows.map(r=>"<tr><td><b>"+esc(r.w)+"</b> — "+esc(r.tr)+"</td><td>"+esc(r.ik)+"</td><td>"+esc(r.past)+"</td><td>"+esc(r.perf)+"</td></tr>").join("");
+ const html=`<!doctype html><html lang="${uiLang}" dir="${uiLang==="ar"?"rtl":"ltr"}"><head><meta charset="utf-8"><title>${esc(u.pTitle)}</title><style>
+@page{size:A4;margin:12mm}body{font:13px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#111;margin:0}
+h1{font-size:20px;margin:0 0 4px}p{margin:0 0 10px;color:#444}.f{font-weight:700;color:#B04A00;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;direction:ltr}th{font-size:12px;text-align:left;padding:6px;border-bottom:2px solid #111;background:#FFF0DF}
+td{height:15mm;padding:4px 6px;border-bottom:1px solid #bbb;vertical-align:middle}th+th,td+td{border-left:2px dashed #EB6A00}
+th:first-child,td:first-child{width:31%}.fold{display:flex;justify-content:flex-end;gap:0;font-size:11px;color:#EB6A00;margin:4px 0}
+.fold span{width:23%;text-align:left}.key td{height:9mm}.pb{page-break-before:always;break-before:page}
+</style></head><body><h1>📄 ${esc(u.pTitle)}</h1><div class="f">${esc(u.formula)}</div><p>${esc(u.pHow)}</p>
+<div class="fold"><span>✂ ${esc(u.foldL)}</span><span>✂ ${esc(u.foldL)}</span><span>✂ ${esc(u.foldL)}</span></div>
+<table>${head}${blank}</table>
+<div class="pb"></div><h1>✅ ${esc(u.pKey)}</h1><table class="key">${head}${key}</table></body></html>`;
+ let fr=document.getElementById("ksFrame");if(fr)fr.remove();
+ fr=document.createElement("iframe");fr.id="ksFrame";fr.title=u.print;fr.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
+ document.body.appendChild(fr);const d=fr.contentWindow.document;d.open();d.write(html);d.close();
+ setTimeout(()=>{try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){const w=window.open("","_blank");if(w){w.document.write(html);w.document.close();w.print()}}},250);
+ window.__ksLast=html;
+}
+
 // --- games home ---
 function renderGamesHome(){
  if(gState&&gState.chat)aiRemember(gState); // leaving the AI chat: save what was learned about the learner
@@ -4503,7 +4690,7 @@ function renderGamesHome(){
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story"){b.classList.add("wide");const ic=b.querySelector(".g-ic");ic.classList.add("g-av");ic.innerHTML=charSvg("happy")}
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,ks:ksStart})[id]()};
   grid.appendChild(b);
  });
  card.appendChild(grid);

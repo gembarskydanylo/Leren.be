@@ -94,7 +94,7 @@ openen|||v|1|відкривати|to open||
 opgeven|||v|2|здаватися; вказувати|to give up; to state|sep=op|
 oplossen|||v|2|розв'язувати|to solve|sep=op|
 opnemen|||v|2|брати (слухавку); записувати|to answer (phone); to record|sep=op|Neem je telefoon op!|Візьми слухавку!
-opstaan|||v|1|вставати|to get up|sep=op|
+opstaan|||v|1|вставати|to get up|sep=op;aux=z|
 optellen|||v|2|додавати|to add up|sep=op|
 opwarmen|||v|2|розігрівати|to warm up|sep=op|
 overleggen|||v|2|радитися|to consult||
@@ -149,7 +149,7 @@ verlengen|||v|2|продовжувати (термін)|to extend||
 vermijden|||v|2|уникати|to avoid||
 verplaatsen|||v|2|переміщувати|to move||
 verrassen|||v|2|дивувати|to surprise||
-verschijnen|||v|2|з'являтися|to appear||
+verschijnen|||v|2|з'являтися|to appear|aux=z|
 verspreiden|||v|2|поширювати|to spread||
 verstaan|||v|2|чути й розуміти|to understand||
 vertrouwen|||v|2|довіряти|to trust||
