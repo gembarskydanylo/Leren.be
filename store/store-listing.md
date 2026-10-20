@@ -26,16 +26,16 @@
 Leren.be — Nederlands A1
 
 **Короткий опис:**
-Нідерландська A1 для українців: уроки, тести, Toets і AI-викладач Руль.
+Нідерландська A1 для українців: уроки, тести, Toets і AI-викладач Пітер.
 
 **Повний опис:**
 Leren.be — тренажер нідерландської мови рівнів A1.1 і A1.2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
 
 🤖 AI-ВИКЛАДАЧ РУЛЬ
-• «Praat met Roel»: розмовляй письмово або голосом — Руль відповідає простою нідерландською, виправляє помилки й пояснює правило українською.
-• «Запитай Руля»: питай про граматику, слова, переклад і вимову, проси вправи — з прикладами, які можна прослухати.
+• «Praat met Peter»: розмовляй письмово або голосом — Пітер відповідає простою нідерландською, виправляє помилки й пояснює правило українською.
+• «Запитай Пітера»: питай про граматику, слова, переклад і вимову, проси вправи — з прикладами, які можна прослухати.
 • Під кожною відповіддю — переклад українською.
-• Руль пам’ятає, що ти вчиш і де помиляєшся, а кілька фактів про тебе зберігаються лише на твоєму пристрої — їх можна переглянути й видалити.
+• Пітер пам’ятає, що ти вчиш і де помиляєшся, а кілька фактів про тебе зберігаються лише на твоєму пристрої — їх можна переглянути й видалити.
 • Можна практикувати також англійську та французьку.
 AI-чат — для дорослих, працює онлайн; на будь-яку відповідь можна поскаржитися кнопкою «⚑».
 
@@ -74,16 +74,16 @@ Leren.be — незалежний навчальний проєкт і не по
 Leren.be — Nederlands A1
 
 **Korte beschrijving:**
-Nederlands A1: lessen, quizzen, toetsen en AI-leraar Roel die je fouten uitlegt.
+Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die je fouten uitlegt.
 
 **Volledige beschrijving:**
 Leren.be is een oefenapp voor Nederlands op niveau A1.1 en A1.2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
 
-🤖 AI-LERAAR ROEL
-• “Praat met Roel”: schrijf of spreek — Roel antwoordt in eenvoudig Nederlands, verbetert je fouten en legt de regel uit in jouw taal.
-• “Vraag het Roel”: vragen over grammatica, woorden, vertaling en uitspraak, of vraag een oefening — met voorbeelden die je kunt beluisteren.
+🤖 AI-LERAAR PETER
+• “Praat met Peter”: schrijf of spreek — Peter antwoordt in eenvoudig Nederlands, verbetert je fouten en legt de regel uit in jouw taal.
+• “Vraag het Peter”: vragen over grammatica, woorden, vertaling en uitspraak, of vraag een oefening — met voorbeelden die je kunt beluisteren.
 • Onder elk antwoord staat een vertaling.
-• Roel onthoudt wat je leert en waar je fouten maakt; een paar notities over jou blijven alleen op je toestel en kun je bekijken en wissen.
+• Peter onthoudt wat je leert en waar je fouten maakt; een paar notities over jou blijven alleen op je toestel en kun je bekijken en wissen.
 • Je kunt ook Engels en Frans oefenen.
 De AI-chat is voor volwassenen en werkt online; elk antwoord kun je melden met “⚑”.
 
@@ -121,16 +121,16 @@ Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 Leren.be — Nederlands A1
 
 **Short description:**
-Learn Dutch A1: lessons, quizzes, exams and AI tutor Roel who explains mistakes.
+Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who explains mistakes.
 
 **Full description:**
 Leren.be is a Dutch practice app for levels A1.1 and A1.2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
 
-🤖 AI TUTOR ROEL
-• “Praat met Roel”: write or speak — Roel answers in simple Dutch, corrects your mistakes and explains the rule in your language.
-• “Ask Roel”: ask about grammar, words, translation and pronunciation, or ask for an exercise — with examples you can listen to.
+🤖 AI TUTOR PETER
+• “Praat met Peter”: write or speak — Peter answers in simple Dutch, corrects your mistakes and explains the rule in your language.
+• “Ask Peter”: ask about grammar, words, translation and pronunciation, or ask for an exercise — with examples you can listen to.
 • A translation under every answer.
-• Roel remembers what you are learning and where you make mistakes; a few notes about you are kept only on your device, and you can view and delete them.
+• Peter remembers what you are learning and where you make mistakes; a few notes about you are kept only on your device, and you can view and delete them.
 • You can also practise English and French.
 The AI chat is for adults and works online; you can report any answer with “⚑”.
 

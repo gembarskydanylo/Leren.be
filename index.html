@@ -742,7 +742,7 @@ body.sheet-open{overflow:hidden}
 .g-story h3{margin:0 0 6px}.g-story p{margin:4px 0;cursor:pointer;font-weight:700}
 @media (max-width:420px){.dock-tx{font-size:10.5px}.g-card{min-height:122px;padding:12px}.g-mc{min-height:76px;font-size:13px}}
 
-/* ---------- story mode (Lotte) ---------- */
+/* ---------- story mode (Dafna) ---------- */
 .g-card.wide{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:14px;row-gap:2px;align-items:center;min-height:96px;background:linear-gradient(90deg,var(--surface),var(--surface-2))}
 .g-card.wide .g-ic{grid-row:1/3}.g-card.wide strong{align-self:end}.g-card.wide .g-s{align-self:start}
 .g-card.wide .g-ic{font-size:40px}
@@ -781,7 +781,7 @@ body.sheet-open{overflow:hidden}
 .ch-card.on{border-color:var(--oranje);box-shadow:0 var(--depth-sm) 0 var(--oranje)}
 .ch-fig{width:100%;max-width:150px;aspect-ratio:332/650;border-radius:16px;padding:8px 6px 0;overflow:hidden}
 .ch-fig .ch-ph{width:100%;height:100%;display:block}
-.ch-roel{background:linear-gradient(180deg,#D7F5EE,#9ED7EA)}.ch-lotte{background:linear-gradient(180deg,#FFF0B8,#FFC48A)}
+.ch-peter{background:linear-gradient(180deg,#D7F5EE,#9ED7EA)}.ch-dafna{background:linear-gradient(180deg,#FFF0B8,#FFC48A)}
 .ch-card strong{font-family:var(--font-display);font-size:18px}
 .ch-card span{font-size:13px;color:var(--ink-2);line-height:1.3}
 .ch-badge{position:absolute;top:8px;inset-inline-end:8px;font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:var(--oranje);color:#fff}
@@ -790,7 +790,7 @@ body.sheet-open{overflow:hidden}
 .ch-mini.on{border-color:var(--oranje);background:color-mix(in srgb,var(--oranje) 14%,var(--surface))}
 .ch-av{width:30px;height:30px;display:block}
 .ch-ph{position:relative;display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(160deg,#C9F1E8,#4FAFD0)}
-.ch-ph.ch-lotte{background:linear-gradient(160deg,#FFE27A,#FF9A3D)}
+.ch-ph.ch-dafna{background:linear-gradient(160deg,#FFE27A,#FF9A3D)}
 .ch-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;user-select:none}
 .ch-ph.full{border-radius:0;background:none;overflow:visible}.ch-ph.full img{object-fit:contain;object-position:50% 0}
 .ch-mood{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -4240,7 +4240,7 @@ $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Numbe
 
 // ========== GAMES: dialogue puzzle, role-play, speaking, blitz, memory, dictation, my day ==========
 const G_UI={
- uk:{games:"Ігри",story:"Een dag in België",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",ask:"Запитай {Руля|Лотте} · AI",askS:"Граматика, слова, переклад, вправи: питай українською",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
+ uk:{games:"Ігри",story:"Een dag in België",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",ask:"Запитай {Пітера|Дафну} · AI",askS:"Граматика, слова, переклад, вправи: питай українською",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
   dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Memory",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
   pick:"Обери діалог",order:"Натискай репліки по порядку — від першої до останньої",check:"Перевірити",again:"Ще раз",wrongOrder:"Майже! Зелені репліки на місці, решту переставимо.",solved:"Правильно! Ось увесь діалог:",play:"▶ Прослухати діалог",clear:"Очистити",
   role:"Твоя роль",level:"Рівень",l1:"Вибрати",l2:"Скласти",l3:"Сказати",yourTurn:"Твоя черга:",choose:"Обери, що сказати",build:"Склади репліку з карток",say:"Натисни 🎤 і скажи",mic:"🎤 Говорити",listening:"Слухаю…",type:"⌨ Написати",send:"Готово",heard:"Почуто:",tryAgain:"Спробуй ще раз",noMic:"Розпізнавання мови недоступне тут — напиши відповідь.",micDenied:"Немає доступу до мікрофона. Дозволь його в налаштуваннях або напиши відповідь.",wellDone:"Чудова розмова! 🎉",
@@ -4321,8 +4321,8 @@ const DIALOGUES=[
   ["A","Acht euro vijftig.","Вісім євро п'ятдесят.","Eight euros fifty."],
   ["B","Kan ik met de kaart betalen?","Можна оплатити карткою?","Can I pay by card?"],
   ["A","Natuurlijk. Beterschap!","Звісно. Одужуйте!","Of course. Get well!"]]},
- {id:"eric_roel",icon:"💬",title:{uk:"Чат: Ерік і Руль",en:"Chat: Eric and Roel"},a:"Eric",b:"Roel",hint:"🏊 dinsdag · 🏃 woensdag · 🚴 donderdag",lines:[
-  ["A","Hey Roel! Hoe gaat het?","Привіт, Руль! Як справи?","Hey Roel! How are you?"],
+ {id:"eric_peter",icon:"💬",title:{uk:"Чат: Ерік і Пітер",en:"Chat: Eric and Peter"},a:"Eric",b:"Peter",hint:"🏊 dinsdag · 🏃 woensdag · 🚴 donderdag",lines:[
+  ["A","Hey Peter! Hoe gaat het?","Привіт, Пітере! Як справи?","Hey Peter! How are you?"],
   ["B","Goed. En met jou?","Добре. А в тебе?","Fine. And you?"],
   ["A","Het gaat wel. Ik ga dinsdag zwemmen. Ga jij mee?","Та нічого. У вівторок я йду плавати. Підеш зі мною?","Not bad. I'm going swimming on Tuesday. Are you coming?"],
   ["B","Nee, het spijt me. Ik kan niet. Ik heb geen tijd.","Ні, вибач. Я не можу. У мене немає часу.","No, sorry. I can't. I don't have time."],
@@ -4733,25 +4733,25 @@ function mdRender(){
  card.appendChild(bank);
 }
 
-// ========== ART: characters Roel + Lotte (3 moods, avatar or full body) + scene illustrations ==========
+// ========== ART: characters Peter + Dafna (3 moods, avatar or full body) + scene illustrations ==========
 // characters are illustrated images (img/chars); mood shown with a small overlay
 const MOOD_EXTRA=mood=>mood==="wow_"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM102 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FDDA24" stroke="#fff" stroke-width="1.5"/></svg>':mood==="think"?'<svg class="ch-mood" viewBox="0 0 120 120" aria-hidden="true"><circle cx="100" cy="28" r="4" fill="#fff"/><circle cx="108" cy="14" r="6.5" fill="#fff"/></svg>':"";
 const MOOD_FILE={happy:"",wow:"-wow",think:"-think",sad:"-sad"};
 const CHAR_IMG=(id,mood,full)=>`<span class="ch-ph ch-${id} m-${mood}${full?" full":""}"><img src="img/chars/${id}${full?"-card":(MOOD_FILE[mood]||"")}.webp" alt="" decoding="async" draggable="false">${full?"":MOOD_EXTRA(mood)}</span>`;
-const ROEL_SVG=(mood,full)=>CHAR_IMG("roel",mood,full);
-const LOTTE_SVG=(mood,full)=>CHAR_IMG("lotte",mood,full);
-// --- chosen character (Roel is the default guide) ---
-const CHARS={roel:{n:"Roel",u:"Руль",a:"رول",m:true,svg:ROEL_SVG},lotte:{n:"Lotte",u:"Лотте",a:"لوته",m:false,svg:LOTTE_SVG}};
-const charId=()=>{const c=lsGet("leren_char","roel");return CHARS[c]?c:"roel"};
+const PETER_SVG=(mood,full)=>CHAR_IMG("peter",mood,full);
+const DAFNA_SVG=(mood,full)=>CHAR_IMG("dafna",mood,full);
+// --- chosen character (Peter is the default guide) ---
+const CHARS={peter:{n:"Peter",u:"Пітер",a:"بيتر",m:true,svg:PETER_SVG},dafna:{n:"Dafna",u:"Дафна",a:"دافنا",m:false,svg:DAFNA_SVG}};
+const charId=()=>{const c=lsGet("leren_char","peter");if(c==="lotte"){lsSet("leren_char","dafna");return "dafna"}return CHARS[c]?c:"peter"};
 const curChar=()=>CHARS[charId()];
 const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
 // text templates: {N}=name (nl/en/fr), {Nu}=Ukrainian name, {Na}=Arabic name, {male|female}
 const cx=t=>{if(typeof t!=="string")return t;const c=curChar();return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g,(_,m,f)=>c.m?m:f).replace(/\{Nu\}/g,c.u).replace(/\{Na\}/g,c.a).replace(/\{N\}/g,c.n)};
 const cxDeep=o=>typeof o==="string"?cx(o):Array.isArray(o)?o.map(cxDeep):o&&typeof o==="object"?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,typeof v==="function"?v:cxDeep(v)])):o;
-const CHAR_UI={uk:{pick:"Обери свого персонажа",pickHint:"Він або вона вестиме тебе через діалоги й ігри. Змінити можна в налаштуваннях.",row:"Персонаж",roel:"Вчитель. Пояснює правила спокійно, як на дошці",lotte:"Бельгійка. Весела й швидка, як у житті",chosen:"Обрано",go:"Далі"},
- en:{pick:"Choose your character",pickHint:"They'll guide you through dialogues and games. You can change this in Settings.",row:"Character",roel:"Teacher. Explains rules calmly, like on the whiteboard",lotte:"Belgian. Cheerful and quick, like real life",chosen:"Chosen",go:"Next"},
- fr:{pick:"Choisis ton personnage",pickHint:"Il ou elle te guidera dans les dialogues et les jeux. Modifiable dans les réglages.",row:"Personnage",roel:"Professeur. Explique calmement, comme au tableau",lotte:"Belge. Joyeuse et rapide, comme dans la vraie vie",chosen:"Choisi",go:"Suivant"},
- ar:{pick:"اختر شخصيتك",pickHint:"سيرافقك في الحوارات والألعاب. يمكنك تغييره من الإعدادات.",row:"الشخصية",roel:"معلّم. يشرح القواعد بهدوء كما على السبورة",lotte:"بلجيكية. مرحة وسريعة كما في الحياة",chosen:"تم الاختيار",go:"التالي"}};
+const CHAR_UI={uk:{pick:"Обери свого персонажа",pickHint:"Він або вона вестиме тебе через діалоги й ігри. Змінити можна в налаштуваннях.",row:"Персонаж",peter:"Вчитель. Пояснює правила спокійно, як на дошці",dafna:"Бельгійка. Весела й швидка, як у житті",chosen:"Обрано",go:"Далі"},
+ en:{pick:"Choose your character",pickHint:"They'll guide you through dialogues and games. You can change this in Settings.",row:"Character",peter:"Teacher. Explains rules calmly, like on the whiteboard",dafna:"Belgian. Cheerful and quick, like real life",chosen:"Chosen",go:"Next"},
+ fr:{pick:"Choisis ton personnage",pickHint:"Il ou elle te guidera dans les dialogues et les jeux. Modifiable dans les réglages.",row:"Personnage",peter:"Professeur. Explique calmement, comme au tableau",dafna:"Belge. Joyeuse et rapide, comme dans la vraie vie",chosen:"Choisi",go:"Suivant"},
+ ar:{pick:"اختر شخصيتك",pickHint:"سيرافقك في الحوارات والألعاب. يمكنك تغييره من الإعدادات.",row:"الشخصية",peter:"معلّم. يشرح القواعد بهدوء كما على السبورة",dafna:"بلجيكية. مرحة وسريعة كما في الحياة",chosen:"تم الاختيار",go:"التالي"}};
 const chU=()=>CHAR_UI[uiLang]||CHAR_UI.uk;
 function charPicker(onPick){
  const u=chU(),wrap=el("div","ch-pick");wrap.setAttribute("role","radiogroup");wrap.setAttribute("aria-label",u.pick);
@@ -4976,7 +4976,7 @@ function storyAnswer(k,spoken,loose){
 const AI_ENDPOINT=(location.hostname==="localhost"&&lsGet("leren_ai_endpoint",""))||"https://leren-ai.gembarsky-d.workers.dev/";
 const AI_TITLE={nl:"Praat met {N} · AI",en:"Talk to {N} · AI",fr:"Parle avec {N} · IA"};
 const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландською",en:"Пиши або говори англійською",fr:"Пиши або говори французькою"},intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані. {Nu} запам'ятовує кілька фактів про тебе лише на цьому пристрої, щоб наступного разу продовжити розмову; їх можна переглянути й видалити.",adult:"Мені виповнилося 18 років",trShow:"🇺🇦 Перекласти українською",trHide:"Сховати переклад",memT:"🧠 Що {Nu} пам'ятає про тебе",memForget:"Забути все",memNote:"Зберігається лише на цьому пристрої.",report:"⚑ Поскаржитися",reportQ:"Поскаржитися на цю відповідь AI (образлива, небезпечна або хибна)? Текст відповіді буде надіслано розробнику.",reportOk:"Дякуємо! Скаргу надіслано.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!",
-  askTitle:"Запитай {Руля|Лотте} · AI",askSub:"Нідерландська, англійська, французька",askIntro:"Привіт! Я {Nu}. Питай мене про граматику, слова, переклад чи вимову, або попроси вправу.",askPh:"Твоє питання…",send:"Надіслати",ex:"Приклади (натисни, щоб послухати)",
+  askTitle:"Запитай {Пітера|Дафну} · AI",askSub:"Нідерландська, англійська, французька",askIntro:"Привіт! Я {Nu}. Питай мене про граматику, слова, переклад чи вимову, або попроси вправу.",askPh:"Твоє питання…",send:"Надіслати",ex:"Приклади (натисни, щоб послухати)",
   chips:{nl:["Коли «de», а коли «het»?","Поясни інверсію: «Om 7 uur sta ik op»","Як утворюється perfectum?","Дай мені вправу на дієслово «zijn»"],en:["Коли «do», а коли «does»?","Яка різниця між «a» і «the»?","Як утворюється Past Simple?","Дай мені вправу на «to be»"],fr:["Коли «le», а коли «la»?","Як відмінюється «être»?","Що таке «septante» і «nonante»?","Дай мені вправу на «avoir»"]}},
  en:{sub:{nl:"Write or speak Dutch",en:"Write or speak English",fr:"Write or speak French"},intro:"Talk to me simply, A1 style. I'll correct and explain your mistakes.",consentT:"Before you start",consent:"The AI chat works online. Your messages are sent to the Leren.be server and an AI model so {N} can answer. Chats are not stored. Don't type passwords, ID numbers or bank details. {N} remembers a few facts about you, only on this device, to continue next time; you can view and delete them.",adult:"I am 18 or older",trShow:"Show translation",trHide:"Hide translation",memT:"🧠 What {N} remembers about you",memForget:"Forget everything",memNote:"Stored only on this device.",report:"⚑ Report",reportQ:"Report this AI answer (offensive, harmful or wrong)? The answer text will be sent to the developer.",reportOk:"Thank you! Your report was sent.",agree:"OK, start",fix:"Better:",tr:"Translation",err:"{N} is unavailable right now. Check your connection and try again.",limit:"That's enough chatting for today 🙂 Come back tomorrow!",
   askTitle:"Ask {N} · AI",askSub:"Dutch, English, French",askIntro:"Hi! I'm {N}. Ask me about grammar, words, translation or pronunciation, or ask for an exercise.",askPh:"Your question…",send:"Send",ex:"Examples (tap to listen)",

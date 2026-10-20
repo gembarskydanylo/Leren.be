@@ -1,4 +1,4 @@
-// Leren.be — "Praat met Roel / Lotte" AI tutor proxy (Cloudflare Worker). Keeps API keys off the website.
+// Leren.be — "Praat met Peter / Dafna" AI tutor proxy (Cloudflare Worker). Keeps API keys off the website.
 // Deploy: automatic — every push to main that changes this file runs .github/workflows/deploy-worker.yml (wrangler.toml).
 // Choose ONE provider with the variable PROVIDER:
 //   "anthropic"  — Claude (best Dutch + Ukrainian explanations). Secret ANTHROPIC_KEY. Optional MODEL (default claude-haiku-5-5).
@@ -54,8 +54,8 @@ const TARGET = {
   fr: {name: "French as spoken in Belgium (fr-BE)", grammar: GRAMMAR_FR, place: "everyday life in Belgium (famille, travail, école, courses, météo, loisirs, transports)"}
 };
 const PERSONA = {
-  roel: "Roel, a calm, friendly Flemish language teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
-  lotte: "Lotte, a warm, cheerful young Flemish woman and language coach"
+  peter: "Peter, a calm, friendly Flemish language teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
+  dafna: "Dafna, a warm, cheerful young Flemish woman and language coach"
 };
 const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
 - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
@@ -63,7 +63,7 @@ const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisi
 function chatSystem(t, lang, level, scene, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
-  return `You are ${PERSONA[char] || PERSONA.roel}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
+  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
 Course grammar (follow it when correcting):
 ${T.grammar}
@@ -78,7 +78,7 @@ LANGUAGE RULE: "reply" and "corrected" are in the target language and use only L
 
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
-  return `You are ${PERSONA[char] || PERSONA.roel}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
 Grammar notes for ${T.name} (keep explanations consistent with them):

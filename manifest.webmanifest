@@ -48,14 +48,14 @@
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Praat met Roel: розмова з AI, що виправляє помилки"
+      "label": "Praat met Peter: розмова з AI, що виправляє помилки"
     },
     {
       "src": "./screenshots/2-ask.png",
       "sizes": "1080x2160",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Запитай Руля: граматика й слова з прикладами"
+      "label": "Запитай Пітера: граматика й слова з прикладами"
     },
     {
       "src": "./screenshots/3-study.png",
