@@ -24,7 +24,7 @@
 | `index.html` | увесь застосунок (HTML + CSS + JS) |
 | `sw.js` | service worker — офлайн-кеш (при кожному оновленні змінюй `CACHE_NAME`) |
 | `manifest.webmanifest` | маніфест PWA для встановлення та магазинів |
-| `icon.svg`, `icon-192.png`, `icon-512.png` | іконки застосунку |
+| `favicon-32.png`, `icon-192.png`, `icon-512.png` | іконки застосунку (кіт-маскот) |
 | `icon-maskable-512.png` | адаптивна іконка Android |
 | `apple-touch-icon.png` | іконка для iPhone / iPad (180×180) |
 | `screenshots/` | скріншоти 1080×2160 для маніфесту та Google Play |
