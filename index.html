@@ -82,9 +82,9 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
  background:radial-gradient(circle at 100% 0,rgba(255,255,255,.14) 0 90px,transparent 91px),var(--oranje);color:var(--on-oranje);border-radius:var(--r-lg);padding:14px 14px 14px 18px;
  box-shadow:0 var(--depth) 0 var(--oranje-deep),var(--lift);overflow:hidden}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
-.brand::before{content:"";flex:none;width:22px;height:28px;border-radius:5px;
- background:linear-gradient(90deg,var(--be-black) 0 33.3%,var(--be-yellow) 33.3% 66.6%,var(--be-red) 66.6%);
- box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.brand::before{content:"";flex:none;width:38px;height:38px;border-radius:11px; /* cat mascot (app icon) */
+ background:#FCC447 url("./icon-192.png") center/cover no-repeat;
+ box-shadow:0 0 0 2px rgba(255,255,255,.9)}
 .brand h1{font-family:var(--font-display);font-size:22px;line-height:1;margin:0;font-weight:800;letter-spacing:-.01em}
 .brand p{margin:0;padding:3px 8px;border-radius:var(--r-pill);background:rgba(0,0,0,.16);font-size:12px;font-weight:800;line-height:1.2}
 .select-group{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9)}
@@ -642,12 +642,12 @@ body.sheet-open{overflow:hidden}
  .hdr-pill{padding:0 8px;gap:4px;font-size:13px;min-height:38px}
  .hdr-pill .ico{width:16px;height:16px}
  .hdr-btn{width:38px;height:38px}
- .brand{gap:7px}.brand::before{width:18px;height:23px}
+ .brand{gap:7px}.brand::before{width:32px;height:32px;border-radius:9px}
  .brand h1{font-size:17px}
 }
 @media (max-width:340px){ /* 320 px phones */
- .brand::before{display:none}
- .brand h1{font-size:15px}
+ .brand{gap:5px}.brand::before{width:24px;height:24px;border-radius:7px}
+ .brand h1{font-size:14px}
  .hdr-pill{padding:0 6px}
 }
 .sheet .nav-fade-wrap,.sheet .sub-wrapper{margin:0}
