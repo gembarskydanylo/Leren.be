@@ -763,6 +763,73 @@ be772c6f	de vinger
 24654b5e	de teen
 be039404	Mijn teen doet pijn.
 e3bc0b73	Ik heb pijn in mijn keel.
+03bc62f8	de arm → de armen
+58d3fa42	Ik heb pijn aan mijn armen.
+d02b46ee	de hand → de handen
+eb85cc42	Was je handen!
+b89c5ea6	de voet → de voeten
+57e2d92a	Mijn voeten zijn koud.
+26656b06	de tand → de tanden
+c8fe3c9e	Ik poets mijn tanden.
+c287bfe4	de knie → de knieën
+814d85c0	Mijn knieën doen pijn.
+a9b51939	de neus → de neuzen
+f749502a	Clowns hebben rode neuzen.
+7cd9fc8b	de rug → de ruggen
+855045f6	Veel mensen hebben pijn in hun rug.
+989036eb	de teen → de tenen
+1fd584e0	Ik heb tien tenen.
+93d6778a	de schouder → de schouders
+301522b5	Mijn schouders zijn moe.
+433ba4a2	de vinger → de vingers
+5e69a2e9	Ik tel op mijn vingers.
+9598e542	de buik → de buiken
+977ce75e	De kinderen hebben volle buiken.
+4174031f	het oog → de ogen
+1fc4f6a5	Ze heeft blauwe ogen.
+8be7ca23	het oor → de oren
+f5014f51	Een konijn heeft lange oren.
+ca55cb8b	het been → de benen
+4ec9e2de	Na het fietsen doen mijn benen pijn.
+adf5c34c	het hoofd → de hoofden
+3da71e72	Alle hoofden draaien om.
+45737089	het lichaam → de lichamen
+a510c716	Sport is goed voor het lichaam.
+bfe82603	meervoud: altijd de
+82fdef55	het oog → de ogen, het been → de benen
+5ed53880	Ik moet hoesten.
+d2ee5a2f	's Nachts moet ik veel hoesten.
+7246930f	Ik moet niezen.
+f3a4a2e6	In de lente moet ik vaak niezen.
+7cff270a	Ik heb buikpijn.
+ac88e6d6	Na het eten heb ik buikpijn.
+fa034eb9	Ik heb oorpijn.
+3d6a0e56	Mijn zoon heeft oorpijn.
+a8611b4b	Ik heb rugpijn.
+29e84d50	Van het werk heb ik rugpijn.
+7e8b6d12	Ik heb tandpijn.
+5adc076d	Ik heb tandpijn, ik bel de tandarts.
+0e31bd42	Ik heb keelpijn.
+0a124d7c	Met keelpijn drink ik thee met honing.
+c410e151	Ik heb hoofdpijn.
+c093eeb6	Ik heb hoofdpijn van de computer.
+bfa7eef4	Ik ben verkouden en ik blijf thuis.
+7d9fc006	Ik heb koorts.
+6ab03fbd	Ik heb 38,5 graden koorts.
+efdcfc2c	Ik heb pijn aan mijn schouder.
+c6ca7c4c	Ik heb pijn aan mijn schouder van de tas.
+daf0c66a	Ik heb pijn aan mijn knie.
+da47bb46	Na het lopen heb ik pijn aan mijn knie.
+c89b6e61	Ik heb pijn aan mijn voet.
+a43003db	Mijn schoenen zijn te klein, ik heb pijn aan mijn voet.
+481f03dc	Mijn been doet pijn na de voetbalmatch.
+822f9300	Je ziet er moe uit. Wat scheelt er?
+d38533e2	Oei, veel beterschap!
+18139bdc	Je bent ziek? Oei, veel beterschap!
+2a90e26a	Het gaat niet goed.
+5f18739a	Vandaag gaat het niet goed.
+d8f6fcd5	de klacht
+c80d03d5	Wat zijn uw klachten?
 dca49284	de jas
 a02a5cb0	Het is koud, trek je jas aan.
 e86ab7cf	de broek
@@ -1640,6 +1707,41 @@ bb92c841	Hebt u mijn mail gekregen?
 09858bb5	Waarom werk je vandaag niet?
 25cc3e7f	Is dat hun huis?
 b948f757	Wanneer zie je hem?
+804db0ce	Goedemorgen Sanne! Alles goed?
+876e35d9	Nee, niet echt.
+de90092c	Oei, wat scheelt er?
+0b27fbc6	Ik heb keelpijn en ik moet de hele tijd hoesten.
+719803b5	Heb je ook koorts?
+e73fe7f1	Ik denk het wel. Ik heb het koud.
+98bccc88	Ga naar huis en drink thee met honing.
+bd3af95a	Goed idee. Ik bel straks de dokter.
+1687a227	Veel beterschap!
+a04484e2	Dokterspraktijk De Linde, goedemorgen.
+67c37923	Goedemorgen. Mijn zoon is ziek. Kan hij vandaag langskomen?
+7ba656e4	Wat zijn zijn klachten?
+c80c5032	Hij heeft oorpijn en hij heeft 38,5 graden koorts.
+f41d4851	Sinds wanneer?
+4cbc5ee4	Sinds gisteravond.
+874a6712	Kunt u om twee uur komen?
+a0358f68	Ja, dat past. Dank u wel.
+872879f4	Graag gedaan. Tot straks.
+e41a9fb0	Mama, ik voel me niet goed.
+1baa9a4a	Oei, schat. Waar heb je pijn?
+af6e0de3	Ik heb buikpijn en ik moet niezen.
+5e689654	Even kijken. Je hebt geen koorts.
+4892f81f	Moet ik naar school?
+20eca621	Nee, vandaag blijf je thuis. Ik bel de juf.
+f9bba9e6	Mag ik dan tv kijken?
+9eb4d043	Nee hoor, jij gaat rusten in bed!
+5f3f820f	Goedemiddag, zeg het maar.
+e26103f7	Ik heb al drie dagen rugpijn. Hebt u daar iets voor?
+50f3869b	Hebt u ook koorts?
+4c851cc0	Nee, alleen pijn als ik zit.
+9470aa16	Neem deze zalf, twee keer per dag. En wandel veel.
+fe393481	Dank u. Hoeveel kost het?
+6d7d9295	Acht euro vijftig.
+91c7394d	Kan ik met de kaart betalen?
+02540e38	Natuurlijk. Beterschap!
 1abd9885	Hey Roel! Hoe gaat het?
 04df06a4	Goed. En met jou?
 836edfb3	Het gaat wel. Ik ga dinsdag zwemmen. Ga jij mee?
@@ -1693,6 +1795,9 @@ c53f5741	Nee, u moet lijn drie nemen.
 ce19e7d8	De bus had vertraging.
 e7efd670	Oké. Neem je boek, pagina twaalf.
 57c41453	Dank u, juf.
+092121ea	Heb jij koorts?
+6b3e10d7	Nee, ik heb geen koorts.
+6b965280	Waar heb jij pijn?
 90879870	Hoe laat sta jij op?
 143f2363	Hoe laat begin jij te werken?
 0c1bcc0a	Ik begin om negen uur te werken.
@@ -1766,6 +1871,7 @@ bf80c1c7	de ogen
 1d50ec93	Wat ga jij morgen doen?
 7435c4da	Wij gaan zaterdag voetballen.
 0b09a12d	Zij gaat morgen lopen.
+122004c0	de benen
 d65e8163	Hij fietst.
 81d5a2f7	Het spijt me, ik heb geen tijd.
 ac2133b8	proficiat
@@ -1788,7 +1894,6 @@ a6d4282e	Ik melk graag.
 0435403f	Ik heb groot.
 d7a660ec	Twee uur.
 fe8f077d	Dat is drie euro twintig.
-91c7394d	Kan ik met de kaart betalen?
 0afe64c8	Ik heet Olena.
 1e99d017	Natuurlijk. Alstublieft, je koffie!
 96cdbaa4	Dank u wel! Een fijne dag!
@@ -1833,15 +1938,12 @@ d379f2ca	Sinds wanneer bent u ziek?
 d594bab6	Dank u, dokter. Tot ziens!
 dd7985de	Beterschap, dokter!
 7e57be17	Ik ga morgen werken.
-5f3f820f	Goedemiddag, zeg het maar.
 2847a6bd	Ik heb hoofdpijn. Hebt u iets tegen hoofdpijn?
 d4367f54	Ik heb een hoofd.
 399899d4	Hoelang hebt u al hoofdpijn?
 4034035f	Sinds gisteren.
 b11d86e1	Morgen.
 7c990f93	Twee euro.
-50f3869b	Hebt u ook koorts?
-6b3e10d7	Nee, ik heb geen koorts.
 9abaac89	Nee, ik ben geen koorts.
 076b6670	Ja, ik ben blij.
 049c454a	Neem deze tabletten, twee keer per dag.
@@ -1999,6 +2101,8 @@ fb8e8524	alleen
 0789fc3f	alleenstaand
 8c2322e4	allemaal
 bb72cb61	de allergie
+6bf5fdc7	allergisch
+dc3d5860	Ik ben allergisch voor noten.
 aa980a00	alles
 1a2556c9	als
 7ad25b80	alstublieft
@@ -2232,6 +2336,7 @@ b0ac8afc	de broodrooster
 570a2f04	het bruiswater
 830df1e7	Brussel
 dca23297	buigen
+2742c338	de buikgriep
 f8f1a9bc	de buikpijn
 52e61012	buiten
 b5130e8d	buitengaan
@@ -2367,6 +2472,8 @@ e762ae6e	dit
 85e2442d	de docent
 c4dd5e2f	het document
 922d9c4e	het doel
+be9c9cf5	het doktersbriefje
+c155061e	de dokterspraktijk
 ec68c67b	dom
 4f8148e1	de domicilie
 fc848b11	de domiciliëring
@@ -2410,6 +2517,8 @@ aa79fdfa	de druppel
 8cf24166	Is dat duidelijk?
 a00c9617	de duim
 5f7777e1	Duitsland
+6d7ce064	duizelig
+43d13c4d	Ik ben duizelig.
 e62ae886	duizend
 ed311b14	dun
 8df1a543	duren
@@ -2554,6 +2663,8 @@ d2e435bf	Wat is er gebeurd?
 c3b3ec86	geboren worden
 b96e47b8	Ik ben geboren in Kyiv.
 29ca36b1	het gebouw
+edf1419c	gebroken
+f17b785a	Mijn arm is gebroken.
 57dae805	gebruikmaken van
 45fae5ae	het gedicht
 d9df80f8	het gedrag
@@ -2711,6 +2822,7 @@ a2816a7f	herkennen
 ad910a89	herstellen
 f2b48a66	het
 dcec8dbf	het gaat
+2c753e00	het gaat niet goed
 8e9e647c	het is me gelukt
 321da720	het kan
 9c0a1aca	het maakt niet uit
@@ -2731,6 +2843,7 @@ f2da591f	de hoek
 8d9ae254	Op de hoek is een bakker.
 669f4497	hoelang
 c09edcdb	hoesten
+b39f80b9	de hoestsiroop
 70477f04	hoeven
 526ac9df	Je hoeft niet te komen.
 27653929	hoewel
@@ -2778,6 +2891,7 @@ d205ee6c	de ijzel
 ed5a5bdb	ik heb het druk
 f779fa6e	ik heb het koud
 b55f9998	ik heb het warm
+e39e23a6	ik voel me niet goed
 c6307eb9	ik wil graag
 f3d979bf	ik zou graag
 cf0beb3e	Ik zou graag een afspraak maken.
@@ -2898,7 +3012,6 @@ efaba1c9	de kinderkamer
 20eb5b24	de kipfilet
 fb34515e	klaar
 76041b3e	klaarmaken
-d8f6fcd5	de klacht
 32f38329	klagen
 219b7bda	de klant
 83c25b79	het klaslokaal
@@ -2936,7 +3049,6 @@ fb341b89	knuffelen
 25d51a51	de koningin
 ddf9f8e8	de kookplaat
 fb6bb8eb	de kool
-7d9fc006	Ik heb koorts.
 a28e26c2	de kopie
 413ed4dd	het kopje
 a61b5399	kort
@@ -3074,6 +3186,7 @@ f5aa4350	luisteren naar
 01ee70f5	Het is gelukt!
 2a2cfa86	de lunch
 deba628c	de maag
+c41fb0db	de maagpijn
 35d3bf2a	maaien
 790a8c60	de maaltijd
 0fb230f3	de maaltijdcheque
@@ -3226,6 +3339,7 @@ c801297e	negentig
 a82c1430	Ik neem de soep.
 bffce5a1	nergens
 3840abe3	nerveus
+abe5dd78	de neusspray
 3bce6264	de nicht
 88c579ae	niet alleen ... maar ook
 5e586afc	het Nieuwjaar
@@ -3315,6 +3429,8 @@ b5732321	onze
 a0292f98	ook
 8d7a8781	de oorbel
 a95aed10	de oorlog
+993e4eb9	de oorpijn
+2126cbf5	Mijn dochter heeft oorpijn.
 160eb267	de oorzaak
 ecf89560	het oosten
 aee48feb	op bezoek gaan
@@ -3414,6 +3530,9 @@ b3d02009	de persoonsgegevens
 84b3f3ce	Ik heb pijn in mijn rug.
 adcff0fc	pijn doen
 0a379abd	Mijn knie doet pijn.
+7e9686e2	pijn hebben
+7156db72	Waar heb je pijn?
+95ceee26	pijn hebben aan
 a3ea18fc	pikant
 1f7d9987	de pil
 6a4367ac	de pincode
@@ -3448,12 +3567,12 @@ db57fb03	plots
 d23e3191	plukken
 7f95edef	het pmd
 5fbd0dbf	de poes
-c8fe3c9e	Ik poets mijn tanden.
 570ec684	de poetsvrouw
 66a75967	Polen
 0a2c5316	de politie
 80c76dc7	de politiek
 a882c238	het politiekantoor
+57d45a76	de pols
 b8e51e13	de popcorn
 e14fe383	populair
 4a95bc2e	de portefeuille
@@ -3699,6 +3818,8 @@ bede4b9e	spellen
 a80044c0	het spelletje
 34bad44d	de spiegel
 4600fdbb	de spier
+3f3f6258	de spierpijn
+7d590beb	Na het sporten heb ik spierpijn.
 f668ced8	de spijker
 b26b8cfb	spijtig
 b94ebb2e	Spijtig!
@@ -3787,6 +3908,8 @@ d9d7ba46	het taalniveau
 bccd80f5	de tandarts
 aec2516d	de tandenborstel
 0a2b0cc6	de tandpasta
+ed1d4024	de tandpijn
+128e7e92	Met tandpijn ga je naar de tandarts.
 5bba635e	tanken
 6b594b86	het tankstation
 240e8aa0	het tapijt
@@ -3836,6 +3959,8 @@ a426286c	tevreden
 ddbdc4fa	de thermometer
 fab5a044	thuis
 de0df10d	Ik ben vandaag thuis.
+906a8152	thuisblijven
+df0e907b	Vandaag blijf ik thuis.
 1d86bcda	tiende
 23ffcf35	de tiener
 354386b3	de tijd
@@ -3961,6 +4086,7 @@ a7e7416d	het varkensvlees
 aca13e80	vasthouden
 f974071f	de VDAB
 01fff5cd	veel
+8df589bc	veel beterschap
 651b5a3d	veel succes
 43101a07	veertien
 32eda179	veertig
@@ -4101,6 +4227,7 @@ d7edf974	het voorbeeld
 58b3aea2	het voordeel
 dff4293c	de voordeur
 ecb64e52	het voorgerecht
+a8d82764	het voorhoofd
 5211f692	het voorjaar
 aa7bb04f	voorkomen
 d723c29e	de voormiddag
@@ -4184,6 +4311,8 @@ e32a6783	het wasrek
 10b4dab9	de wasverzachter
 f18631e9	wat betekent
 96aa464c	wat is er aan de hand
+dbd021de	wat scheelt er
+f7ef3b82	Je bent zo stil. Wat scheelt er?
 c4f6e9ef	de waterkoker
 8fc6dc95	de watermeloen
 e50c8820	de wc
@@ -4311,6 +4440,8 @@ ce10b604	zich voelen
 d9f1ef18	Ik voel me niet goed.
 437db518	zich voorstellen
 f5aa8e4c	zich wassen
+b8dfe0e5	zich ziek melden
+6f7d70e2	Ik meld me vandaag ziek.
 d2f0032a	zich zorgen maken
 a550913c	Maak je geen zorgen.
 4791f4bb	zichtbaar
