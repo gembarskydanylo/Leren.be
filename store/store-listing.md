@@ -121,7 +121,7 @@ Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 Leren.be — Nederlands A1
 
 **Short description:**
-Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who explains mistakes.
+Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who fixes mistakes.
 
 **Full description:**
 Leren.be is a Dutch practice app for levels A1.1 and A1.2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
