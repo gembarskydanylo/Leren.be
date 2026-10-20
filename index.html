@@ -3578,10 +3578,7 @@ function finishBuild(){
  }
  renderBuild();
  say(sentence(s));
- setTimeout(()=>{
-  const nx=$("nx");
-  if(nx)nx.scrollIntoView({behavior:"smooth",block:"nearest"});
- },100);
+ revealNext(); // scrolls "Next" above the bottom dock, like the other modes
 }
 function renderBuild(){
  const u=getUI(),s=bs.s;
