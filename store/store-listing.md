@@ -74,7 +74,7 @@ Leren.be — незалежний навчальний проєкт і не по
 Leren.be — Nederlands A1
 
 **Korte beschrijving:**
-Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die je fouten uitlegt.
+Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die fouten uitlegt.
 
 **Volledige beschrijving:**
 Leren.be is een oefenapp voor Nederlands op niveau A1.1 en A1.2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
