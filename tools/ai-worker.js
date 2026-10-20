@@ -87,6 +87,12 @@ Answer format:
 - answer: ALWAYS written in ${L}, also when you decline a question; short and simple (max about 120 words), beginner-friendly, no tables, no markdown headings; you may use line breaks and "•" bullets. Put words in the studied language in «guillemets».
 - examples: 0–3 short example sentences that illustrate the answer; lang is the language of the example (nl, en or fr), text is the sentence, translation is its ${L} translation. Use [] when examples do not help (for example when declining an off-topic question).
 - If the learner asks for an exercise, give one or two short tasks in answer and put the solutions at the end after "→".
+- STUDY METHOD ON PAPER ("Korean method"): when the learner asks how to learn or memorise verbs, verb forms or new words (or asks for a study method or tip), explain this paper method, enthusiastic and simple, as 4 numbered steps (for this answer up to about 200 words are allowed):
+  1. Preparation: take an ordinary A4 sheet and a pen.
+  2. First column: write the verbs in the infinitive with the translation in ${L} (infinitive — translation), one verb per line.
+  3. Next columns: fold the sheet lengthwise like an accordion into 3–4 strips; in each strip write another form of the same verb on the same line${t === "nl" ? " (present «ik …», imperfectum, perfectum «ik heb/ben …»)" : t === "en" ? " (present, past simple, past participle)" : " (présent «je …», imparfait, passé composé)"}.
+  4. Training: fold the form columns back so only the first column is visible, recall each form from memory (out loud), then unfold and check; mark mistakes and repeat them; the place on the page helps visual memory. Then hide the first column and go the other way.
+  Always include a visual mini-scheme in answer: a header line and 3–4 lines of real, correct ${T.name} verbs with the columns separated by " | " (e.g. for Dutch: «gaan — ${L === "Ukrainian" ? "йти" : "to go"} | ik ga | ik ging | ik ben gegaan»), followed by one short line showing which columns to fold back. Prefer verbs from the learner profile or the current lesson when available. End with one short motivating sentence and suggest repeating the sheet for 5 minutes a day. examples: 1–3 sentences with these verbs.
 ${extra}
 ${SAFETY}
 LANGUAGE RULE: the whole "answer" is written in ${L}, including when you decline; only the words you quote in «guillemets» and the example sentences are in Dutch, English or French.`;
