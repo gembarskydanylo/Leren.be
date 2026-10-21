@@ -756,6 +756,30 @@ body.sheet-open{overflow:hidden}
 .g-time{font:800 22px var(--font-display);color:var(--oranje-deep);font-variant-numeric:tabular-nums}
 :root[data-theme="dark"] .g-time{color:var(--oranje)}
 .g-score{font-size:18px}
+/* omdat catapult */
+.om-rule{margin:4px 0 14px;padding:12px 14px;border-radius:var(--r-md);background:var(--oranje-soft);border-inline-start:5px solid var(--oranje);font-weight:700;line-height:1.45}
+.om-pick{display:flex;flex-direction:column;gap:2px}.om-pick small{font-weight:700;color:var(--ink-2)}
+.om-hint{text-align:center;font-weight:800;color:var(--ink-2);margin:6px 0 10px;min-height:1.4em}.om-hint.bad{color:var(--bad)}.om-hint.good{color:var(--ok-deep)}:root[data-theme="dark"] .om-hint.good{color:var(--ok)}
+.om-box{padding:14px 10px 18px;border-radius:var(--r-md);background:var(--surface-2);margin-bottom:12px}
+.om-main{text-align:center;font-family:var(--font-display);font-size:20px;margin:0 0 12px}
+.om-line{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 6px;direction:ltr}
+.om-chip{display:inline-flex;align-items:center;min-height:42px;padding:6px 12px;border-radius:var(--r-sm);background:var(--surface);border:2px solid var(--line);border-bottom-width:4px;font-weight:800;font-size:17px;color:var(--ink);position:relative}
+button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
+.om-chip.conj{background:var(--oranje);border-color:var(--oranje-deep);color:#fff}
+.om-chip.conj.blank{background:var(--surface);color:var(--ink-2);border-style:dashed;min-width:70px;justify-content:center}
+.om-chip.verb{background:var(--ok-soft);border-color:var(--role-v);color:var(--ok-deep)}
+:root[data-theme="dark"] .om-chip.verb{color:var(--ok)}
+.om-chip.lift{transform:translateY(-10px) rotate(-4deg);box-shadow:0 10px 18px -8px rgba(0,0,0,.45)}
+.om-chip.bad,.om-gap.bad{border-color:var(--bad);color:var(--bad);animation:shake .3s}
+.om-gap{min-width:34px;min-height:42px;padding:0 6px;border-radius:var(--r-sm);border:2px dashed var(--role-v);background:transparent;color:var(--role-v);font-size:18px;font-weight:900;cursor:pointer}
+.om-dot{font-weight:800;font-size:20px;margin-inline-start:-4px}
+.om-opts .opt{font-size:20px;font-weight:900}
+.om-both{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.om-row{padding:8px 10px;border-radius:var(--r-sm);opacity:.7}.om-row.on{opacity:1;background:var(--surface-2)}
+.om-row .example{margin:0}.om-row small{color:var(--ink-2);font-weight:700}
+.om-v{color:var(--ok-deep);background:var(--ok-soft);border-radius:6px;padding:0 4px;font-weight:900}
+:root[data-theme="dark"] .om-v{color:var(--ok)}
+.om-note{font-size:14px;color:var(--ink-2)}
 .g-word{text-align:center;font-size:30px;margin:14px 0 18px;font-family:var(--font-display)}
 .g-mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .g-mc{min-height:84px;padding:6px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--oranje);color:#fff;font:800 14px var(--font-body);cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--oranje-deep);overflow-wrap:anywhere}
@@ -4307,6 +4331,10 @@ const G_UI={
   mdPick:"في أي ساعة؟",mdBuild:"ركّب الجملة",mdRule:"الوقت أولًا ← ثم الفعل ثم «ik»: Om zeven uur sta ik op.",mdAll:"يومي",
   pts:n=>"+"+n+" ⭐"}
 };
+Object.assign(G_UI.uk,{om:"Omdat-катапульта",omS:"Куди летить дієслово після omdat і want?"});
+Object.assign(G_UI.en,{om:"Omdat catapult",omS:"Where does the verb go after omdat and want?"});
+Object.assign(G_UI.fr,{om:"Catapulte omdat",omS:"Où va le verbe après omdat et want ?"});
+Object.assign(G_UI.ar,{om:"منجنيق omdat",omS:"أين يذهب الفعل بعد omdat و want؟"});
 const gU=()=>{const o=G_UI[uiLang]||G_UI.uk;return {...o,storyS:cx(o.storyS),ai:cx(o.ai),aiS:cx(o.aiS),ask:cx(o.ask),askS:cx(o.askS)}};
 const gTr=o=>o[uiLang]||o.en||o.uk||"";
 
@@ -4456,7 +4484,7 @@ const MYDAY=[
 
 // --- shared state & helpers ---
 let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
-const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["ks","📄",true]];
+const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true]];
 const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
 function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
 function gRecords(){return lsGet("leren_games",{})}
@@ -4716,10 +4744,188 @@ function renderGamesHome(){
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story"){b.classList.add("wide");const ic=b.querySelector(".g-ic");ic.classList.add("g-av");ic.innerHTML=charSvg("happy")}
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,ks:ksStart})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart})[id]()};
   grid.appendChild(b);
  });
  card.appendChild(grid);
+}
+
+// --- 12. omdat catapult: after omdat the verb flies to the end; want keeps the normal order ---
+// Rows: [main clause, second clause in normal order with the conjugated verb marked *, uk, en, fr, ar]
+const OM_ONE=[
+ ["Ik kan niet komen","ik *ben ziek","Я не можу прийти, бо я хворий.","I can't come because I'm ill.","Je ne peux pas venir parce que je suis malade.","لا أستطيع المجيء لأنني مريض."],
+ ["Ik bel de school","mijn zoon *is ziek","Я телефоную до школи, бо мій син хворий.","I'm calling the school because my son is ill.","J'appelle l'école parce que mon fils est malade.","أتصل بالمدرسة لأن ابني مريض."],
+ ["Ik kom te laat","de tram *rijdt niet","Я запізнюся, бо трамвай не їде.","I'm late because the tram isn't running.","Je suis en retard parce que le tram ne roule pas.","سأتأخر لأن الترام لا يعمل."],
+ ["Ik leer Nederlands","ik *woon in België","Я вчу нідерландську, бо живу в Бельгії.","I'm learning Dutch because I live in Belgium.","J'apprends le néerlandais parce que j'habite en Belgique.","أتعلم الهولندية لأنني أعيش في بلجيكا."],
+ ["Ik neem een paraplu","het *regent vandaag","Я беру парасольку, бо сьогодні дощ.","I'm taking an umbrella because it's raining today.","Je prends un parapluie parce qu'il pleut aujourd'hui.","آخذ مظلة لأنها تمطر اليوم."],
+ ["Ik ga naar de dokter","ik *heb koorts","Я йду до лікаря, бо в мене температура.","I'm going to the doctor because I have a fever.","Je vais chez le médecin parce que j'ai de la fièvre.","أذهب إلى الطبيب لأن عندي حمى."],
+ ["Ik blijf vandaag thuis","het *is erg koud","Я сьогодні лишаюся вдома, бо дуже холодно.","I'm staying home today because it's very cold.","Je reste à la maison aujourd'hui parce qu'il fait très froid.","أبقى في البيت اليوم لأن الجو بارد جدًا."],
+ ["Ik koop geen brood","we *hebben nog brood","Я не купую хліба, бо в нас ще є хліб.","I'm not buying bread because we still have bread.","Je n'achète pas de pain parce qu'on a encore du pain.","لا أشتري خبزًا لأن لدينا خبزًا بعد."],
+ ["Ik ben moe","ik *werk elke dag","Я втомлений, бо працюю щодня.","I'm tired because I work every day.","Je suis fatigué parce que je travaille tous les jours.","أنا متعب لأنني أعمل كل يوم."],
+ ["Ik ben blij","mijn familie *komt morgen","Я радий, бо завтра приїжджає моя родина.","I'm happy because my family is coming tomorrow.","Je suis content parce que ma famille vient demain.","أنا سعيد لأن عائلتي ستأتي غدًا."],
+ ["Ik ga naar de gemeente","ik *heb een afspraak","Я йду до комуни, бо маю запис на прийом.","I'm going to the municipality because I have an appointment.","Je vais à la commune parce que j'ai un rendez-vous.","أذهب إلى البلدية لأن لدي موعدًا."],
+ ["Ik eet geen vlees","ik *ben vegetariër","Я не їм м'яса, бо я вегетаріанець.","I don't eat meat because I'm a vegetarian.","Je ne mange pas de viande parce que je suis végétarien.","لا آكل اللحم لأنني نباتي."],
+ ["Ik fiets naar het werk","het *is dichtbij","Я їжджу на роботу велосипедом, бо це близько.","I cycle to work because it's close.","Je vais au travail à vélo parce que c'est tout près.","أذهب إلى العمل بالدراجة لأنه قريب."],
+ ["Ik zoek een appartement","ons huis *is te klein","Я шукаю квартиру, бо наш будинок замалий.","I'm looking for a flat because our house is too small.","Je cherche un appartement parce que notre maison est trop petite.","أبحث عن شقة لأن بيتنا صغير جدًا."],
+ ["Ik drink koffie","ik *ben moe","Я п'ю каву, бо втомився.","I'm drinking coffee because I'm tired.","Je bois du café parce que je suis fatigué.","أشرب القهوة لأنني متعب."],
+ ["Ik bel de huisbaas","de verwarming *werkt niet","Я телефоную орендодавцю, бо не працює опалення.","I'm calling the landlord because the heating isn't working.","J'appelle le propriétaire parce que le chauffage ne marche pas.","أتصل بالمالك لأن التدفئة لا تعمل."],
+ ["Ik neem de bus","mijn auto *is kapot","Я їду автобусом, бо моя машина зламалася.","I'm taking the bus because my car is broken.","Je prends le bus parce que ma voiture est en panne.","أركب الحافلة لأن سيارتي معطلة."],
+ ["Ik ga vroeg slapen","ik *begin morgen om zeven uur","Я рано лягаю спати, бо завтра починаю о сьомій.","I'm going to bed early because I start at seven tomorrow.","Je me couche tôt parce que je commence à sept heures demain.","أنام مبكرًا لأنني أبدأ غدًا في الساعة السابعة."],
+ ["Ik spreek een beetje Nederlands","ik *volg een cursus","Я трохи розмовляю нідерландською, бо ходжу на курс.","I speak a little Dutch because I'm taking a course.","Je parle un peu néerlandais parce que je suis un cours.","أتكلم القليل من الهولندية لأنني أتابع دورة."],
+ ["Mijn zoon is blij","hij *heeft vandaag geen school","Мій син радий, бо сьогодні в нього немає школи.","My son is happy because he has no school today.","Mon fils est content parce qu'il n'a pas école aujourd'hui.","ابني سعيد لأنه ليس لديه مدرسة اليوم."]
+];
+// Two verbs: the conjugated verb (moet, wil, kan, ga…) flies to the end, in front of the infinitive
+const OM_TWO=[
+ ["Ik kan niet komen","ik *moet morgen werken","Я не можу прийти, бо завтра мушу працювати.","I can't come because I have to work tomorrow.","Je ne peux pas venir parce que je dois travailler demain.","لا أستطيع المجيء لأنني يجب أن أعمل غدًا."],
+ ["Ik leer Nederlands","ik *wil hier werken","Я вчу нідерландську, бо хочу тут працювати.","I'm learning Dutch because I want to work here.","J'apprends le néerlandais parce que je veux travailler ici.","أتعلم الهولندية لأنني أريد أن أعمل هنا."],
+ ["Ik bel de dokter","mijn dochter *moet een vaccin krijgen","Я телефоную лікареві, бо моїй доньці треба зробити щеплення.","I'm calling the doctor because my daughter needs a vaccination.","J'appelle le médecin parce que ma fille doit être vaccinée.","أتصل بالطبيب لأن ابنتي يجب أن تأخذ لقاحًا."],
+ ["Ik ga naar de winkel","ik *wil vanavond koken","Я йду в магазин, бо хочу ввечері готувати.","I'm going to the shop because I want to cook tonight.","Je vais au magasin parce que je veux cuisiner ce soir.","أذهب إلى المتجر لأنني أريد أن أطبخ هذا المساء."],
+ ["Ik sta vroeg op","ik *moet de kinderen naar school brengen","Я встаю рано, бо мушу відвести дітей до школи.","I get up early because I have to take the children to school.","Je me lève tôt parce que je dois emmener les enfants à l'école.","أستيقظ مبكرًا لأنني يجب أن أوصل الأطفال إلى المدرسة."],
+ ["Ik ben blij","ik *kan al een beetje Nederlands spreken","Я радий, бо вже трохи вмію говорити нідерландською.","I'm happy because I can already speak a little Dutch.","Je suis content parce que je sais déjà parler un peu néerlandais.","أنا سعيد لأنني أستطيع أن أتكلم القليل من الهولندية."],
+ ["Ik neem de trein","ik *ga morgen mijn zus bezoeken","Я їду потягом, бо завтра поїду в гості до сестри.","I'm taking the train because I'm going to visit my sister tomorrow.","Je prends le train parce que je vais rendre visite à ma sœur demain.","أركب القطار لأنني سأزور أختي غدًا."],
+ ["Ik blijf thuis","ik *moet voor mijn moeder zorgen","Я лишаюся вдома, бо мушу доглядати маму.","I'm staying home because I have to look after my mother.","Je reste à la maison parce que je dois m'occuper de ma mère.","أبقى في البيت لأنني يجب أن أعتني بأمي."],
+ ["Ik spaar geld","we *willen een auto kopen","Я відкладаю гроші, бо ми хочемо купити машину.","I'm saving money because we want to buy a car.","J'économise de l'argent parce que nous voulons acheter une voiture.","أدّخر المال لأننا نريد أن نشتري سيارة."],
+ ["Ik ga naar de gemeente","ik *moet een formulier invullen","Я йду до комуни, бо мушу заповнити формуляр.","I'm going to the municipality because I have to fill in a form.","Je vais à la commune parce que je dois remplir un formulaire.","أذهب إلى البلدية لأنني يجب أن أملأ استمارة."],
+ ["Ik ben nerveus","ik *ga morgen een toets doen","Я хвилююся, бо завтра писатиму тест.","I'm nervous because I'm going to take a test tomorrow.","Je suis nerveux parce que je vais passer un test demain.","أنا متوتر لأنني سأقدم اختبارًا غدًا."],
+ ["Ik koop een fiets","ik *wil naar het werk fietsen","Я купую велосипед, бо хочу їздити на роботу велосипедом.","I'm buying a bike because I want to cycle to work.","J'achète un vélo parce que je veux aller au travail à vélo.","أشتري دراجة لأنني أريد أن أذهب إلى العمل بالدراجة."],
+ ["Mijn zoon is boos","hij *mag niet buiten spelen","Мій син сердиться, бо йому не можна гратися надворі.","My son is angry because he isn't allowed to play outside.","Mon fils est fâché parce qu'il n'a pas le droit de jouer dehors.","ابني غاضب لأنه لا يُسمح له باللعب في الخارج."],
+ ["Ik zet een wekker","ik *moet om zes uur opstaan","Я ставлю будильник, бо мушу встати о шостій.","I'm setting an alarm because I have to get up at six.","Je mets un réveil parce que je dois me lever à six heures.","أضبط المنبه لأنني يجب أن أستيقظ في الساعة السادسة."]
+];
+const omItem=(r,two)=>{const w=r[1].split(" "),vi=w.findIndex(x=>x[0]==="*");w[vi]=w[vi].slice(1);return {main:r[0],w,vi,two,uk:r[2],en:r[3],fr:r[4],ar:r[5]}};
+const OM_ALL=[...OM_ONE.map(r=>omItem(r,false)),...OM_TWO.map(r=>omItem(r,true))];
+// word indexes in order: normal (want), omdat, and for two verbs also the Flemish "…werken moet" order
+const omIdx=it=>it.w.map((_,k)=>k);
+function omOrder(it,alt){const o=omIdx(it).filter(k=>k!==it.vi);if(it.two&&!alt)o.splice(o.length-1,0,it.vi);else o.push(it.vi);return o}
+const omText=(it,conj,order)=>it.main+", "+conj+" "+(order||(conj==="omdat"?omOrder(it):omIdx(it))).map(k=>it.w[k]).join(" ")+".";
+const OM_UI={
+ uk:{menu:"Обери вправу",rule:"omdat = «бо, тому що». Після omdat дієслово летить у кінець: …omdat ik ziek ben. Після want порядок звичайний: …want ik ben ziek.",
+  one:"Катапульта",oneS:"omdat закидає дієслово в кінець",wo:"want чи omdat?",woS:"Подивись, де дієслово, і обери сполучник",two:"Два дієслова",twoS:"…omdat ik morgen moet werken",
+  tapVerb:"Натисни дієслово в другій частині речення",tapVerb2:"Натисни дієслово, яке змінюється за особою (moet, wil, kan, ga…)",notVerb:"Це не воно. Шукай дієслово, що змінюється за особою: ben, heeft, moet…",
+  tapGap:"Куди omdat закине дієслово? Натисни ▾",sameGap:"Так було б із want. Після omdat дієслово летить далі — у кінець.",wrongGap:"Не туди: дієслово летить у самий кінець.",wrongGap2:"Майже! Дієслово стає в кінець — перед інфінітивом.",
+  alt:"Так теж кажуть у Бельгії. У школі частіше вчать: ",pickConj:"Який сполучник підходить?",ruleWant:"want → дієслово на 2-му місці, як у звичайному реченні",ruleOmdat:"omdat → дієслово в кінці",
+  ok:"Правильно!",no:"Не зовсім.",listen:"🔊 Послухати",score:"з першої спроби",again:"Ще раз",other:"Інші вправи"},
+ en:{menu:"Choose an exercise",rule:"omdat = \"because\". After omdat the verb flies to the end: …omdat ik ziek ben. After want the order stays normal: …want ik ben ziek.",
+  one:"Catapult",oneS:"omdat throws the verb to the end",wo:"want or omdat?",woS:"Look where the verb is and pick the conjunction",two:"Two verbs",twoS:"…omdat ik morgen moet werken",
+  tapVerb:"Tap the verb in the second part",tapVerb2:"Tap the verb that changes with the person (moet, wil, kan, ga…)",notVerb:"Not that one. Find the verb that changes with the person: ben, heeft, moet…",
+  tapGap:"Where does omdat throw the verb? Tap ▾",sameGap:"That would be with want. After omdat the verb flies further — to the end.",wrongGap:"Not there: the verb flies to the very end.",wrongGap2:"Almost! The verb goes to the end — in front of the infinitive.",
+  alt:"People say this in Belgium too. In class you'll usually learn: ",pickConj:"Which conjunction fits?",ruleWant:"want → verb in 2nd place, like a normal sentence",ruleOmdat:"omdat → verb at the end",
+  ok:"Correct!",no:"Not quite.",listen:"🔊 Listen",score:"right first time",again:"Again",other:"Other exercises"},
+ fr:{menu:"Choisis un exercice",rule:"omdat = « parce que ». Après omdat, le verbe s’envole à la fin : …omdat ik ziek ben. Après want, l’ordre reste normal : …want ik ben ziek.",
+  one:"Catapulte",oneS:"omdat lance le verbe à la fin",wo:"want ou omdat ?",woS:"Regarde où est le verbe et choisis la conjonction",two:"Deux verbes",twoS:"…omdat ik morgen moet werken",
+  tapVerb:"Touche le verbe dans la deuxième partie",tapVerb2:"Touche le verbe conjugué (moet, wil, kan, ga…)",notVerb:"Pas celui-là. Cherche le verbe conjugué : ben, heeft, moet…",
+  tapGap:"Où omdat lance-t-il le verbe ? Touche ▾",sameGap:"Ce serait avec want. Après omdat, le verbe va plus loin — à la fin.",wrongGap:"Pas là : le verbe va tout à la fin.",wrongGap2:"Presque ! Le verbe va à la fin — devant l’infinitif.",
+  alt:"On le dit aussi en Belgique. En cours, on apprend plutôt : ",pickConj:"Quelle conjonction convient ?",ruleWant:"want → verbe en 2e position, comme d’habitude",ruleOmdat:"omdat → verbe à la fin",
+  ok:"Correct !",no:"Pas tout à fait.",listen:"🔊 Écouter",score:"du premier coup",again:"Encore",other:"Autres exercices"},
+ ar:{menu:"اختر تمرينًا",rule:"omdat = «لأن». بعد omdat يطير الفعل إلى آخر الجملة: …omdat ik ziek ben. بعد want يبقى الترتيب عاديًا: …want ik ben ziek.",
+  one:"المنجنيق",oneS:"omdat يرمي الفعل إلى النهاية",wo:"want أم omdat؟",woS:"انظر أين الفعل واختر أداة الربط",two:"فعلان",twoS:"…omdat ik morgen moet werken",
+  tapVerb:"اضغط على الفعل في الجزء الثاني",tapVerb2:"اضغط على الفعل المصرَّف (moet, wil, kan, ga…)",notVerb:"ليس هذا. ابحث عن الفعل المصرَّف: ben, heeft, moet…",
+  tapGap:"أين يرمي omdat الفعل؟ اضغط ▾",sameGap:"هكذا يكون مع want. بعد omdat يذهب الفعل أبعد — إلى النهاية.",wrongGap:"ليس هنا: الفعل يذهب إلى آخر الجملة.",wrongGap2:"تقريبًا! الفعل يذهب إلى النهاية — قبل المصدر.",
+  alt:"يقال هذا أيضًا في بلجيكا. في الدرس يُعلَّم عادةً: ",pickConj:"أي أداة ربط تناسب؟",ruleWant:"want → الفعل في المكان الثاني كالمعتاد",ruleOmdat:"omdat → الفعل في النهاية",
+  ok:"صحيح!",no:"ليس تمامًا.",listen:"🔊 استمع",score:"من المحاولة الأولى",again:"مرة أخرى",other:"تمارين أخرى"}};
+const omU=()=>OM_UI[uiLang]||OM_UI.uk;
+const omTr=it=>it[uiLang]||it.en;
+const omCount=8;
+function omStart(){
+ const g=gU(),o=omU(),card=gHead(g.om,o.menu);
+ card.appendChild(el("p","om-rule",o.rule));
+ const list=el("div","g-list");
+ [["one","🎯"],["wo","⇄"],["two","🎯🎯"]].forEach(([m,ic])=>{const b=el("button","opt g-pick");b.type="button";
+  const t=el("span","om-pick");t.append(el("strong","",o[m]),el("small","",o[m+"S"]));b.append(el("span","g-ic",ic),t);b.onclick=()=>omPlay(m);list.appendChild(b)});
+ card.appendChild(list);
+}
+function omPlay(m){
+ const pool=m==="one"?OM_ALL.filter(x=>!x.two):m==="two"?OM_ALL.filter(x=>x.two):OM_ALL;
+ gState={om:m,deck:shuffle(pool).slice(0,omCount).map(it=>({it,conj:Math.random()<.5?"want":"omdat"})),i:0,score:0,xp:0};omNext();
+}
+function omNext(){
+ const s=gState;if(s.i>=s.deck.length){omEnd();return}
+ const d=s.deck[s.i];s.cur=d.it;s.conj=d.conj;s.step=s.om==="wo"?"pick":"verb";s.tries=0;s.order=null;s.alt=false;s.ans=null;
+ omRender();
+}
+const omReduce=()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}};
+function omRects(){const r={},l=document.querySelector(".om-line");if(!l)return r;const o=l.getBoundingClientRect();
+ l.querySelectorAll("[data-k]").forEach(c=>{const b=c.getBoundingClientRect();r[c.dataset.k]={left:b.left-o.left,top:b.top-o.top}});return r}
+function omFlip(before,mover){ // FLIP: every word glides to its new place, the verb flies in an arc
+ if(omReduce())return;
+ const l=document.querySelector(".om-line");if(!l)return;const o=l.getBoundingClientRect(); // positions relative to the line, so a layout shift above it doesn't count
+ l.querySelectorAll("[data-k]").forEach(c=>{const b=before[c.dataset.k];if(!b)return;
+  const a=c.getBoundingClientRect(),dx=b.left-(a.left-o.left),dy=b.top-(a.top-o.top);if(!dx&&!dy)return;const fly=c.dataset.k===mover;
+  const kf=fly?[{transform:`translate(${dx}px,${dy}px)`},{transform:`translate(${dx*.55}px,${Math.min(dy,0)*.5-90}px) rotate(-18deg) scale(1.18)`,offset:.45},{transform:"translate(0,0)"}]
+   :[{transform:`translate(${dx}px,${dy}px)`},{transform:"translate(0,0)"}];
+  try{c.animate(kf,{duration:fly?800:450,easing:"cubic-bezier(.3,.7,.3,1)"})}catch(e){}});
+ const cj=document.querySelector(".om-line .conj");if(cj)try{cj.animate([{transform:"scale(1)"},{transform:"scale(1.25) rotate(-6deg)"},{transform:"scale(1)"}],{duration:380})}catch(e){}
+}
+function omChip(it,k,cls){const c=el("span","om-chip"+(cls?" "+cls:""),it.w[k]);c.dataset.k=k;return tgt(c)}
+function omRender(){
+ const s=gState,g=gU(),o=omU(),it=s.cur,card=gHead(g.om,(s.i+1)+" / "+s.deck.length,true);gBar(s.i/s.deck.length);
+ const hint=el("p","om-hint"+(s.msg?" bad":""),s.msg||(s.step==="verb"?(it.two?o.tapVerb2:o.tapVerb):s.step==="gap"?o.tapGap:s.step==="pick"?o.pickConj:""));hint.id="omHint";s.msg="";
+ if(s.step==="done"&&s.om!=="wo"){hint.textContent="✓ "+o.ruleOmdat;hint.classList.add("good")}
+ if(s.step!=="done"||s.om!=="wo")card.appendChild(hint);
+ const box=el("div","om-box"),main=tgt(el("p","om-main",it.main+","));box.appendChild(main);
+ const line=el("div","om-line");line.dir="ltr";
+ const conj=s.step==="pick"?"…":s.om==="wo"?s.conj:"omdat";
+ const cj=tgt(el("span","om-chip conj"+(s.step==="pick"?" blank":""),conj));cj.dataset.k="c";line.appendChild(cj);
+ if(s.step==="verb"){
+  it.w.forEach((w,k)=>{const b=tgt(el("button","om-chip tap",w));b.type="button";b.dataset.k=k;b.onclick=()=>omPickVerb(k,b);line.appendChild(b)});
+ }else if(s.step==="gap"){
+  let p=0;const gap=n=>{const b=el("button","om-gap","▾");b.type="button";b.setAttribute("aria-label","▾ "+(n+1));b.onclick=()=>omGap(n,b);return b};
+  it.w.forEach((w,k)=>{if(k===it.vi){line.appendChild(omChip(it,k,"verb lift"));return}line.append(gap(p++),omChip(it,k))});
+  line.appendChild(gap(p));
+ }else{
+  const order=s.step==="pick"||s.om==="wo"?(s.conj==="omdat"?omOrder(it):omIdx(it)):s.order;
+  order.forEach(k=>line.appendChild(omChip(it,k,k===it.vi&&s.step==="done"?"verb":"")));
+ }
+ line.appendChild(el("span","om-dot","."));
+ box.appendChild(line);card.appendChild(box);
+ if(s.step==="pick"){
+  const opts=el("div","opts om-opts");["want","omdat"].forEach(c=>{const b=tgt(el("button","opt",c));b.type="button";b.onclick=()=>omAnswer(c);opts.appendChild(b)});card.appendChild(opts);
+ }
+ if(s.step==="done"){
+  const fb=el("div","feedback om-fb"),good=s.om==="wo"?s.ans===s.conj:true;
+  fb.appendChild(el("strong","",good?(s.om==="wo"||!s.tries?"⭐ ":"")+o.ok:o.no));
+  if(s.om==="wo"){
+   const both=el("div","om-both");
+   [["want",omIdx(it),o.ruleWant],["omdat",omOrder(it),o.ruleOmdat]].forEach(([c,ord,r])=>{
+    const row=el("div","om-row"+(c===s.conj?" on":""));const p=tgt(el("p","example",""));
+    p.append(it.main+", "+c+" ");ord.forEach((k,i)=>{const sp=el("span",k===it.vi?"om-v":"",it.w[k]);p.append(sp);if(i<ord.length-1)p.append(" ")});p.append(".");
+    row.append(p,el("small","",r));both.appendChild(row)});
+   fb.appendChild(both);
+  }
+  fb.appendChild(el("p","",omTr(it)));
+  if(s.alt)fb.appendChild(el("p","om-note",o.alt+"«…"+omOrder(it).slice(-2).map(k=>it.w[k]).join(" ")+"»"));
+  card.appendChild(fb);
+  const row=el("div","row");const hear=el("button","btn",o.listen);hear.type="button";hear.onclick=()=>say(omSay());
+  const nx=el("button","btn primary",g.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;omNext()};row.append(hear,nx);card.appendChild(row);
+  revealNext();
+ }
+}
+function omSay(){const s=gState,it=s.cur;return s.om==="wo"?omText(it,s.conj):omText(it,"omdat",s.order)}
+function omPickVerb(k,b){
+ const s=gState,it=s.cur;
+ if(k===it.vi){s.step="gap";omRender();return}
+ s.tries++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");
+ const h=$("omHint");if(h){h.textContent=omU().notVerb;h.classList.add("bad")}
+}
+function omGap(p,b){
+ const s=gState,o=omU(),it=s.cur,L=it.w.length-1;
+ const ok=it.two?(p===L-1||p===L):p===L;
+ if(!ok){s.tries++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");
+  const h=$("omHint");if(h){h.textContent=p===it.vi?o.sameGap:it.two?o.wrongGap2:o.wrongGap;h.classList.add("bad")}return}
+ const before=omRects();s.alt=it.two&&p===L;s.order=omOrder(it,s.alt);s.step="done";
+ const pts=s.tries?1:3;if(!s.tries)s.score++;s.xp+=pts;
+ omRender();omFlip(before,String(it.vi));setTimeout(()=>say(omSay()),omReduce()?0:650);
+}
+function omAnswer(c){
+ const s=gState;if(s.step!=="pick")return;s.ans=c;
+ if(c===s.conj){s.score++;s.xp+=2}
+ s.step="done";omRender();say(omSay());
+}
+function omEnd(){
+ const s=gState,g=gU(),o=omU(),card=gHead(g.om,o[s.om]);gBar(1);
+ card.append(el("p","g-big","⭐ "+s.score+" / "+s.deck.length),el("p","g-done",o.score+" · "+g.pts(s.xp)));
+ const row=el("div","row");const again=el("button","btn primary",o.again);again.type="button";again.id="nx";again.onclick=()=>omPlay(s.om);
+ const other=el("button","btn",o.other);other.type="button";other.onclick=omStart;row.append(again,other);card.appendChild(row);
+ gameDone("om",s.xp);
 }
 
 // --- 1. dialogue puzzle ---
