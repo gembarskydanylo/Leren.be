@@ -1,5 +1,5 @@
 /* Leren.be offline cache. Relative paths support GitHub Pages project sites. */
-const CACHE_NAME = "leren-be-v70";
+const CACHE_NAME = "leren-be-v71";
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./favicon-32.png", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./privacy.html", "./fonts/nunito.woff", "./fonts/unbounded.woff", "./dict/nl.json", "./img/chars/peter.webp", "./img/chars/peter-wow.webp", "./img/chars/peter-think.webp", "./img/chars/peter-sad.webp", "./img/chars/dafna.webp", "./img/chars/dafna-wow.webp", "./img/chars/dafna-think.webp", "./img/chars/dafna-sad.webp"];
 
 self.addEventListener("install", event => {
@@ -27,7 +27,9 @@ self.addEventListener("fetch", event => {
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       try {
-        const response = await fetch(request);
+        // no-cache: revalidate with the server, so a reload right after a deploy never gets a 10-minute-old page from the HTTP cache
+        let response = await fetch(request.url, {cache: "no-cache", credentials: "same-origin"});
+        if (response.redirected) response = await fetch(request);
         if (response && response.ok) {
           const cache = await caches.open(CACHE_NAME);
           cache.put(request, response.clone());
