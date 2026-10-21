@@ -2253,6 +2253,7 @@ const AUDIO_DIRS={m:"audio/nl/",f:"audio/nl-f/"};
 let audioSets={m:new Set(),f:new Set()},audioEl=null;
 function loadAudioManifest(){for(const k in AUDIO_DIRS){try{fetch(AUDIO_DIRS[k]+"manifest.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))audioSets[k]=new Set(a)}).catch(()=>{})}catch(e){}}}
 const REC_VOICE="__recorded",REC_VOICE_F="__recorded_f";
+const REC_RATE=.85; // recordings are made at -10%; played at 0.85 they are about 0.77 of normal speed (device voices use rate .75)
 function recVoice(){const v=lsGet("leren_rec_voice","");return v==="m"||v==="f"?v:(lsGet("leren_char","peter")==="dafna"?"f":"m")}
 function recordedAvailable(){return targetLang==="nl"&&(audioSets.m.size>0||audioSets.f.size>0)}
 function useRecorded(){return targetLang==="nl"&&!lsGet("leren_voice_force_tts",false)}
@@ -2263,7 +2264,7 @@ function playRecorded(text,button){
  try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
  if(audioEl){audioEl.pause();audioEl=null}
  updateSpeechState(false);
- const a=new Audio(AUDIO_DIRS[k]+h+".m4a");audioEl=a;
+ const a=new Audio(AUDIO_DIRS[k]+h+".m4a");audioEl=a;a.preservesPitch=true;a.playbackRate=REC_RATE;
  const done=()=>{if(token===speechToken)updateSpeechState(false)};
  a.onplaying=()=>{if(token===speechToken)updateSpeechState(true,button)};a.onended=done;
  a.onerror=()=>{done();audioSets[k].delete(h);if(token===speechToken)sayTTS(text,button)};
@@ -4482,14 +4483,31 @@ function speakSeq(lines,i=0){ // dialogue with two voices
 }
 function saySlow(t){try{const s=window.speechSynthesis;s.cancel();if(audioEl){audioEl.pause();audioEl=null}const u=new SpeechSynthesisUtterance(t);u.lang=speechLang();u.rate=.5;const v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith("nl"));if(v)u.voice=v;s.speak(u)}catch(e){}}
 function listenOnce(onText,onFail,lang){ // lang: recognition language, default = the studied language
+ // Keeps listening through short pauses: stops ~2.5 s after the last heard word (8 s if nothing was said yet), 40 s at most,
+ // or when the mic button is tapped again (gRec.stop()). Browsers end a session on any pause, so it restarts until then.
+ // Android Chrome repeats words in continuous mode, so there each session is single-shot and simply restarted.
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){onFail("unsupported");return}
+ const PAUSE=2500,WAIT=8000,MAX=40000,android=/Android/i.test(navigator.userAgent),t0=Date.now();
+ let parts=[],alts1=null,sess=[],sessAlts=null,timer=0,stopping=false,over=false,cur=null,heard=false,failed="";
+ const deliver=()=>{if(over)return;over=true;clearTimeout(timer);gRec=null;
+  const text=parts.join(" ").replace(/\s+/g," ").trim();
+  if(text)onText(parts.length===1&&alts1?alts1:[text]);else onFail(failed||"no-speech")};
+ const stop=()=>{if(stopping||over)return;stopping=true;clearTimeout(timer);try{cur&&cur.stop()}catch(e){}setTimeout(()=>{if(!over){if(sess.length){parts.push(...sess);sess=[]}deliver()}},1500)};
+ const arm=()=>{clearTimeout(timer);timer=setTimeout(stop,heard?PAUSE:WAIT)};
+ const run=()=>{
+  const r=new SR();cur=r;r.lang=lang||speechLang();r.continuous=!android;r.interimResults=true;r.maxAlternatives=4;sess=[];sessAlts=null;
+  r.onresult=e=>{const out=[];for(let i=0;i<e.results.length;i++){const t=String(e.results[i][0].transcript||"").trim();if(t)out.push(t)}
+   sess=out;sessAlts=e.results.length===1?[...e.results[0]].map(a=>String(a.transcript||"").trim()).filter(Boolean):null;
+   if(out.length){heard=true;arm()}};
+  r.onerror=e=>{const er=e.error||"error";if(er==="no-speech"||er==="aborted")return;failed=er;stopping=true};
+  r.onend=()=>{if(over)return;if(sess.length){if(!parts.length&&sessAlts&&sessAlts.length)alts1=sessAlts;else alts1=null;parts.push(...sess);sess=[]}
+   if(stopping||failed||Date.now()-t0>MAX){deliver();return}
+   try{run()}catch(e){deliver()}};
+  r.start()};
  try{try{window.speechSynthesis.cancel()}catch(e){}
-  const r=new SR();gRec=r;r.lang=lang||speechLang();r.interimResults=false;r.maxAlternatives=4;let got=false;
-  r.onresult=e=>{got=true;onText([...e.results[0]].map(a=>a.transcript))};
-  r.onerror=e=>{got=true;onFail(e.error||"error")};
-  r.onend=()=>{gRec=null;if(!got)onFail("no-speech")};
-  r.start();
- }catch(e){onFail("error")}
+  gRec={stop,abort(){stopping=true;over=true;clearTimeout(timer);gRec=null;try{cur&&cur.abort()}catch(e){}}};
+  arm();run();
+ }catch(e){gRec=null;onFail("error")}
 }
 function micBox(onAnswer){ // mic button + typing fallback; onAnswer(alternatives[])
  const g=gU(),box=el("div","g-mic"),st=el("p","g-heard");
@@ -4502,7 +4520,8 @@ function micBox(onAnswer){ // mic button + typing fallback; onAnswer(alternative
  typeB.onclick=()=>showType();
  const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
  if(!hasSR){mic.hidden=true;showType(g.noMic)}
- mic.onclick=()=>{mic.disabled=true;mic.textContent=g.listening;mic.classList.add("rec");
+ mic.onclick=()=>{if(mic.classList.contains("rec")){gRec&&gRec.stop&&gRec.stop();return}
+  mic.textContent=g.listening+" ⏹";mic.classList.add("rec");
   listenOnce(alts=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");st.textContent=g.heard+" «"+alts[0]+"»";onAnswer(alts)},
    err=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");if(err==="not-allowed"||err==="service-not-allowed")showType(g.micDenied);else if(err==="no-speech"||err==="aborted")st.textContent=g.tryAgain;else showType(g.noMic)})};
  const row=el("div","row g-mic-row");row.append(mic,typeB);box.append(row,st,form);return box;
@@ -5294,7 +5313,8 @@ function askRender(){
  form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())askSend(inp.value)};
  if(window.SpeechRecognition||window.webkitSpeechRecognition){ // questions are asked in the interface language
   const gg=gU(),st=el("p","g-heard"),mic=el("button","btn g-mic-btn",gg.mic);mic.type="button";mic.disabled=s.busy;
-  mic.onclick=()=>{mic.disabled=true;mic.textContent=gg.listening;mic.classList.add("rec");
+  mic.onclick=()=>{if(mic.classList.contains("rec")){gRec&&gRec.stop&&gRec.stop();return}
+   mic.textContent=gg.listening+" ⏹";mic.classList.add("rec");
    listenOnce(alts=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");askSend(alts[0],alts)},
     err=>{mic.disabled=false;mic.textContent=gg.mic;mic.classList.remove("rec");st.textContent=(err==="not-allowed"||err==="service-not-allowed")?gg.micDenied:gg.tryAgain},
     {uk:"uk-UA",en:"en-GB",fr:"fr-BE",ar:"ar-SA"}[uiLang]||"uk-UA")};
