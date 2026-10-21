@@ -7,6 +7,7 @@
 #   export AZURE_SPEECH_KEY=...   AZURE_SPEECH_REGION=westeurope
 #   bash tools/make-audio-azure.sh            # all texts (overwrites the Ellen files)
 #   LIMIT=10 bash tools/make-audio-azure.sh   # first 10 texts only, to listen first
+#   VOICE=nl-BE-DenaNeural OUT=audio/nl-f bash tools/make-audio-azure.sh   # female voice (Dafna) into its own folder
 # Voices: nl-BE-DenaNeural (female), nl-BE-ArnaudNeural (male), nl-NL-FennaNeural, nl-NL-MaartenNeural …
 set -e
 cd "$(dirname "$0")/.."
@@ -15,11 +16,13 @@ REGION="${AZURE_SPEECH_REGION:-westeurope}"
 VOICE="${VOICE:-nl-BE-ArnaudNeural}"
 RATE="${RATE:--10%}"        # a bit slower than normal for beginners
 LIMIT="${LIMIT:-0}"         # 0 = all
-OUT=audio/nl
+OUT="${OUT:-audio/nl}"     # audio/nl = male (Arnaud), audio/nl-f = female (Dena)
+TEXTS=audio/nl/texts.tsv  # one text list for every voice
+mkdir -p "$OUT"
 DONE="$OUT/.done-$VOICE"    # resume list: hashes already recorded with this voice
 touch "$DONE"
 esc(){ sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' <<<"$1"; }
-total=$(wc -l < "$OUT/texts.tsv" | tr -d ' '); n=0
+total=$(wc -l < "$TEXTS" | tr -d ' '); n=0
 while IFS=$'\t' read -r h t; do
   n=$((n+1)); [ -z "$h" ] && continue
   [ "$LIMIT" -gt 0 ] && [ "$n" -gt "$LIMIT" ] && break
@@ -40,9 +43,9 @@ while IFS=$'\t' read -r h t; do
   afconvert -f m4af -d aac -b 48000 "/tmp/leren-$h.wav" "$OUT/$h.m4a" || { echo; echo "Could not convert \"$t\". Run again to resume."; exit 1; }
   rm -f "/tmp/leren-$h.wav"; echo "$h" >> "$DONE"
   printf "\r%d / %d" "$n" "$total"
-done < "$OUT/texts.tsv"
+done < "$TEXTS"
 echo
 ( printf "["; first=1
   for f in "$OUT"/*.m4a; do b=$(basename "$f" .m4a); if [ $first = 1 ]; then first=0; else printf ","; fi; printf '"%s"' "$b"; done
   printf "]\n" ) > "$OUT/manifest.json"
-echo "Done with $VOICE. Bump CACHE_NAME in sw.js, then upload the audio/nl folder to GitHub."
+echo "Done with $VOICE. Bump CACHE_NAME in sw.js, then upload the $OUT folder to GitHub."
