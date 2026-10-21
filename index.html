@@ -2261,10 +2261,14 @@ function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang=
 
 let autoSpeech=lsGet("leren_auto_speech",true);
 function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>b.classList.remove("is-speaking"));if(active&&button)button.classList.add("is-speaking");const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
-function showSpeechNote(){
+const SPEECH_STUCK={uk:"Голос пристрою не відповідає. Повністю закрий браузер або застосунок і відкрий знову. Якщо не допоможе, перезавантаж телефон чи комп'ютер.",
+ en:"The device voice isn't responding. Close the browser or app completely and open it again. If that doesn't help, restart your phone or computer.",
+ fr:"La voix de l’appareil ne répond pas. Ferme complètement le navigateur ou l’application et rouvre-le. Si ça ne suffit pas, redémarre ton téléphone ou ton ordinateur.",
+ ar:"صوت الجهاز لا يستجيب. أغلق المتصفح أو التطبيق تمامًا ثم افتحه من جديد. إذا لم ينجح ذلك، أعد تشغيل الهاتف أو الحاسوب."};
+function showSpeechNote(stuck){
  const c=$("card");if(!c||$("speechNote"))return;
  const u=getUI(),box=el("div","speech-help");box.id="speechNote";
- box.appendChild(el("p","",u.speechHelp||u.noSpeech));
+ box.appendChild(el("p","",stuck?(SPEECH_STUCK[uiLang]||SPEECH_STUCK.uk):(u.speechHelp||u.noSpeech)));
  const how=el("a","",u.speechAndroidHelp||"Android help");how.href="https://support.google.com/accessibility/android/answer/6006983";how.target="_blank";how.rel="noopener noreferrer";
  const store=el("a","",u.speechStore||"Speech Services");store.href="https://play.google.com/store/apps/details?id=com.google.android.tts";store.target="_blank";store.rel="noopener noreferrer";
  box.append(how,store);c.appendChild(box)
@@ -2320,12 +2324,31 @@ function say(text,button){
  if(playRecorded(text,button))return;
  sayTTS(text,button);
 }
+// Device speech. Chrome can hang: after a blocked call (speech before the first tap → "not-allowed") or a cancel()
+// it may stay "speaking" forever and never start anything again. So: never speak before the first tap, give cancel()
+// a moment, keep the utterances referenced (Chrome drops events of collected ones), and if nothing starts within
+// 2.5 s reset the queue and retry once with the default voice; if that fails too, tell the learner how to fix it.
+const TTS={tok:0,keep:null};
+const ttsAllowed=()=>{const a=navigator.userActivation;return !a||a.hasBeenActive};
+function ttsSpeak(list,retried){
+ const s=window.speechSynthesis;if(!s||!list.length||!ttsAllowed())return false;
+ const tok=++TTS.tok;
+ const go=()=>{if(tok!==TTS.tok)return;let started=false;TTS.keep=list;
+  list[0].addEventListener("start",()=>{started=true});
+  try{s.resume()}catch(e){}
+  list.forEach(u=>s.speak(u));
+  setTimeout(()=>{if(started||tok!==TTS.tok)return;try{s.cancel()}catch(e){}
+   if(retried){showSpeechNote(true);return}
+   ttsSpeak(list.map(u=>{const n=new SpeechSynthesisUtterance(u.text);n.lang=u.lang;n.rate=u.rate;n.pitch=u.pitch;
+    n.onstart=u.onstart;n.onend=u.onend;n.onerror=u.onerror;return n}),true)},2500)};
+ if(s.speaking||s.pending){try{s.cancel()}catch(e){}setTimeout(go,120)}else go();
+ return true;
+}
 function sayTTS(text,button){
  try{
   if(audioEl){audioEl.pause();audioEl=null}
   if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){showSpeechNote();return}
   const synth=window.speechSynthesis,token=++speechToken;
-  if(synth.speaking||synth.pending)synth.cancel();
   updateSpeechState(false);
   const u=new SpeechSynthesisUtterance(String(text||""));
   u.lang=speechLang();u.rate=.75;u.volume=1;
@@ -2338,7 +2361,7 @@ function sayTTS(text,button){
   const done=()=>{if(token===speechToken)updateSpeechState(false)};
   u.onend=done;
   u.onerror=e=>{done();if(!["interrupted","canceled","not-allowed"].includes(e.error))showSpeechNote()};
-  synth.speak(u);
+  ttsSpeak([u]);
  }catch(e){updateSpeechState(false);showSpeechNote()}
 }
 function autoSay(text){if(autoSpeech)say(text)}
@@ -4527,14 +4550,14 @@ function gHead(title,sub,keep){
 }
 function gBar(p){$("barfill").style.width=Math.round(Math.max(0,Math.min(1,p))*100)+"%"}
 function speakSeq(lines,i=0){ // dialogue with two voices
- try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(audioEl){audioEl.pause();audioEl=null}
+ try{const s=window.speechSynthesis;if(!s)return;if(audioEl){audioEl.pause();audioEl=null}
   const voices=s.getVoices().filter(v=>v.lang.toLowerCase().startsWith("nl"));
-  lines.forEach(([who,t])=>{const u=new SpeechSynthesisUtterance(t);u.lang="nl-BE";u.rate=.8;
+  ttsSpeak(lines.map(([who,t])=>{const u=new SpeechSynthesisUtterance(t);u.lang="nl-BE";u.rate=.8;
    if(voices.length>1)u.voice=voices[who==="A"?0:1];else{const v=voices[0];if(v)u.voice=v;u.pitch=who==="A"?1.15:.8}
-   s.speak(u)});
+   return u}));
  }catch(e){}
 }
-function saySlow(t){try{const s=window.speechSynthesis;s.cancel();if(audioEl){audioEl.pause();audioEl=null}const u=new SpeechSynthesisUtterance(t);u.lang=speechLang();u.rate=.5;const v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith("nl"));if(v)u.voice=v;s.speak(u)}catch(e){}}
+function saySlow(t){try{const s=window.speechSynthesis;if(audioEl){audioEl.pause();audioEl=null}const u=new SpeechSynthesisUtterance(t);u.lang=speechLang();u.rate=.5;const pre=u.lang.slice(0,2).toLowerCase(),saved=lsGet("leren_voice_"+targetLang,""),vs=speechVoices.length?speechVoices:s.getVoices(),v=vs.find(x=>speechVoiceKey(x)===saved)||vs.find(x=>x.lang.toLowerCase().startsWith(pre));if(v){u.voice=v;u.lang=v.lang}ttsSpeak([u])}catch(e){}}
 function listenOnce(onText,onFail,lang){ // lang: recognition language, default = the studied language
  // Keeps listening through short pauses: stops ~2.5 s after the last heard word (8 s if nothing was said yet), 40 s at most,
  // or when the mic button is tapped again (gRec.stop()). Browsers end a session on any pause, so it restarts until then.
@@ -5512,10 +5535,10 @@ async function aiSend(text,alts){
 // ========== ASK {N}: questions about Dutch, English or French, answered in the interface language ==========
 function sayIn(text,lang){ // examples may be in another language than the one being studied
  if(lang===targetLang){say(text);return}
- try{const s=window.speechSynthesis;s.cancel();if(audioEl){audioEl.pause();audioEl=null}
+ try{const s=window.speechSynthesis;if(audioEl){audioEl.pause();audioEl=null}
   const u=new SpeechSynthesisUtterance(text);u.lang={nl:"nl-BE",en:"en-GB",fr:"fr-BE"}[lang]||lang;u.rate=.8;
   const pre=u.lang.slice(0,2),v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith(pre));if(v){u.voice=v;u.lang=v.lang}
-  s.speak(u)}catch(e){}
+  ttsSpeak([u])}catch(e){}
 }
 function askStart(){
  const g=aiU();if(!aiConsent(g.askTitle,askStart))return;
