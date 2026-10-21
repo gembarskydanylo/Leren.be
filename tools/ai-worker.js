@@ -69,7 +69,9 @@ Course grammar (follow it when correcting):
 ${T.grammar}
 Rules:
 - reply: very simple ${T.name}, max 2 short sentences, common words; continue the conversation and ask exactly ONE simple question. Always write reply in the target language, even if the learner writes in another language.
-- translation: translation of reply into ${L}.
+- translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
+- learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
+- Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
 ${extra}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
@@ -127,6 +129,12 @@ Write in ${L}: at most 8 short lines, each starting with "• ", at most 500 cha
 }
 
 const STR = {type: "string"};
+const TNAME = {uk: {nl: "нідерландською", en: "англійською", fr: "французькою"}, en: {nl: "in Dutch", en: "in English", fr: "in French"},
+  fr: {nl: "en néerlandais", en: "en anglais", fr: "en français"}, ar: {nl: "بالهولندية", en: "بالإنجليزية", fr: "بالفرنسية"}};
+const SAY_IT = {uk: t => `Ти написав не ${TNAME.uk[t] || TNAME.uk.nl}. Так це звучить ${TNAME.uk[t] || TNAME.uk.nl} — повтори вголос.`,
+  en: t => `That wasn't ${TNAME.en[t] || TNAME.en.nl}. This is how to say it ${TNAME.en[t] || TNAME.en.nl} — repeat it out loud.`,
+  fr: t => `Ce n'était pas ${TNAME.fr[t] || TNAME.fr.nl}. Voilà comment le dire ${TNAME.fr[t] || TNAME.fr.nl} — répète-le à voix haute.`,
+  ar: t => `لم تكتب ${TNAME.ar[t] || TNAME.ar.nl}. هكذا تقولها ${TNAME.ar[t] || TNAME.ar.nl} — كرّرها بصوت عالٍ.`};
 const schemaFor = (mode, L) => mode === "memo"
   ? {type: "object", additionalProperties: false, required: ["memory"], properties: {memory: {type: "string", description: `Notes about the learner in ${L}.`}}}
   : mode === "ask"
@@ -134,8 +142,9 @@ const schemaFor = (mode, L) => mode === "memo"
       answer: {type: "string", description: `Written in ${L}.`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
         properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L}.`}}}}}}
-  : {type: "object", additionalProperties: false, required: ["reply", "translation", "correction"], properties: {
-      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Translation of reply into ${L}.`},
+  : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
+      learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
+      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L}: translate every word, leave no words in the target language.`},
       correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation"],
         properties: {has_error: {type: "boolean"}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
 
@@ -221,7 +230,11 @@ export default {
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
       const k = o.correction;
-      const c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      let c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      const lastUser = String((msgs.filter(m => m.role === "user").pop() || {}).content || "").replace(/\[spoken;[^\]]*\]\s*$/, "").trim();
+      const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
+      if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
+        c = {original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)};
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
     } catch (e) { return json({error: "ai"}, 502); }
   }

@@ -739,7 +739,7 @@ body.sheet-open{overflow:hidden}
 .g-mic-btn.rec{animation:speechPulse 1s ease-in-out infinite alternate}
 .g-heard{margin:0;color:var(--ink-2);font-size:14px;text-align:center}
 .g-type{display:flex;gap:8px;width:100%}
-.g-type[hidden]{display:none}
+.g-type[hidden]{display:none}.ai-type input{flex:1;min-width:0}.g-type.ai-type .btn[type=submit]{flex:0 0 60px;width:60px;min-width:0;font-size:20px;padding:0}
 .g-type input{flex:1;min-width:0;min-height:50px;padding:0 14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);font:700 17px var(--font-body)}
 .g-type input:focus{outline:none;border-color:var(--oranje)}
 .g-bubble{display:inline-block;padding:12px 18px;border-radius:22px;background:var(--surface-2);border:2px solid var(--line)}
@@ -5231,7 +5231,11 @@ function aiRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  {const mb0=aiMemoryBox(aiRender);if(mb0)card.appendChild(mb0)}card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- const mb=micBox(alts=>aiSend(alts[0],alts));const f=mb.querySelector(".g-type");if(f)f.hidden=false;card.appendChild(mb);
+ const mb=micBox(alts=>aiSend(alts[0],alts));const f=mb.querySelector(".g-type");if(f){f.hidden=false;f.classList.add("ai-type");
+  const tb=mb.querySelector(".g-mic-row .btn:not(.g-mic-btn)");if(tb)tb.hidden=true;
+  const inp=f.querySelector("input");if(inp)inp.placeholder=({uk:"Напиши повідомлення…",en:"Type a message…",fr:"Écris un message…",ar:"اكتب رسالة…"})[uiLang]||"Type a message…";
+  const sb=f.querySelector("button[type=submit]");if(sb){sb.textContent="➤";sb.setAttribute("aria-label",({uk:"Надіслати",en:"Send",fr:"Envoyer",ar:"إرسال"})[uiLang]||"Send")}}
+ card.appendChild(mb);
  const key=s.msgs.length+(s.busy?"b":"");const last=chat.lastElementChild;if(last&&s.seen!==key){s.seen=key;last.scrollIntoView({block:"nearest"})}
 }
 async function aiSend(text,alts){
