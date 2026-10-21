@@ -4317,13 +4317,16 @@ async function pushDisable(){
  delete st.id;delete st.sig;lsSet("leren_push",st);
 }
 let pushTimer=0;
+// In the Android app (TWA) notification permission belongs to the app, and the page may keep reporting "default"
+// after it was granted — so only an explicit "denied" counts as off.
+const pushAllowed=()=>Notification.permission!=="denied";
 function pushSync(){ // keeps streak / last activity / language / time up to date on the server
- if(!pushReady()||!pushState().on||Notification.permission!=="granted")return;
+ if(!pushReady()||!pushState().on||!pushAllowed())return;
  clearTimeout(pushTimer);pushTimer=setTimeout(async()=>{try{const st=pushState();await pushWrite(await pushSubscribe(),st)}catch(e){}},1500);
 }
 function renderPushRow(){
  const row=$("remindRow");if(!row)return;row.hidden=!pushReady();if(row.hidden)return;
- const u=pushU(),st=pushState(),on=st.on&&Notification.permission==="granted";
+ const u=pushU(),st=pushState(),on=!!st.on&&pushAllowed();
  $("remindLabel").textContent=u.label;$("remindHint").textContent=on?u.on(hh(st.hour)):u.off;
  const t=$("remindToggle");t.setAttribute("aria-checked",String(on));
  const sel=$("remindHour");sel.hidden=!on;sel.setAttribute("aria-label",u.time);
