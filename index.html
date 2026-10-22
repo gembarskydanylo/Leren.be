@@ -2114,7 +2114,9 @@ function updateHeader(){
    if(!txt)return;
    try{
     const data=JSON.parse(txt);
-    if(data&&data.store&&typeof data.store==="object"){
+    if(data&&data.store&&typeof data.store==="object"&&!Array.isArray(data.store)&&
+       Object.values(data.store).every(v=>v&&typeof v==="object"&&!Array.isArray(v))&&
+       (data.score===undefined||typeof data.score==="number"&&Number.isFinite(data.score)&&data.score>=0)){
      store=data.store;
      if(typeof data.score==="number")score=data.score;
      saveStore();updateStats();alert("OK");
@@ -2974,7 +2976,58 @@ function sepAnswer(ok,btn){
 }
 
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
+// Dutch pronunciation: integrated with Toets, its best scores and XP.
+const DIPH_UI = {
+ uk: ["🛹 Дифтонги: Звукова гірка", "Дифтонг — плавний перехід між голосними в одному складі. Послухай приклади, а потім обери, чи є у слові дифтонг.", "Так, дифтонг", "Ні, не дифтонг", "Почати тест · 10 слів", "Послухати", "Це дифтонг: звук змінюється в межах одного складу.", "Це один голосний звук, а не дифтонг. Вимова може залежати від регіону.", "Trema позначає окремий склад: сусідні голосні не утворюють дифтонга.", "ooi та eeuw також вивчаємо як ковзні сполучення; у eeuw звук w можна розглядати як окремий приголосний."],
+ en: ["🛹 Diphthongs: Sound slide", "A diphthong glides between vowels within one syllable. Listen to the examples, then decide whether each word contains a diphthong.", "Yes, a diphthong", "No diphthong", "Start quiz · 10 words", "Listen", "This is a diphthong: the sound changes within one syllable.", "This represents one vowel, not a diphthong. Pronunciation may vary by region.", "The diaeresis marks a separate syllable: these adjacent vowels do not form a diphthong.", "We also practise ooi and eeuw as gliding combinations; the w in eeuw can be treated as a separate consonant."],
+ fr: ["🛹 Diphtongues : la glissade sonore", "Une diphtongue glisse entre deux voyelles dans une seule syllabe. Écoutez les exemples, puis indiquez si le mot contient une diphtongue.", "Oui, une diphtongue", "Pas de diphtongue", "Commencer · 10 mots", "Écouter", "C’est une diphtongue : le son change dans une seule syllabe.", "Ces lettres représentent une seule voyelle, pas une diphtongue. La prononciation peut varier selon la région.", "Le tréma marque une syllabe séparée : ces voyelles ne forment pas de diphtongue.", "Nous étudions aussi ooi et eeuw comme combinaisons glissantes ; le w de eeuw peut être considéré comme une consonne séparée."],
+ ar: ["🛹 الأصوات المزدوجة: الانزلاق الصوتي", "الصوت المزدوج انتقال بين صوتين متحركين في مقطع واحد. استمع إلى الأمثلة ثم حدد هل تحتوي الكلمة على صوت مزدوج.", "نعم، صوت مزدوج", "ليس صوتًا مزدوجًا", "ابدأ الاختبار · 10 كلمات", "استمع", "هذا صوت مزدوج: يتغير الصوت داخل مقطع واحد.", "تمثل هذه الحروف صوتًا متحركًا واحدًا وليس صوتًا مزدوجًا. قد يختلف النطق حسب المنطقة.", "تشير النقطتان إلى مقطع منفصل: لا يشكل هذان الحرفان صوتًا مزدوجًا.", "نتدرب أيضًا على ooi و eeuw كتراكيب انزلاقية؛ ويمكن اعتبار w في eeuw حرفًا ساكنًا منفصلًا."]
+};
+const DIPH_WORDS = [
+ ["huis","ui",1,"будинок","house","maison","منزل"],
+ ["trein","ei",1,"поїзд","train","train","قطار"],
+ ["kijk","ij",1,"дивись","look","regarde","انظر"],
+ ["koud","ou",1,"холодний","cold","froid","بارد"],
+ ["blauw","au",1,"синій","blue","bleu","أزرق"],
+ ["tuin","ui",1,"сад","garden","jardin","حديقة"],
+ ["vrouw","ou",1,"жінка","woman","femme","امرأة"],
+ ["blij","ij",1,"радісний","happy","joyeux","سعيد"],
+ ["saus","au",1,"соус","sauce","sauce","صلصة"],
+ ["mooi","ooi",1,"красивий","beautiful","beau","جميل"],
+ ["leeuw","eeuw",1,"лев","lion","lion","أسد"],
+ ["boek","oe",0,"книга","book","livre","كتاب"],
+ ["fiets","ie",0,"велосипед","bicycle","vélo","دراجة"],
+ ["neus","eu",0,"ніс","nose","nez","أنف"],
+ ["stoel","oe",0,"стілець","chair","chaise","كرسي"],
+ ["bier","ie",0,"пиво","beer","bière","بيرة"],
+ ["leuk","eu",0,"класний","nice","sympa","لطيف"],
+ ["brood","oo",0,"хліб","bread","pain","خبز"],
+ ["groen","oe",0,"зелений","green","vert","أخضر"],
+ ["Oekraïne","Oe-kra-ï-ne",2,"Україна","Ukraine","Ukraine","أوكرانيا"],
+ ["ruïne","ru-ï-ne",2,"руїна","ruin","ruine","أطلال"],
+ ["poëzie","po-ë-zie",2,"поезія","poetry","poésie","شعر"]
+];
+function diphU(){return DIPH_UI[uiLang]||DIPH_UI.en}
+function diphQuestions(){
+ return shuffle([...DIPH_WORDS]).slice(0,10).map(w=>({type:"diph",word:w[0],
+  q:Object.fromEntries(Object.entries(DIPH_UI).map(([l,u])=>[l,w[0]+" · "+w[{uk:3,en:4,fr:5,ar:6}[l]]])),
+  opts:[Object.fromEntries(Object.entries(DIPH_UI).map(([l,u])=>[l,u[2]])),Object.fromEntries(Object.entries(DIPH_UI).map(([l,u])=>[l,u[3]]))],
+  ok:w[2]===1?0:1,
+  explanation:Object.fromEntries(Object.entries(DIPH_UI).map(([l,u])=>[l,w[1]+" — "+u[w[2]===1?6:w[2]===2?8:7]+(["ooi","eeuw"].includes(w[1])?" "+u[9]:"")]))}));
+}
+function diphTheory(){
+ const card=$("card"),u=diphU();card.replaceChildren();
+ card.append(el("h2","",u[0]),el("p","toets-text",u[1]));
+ const row=el("div","row");
+ [["ui","huis"],["ij / ei","trein"],["ou / au","koud"],["ooi","mooi"],["eeuw","leeuw"]].forEach(([label,word])=>{
+  const b=el("button","btn", "🔊 "+label+" · "+word);b.type="button";b.onclick=()=>sayIn(word,"nl");row.appendChild(b);
+ });card.append(row,el("p","toets-text",u[9]),el("p","toets-text","oe · ie · eu · oo — "+u[7]),el("p","toets-text","Oekraïne · ruïne · poëzie — "+u[8]));
+ const go=el("button","btn primary",u[4]);go.type="button";go.onclick=()=>{TOETS.find(t=>t.id==="diphthongs").questions=diphQuestions();nextToetsQuestion()};
+ const back=el("button","btn",getUI().toetsBack);back.type="button";back.onclick=startToets;card.append(go,back);
+}
+
 const TOETS = [
+ {id:"diphthongs",lvl:"a11",kind:"pronunciation",title:Object.fromEntries(Object.entries(DIPH_UI).map(([l,u])=>[l,u[0]])),questions:diphQuestions()},
   {
     id: "t1",
     title: {uk:"Тест 1 · Базове спілкування", en:"Test 1 · Basic communication", fr:"Test 1 · Communication de base", ar:"اختبار 1 · التواصل الأساسي"},
@@ -3172,7 +3225,7 @@ function startToets(){
       toetsQ = 0;
       toetsRight = 0;
       toetsLocked = false;
-      nextToetsQuestion();
+      if(t.id==="diphthongs") diphTheory(); else nextToetsQuestion();
     };
     card.appendChild(b);
   });
@@ -3210,12 +3263,17 @@ function nextToetsQuestion(){
     top.appendChild(tgt(sent));
   }
 
+  if(item.type === "diph"){
+    const audio=el("button","btn","🔊 "+diphU()[5]);audio.type="button";
+    audio.onclick=()=>sayIn(item.word,"nl");top.appendChild(audio);
+  }
   card.appendChild(top);
 
   const opts = el("div","opts");
   card.appendChild(opts);
   const fb = el("div","feedback");
   fb.id = "feedback";
+  fb.setAttribute("role","status");
   card.appendChild(fb);
   const row = el("div","row");
   const nx = el("button","btn primary", u.toetsNext || u.next || "Далі");
@@ -3273,10 +3331,12 @@ function answerToets(ok, btn, item){
     const label = (ans && typeof ans === "object") ? (ans[uiLang]||ans.en||ans.uk||"") : String(ans??"");
     fb.appendChild(el("p","example", label));
   }
+  if(item.explanation) fb.appendChild(el("p","example",item.explanation[uiLang]||item.explanation.en));
+  fb.setAttribute("role","status");
   const nx = $("nx");
   if(nx) nx.disabled = false;
   revealNext();
-  const sp = toetsSpoken(item); if(sp) autoSay(sp);
+  const sp = toetsSpoken(item); if(sp && item.type!=="diph") autoSay(sp);
 }
 
 function endToets(){
@@ -3312,7 +3372,7 @@ function endToets(){
   const row = el("div","row");
   const again = el("button","btn", u.toetsAgain || "Ще раз");
   again.type = "button";
-  again.onclick = () => { toetsQ=0; toetsRight=0; nextToetsQuestion(); };
+  again.onclick = () => { toetsQ=0; toetsRight=0; if(test && test.id==="diphthongs") test.questions=diphQuestions(); nextToetsQuestion(); };
   row.appendChild(again);
   const back = el("button","btn primary", unlockedNow ? "→ " + unlockedNow.name : (u.toetsBack || "До тестів"));
   back.type = "button";
@@ -4111,6 +4171,7 @@ function applyView(){
 }
 function setView(v){
  const prev=view;view=v;if(typeof gStop==="function")gStop();
+ if(prev==="games"&&v!=="games"){if(gState&&gState.chat)aiRemember(gState);gState=null;}
  const wasGames=cardOwner==="games";
  if(v==="toets"){cardOwner="lesson";mode="toets";updateModeButtons();newRound()}
  else if(v==="lesson"){const need=mode!==lessonMode||wasGames;cardOwner="lesson";mode=lessonMode;updateModeButtons();if(need)newRound()}
@@ -4299,15 +4360,17 @@ async function pushWrite(sub,st){
  if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(e){}throw new Error("Firestore "+r.status+(m?": "+m:""))}
  st.id=id;st.sig=sig;lsSet("leren_push",st);return true;
 }
-async function pushSubscribe(){
+async function pushSubscribe(create=false){
  const reg=await navigator.serviceWorker.ready;
- return (await reg.pushManager.getSubscription())||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToBytes(PUSH_CONFIG.vapid)});
+ const sub=await reg.pushManager.getSubscription();
+ if(sub||!create)return sub;
+ return reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToBytes(PUSH_CONFIG.vapid)});
 }
 async function pushEnable(){
  const u=pushU(),st=pushState();
- const perm=await Notification.requestPermission();
+ const perm=Notification.permission==="granted"?"granted":await Notification.requestPermission();
  if(perm!=="granted"){toast(u.denied);return false}
- try{const sub=await pushSubscribe();st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
+ try{const sub=await pushSubscribe(true);st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
  catch(e){st.on=false;lsSet("leren_push",st);toast(u.fail+" ("+String(e&&e.message||e).slice(0,140)+")");return false}
 }
 async function pushDisable(){
@@ -4322,7 +4385,11 @@ let pushTimer=0;
 const pushAllowed=()=>Notification.permission!=="denied";
 function pushSync(){ // keeps streak / last activity / language / time up to date on the server
  if(!pushReady()||!pushState().on||!pushAllowed())return;
- clearTimeout(pushTimer);pushTimer=setTimeout(async()=>{try{const st=pushState();await pushWrite(await pushSubscribe(),st)}catch(e){}},1500);
+ clearTimeout(pushTimer);pushTimer=setTimeout(async()=>{try{
+  const st=pushState();if(!st.on||!pushAllowed())return;
+  // Background sync must never create a subscription: subscribe() can prompt again.
+  const sub=await pushSubscribe();if(sub&&pushState().on)await pushWrite(sub,st);
+ }catch(e){}},1500);
 }
 function renderPushRow(){
  const row=$("remindRow");if(!row)return;row.hidden=!pushReady();if(row.hidden)return;
@@ -4543,6 +4610,7 @@ function gameDone(id,xp){
  const w=weekState();if(!w.played.includes(id))w.played.push(id);
  if(!w.done&&w.played.length>=5){w.done=true;addXP(100);toast(gU().weekDone,true)}
  lsSet("leren_week",w);
+ saveStore();updateStats();
 }
 function gHead(title,sub,keep){
  if(!keep)gStop();cardOwner="games";
@@ -4774,7 +4842,7 @@ th:first-child,td:first-child{width:31%}.fold{display:flex;justify-content:flex-
 // --- games home ---
 function renderGamesHome(){
  if(gState&&gState.chat)aiRemember(gState); // leaving the AI chat: save what was learned about the learner
- gStop();cardOwner="games";const g=gU(),rec=gRecords(),w=weekState();
+ gStop();gState=null;cardOwner="games";const g=gU(),rec=gRecords(),w=weekState();
  $("prog").textContent=g.title;$("rnd").textContent="";gBar(Math.min(1,w.played.length/5));
  const card=$("card");card.replaceChildren();
  const head=el("div","g-home-head");head.append(el("h2","",g.title),el("p","",g.sub));card.appendChild(head);
@@ -5042,7 +5110,8 @@ function rpRender(){
  }
  const line=d.lines[s.i],target=line[1];
  const turn=el("div","g-turn");turn.append(el("strong","",g.yourTurn+" "),el("span","",dlgLineTr(line)));card.appendChild(turn);
- const done=()=>{s.ok++;s.log.push(s.i);s.i++;s.tiles=null;s.placed=[];say(target);setTimeout(rpStep,Math.min(4200,900+target.length*55))};
+ let answered=false;
+ const done=()=>{if(answered||gState!==s||view!=="games"||!turn.isConnected)return;answered=true;s.ok++;s.log.push(s.i);s.i++;s.tiles=null;s.placed=[];say(target);setTimeout(()=>{if(gState===s&&view==="games"&&turn.isConnected)rpStep()},Math.min(4200,900+target.length*55))};
  if(s.lvl===1){
   const others=DIALOGUES.flatMap(x=>x.lines.map(l=>l[1])).filter(t=>t!==target);
   const opts=shuffle([target,...shuffle(others).slice(0,2)]);
@@ -5136,7 +5205,7 @@ function mmRender(){
   b.onclick=()=>{if(s.busy||open)return;s.open.push(i);if(c.nl)say(labelFor(c.p));
    if(s.open.length===2){s.moves++;const [x,y]=s.open.map(k=>s.cards[k]);
     if(x.p.id===y.p.id&&x.nl!==y.nl){s.found.add(x.p.id);s.open=[];if(s.found.size===6)return mmEnd()}
-    else{s.busy=true;setTimeout(()=>{s.open=[];s.busy=false;mmRender()},900)}}
+    else{s.busy=true;setTimeout(()=>{s.open=[];s.busy=false;if(gState===s&&view==="games"&&grid.isConnected)mmRender()},900)}}
    mmRender()};
   grid.appendChild(b)});
  card.appendChild(grid);
@@ -5618,7 +5687,7 @@ const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
 const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
-function syncApply(o){Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
+function syncApply(o){if(!o||typeof o!=="object"||Array.isArray(o))throw new Error("Invalid cloud progress");Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
 const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false};
 async function acctLoad(){
  if(acct.mod)return acct.mod;
@@ -5638,7 +5707,8 @@ async function syncPush(){
 }
 async function syncPull(){ // newest copy wins; the first sign-in on a device asks when both sides have progress
  const r=await fsUserDoc("GET");if(r.status===404){await syncPush();return}if(!r.ok)return;
- const d=await r.json(),cloudTs=Number(d.fields&&d.fields.updated&&d.fields.updated.integerValue||0);let cloud={};try{cloud=JSON.parse(d.fields.blob.stringValue)}catch(e){}
+ const d=await r.json(),cloudTs=Number(d.fields&&d.fields.updated&&d.fields.updated.integerValue||0);let cloud;try{cloud=JSON.parse(d.fields.blob.stringValue)}catch(e){return}
+ if(!cloud||typeof cloud!=="object"||Array.isArray(cloud))return;
  const localAt=Number(lsGet("leren_sync_at",0)),take=()=>{syncApply(cloud);lsSet("leren_sync_at",cloudTs);location.reload()};
  if(!localAt){
   const c=Number(cloud.poly_score||0),l=Number(localStorage.getItem("poly_score")||0);
