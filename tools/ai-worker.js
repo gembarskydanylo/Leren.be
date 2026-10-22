@@ -179,6 +179,7 @@ export default {
     }
 
     let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }
+    // JSON parsing also accepts null, arrays and primitives; validate before reading fields.
     if (!body || typeof body !== "object" || Array.isArray(body)) return json({error: "bad request"}, 400);
     if (body.mode === "report") { // Google Play: users can flag AI content inside the app; read them in Cloudflare → leren-ai → Logs
       console.log("AI_REPORT " + JSON.stringify({at: new Date().toISOString(), kind: String(body.kind || "").slice(0, 10), target: String(body.target || "").slice(0, 5), lang: String(body.lang || "").slice(0, 5), text: String(body.text || "").slice(0, 1500)}));
