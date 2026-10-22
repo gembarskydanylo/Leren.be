@@ -893,7 +893,15 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   <div class="meta" data-views="lesson toets games"><span id="prog"></span><span id="rnd"></span></div>
   <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets games"><i id="barfill"></i></div>
   <section class="card" id="card" aria-live="polite" data-views="lesson toets games"></section>
-
+<!-- LEREN.BE — ІНТЕРАКТИВНИЙ УРОК ДИФТОНГІВ -->
+<section
+  id="lerenbe-diphthongs-section"
+  data-views="lesson"
+  hidden
+>
+  <div data-lerenbe-diphthongs></div>
+</section>
+<!-- КІНЕЦЬ УРОКУ ДИФТОНГІВ -->
   <section class="dict-view" id="dictView" data-views="dict" hidden>
     <h2 class="view-title" id="dictTitle"></h2>
     <div class="dict-search"><span class="ico" aria-hidden="true" data-ico="search"></span><input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-labelledby="dictTitle"><button type="button" class="dx-clear" id="dictClear" aria-label="Clear" hidden>×</button></div>
@@ -1025,7 +1033,7 @@ const UI={
 const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2.1",need:3000,soon:true}];
 const CATEGORIES=[
  {id:"comm",lvl:"a11", tabs:["phrases", "questions", "pronouns", "graag"]},
- {id:"grammar",lvl:"a11", tabs:["klanken", "vervoegen", "verbs", "dehet", "adjectives"]},
+ {id:"grammar",lvl:"a11", tabs:["klanken", "diphthongs", "vervoegen", "verbs", "dehet", "adjectives"]},
  {id:"nums",lvl:"a11", tabs:["numbers", "time", "clock", "months", "weather"]},
  {id:"people",lvl:"a11", tabs:["family", "jobs", "body", "lichaammv", "klachten", "doctor"]},
  {id:"home",lvl:"a11", tabs:["home", "shop", "clothes", "colors", "animals"]},
@@ -5957,12 +5965,8 @@ function updateHelpBtn(){}
 setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
-   <!-- LEREN.BE — МАЙСТЕРНЯ ДИФТОНГІВ -->
-<section id="lerenbe-diphthongs-section">
-  <div data-lerenbe-diphthongs></div>
-</section>
+   <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
 <script src="./modules/diphthongs/widget.js" defer></script>
-<!-- КІНЕЦЬ МОДУЛЯ -->
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
