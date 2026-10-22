@@ -1029,6 +1029,11 @@ const UI={
   modes:{study:"دراسة",quiz:"اختبار",audio:"استماع",review:"مراجعة",toets:"Toets A1"},audioSub:"استمع واختر الترجمة",toetsTitle:"Toets A1",toetsChoose:"اختر اختباراً",toetsScore:"نتيجتك",toetsPassed:"نجحت!",toetsFailed:"تحتاج إلى مزيد من التدريب",toetsNext:"السؤال التالي",toetsFinish:"إنهاء الاختبار",toetsAgain:"أعد هذا الاختبار",toetsBack:"قائمة الاختبارات",toetsQ:"سؤال",toetsOf:"من"}
 };
 
+// Diphthongs lesson labels for every explanation language.
+const DIPH_TAB_LABELS={uk:"🛹 Дифтонги",en:"🛹 Diphthongs",fr:"🛹 Diphtongues",ar:"🛹 الأصوات المزدوجة"};
+for(const [lang,label] of Object.entries(DIPH_TAB_LABELS)){
+ if(UI[lang]){UI[lang].tabs.diphthongs=label;UI[lang].subs.diphthongs=label;}
+}
 // Levels: unlock by points (need) or by passing the level test
 const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2.1",need:3000,soon:true}];
 const CATEGORIES=[
@@ -2390,7 +2395,46 @@ function updateProgress(){
  $("barfill").style.width=pct+"%";$("barfill").parentElement.setAttribute("aria-valuenow",String(pct));
 }
 
+// Diphthongs widget is a self-contained lesson, not a DATA quiz deck.
+function syncDiphthongsLesson(){
+ const active=view==="lesson"&&tab==="diphthongs"&&targetLang==="nl";
+ const section=$("lerenbe-diphthongs-section"),card=$("card");
+ if(section)section.hidden=!active;
+ if(card)card.hidden=active||!card.dataset.views.split(" ").includes(view);
+ const modes=$("lessonModes");if(modes)modes.hidden=active||view!=="lesson";
+ document.querySelectorAll('.meta[data-views],.bar[data-views]').forEach(e=>{
+  if(active)e.hidden=true;
+  else e.hidden=!e.dataset.views.split(" ").includes(view);
+ });
+ return active;
+}
+window.addEventListener('message',event=>{
+ if(event.origin!==window.location.origin||!event.data||event.data.type!=='lerenbe-clock-height')return;
+ const frame=document.querySelector('#card iframe[src="./modules/clock/widget.html"]');
+ if(frame&&event.source===frame.contentWindow){
+  const height=Number(event.data.height);
+  if(Number.isFinite(height)&&height>250&&height<2000)frame.style.height=`${height+12}px`;
+ }
+});
+function showInteractiveClock(){
+ const card=$("card");
+ if(!card)return;
+ card.hidden=false;
+ card.replaceChildren();
+ const frame=document.createElement("iframe");
+ frame.src="./modules/clock/widget.html";
+ frame.title="Інтерактивний годинник — нідерландська мова";
+ frame.loading="eager";
+ frame.style.cssText="width:100%;height:680px;border:0;border-radius:18px;background:#fff;";
+ card.appendChild(frame);
+ const progress=$("prog"),roundLabel=$("rnd"),bar=$("barfill");
+ if(progress)progress.textContent="🕒 Інтерактивний годинник";
+ if(roundLabel)roundLabel.textContent="Покрути стрілки пальцем або мишкою";
+ if(bar)bar.style.width="0%";
+}
 function newRound(){
+ if(view==="lesson"&&tab==="diphthongs"&&targetLang==="nl"){syncDiphthongsLesson();return;}
+ if(view==="lesson"&&tab==="clock"&&mode==="study"&&targetLang==="nl"){showInteractiveClock();return;}
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
  if(mode==="toets"){startToets();return;}
  if(isKl()){klNewRound();return}
@@ -4176,6 +4220,7 @@ mode=lessonMode;
 function applyView(){
  const m=document.querySelector("main");if(m)m.dataset.view=view;
  document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
+ syncDiphthongsLesson();
 }
 function setView(v){
  const prev=view;view=v;if(typeof gStop==="function")gStop();
