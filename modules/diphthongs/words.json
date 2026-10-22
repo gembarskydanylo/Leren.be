@@ -1,0 +1,156 @@
+[
+  {
+    "word": "huis",
+    "tr": "будинок",
+    "isDiph": true,
+    "pattern": "ui",
+    "exp": "Сполучення «ui» — дифтонг із ковзанням."
+  },
+  {
+    "word": "trein",
+    "tr": "поїзд",
+    "isDiph": true,
+    "pattern": "ei",
+    "exp": "«ei» вимовляється як дифтонг."
+  },
+  {
+    "word": "kijk",
+    "tr": "дивись",
+    "isDiph": true,
+    "pattern": "ij",
+    "exp": "«ij» вимовляється як дифтонг."
+  },
+  {
+    "word": "koud",
+    "tr": "холодний",
+    "isDiph": true,
+    "pattern": "ou",
+    "exp": "«ou» вимовляється як дифтонг."
+  },
+  {
+    "word": "blauw",
+    "tr": "синій",
+    "isDiph": true,
+    "pattern": "auw",
+    "exp": "«auw» містить дифтонг."
+  },
+  {
+    "word": "tuin",
+    "tr": "сад",
+    "isDiph": true,
+    "pattern": "ui",
+    "exp": "«ui» — типовий нідерландський дифтонг."
+  },
+  {
+    "word": "vrouw",
+    "tr": "жінка",
+    "isDiph": true,
+    "pattern": "ouw",
+    "exp": "«ou» містить дифтонг."
+  },
+  {
+    "word": "blij",
+    "tr": "радісний",
+    "isDiph": true,
+    "pattern": "ij",
+    "exp": "«ij» — дифтонг."
+  },
+  {
+    "word": "saus",
+    "tr": "соус",
+    "isDiph": true,
+    "pattern": "au",
+    "exp": "«au» — дифтонг."
+  },
+  {
+    "word": "mooi",
+    "tr": "красивий",
+    "isDiph": true,
+    "pattern": "ooi",
+    "exp": "«ooi» має перехід голосного до [j]."
+  },
+  {
+    "word": "leeuw",
+    "tr": "лев",
+    "isDiph": true,
+    "pattern": "eeuw",
+    "exp": "«eeuw» має перехід до [w]."
+  },
+  {
+    "word": "boek",
+    "tr": "книга",
+    "isDiph": false,
+    "pattern": "oe",
+    "exp": "«oe» передає один голосний звук."
+  },
+  {
+    "word": "fiets",
+    "tr": "велосипед",
+    "isDiph": false,
+    "pattern": "ie",
+    "exp": "«ie» передає один голосний звук."
+  },
+  {
+    "word": "neus",
+    "tr": "ніс",
+    "isDiph": false,
+    "pattern": "eu",
+    "exp": "«eu» передає один голосний звук."
+  },
+  {
+    "word": "stoel",
+    "tr": "стілець",
+    "isDiph": false,
+    "pattern": "oe",
+    "exp": "«oe» — монофтонг."
+  },
+  {
+    "word": "bier",
+    "tr": "пиво",
+    "isDiph": false,
+    "pattern": "ie",
+    "exp": "«ie» — монофтонг."
+  },
+  {
+    "word": "leuk",
+    "tr": "класний",
+    "isDiph": false,
+    "pattern": "eu",
+    "exp": "«eu» — монофтонг."
+  },
+  {
+    "word": "brood",
+    "tr": "хліб",
+    "isDiph": false,
+    "pattern": "oo",
+    "exp": "«oo» передає довгий голосний звук."
+  },
+  {
+    "word": "groen",
+    "tr": "зелений",
+    "isDiph": false,
+    "pattern": "oe",
+    "exp": "«oe» — монофтонг."
+  },
+  {
+    "word": "Oekraïne",
+    "tr": "Україна",
+    "isDiph": false,
+    "pattern": "trema",
+    "exp": "Trema над «ï» позначає межу складів: Oe-kra-ï-ne."
+  },
+  {
+    "word": "ruïne",
+    "tr": "руїна",
+    "isDiph": false,
+    "pattern": "trema",
+    "exp": "Trema над «ï» позначає роздільне читання голосних: ru-ï-ne."
+  },
+  {
+    "word": "poëzie",
+    "tr": "поезія",
+    "isDiph": false,
+    "pattern": "trema",
+    "exp": "Trema над «ë» позначає межу складів: po-ë-zie."
+  }
+]

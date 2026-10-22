@@ -1,0 +1,543 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#fff"><!-- ПОЧАТОК ІНТЕРАКТИВНОГО ГОДИННИКА ДЛЯ LERENBE.COM -->
+<div class="lbe-clock-wrapper">
+  <div class="lbe-clock-card">
+    
+    <div class="lbe-clock-header">
+      <span class="lbe-clock-tag">Інтерактивна гра</span>
+      <h2>🖐️ Покрути годинник пальцем!</h2>
+      <p>Торкнись циферблата і веди стрілку колом. Відпусти — і почуєш вимову!</p>
+    </div>
+
+    <nav class="clock-tabs" aria-label="Режим годинника">
+      <button type="button" id="clockLearnTab" class="active" onclick="clockSetMode('learn')">🖐️ Навчання</button>
+      <button type="button" id="clockQuizTab" onclick="clockSetMode('quiz')">🎯 Вистав час</button>
+    </nav>
+    <div id="clockQuizPanel" class="clock-quiz" hidden>
+      <div class="clock-quiz-caption">Послухай або прочитай час і вистав стрілки</div>
+      <strong id="clockTarget">half drie</strong>
+      <div class="clock-quiz-actions">
+        <button type="button" onclick="clockSpeakTarget()">🔊 Послухати завдання</button>
+        <span id="clockScore">Правильно: 0 / 0</span>
+      </div>
+      <p id="clockQuizFeedback" aria-live="polite">Вистав час і відпусти стрілку — перевірка через 1 секунду.</p>
+
+    </div>
+    <!-- Інтерактивний циферблат -->
+    <div class="lbe-clock-container">
+      <div class="lbe-clock-face" id="clockDial">
+        <!-- Стрілки -->
+        <div class="lbe-hand lbe-hour-hand" id="hourHand"></div>
+        <div class="lbe-hand lbe-min-hand" id="minuteHand">
+          <div class="lbe-hand-handle"></div> <!-- Точка для зручного захвату -->
+        </div>
+        <div class="lbe-center-cap"></div>
+
+        <!-- Цифри на циферблаті -->
+        <span class="num n12">12</span>
+        <span class="num n1">1</span>
+        <span class="num n2">2</span>
+        <span class="num n3">3</span>
+        <span class="num n4">4</span>
+        <span class="num n5">5</span>
+        <span class="num n6">6</span>
+        <span class="num n7">7</span>
+        <span class="num n8">8</span>
+        <span class="num n9">9</span>
+        <span class="num n10">10</span>
+        <span class="num n11">11</span>
+      </div>
+    </div>
+
+    <!-- Текстовий блок -->
+    <div class="lbe-clock-output" id="clockLearnOutput">
+      <div class="lbe-time-row">
+        <span class="lbe-digital-pill" id="digitalTime">14:20</span>
+        <div class="lbe-quick-hours">
+          <button onclick="changeHour(-1)">-1 год</button>
+          <button onclick="changeHour(1)">+1 год</button>
+        </div>
+      </div>
+
+      <div class="lbe-dutch-box">
+        <div class="lbe-dutch-text" id="dutchTime">tien voor half drie</div>
+      </div>
+
+      <div class="lbe-logic-hint" id="uaHint">
+        💡 <b>Логіка:</b> 10 хв ДО половини 3-ї (прив'язка до <i>half drie</i>)
+      </div>
+
+      <div>
+        <button class="lbe-speak-btn" onclick="speakCurrentTime()">
+          🔊 Послухати ще раз
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .lbe-clock-wrapper {
+    max-width: 500px;
+    margin: 20px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .lbe-clock-wrapper * { box-sizing: border-box; }
+
+  .lbe-clock-card {
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+  }
+
+  .lbe-clock-header {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    padding: 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid #fed7aa;
+  }
+  .lbe-clock-tag {
+    background: #ea580c;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .lbe-clock-header h2 { margin: 10px 0 4px; color: #9a3412; font-size: 1.35rem; }
+  .lbe-clock-header p { margin: 0; color: #c2410c; font-size: 0.9rem; }
+
+  /* Циферблат для пальця */
+  .lbe-clock-container {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0 10px;
+  }
+  .lbe-clock-face {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: #f8fafc;
+    border: 8px solid #0f172a;
+    position: relative;
+    cursor: grab;
+    touch-action: none; /* Забороняє скрол сторінки при крутінні */
+    box-shadow: inset 0 3px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .lbe-clock-face:active { cursor: grabbing; }
+
+  /* Стрілки */
+  .lbe-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 6px;
+    pointer-events: none; /* Кліки ловить сам циферблат */
+    transition: transform 0.05s ease-out;
+  }
+  .lbe-hour-hand {
+    width: 8px;
+    height: 64px;
+    background: #334155;
+    margin-left: -4px;
+    z-index: 5;
+  }
+  .lbe-min-hand {
+    width: 5px;
+    height: 96px;
+    background: #ff7a00;
+    margin-left: -2.5px;
+    z-index: 6;
+  }
+  /* Ручка-кружечок на кінці хвилинної стрілки */
+  .lbe-hand-handle {
+    width: 20px;
+    height: 20px;
+    background: #ff7a00;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .lbe-center-cap {
+    width: 18px;
+    height: 18px;
+    background: #0f172a;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    border: 3px solid #fff;
+  }
+
+  /* Цифри */
+  .num {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #64748b;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+  .n12 { top: 12%; left: 50%; }
+  .n1  { top: 17%; left: 70%; }
+  .n2  { top: 30%; left: 83%; }
+  .n3  { top: 50%; left: 88%; }
+  .n4  { top: 70%; left: 83%; }
+  .n5  { top: 83%; left: 70%; }
+  .n6  { top: 88%; left: 50%; }
+  .n7  { top: 83%; left: 30%; }
+  .n8  { top: 70%; left: 17%; }
+  .n9  { top: 50%; left: 12%; }
+  .n10 { top: 30%; left: 17%; }
+  .n11 { top: 17%; left: 30%; }
+
+  /* Вивід тексту */
+  .lbe-clock-output {
+    padding: 12px 24px 24px;
+    text-align: center;
+  }
+  .lbe-time-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .lbe-digital-pill {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 4px 16px;
+    border-radius: 20px;
+    border: 1px solid #cbd5e1;
+  }
+  .lbe-quick-hours button {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .lbe-quick-hours button:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+  .lbe-dutch-text {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.3px;
+    min-height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lbe-logic-hint {
+    font-size: 0.95rem;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-block;
+    margin: 8px 0 16px;
+    line-height: 1.4;
+  }
+  .lbe-speak-btn {
+    background: #ff7a00;
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(255, 122, 0, 0.25);
+    transition: background 0.15s;
+  }
+  .lbe-speak-btn:hover { background: #ea580c; }
+  .clock-tabs{display:flex;gap:8px;padding:14px 18px 4px}
+  .clock-tabs button,.clock-quiz-actions button{flex:1;border:2px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
+  .clock-tabs button.active,.clock-quiz-actions button:first-child{background:#ea580c;color:#fff;border-color:#ea580c}
+  .clock-quiz{text-align:center;margin:12px 18px 0;padding:16px;border:2px solid #fed7aa;border-radius:18px;background:#fff7ed;color:#1e293b}
+  .clock-quiz[hidden],.clock-quiz-actions button[hidden]{display:none!important}
+  .clock-quiz-caption{font-size:13px;color:#9a3412;font-weight:700}
+  #clockTarget{display:block;font-size:clamp(20px,5vw,26px);margin:8px 0;color:#0f172a}
+  .clock-quiz-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .clock-quiz-actions button{flex:0 1 auto}
+  #clockScore{font-size:13px;font-weight:800}
+  #clockQuizFeedback{font-size:14px;margin:10px 0;min-height:22px}
+</style>
+
+<script>
+  const LBE_HOURS = [
+    'twaalf', 'één', 'twee', 'drie', 'vier', 'vijf',
+    'zes', 'zeven', 'acht', 'negen', 'tien', 'elf', 'twaalf'
+  ];
+
+  let currentHours = 14;   // 24-годинний формат
+  let currentMinutes = 20; // 0, 5, 10, ...
+  let currentPhrase = '';
+  let clockMode = 'learn';
+  let clockTargetHour = 2, clockTargetMinute = 30;
+  let clockAttempts = 0, clockCorrect = 0, clockAnswered = false;
+  let isDragging = false;
+  let prevRawAngle = 0;
+  let clockCheckTimer = null, clockNextTimer = null;
+  function clockCancelTimers(){clearTimeout(clockCheckTimer);clearTimeout(clockNextTimer);clockCheckTimer=null;clockNextTimer=null;}
+  function clockScheduleAction(){
+    clearTimeout(clockCheckTimer);
+    if(clockMode==='quiz' && !clockAnswered){
+      document.getElementById('clockQuizFeedback').textContent='⏳ Перевіряємо через 1 секунду…';
+      clockCheckTimer=setTimeout(clockCheck,1000);
+    } else if(clockMode==='learn') clockCheckTimer=setTimeout(speakCurrentTime,1000);
+  }
+
+  // Визначення фрази за нідерландськими правилами
+  function calculateDutchTime(hours24, minutes) {
+    const h12 = hours24 % 12 || 12;
+    const nextH12 = (h12 % 12) + 1;
+
+    const curHName = LBE_HOURS[h12];
+    const nextHName = LBE_HOURS[nextH12];
+
+    let phrase = '';
+    let logic = '';
+
+    switch (minutes) {
+      case 0:
+        phrase = `${curHName} uur`;
+        logic = `Рівна година: назва години + <b>"uur"</b>`;
+        break;
+      case 5:
+        phrase = `vijf over ${curHName}`;
+        logic = `5 хвилин після поточної години (<i>${curHName}</i>)`;
+        break;
+      case 10:
+        phrase = `tien over ${curHName}`;
+        logic = `10 хвилин після поточної години (<i>${curHName}</i>)`;
+        break;
+      case 15:
+        phrase = `kwart over ${curHName}`;
+        logic = `Чверть по (<i>${curHName}</i>). "Kwart" = 15 хв`;
+        break;
+      case 20:
+        phrase = `tien voor half ${nextHName}`;
+        logic = `🔥 <b>Увага:</b> 10 хв ДО половини <i>${nextHName}</i>`;
+        break;
+      case 25:
+        phrase = `vijf voor half ${nextHName}`;
+        logic = `5 хв ДО половини наступної години (<i>half ${nextHName}</i>)`;
+        break;
+      case 30:
+        phrase = `half ${nextHName}`;
+        logic = `🔥 <b>Половина!</b> Але називаємо НАСТУПНУ годину (<i>half ${nextHName}</i>)`;
+        break;
+      case 35:
+        phrase = `vijf over half ${nextHName}`;
+        logic = `5 хв ПІСЛЯ половини (<i>half ${nextHName}</i>)`;
+        break;
+      case 40:
+        phrase = `tien over half ${nextHName}`;
+        logic = `🔥 10 хв ПІСЛЯ половини (<i>half ${nextHName}</i>)`;
+        break;
+      case 45:
+        phrase = `kwart voor ${nextHName}`;
+        logic = `За чверть до наступної години (<i>${nextHName}</i>)`;
+        break;
+      case 50:
+        phrase = `tien voor ${nextHName}`;
+        logic = `10 хвилин до наступної години (<i>${nextHName}</i>)`;
+        break;
+      case 55:
+        phrase = `vijf voor ${nextHName}`;
+        logic = `5 хвилин до наступної години (<i>${nextHName}</i>)`;
+        break;
+    }
+
+    return { phrase, logic };
+  }
+
+  // Оновлення циферблата
+  function renderClock() {
+    const minuteDeg = (currentMinutes / 60) * 360;
+    const hourDeg = ((currentHours % 12) / 12) * 360 + (currentMinutes / 60) * 30;
+
+    document.getElementById('minuteHand').style.transform = `rotate(${minuteDeg}deg)`;
+    document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
+
+    const hh = currentHours < 10 ? '0' + currentHours : currentHours;
+    const mm = currentMinutes < 10 ? '0' + currentMinutes : currentMinutes;
+    document.getElementById('digitalTime').textContent = `${hh}:${mm}`;
+
+    const info = calculateDutchTime(currentHours, currentMinutes);
+    currentPhrase = info.phrase;
+    document.getElementById('dutchTime').textContent = info.phrase;
+    document.getElementById('uaHint').innerHTML = `💡 <b>Логіка:</b> ${info.logic}`;
+  }
+
+  // Обчислення кута пальця/мишки відносно центру циферблата
+  function getAngleFromEvent(e, rect) {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+
+    // Кут у градусах від 12 годин
+    let deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+    if (deg < 0) deg += 360;
+    return deg;
+  }
+
+  // Зміна часу пальцем
+  function handlePointerMove(e) {
+    const dial = document.getElementById('clockDial');
+    const rect = dial.getBoundingClientRect();
+    const deg = getAngleFromEvent(e, rect);
+
+    // Магнітний крок по 5 хвилин
+    const rawMinutes = (deg / 360) * 60;
+    let snappedMinutes = Math.round(rawMinutes / 5) * 5;
+    if (snappedMinutes === 60) snappedMinutes = 0;
+
+    // Відстежуємо перехід стрілки через 12 (зміна години)
+    if (prevRawAngle > 300 && deg < 60) {
+      currentHours = (currentHours + 1) % 24; // вперед
+    } else if (prevRawAngle < 60 && deg > 300) {
+      currentHours = (currentHours - 1 + 24) % 24; // назад
+    }
+    prevRawAngle = deg;
+
+    if (snappedMinutes !== currentMinutes) { currentMinutes = snappedMinutes; }
+    renderClock();
+  }
+
+  // Події Pointer (працюють для Touch і мишки однаково добре)
+  const dialEl = document.getElementById('clockDial');
+
+  dialEl.addEventListener('pointerdown', (e) => {
+    if(clockMode==='quiz' && clockAnswered)return;
+    clockCancelTimers();
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    isDragging = true;
+    dialEl.setPointerCapture(e.pointerId);
+    
+    const rect = dialEl.getBoundingClientRect();
+    prevRawAngle = getAngleFromEvent(e, rect);
+    handlePointerMove(e);
+  });
+
+  dialEl.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    handlePointerMove(e);
+  });
+
+  function stopDragging(e) {
+    if (isDragging) {
+      isDragging = false;
+      try { dialEl.releasePointerCapture(e.pointerId); } catch(err){}
+      if(e.type==='pointerup') clockScheduleAction();
+    }
+  }
+
+  dialEl.addEventListener('pointerup', stopDragging);
+  dialEl.addEventListener('pointercancel', stopDragging);
+
+  // Кнопки коригування годин
+  function changeHour(delta) {
+    currentHours = (currentHours + delta + 24) % 24;
+    renderClock();
+    clockCancelTimers();
+    clockScheduleAction();
+  }
+
+  // Озвучення (Вимова у Фландрії)
+  function speakCurrentTime() {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(currentPhrase);
+    utt.lang = 'nl-BE'; 
+    utt.rate = 0.85;
+    window.speechSynthesis.speak(utt);
+  }
+
+  function clockSetMode(mode){
+    clockCancelTimers();
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    clockMode=mode;
+    document.getElementById('clockLearnTab').classList.toggle('active',mode==='learn');
+    document.getElementById('clockQuizTab').classList.toggle('active',mode==='quiz');
+    document.getElementById('clockQuizPanel').hidden=mode!=='quiz';
+    document.getElementById('clockLearnOutput').hidden=mode==='quiz';
+    document.querySelector('.lbe-clock-header p').textContent=mode==='quiz'
+      ? 'Прочитай завдання та вистав стрілки. Після відпускання перевірка через 1 секунду.'
+      : 'Торкнись циферблата і веди стрілку колом. Через 1 секунду після відпускання почуєш вимову!';
+    if(mode==='quiz')clockNext();
+    clockNotifyHeight();
+  }
+  function clockNext(){
+    clockCancelTimers();
+    clockAnswered=false;
+    const options=[0,5,10,15,20,25,30,35,40,45,50,55];
+    let h,m;
+    do{h=1+Math.floor(Math.random()*12);m=options[Math.floor(Math.random()*options.length)];}
+    while(h===clockTargetHour&&m===clockTargetMinute);
+    clockTargetHour=h;clockTargetMinute=m;
+    document.getElementById('clockTarget').textContent=calculateDutchTime(h,m).phrase;
+    document.getElementById('clockQuizFeedback').textContent='Вистав час і відпусти стрілку — перевірка через 1 секунду.';
+    currentHours=12;currentMinutes=0;renderClock();
+    clockNotifyHeight();
+  }
+  function clockCheck(){
+    clockCheckTimer=null;
+    if(clockAnswered || clockMode!=='quiz' || isDragging)return;
+    clockAttempts++;
+    const correct=(currentHours%12)===(clockTargetHour%12)&&currentMinutes===clockTargetMinute;
+    if(correct){
+      clockAnswered=true;
+      clockCorrect++;
+      document.getElementById('clockQuizFeedback').textContent=`🎉 Правильно! ${calculateDutchTime(clockTargetHour,clockTargetMinute).phrase} — наступне завдання через 2 секунди.`;
+      clockSpeakTarget();
+      clockNextTimer=setTimeout(()=>{if(clockMode==='quiz')clockNext();},2000);
+    } else {
+      document.getElementById('clockQuizFeedback').textContent='❌ Спробуй ще раз! Перевір годину та хвилини.';
+    }
+    document.getElementById('clockScore').textContent=`Правильно: ${clockCorrect} / ${clockAttempts}`;
+    clockNotifyHeight();
+  }
+  function clockSpeakTarget(){
+    if(!('speechSynthesis' in window))return;
+    speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(calculateDutchTime(clockTargetHour,clockTargetMinute).phrase);
+    utterance.lang='nl-BE';utterance.rate=.85;speechSynthesis.speak(utterance);
+  }
+  function clockNotifyHeight(){
+    if(window.parent===window)return;
+    requestAnimationFrame(()=>window.parent.postMessage({type:'lerenbe-clock-height',height:document.documentElement.scrollHeight},window.location.origin));
+  }
+  window.addEventListener('load',clockNotifyHeight);
+  if('ResizeObserver' in window)new ResizeObserver(clockNotifyHeight).observe(document.body);
+  // Старт на 14:20
+  renderClock();
+</script>
+<!-- КІНЕЦЬ ІНТЕРАКТИВНОГО ГОДИННИКА --></body></html>
