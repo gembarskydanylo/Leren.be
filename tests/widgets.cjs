@@ -51,7 +51,7 @@ function clock(){
  console.log('PASS: actual clock pointer rollover both directions, shared/automatic speech, French UI, quiz mode, timer cancellation');
 }
 async function cache(){
- const listeners={},cacheFiles=[],removed=[];const context=vm.createContext({self:{addEventListener:(k,f)=>listeners[k]=f,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>({addAll:async files=>cacheFiles.push(...files)}),keys:async()=>['leren-be-v79','leren-be-v81','other-app'],delete:async k=>removed.push(k)}});
+ const listeners={},cacheFiles=[],removed=[];const context=vm.createContext({self:{addEventListener:(k,f)=>listeners[k]=f,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>({addAll:async files=>cacheFiles.push(...files)}),keys:async()=>['leren-be-v79','leren-be-v82','other-app'],delete:async k=>removed.push(k)}});
  vm.runInContext(read('sw.js'),context);let promise;
  listeners.install({waitUntil:p=>promise=p});await promise;
  listeners.activate({waitUntil:p=>promise=p});await promise;
