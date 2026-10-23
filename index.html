@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Leren.be">
 <meta name="application-name" content="Leren.be">
-<meta name="description" content="Вивчення нідерландської мови A1.1 з вправами, тестами та повторенням.">
+<meta name="description" content="Нідерландська: курси NT2 1.1 (A1) та 1.2 (A2), вправи, ігри й тести.">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="preload" href="./fonts/unbounded.woff" as="font" type="font/woff" crossorigin>
@@ -16,7 +16,7 @@
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<title>Leren.be — Nederlands A1.1</title>
+<title>Leren.be — Nederlands 1.1 &amp; 1.2</title>
 <style>
 /* =========================================================
    Leren.be design system v2 — "Oranje × België"
@@ -1003,6 +1003,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
+<script src="./course-curriculum.js"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -1902,6 +1903,8 @@ DATA.objpron=R([
  ["b_o_ze","hen, ze","them","les, leur","їх, їм","ـهم","👪","Ik help ze met hun huiswerk.","Я допомагаю їм з домашнім завданням."]
 ]);
 
+LerenCurriculum.apply({DATA,CATEGORIES,UI,R,LEVELS});
+
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
 function loadNumber(key,fallback){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}catch(e){return fallback}}
 function loadStore(){try{const v=JSON.parse(localStorage.getItem("poly_progress")||"{}");return v&&typeof v==="object"&&!Array.isArray(v)?v:{}}catch(e){return {}}}
@@ -1911,12 +1914,15 @@ if(targetLang===uiLang)uiLang="uk";
 
 let currentCat=validStored("poly_cat",CATEGORIES.map(c=>c.id),"comm");
 let tab=validStored("poly_tab",["all",...CATEGORIES.flatMap(c=>c.tabs)],"questions");
+// Follow a saved lesson to its new chapter without resetting its progress.
+if(tab!=="all")currentCat=(CATEGORIES.find(c=>c.tabs.includes(tab))||CATEGORIES[0]).id;
 const activeCatObj=CATEGORIES.find(c=>c.id===currentCat)||CATEGORIES[0];
 if(tab!=="all"&&!activeCatObj.tabs.includes(tab)||!tabVisible(tab)){currentCat=CATEGORIES[0].id;tab=CATEGORIES[0].tabs[0];}
 
 let mode="quiz",deck=[],q=0,right=0,round=1,roundTotal=0,roundBase=0,locked=false,item=null;
 let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore();
 let curLevel=validStored("poly_level",LEVELS.map(l=>l.id),"a11");
+if(tab!=="all"&&levelUnlocked(catLevel(currentCat)))curLevel=catLevel(currentCat);
 if(!levelUnlocked(curLevel))curLevel="a11";
 if(catLevel(currentCat)!==curLevel){const c=levelCats(curLevel)[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all"}
 
@@ -1967,10 +1973,10 @@ function updateStats(){
 
 // ========== PROGRESSION: levels, XP bar, daily goal, streak ==========
 const PG_UI={
- uk:{xpTo:n=>"ще "+n+" балів до",unlockedBy:"відкрито",soon:"скоро",streak:n=>n+" "+(n%10===1&&n%100!==11?"день":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?"дні":"днів"))+" поспіль",streak0:"Почни серію сьогодні",goal:"Ціль дня",goalDone:"Ціль дня виконано! 🔥",goalTitle:"Ціль на день",goalHint:"Скільки балів набирати щодня? Виконана ціль продовжує серію днів 🔥.",goals:[[30,"Легко","≈ 3 хв"],[50,"Нормально","≈ 5 хв"],[100,"Серйозно","≈ 10 хв"],[200,"Інтенсив","≈ 20 хв"]],close:"Готово",lockedTitle:l=>"Рівень "+l+" ще закритий",lockedText:(n,l)=>"Набери ще "+n+" балів — або, якщо вже знаєш матеріал, склади тест на рівень і відкрий "+l+" одразу.",takeTest:"Пройти тест на рівень",backTo:l=>"Вчитися далі ("+l+")",levelUp:l=>"🎉 Відкрито рівень "+l+"!",soonText:"Рівень A2 вже в розробці. Збирай бали — вони збережуться.",learned:"Вивчено",review:"до повторення",bestOnly:b=>"Бали дає лише новий рекорд (було "+b+")",newBest:n=>"Новий рекорд! +"+n+" балів",passedLT:l=>"Склав! Рівень "+l+" відкрито 🎉",ltNeed:p=>"Для відкриття рівня треба "+p+"% правильних",easyXp:"+2 · це слово ти вже знаєш",levelLabel:"Рівень",xp:"балів"},
- en:{xpTo:n=>n+" more points to",unlockedBy:"unlocked",soon:"soon",streak:n=>n+"-day streak",streak0:"Start a streak today",goal:"Daily goal",goalDone:"Daily goal reached! 🔥",goalTitle:"Daily goal",goalHint:"How many points per day? Reaching the goal keeps your streak 🔥 going.",goals:[[30,"Easy","≈ 3 min"],[50,"Regular","≈ 5 min"],[100,"Serious","≈ 10 min"],[200,"Intense","≈ 20 min"]],close:"Done",lockedTitle:l=>"Level "+l+" is still locked",lockedText:(n,l)=>"Earn "+n+" more points — or, if you already know this, pass the level test and unlock "+l+" right away.",takeTest:"Take the level test",backTo:l=>"Keep learning ("+l+")",levelUp:l=>"🎉 Level "+l+" unlocked!",soonText:"Level A2 is in the works. Keep collecting points — they're saved.",learned:"Learned",review:"Review",bestOnly:b=>"Points only for a new best (was "+b+")",newBest:n=>"New best! +"+n+" points",passedLT:l=>"Passed! Level "+l+" unlocked 🎉",ltNeed:p=>"You need "+p+"% correct to unlock the level",easyXp:"+2 · you already know this word",levelLabel:"Level",xp:"points"},
- fr:{xpTo:n=>"encore "+n+" points pour",unlockedBy:"débloqué",soon:"bientôt",streak:n=>n+" jours d'affilée",streak0:"Commence une série aujourd'hui",goal:"Objectif du jour",goalDone:"Objectif du jour atteint ! 🔥",goalTitle:"Objectif quotidien",goalHint:"Combien de points par jour ? Atteindre l'objectif prolonge ta série 🔥.",goals:[[30,"Facile","≈ 3 min"],[50,"Normal","≈ 5 min"],[100,"Sérieux","≈ 10 min"],[200,"Intensif","≈ 20 min"]],close:"OK",lockedTitle:l=>"Le niveau "+l+" est encore verrouillé",lockedText:(n,l)=>"Gagne encore "+n+" points — ou, si tu connais déjà, réussis le test de niveau pour débloquer "+l+" tout de suite.",takeTest:"Passer le test de niveau",backTo:l=>"Continuer ("+l+")",levelUp:l=>"🎉 Niveau "+l+" débloqué !",soonText:"Le niveau A2 est en préparation. Continue à gagner des points, ils sont gardés.",learned:"Appris",review:"À réviser",bestOnly:b=>"Points seulement pour un nouveau record (avant "+b+")",newBest:n=>"Nouveau record ! +"+n+" points",passedLT:l=>"Réussi ! Niveau "+l+" débloqué 🎉",ltNeed:p=>"Il faut "+p+"% de bonnes réponses pour débloquer le niveau",easyXp:"+2 · tu connais déjà ce mot",levelLabel:"Niveau",xp:"points"},
- ar:{xpTo:n=>"بقي "+n+" نقطة حتى",unlockedBy:"مفتوح",soon:"قريباً",streak:n=>n+" أيام متتالية",streak0:"ابدأ سلسلة اليوم",goal:"هدف اليوم",goalDone:"تحقق هدف اليوم! 🔥",goalTitle:"الهدف اليومي",goalHint:"كم نقطة في اليوم؟ تحقيق الهدف يحافظ على سلسلتك 🔥.",goals:[[30,"سهل","≈ 3 د"],[50,"عادي","≈ 5 د"],[100,"جاد","≈ 10 د"],[200,"مكثف","≈ 20 د"]],close:"تم",lockedTitle:l=>"المستوى "+l+" ما زال مغلقاً",lockedText:(n,l)=>"اجمع "+n+" نقطة أخرى — أو إذا كنت تعرف المادة، اجتز اختبار المستوى وافتح "+l+" فوراً.",takeTest:"خذ اختبار المستوى",backTo:l=>"تابع التعلم ("+l+")",levelUp:l=>"🎉 تم فتح المستوى "+l+"!",soonText:"المستوى A2 قيد الإعداد. استمر في جمع النقاط، فهي محفوظة.",learned:"تم تعلمها",review:"للمراجعة",bestOnly:b=>"النقاط فقط لرقم قياسي جديد (كان "+b+")",newBest:n=>"رقم قياسي جديد! +"+n+" نقطة",passedLT:l=>"نجحت! تم فتح المستوى "+l+" 🎉",ltNeed:p=>"تحتاج "+p+"% إجابات صحيحة لفتح المستوى",easyXp:"+2 · أنت تعرف هذه الكلمة",levelLabel:"المستوى",xp:"نقاط"}
+ uk:{xpTo:n=>"ще "+n+" балів до",unlockedBy:"відкрито",soon:"скоро",streak:n=>n+" "+(n%10===1&&n%100!==11?"день":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?"дні":"днів"))+" поспіль",streak0:"Почни серію сьогодні",goal:"Ціль дня",goalDone:"Ціль дня виконано! 🔥",goalTitle:"Ціль на день",goalHint:"Скільки балів набирати щодня? Виконана ціль продовжує серію днів 🔥.",goals:[[30,"Легко","≈ 3 хв"],[50,"Нормально","≈ 5 хв"],[100,"Серйозно","≈ 10 хв"],[200,"Інтенсив","≈ 20 хв"]],close:"Готово",lockedTitle:l=>"Рівень "+l+" ще закритий",lockedText:(n,l)=>"Набери ще "+n+" балів — або, якщо вже знаєш матеріал, склади тест на рівень і відкрий "+l+" одразу.",takeTest:"Пройти тест на рівень",backTo:l=>"Вчитися далі ("+l+")",levelUp:l=>"🎉 Відкрито рівень "+l+"!",soonText:"Курс 2.1 вже в розробці. Збирай бали — вони збережуться.",learned:"Вивчено",review:"до повторення",bestOnly:b=>"Бали дає лише новий рекорд (було "+b+")",newBest:n=>"Новий рекорд! +"+n+" балів",passedLT:l=>"Склав! Рівень "+l+" відкрито 🎉",ltNeed:p=>"Для відкриття рівня треба "+p+"% правильних",easyXp:"+2 · це слово ти вже знаєш",levelLabel:"Рівень",xp:"балів"},
+ en:{xpTo:n=>n+" more points to",unlockedBy:"unlocked",soon:"soon",streak:n=>n+"-day streak",streak0:"Start a streak today",goal:"Daily goal",goalDone:"Daily goal reached! 🔥",goalTitle:"Daily goal",goalHint:"How many points per day? Reaching the goal keeps your streak 🔥 going.",goals:[[30,"Easy","≈ 3 min"],[50,"Regular","≈ 5 min"],[100,"Serious","≈ 10 min"],[200,"Intense","≈ 20 min"]],close:"Done",lockedTitle:l=>"Level "+l+" is still locked",lockedText:(n,l)=>"Earn "+n+" more points — or, if you already know this, pass the level test and unlock "+l+" right away.",takeTest:"Take the level test",backTo:l=>"Keep learning ("+l+")",levelUp:l=>"🎉 Level "+l+" unlocked!",soonText:"Course 2.1 is in the works. Keep collecting points — they're saved.",learned:"Learned",review:"Review",bestOnly:b=>"Points only for a new best (was "+b+")",newBest:n=>"New best! +"+n+" points",passedLT:l=>"Passed! Level "+l+" unlocked 🎉",ltNeed:p=>"You need "+p+"% correct to unlock the level",easyXp:"+2 · you already know this word",levelLabel:"Level",xp:"points"},
+ fr:{xpTo:n=>"encore "+n+" points pour",unlockedBy:"débloqué",soon:"bientôt",streak:n=>n+" jours d'affilée",streak0:"Commence une série aujourd'hui",goal:"Objectif du jour",goalDone:"Objectif du jour atteint ! 🔥",goalTitle:"Objectif quotidien",goalHint:"Combien de points par jour ? Atteindre l'objectif prolonge ta série 🔥.",goals:[[30,"Facile","≈ 3 min"],[50,"Normal","≈ 5 min"],[100,"Sérieux","≈ 10 min"],[200,"Intensif","≈ 20 min"]],close:"OK",lockedTitle:l=>"Le niveau "+l+" est encore verrouillé",lockedText:(n,l)=>"Gagne encore "+n+" points — ou, si tu connais déjà, réussis le test de niveau pour débloquer "+l+" tout de suite.",takeTest:"Passer le test de niveau",backTo:l=>"Continuer ("+l+")",levelUp:l=>"🎉 Niveau "+l+" débloqué !",soonText:"Le cours 2.1 est en préparation. Continue à gagner des points, ils sont gardés.",learned:"Appris",review:"À réviser",bestOnly:b=>"Points seulement pour un nouveau record (avant "+b+")",newBest:n=>"Nouveau record ! +"+n+" points",passedLT:l=>"Réussi ! Niveau "+l+" débloqué 🎉",ltNeed:p=>"Il faut "+p+"% de bonnes réponses pour débloquer le niveau",easyXp:"+2 · tu connais déjà ce mot",levelLabel:"Niveau",xp:"points"},
+ ar:{xpTo:n=>"بقي "+n+" نقطة حتى",unlockedBy:"مفتوح",soon:"قريباً",streak:n=>n+" أيام متتالية",streak0:"ابدأ سلسلة اليوم",goal:"هدف اليوم",goalDone:"تحقق هدف اليوم! 🔥",goalTitle:"الهدف اليومي",goalHint:"كم نقطة في اليوم؟ تحقيق الهدف يحافظ على سلسلتك 🔥.",goals:[[30,"سهل","≈ 3 د"],[50,"عادي","≈ 5 د"],[100,"جاد","≈ 10 د"],[200,"مكثف","≈ 20 د"]],close:"تم",lockedTitle:l=>"المستوى "+l+" ما زال مغلقاً",lockedText:(n,l)=>"اجمع "+n+" نقطة أخرى — أو إذا كنت تعرف المادة، اجتز اختبار المستوى وافتح "+l+" فوراً.",takeTest:"خذ اختبار المستوى",backTo:l=>"تابع التعلم ("+l+")",levelUp:l=>"🎉 تم فتح المستوى "+l+"!",soonText:"المستوى 2.1 قيد الإعداد. استمر في جمع النقاط، فهي محفوظة.",learned:"تم تعلمها",review:"للمراجعة",bestOnly:b=>"النقاط فقط لرقم قياسي جديد (كان "+b+")",newBest:n=>"رقم قياسي جديد! +"+n+" نقطة",passedLT:l=>"نجحت! تم فتح المستوى "+l+" 🎉",ltNeed:p=>"تحتاج "+p+"% إجابات صحيحة لفتح المستوى",easyXp:"+2 · أنت تعرف هذه الكلمة",levelLabel:"المستوى",xp:"نقاط"}
 };
 const pgU=()=>PG_UI[uiLang]||PG_UI.uk;
 function lsGet(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v==null?fb:v}catch(e){return fb}}
@@ -3277,7 +3283,7 @@ function startToets(){
   const card = $("card");
   card.replaceChildren();
   $("prog").textContent = "";
-  $("rnd").textContent = u.modes.toets || "Toets A1";
+  $("rnd").textContent = "Toets · " + levelById(curLevel).name;
   $("barfill").style.width = "0%";
   const title = el("div","q");
   title.appendChild(el("h2","",u.toetsChoose || "Обери тест"));
@@ -3734,6 +3740,9 @@ TOETS.push(
    {type:"gap",sentence:"Ik zie ___ morgen.",q:Q("Заповни: «Я побачу його завтра.»","Fill in: «I'll see him tomorrow.»","Complète : « Je le vois demain. »","أكمل: «سأراه غداً.»"),opts:["hem","zijn","hij","haar"],ok:0}
   ]}
 );
+
+LerenCurriculum.buildBank(BUILD_BANK);
+LerenCurriculum.assessments(TOETS,DATA);
 
 const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>(rows||[]).filter(r=>Array.isArray(r)&&typeof r[1]==="string").map(r=>({cat,level:r[0],q:r[1].split("|"),roles:String(r[2]||"").replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
 let bAudio=false,bs=null,buildLevel=Number(validStored("poly_buildLevel",["1","2"],"1"))||1;
@@ -4273,7 +4282,7 @@ function renderTopicBar(){
  const b=$("topicBar");if(!b)return;const u=getUI(),n=navU();
  const cat=CATEGORIES.find(c=>c.id===currentCat);
  b.replaceChildren();
- const lv=el("span","tb-level",(levelById(curLevel)||{}).name||"A1.1");
+ const lv=el("span","tb-level",(levelById(curLevel)||{}).name||"1.1 · A1");
  const txt=el("span","tb-text");
  txt.append(el("small","",cat?(u.cats[cat.id]||cat.id):""),el("strong","",tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,"")));
  const ch=el("span","tb-change");ch.append(el("span","",n.change),ico("chevron"));
@@ -4650,6 +4659,8 @@ const SPEAK_Q=[
  {q:"Wanneer eet jij een warme maaltijd?",uk:"Коли ти їси гарячу їжу?",en:"When do you have a hot meal?",v:"eet",inf:"eten",m:"Ik eet om zes uur een warme maaltijd."}
 ];
 
+LerenCurriculum.games(DIALOGUES,SPEAK_Q);
+
 // --- my day ---
 const NL_NUM=["twaalf","een","twee","drie","vier","vijf","zes","zeven","acht","negen","tien","elf","twaalf"];
 function nlTime(h,m){const H=h%12;if(m===30)return "half "+NL_NUM[(H%12)+1];if(m===15)return "kwart over "+NL_NUM[H||12];if(m===45)return "kwart voor "+NL_NUM[(H%12)+1];return NL_NUM[H||12]+" uur"}
@@ -4918,7 +4929,7 @@ function renderGamesHome(){
  const dots=el("div","g-dots");for(let i=0;i<5;i++)dots.appendChild(el("i",i<w.played.length?"on":""));
  wk.append(el("strong","",(w.done?"✅ ":"🏆 ")+g.week),el("span","",g.weekT),dots);card.appendChild(wk);
  const grid=el("div","g-grid");
- GAMES.forEach(([id,icon,nl])=>{
+ GAMES.filter(([id])=>curLevel==="a11"||!["story","md","om","ks"].includes(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
   b.append(el("span","g-ic",icon),el("strong","",id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]),el("span","g-s",g[id+"S"]));
@@ -5115,7 +5126,7 @@ function omEnd(){
 function dlgPick(){
  const g=gU(),card=gHead(g.dlg,g.pick);
  const list=el("div","g-list");
- DIALOGUES.forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)));b.onclick=()=>dlgStart(d);list.appendChild(b)});
+ DIALOGUES.filter(d=>(d.lvl||"a11")===curLevel).forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)));b.onclick=()=>dlgStart(d);list.appendChild(b)});
  card.appendChild(list);
 }
 function dlgStart(d){gState={d,order:shuffle(d.lines.map((_,i)=>i)),placed:[],locked:[],tries:0,done:false};while(gState.order.every((v,i)=>v===i))gState.order=shuffle(gState.order);dlgRender()}
@@ -5155,7 +5166,7 @@ function rpPick(){
  opts.append(mk(g.level,[[1,"1 · "+g.l1],[2,"2 · "+g.l2],[3,"3 · "+g.l3]],lvl,"leren_rp_level"),mk(g.role,[["A","A"],["B","B"]],role,"leren_rp_role"));
  card.appendChild(opts);
  const list=el("div","g-list");
- DIALOGUES.forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)+" · "+(role==="A"?d.a:d.b)));b.onclick=()=>rpStart(d,role,lvl);list.appendChild(b)});
+ DIALOGUES.filter(d=>(d.lvl||"a11")===curLevel).forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)+" · "+(role==="A"?d.a:d.b)));b.onclick=()=>rpStart(d,role,lvl);list.appendChild(b)});
  card.appendChild(list);
 }
 function rpStart(d,role,lvl){gState={d,role,lvl,i:0,log:[],ok:0,tiles:null,placed:[]};rpStep()}
@@ -5213,7 +5224,7 @@ function spCheck(qd,alts){
   const score=ch.filter(c=>c[1]).length/ch.length;if(!best||score>best.score)best={score,ch,text:a}});
  return best;
 }
-function spStart(){gState={list:shuffle(SPEAK_Q).slice(0,6),i:0,ok:0};spRender()}
+function spStart(){gState={list:shuffle(SPEAK_Q.filter(q=>(q.lvl||"a11")===curLevel)).slice(0,6),i:0,ok:0};spRender()}
 function spRender(res){
  const g=gU(),s=gState,card=gHead(g.sp,g.spQ+" "+Math.min(s.i+1,s.list.length)+" / "+s.list.length);gBar(s.i/s.list.length);
  if(s.i>=s.list.length){const xp=s.ok*10+10;card.appendChild(el("p","g-done",s.ok+" / "+s.list.length+" · "+g.pts(xp)));const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=spStart;row.appendChild(nx);card.appendChild(row);if(!s.awarded){s.awarded=true;gameDone("sp",xp)}return}

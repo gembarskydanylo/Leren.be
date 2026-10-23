@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-22.1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-23-curriculum"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -33,7 +33,8 @@ const GRAMMAR_NL = `- Main clause: verb in 2nd position (Ik woon in België). Af
 - Questions: question word + verb + subject (Waar woon jij?); yes/no: verb first (Woon jij in Gent?).
 - Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het.
 - Polite: u (formal), alstublieft / alsjeblieft, graag (Ik wil graag een koffie).
-- A1.2: modal verbs (kunnen, moeten, willen, mogen + infinitive at the end), perfectum (hebben/zijn + voltooid deelwoord: ik heb gewerkt, ik ben gegaan), future gaan + infinitive.`;
+- Course 1.1 (A1): introductions, personal details, prices/weather, time, birthdays, opening hours, forms, daily routine, invitations/plans, health, eating habits, groceries. Include possessives, inversion, niet/geen, separable verbs, modal verbs + infinitive, gaan + infinitive, aan het + infinitive, want/omdat, imperatives, frequency and plurals.
+- Course 1.2 (A2): family/holiday accounts, shopping and exchanges, second-hand ads, travel disruptions, online appointments, messages and short articles/instructions. Practise perfectum (hebben/zijn + participle), common past forms, comparisons and connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
 const GRAMMAR_EN = `- Word order: subject + verb + object (I live in Belgium). Questions with do/does (Do you work? Where does she live?); with be/can: invert (Are you tired? Can you help?).
 - Present simple: he/she/it + -s (she works, he goes, it has); negative don't/doesn't + base verb.
 - be: I am, you are, he/she/it is, we/they are. have got / has got.
@@ -63,7 +64,7 @@ const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisi
 function chatSystem(t, lang, level, scene, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
-  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
+  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course 1.2 / A2" : "course 1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
 Course grammar (follow it when correcting):
 ${T.grammar}
@@ -80,7 +81,7 @@ LANGUAGE RULE: "reply" and "corrected" are in the target language and use only L
 
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
-  return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "course 1.2 / A2" : "course 1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
 Grammar notes for ${T.name} (keep explanations consistent with them):

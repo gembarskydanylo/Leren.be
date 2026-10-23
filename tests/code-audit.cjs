@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(script);
 // Validate the lesson database before any browser initialization runs.
-vm.runInNewContext(script.slice(0,script.indexOf('function validStored'))+`
+vm.runInNewContext(fs.readFileSync(path.join(root,'course-curriculum.js'),'utf8')+'\n'+script.slice(0,script.indexOf('function validStored'))+`
  const ids=new Set();
  for(const d of Object.values(DATA))for(const item of d.items){
   if(!item.id||ids.has(item.id))throw Error('Missing or duplicate card ID: '+item.id);
