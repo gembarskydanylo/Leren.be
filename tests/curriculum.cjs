@@ -52,7 +52,7 @@ vm.runInContext(`
  assert.equal(TOETS.find(t=>t.id==='t10_course_v2').lvl,'a11');
  const ds=[],ss=[];LerenCurriculum.games(ds,ss);
  assert.equal(ds.length,4);assert.equal(ss.length,6);assert(ds.every(d=>d.lvl==='a12'&&d.lines.length>=6));
- console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, four A2 dialogues, six A2 speaking prompts, unique lesson ownership and sentence coverage');
+ console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, four A1.2 dialogues, six A1.2 speaking prompts, unique lesson ownership and sentence coverage');
 `,ctx);
 // Execute actual startup migration with old saved locations and earned progress.
 const start=script.indexOf('function validStored'),end=script.indexOf('const el=(t,c,x)');

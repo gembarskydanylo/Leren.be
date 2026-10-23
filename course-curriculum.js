@@ -229,9 +229,9 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
   CATEGORIES.splice(0,CATEGORIES.length,
    ...chapters.map(([id,title,tabs],i)=>({id,lvl:'a11',chapter:i+1,tabs})),grammar,
    ...advanced.map(([id,title,tabs])=>({id,lvl:'a12',tabs})));
-  LEVELS[0].name='1.1 · A1'; LEVELS[1].name='1.2 · A2'; LEVELS[2].name='2.1 · B1';
+  LEVELS[0].name='A1.1'; LEVELS[1].name='A1.2'; LEVELS[2].name='A2.1';
   for(const lang of Object.keys(UI)){
-   UI[lang].tagline='NT2 · 1.1 / 1.2';
+   UI[lang].tagline='A1 · A1.1 / A1.2';
    UI[lang].toetsTitle=UI[lang].modes.toets='Toets';
   }
   for(const [i,[id,title]] of chapters.entries())for(const lang of Object.keys(UI))UI[lang].cats[id]=`${i+1}. ${title}`;
@@ -309,12 +309,11 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
  function assessments(tests,DATA) {
   const translated=(uk,en,fr,ar)=>({uk,en,fr,ar});
   const prompt=translated('Заповни пропуск','Fill the gap','Complète','أكمل الفراغ');
-  for(const id of ['t5','t10']){const t=tests.find(t=>t.id===id);t.lvl='a11';for(const lang in t.title)t.title[lang]=t.title[lang].replaceAll('A1.2','1.1');}
+  for(const id of ['t5','t10']){const t=tests.find(t=>t.id===id);t.lvl='a11';for(const lang in t.title)t.title[lang]=t.title[lang].replaceAll('A1.2','A1.1');}
   // Give changed assessments new IDs; old achievements and unlocked levels remain saved.
   const health=tests.find(t=>t.id==='t10');health.id='t10_course_v2';
   const ambiguous=health.questions.find(q=>q.opts?.[0]==='Ik ga om elf uur slapen.');
   if(ambiguous)ambiguous.opts[1]='Ik gaat om elf uur slapen.';
-  for(const t of tests)for(const lang in t.title)t.title[lang]=t.title[lang].replaceAll('A1.2','1.2');
   for(const [id,title,tabs] of [...chapters,...advanced]){
    const lvl=chapters.some(c=>c[0]===id)?'a11':'a12',g=gaps[id];
    const pool=tabs.flatMap(t=>DATA[t]?.items||[]).filter(x=>x.id.startsWith('course_'));
@@ -325,7 +324,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
     const candidates=[item,...chosen.filter(x=>x.id!==item.id)].slice(0,4);
     questions.push({type:'mc',q:translated(`Що означає «${item.nl}»?`,`What does “${item.nl}” mean?`,`Que signifie « ${item.nl} » ?`,`ما معنى «${item.nl}»؟`),opts:candidates.map(x=>translated(x.uk,x.en,x.fr,x.ar)),ok:0});
    });
-   tests.push({id:`course_${id}_v1`,lvl,title:translated(`${lvl==='a11'?'1.1':'1.2'} · ${title}`,`${lvl==='a11'?'1.1':'1.2'} · ${title}`,`${lvl==='a11'?'1.1':'1.2'} · ${title}`,`${lvl==='a11'?'1.1':'1.2'} · ${title}`),questions});
+   tests.push({id:`course_${id}_v1`,lvl,title:translated(`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`),questions});
   }
   const levelTest=tests.find(t=>t.kind==='leveltest'&&t.unlocks==='a12');
   levelTest.id='lt_a12_course_v2';
@@ -341,7 +340,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    [text2,translated('Скільки платить десятирічна дитина?','How much does a ten-year-old pay?','Combien paie un enfant de dix ans ?','كم يدفع طفل عمره عشر سنوات؟'),['Niets','Vier euro','Twee euro','Twaalf euro']],
    [text2,translated('До якого дня треба зареєструватися?','By which day must you register?','Jusqu’à quel jour faut-il s’inscrire ?','بحلول أي يوم يجب التسجيل؟'),['Uiterlijk vrijdag','Zaterdagavond','Zondagochtend','Maandag']]
   ].map(([text,q,opts])=>({type:'read',text,q,opts,ok:0}));
-  tests.push({id:'course_reading_texts_v1',lvl:'a12',title:translated('1.2 · Читання оголошень','1.2 · Reading notices','1.2 · Lire des annonces','1.2 · قراءة الإعلانات'),questions});
+  tests.push({id:'course_reading_texts_v1',lvl:'a12',title:translated('A1.2 · Читання оголошень','A1.2 · Reading notices','A1.2 · Lire des annonces','A1.2 · قراءة الإعلانات'),questions});
  }
  function games(dialogues,speech) {
   const data=[
@@ -374,7 +373,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
     ['Ja, ik stuur u een e-mail.','Так, я надішлю вам лист.','Yes, I will send you an email.'],
     ['Dank u. Ik kijk mijn e-mail straks na.','Дякую. Я перевірю пошту пізніше.','Thank you. I will check my email later.']]]
   ];
-  for(const [id,icon,uk,en,fr,ar,lines] of data)dialogues.push({id:`course_${id}`,lvl:'a12',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'1.2 · A2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
+  for(const [id,icon,uk,en,fr,ar,lines] of data)dialogues.push({id:`course_${id}`,lvl:'a12',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'A1.2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
   for(const [q,uk,en,m] of [
    ['Waar ben je op vakantie geweest?','Де ти був у відпустці?','Where did you go on holiday?','Ik ben naar Brugge geweest.'],
    ['Wat heb je gisteren gedaan?','Що ти робив учора?','What did you do yesterday?','Ik heb een museum bezocht.'],
