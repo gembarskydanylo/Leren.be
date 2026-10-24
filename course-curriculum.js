@@ -26,6 +26,38 @@ globalThis.LerenCurriculum = (() => {
   ['reading','📰 Lezen en reageren',['notices','directions']],
   ['grammar2','📘 Verder met grammatica',['objpron','comparison']]
  ];
+ // Short, translated names explain the situation before introducing its Dutch title.
+ // Each row: Ukrainian, English, French, Arabic; each entry: title, learning goal.
+ const topicLabels = {
+  comm: [['Знайомство','Вітайся, називай своє ім’я та знайомся з іншими.'],['First introductions','Say hello, give your name and meet someone new.'],['Faire connaissance','Salue, donne ton nom et fais connaissance.'],['التعارف','ألقِ التحية وعرّف بنفسك وتعرّف على الآخرين.']],
+  people: [['Люди навколо','Розповідай про себе, сім’ю та людей поруч.'],['People around you','Talk about yourself, your family and people around you.'],['Les gens autour de toi','Parle de toi, de ta famille et de ton entourage.'],['الناس من حولك','تحدث عن نفسك وعائلتك والناس من حولك.']],
+  nums: [['Числа, ціни й погода','Рахуй, запитуй ціну та говори про погоду.'],['Numbers, prices & weather','Count, ask about prices and talk about the weather.'],['Nombres, prix et météo','Compte, demande le prix et parle de la météo.'],['الأعداد والأسعار والطقس','عدّ واسأل عن الأسعار وتحدث عن الطقس.']],
+  travelTime: [['Котра година?','Називай час і розбирайся в розкладі транспорту.'],['Telling the time','Tell the time and understand transport timetables.'],['Quelle heure est-il ?','Dis l’heure et comprends les horaires de transport.'],['كم الساعة؟','قل الوقت وافهم مواعيد المواصلات.']],
+  birthday: [['День народження','Називай дати, свій вік і вітай зі святом.'],['Birthdays','Give dates, say your age and wish someone a happy birthday.'],['Les anniversaires','Donne une date, dis ton âge et souhaite un bon anniversaire.'],['عيد الميلاد','اذكر التواريخ وعمرك وهنّئ الآخرين بعيد ميلادهم.']],
+  opening: [['Дні та години роботи','Дізнавайся, коли відкритий магазин і починається заняття.'],['Days & opening hours','Find out when shops open and classes begin.'],['Jours et horaires','Demande quand un magasin ouvre ou un cours commence.'],['الأيام وساعات العمل','اعرف متى تفتح المتاجر وتبدأ الدروس.']],
+  forms: [['Анкети й документи','Заповнюй особисті дані та звертайся ввічливо.'],['Forms & documents','Fill in your personal details and speak politely.'],['Formulaires et documents','Remplis tes coordonnées et adresse-toi poliment aux autres.'],['الاستمارات والوثائق','املأ بياناتك الشخصية وتحدث بأدب.']],
+  dag: [['Мій звичайний день','Розповідай про щоденні справи й улюблені заняття.'],['My daily routine','Talk about your day and activities you enjoy.'],['Ma journée','Parle de ta routine et de tes activités préférées.'],['يومي المعتاد','تحدث عن يومك والأنشطة التي تحبها.']],
+  plans: [['Плани й запрошення','Запрошуй, домовляйся про плани та відповідай на запрошення.'],['Plans & invitations','Make plans, invite someone and reply to invitations.'],['Projets et invitations','Fais des projets, invite quelqu’un et réponds aux invitations.'],['الخطط والدعوات','ضع خططاً وادعُ الآخرين وأجب عن الدعوات.']],
+  health: [['Здоров’я та лікар','Пояснюй, що болить, і записуйся до лікаря.'],['Health & the doctor','Explain what hurts and make a doctor’s appointment.'],['Santé et médecin','Explique où tu as mal et prends rendez-vous chez le médecin.'],['الصحة والطبيب','اشرح ما يؤلمك واحجز موعداً عند الطبيب.']],
+  food: [['Їжа та корисні звички','Розповідай про харчування й замовляй страви в кафе.'],['Food & healthy habits','Talk about eating habits and order food at a café.'],['Alimentation et bonnes habitudes','Parle de ton alimentation et commande au café.'],['الطعام والعادات الصحية','تحدث عن عاداتك الغذائية واطلب الطعام في المقهى.']],
+  shopping: [['Покупки та продукти','Складай список продуктів і купуй потрібну кількість.'],['Groceries & shopping','Make a shopping list and buy the quantities you need.'],['Courses et provisions','Fais une liste de courses et achète les bonnes quantités.'],['التسوق والمواد الغذائية','اكتب قائمة مشتريات واشترِ الكميات التي تحتاجها.']],
+  grammar: [['Граматика й вимова','Додаткові тренажери: правила, дієслова та звуки.'],['Grammar & pronunciation','Extra practice with rules, verbs and sounds.'],['Grammaire et prononciation','Entraîne-toi avec les règles, les verbes et les sons.'],['القواعد والنطق','تدريبات إضافية على القواعد والأفعال والأصوات.']],
+  past: [['Розповіді про минуле','Розповідай, що робив учора та що вже сталося.'],['Talking about the past','Talk about yesterday and things that have happened.'],['Raconter le passé','Raconte ta journée d’hier et ce qui s’est passé.'],['الحديث عن الماضي','تحدث عما فعلته أمس وما حدث من قبل.']],
+  holiday: [['Сім’я та відпустка','Ділися спогадами про родину, подорожі та відпочинок.'],['Family & holidays','Share memories of family, trips and holidays.'],['Famille et vacances','Raconte tes souvenirs de famille, de voyages et de vacances.'],['العائلة والعطلة','شارك ذكريات العائلة والسفر والعطلات.']],
+  travel: [['У дорозі','Купуй квитки та розбирайся з пересадками й затримками.'],['On the move','Buy tickets and deal with connections and delays.'],['En voyage','Achète des billets et gère les correspondances et les retards.'],['في الطريق','اشترِ التذاكر وتعامل مع تبديل القطارات والتأخير.']],
+  service: [['Магазини та вживані речі','Приміряй одяг, порівнюй ціни й домовляйся про обмін.'],['Shops & second-hand finds','Try on clothes, compare prices and arrange an exchange.'],['Magasins et seconde main','Essaie des vêtements, compare les prix et demande un échange.'],['المتاجر والأشياء المستعملة','جرّب الملابس وقارن الأسعار واطلب الاستبدال.']],
+  wonen: [['Оренда житла','Читай оголошення й запитуй про умови оренди.'],['Renting a home','Read adverts and ask about rental conditions.'],['Louer un logement','Lis les annonces et renseigne-toi sur les conditions de location.'],['استئجار سكن','اقرأ الإعلانات واسأل عن شروط الإيجار.']],
+  contact: [['Листи та домовленості','Пиши повідомлення, записуйся онлайн і перенось зустрічі.'],['Messages & appointments','Write messages, book online and reschedule appointments.'],['Messages et rendez-vous','Écris des messages, réserve en ligne et déplace un rendez-vous.'],['الرسائل والمواعيد','اكتب رسائل واحجز عبر الإنترنت وغيّر مواعيدك.']],
+  reading: [['Читаємо й реагуємо','Розумій оголошення та інструкції, знаходь потрібну інформацію.'],['Reading & responding','Understand notices and instructions and find key information.'],['Lire et réagir','Comprends les annonces et les consignes et trouve les informations utiles.'],['القراءة والتفاعل','افهم الإعلانات والتعليمات واعثر على المعلومات المهمة.']],
+  grammar2: [['Граматика в розмові','Порівнюй речі та замінюй іменники займенниками.'],['Grammar in conversation','Compare things and replace nouns with pronouns.'],['La grammaire en conversation','Compare des choses et remplace les noms par des pronoms.'],['القواعد في المحادثة','قارن الأشياء واستبدل الأسماء بالضمائر.']]
+ };
+ function topicInfo(id,lang='uk') {
+  const row=topicLabels[id];if(!row)return null;
+  const [title,description]=row[{uk:0,en:1,fr:2,ar:3}[lang]??0];
+  const chapter=chapters.findIndex(c=>c[0]===id),advancedIndex=advanced.findIndex(c=>c[0]===id);
+  const dutch=chapter>=0?chapters[chapter][1]:advancedIndex>=0?advanced[advancedIndex][1].replace(/^\S+\s/,''):'Grammatica & uitspraak';
+  return {title,description,dutch,number:chapter>=0?chapter+1:advancedIndex>=0?advancedIndex+1:null,image:`./img/topics/${id}.svg`};
+ }
  // Rows: Dutch | Ukrainian | English | French | Arabic.
  const lessons = {
   alphabet: ['Алфавіт і написання імені','Alphabet and spelling','Alphabet et épellation','الأبجدية والتهجئة', `
@@ -234,8 +266,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    UI[lang].tagline='A1 · A1.1 / A1.2';
    UI[lang].toetsTitle=UI[lang].modes.toets='Toets';
   }
-  for(const [i,[id,title]] of chapters.entries())for(const lang of Object.keys(UI))UI[lang].cats[id]=`${i+1}. ${title}`;
-  for(const [id,title] of advanced)for(const lang of Object.keys(UI))UI[lang].cats[id]=title;
+  for(const c of CATEGORIES)for(const lang of Object.keys(UI))UI[lang].cats[c.id]=topicInfo(c.id,lang).title;
   for(const [key,[uk,en,fr,ar,text]] of Object.entries(lessons)) {
    DATA[key]=R(text.trim().split('\n').map((line,i)=>{
     const [nl,uk,en,fr,ar]=line.split('|');
@@ -383,5 +414,5 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    ['Welke kamer vind je beter?','Яка кімната тобі більше подобається?','Which room do you prefer?','Ik vind deze kamer beter omdat ze groter is.']
   ])speech.push({q,uk,en,m,lvl:'a12',open:true});
  }
- return {chapters,advanced,lessons,apply,buildBank,assessments,games};
+ return {chapters,advanced,lessons,topicInfo,apply,buildBank,assessments,games};
 })();

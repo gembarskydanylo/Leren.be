@@ -607,6 +607,42 @@ body.sheet-open{overflow:hidden}
 .sheet .nav-subs{flex-wrap:wrap;overflow:visible;padding:0;gap:8px}
 .sheet .nav-subs button{border:2px solid var(--line);background:var(--surface);color:var(--ink);white-space:normal;text-align:start;min-height:44px}
 .sheet .nav-subs button[aria-selected="true"]{border-color:var(--be-black)}
+/* The course picker has a visual overview, then one chapter's lessons. */
+#topicsSheet .sheet-panel{padding-top:0;scrollbar-gutter:stable;overscroll-behavior:contain}
+#topicsSheet .sheet-head{position:sticky;top:0;z-index:2;margin:0 -16px;padding:12px 16px;border-bottom:1px solid var(--line)}
+#topicsSheet .nav-section{padding-top:16px}
+.topics-intro{margin:0;color:var(--ink-2);font-size:14px;line-height:1.5}
+.topic-catalog{display:flex;flex-direction:column;gap:14px}
+#topicsSheet .nav-fade-wrap,#topicsSheet .sub-wrapper{margin:0}
+#topicsSheet .nav-fade-wrap::after{display:none}
+#topicsSheet .nav-cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 0 5px;scroll-snap-type:none}
+#topicsSheet .topic-card{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px;min-width:0;padding:10px;text-align:start;white-space:normal;border-radius:18px;box-shadow:0 3px 0 var(--edge);background:var(--surface);color:var(--ink)}
+#topicsSheet .topic-card[aria-selected="true"]{border-color:var(--oranje);background:var(--surface);color:var(--ink);box-shadow:0 3px 0 var(--oranje)}
+.topic-card-top{display:flex;justify-content:space-between;align-items:center;gap:4px;min-height:20px}
+.topic-number{color:var(--ink-2);font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.topic-current{display:grid;place-items:center;width:19px;height:19px;background:var(--oranje);color:#fff;border-radius:50%;font-size:13px}
+.topic-art{display:block;width:100%;height:88px;object-fit:contain;border-radius:12px}
+.topic-name{font-size:16px;line-height:1.2;font-weight:900;margin-top:4px;overflow-wrap:anywhere}
+.topic-dutch{color:var(--ink-2);font-size:12px;line-height:1.35;font-weight:650;overflow-wrap:anywhere}
+#topicsSheet .topic-card[data-extra="true"]{grid-column:1/-1;display:grid;grid-template-columns:68px 1fr;column-gap:12px;padding:12px}
+.topic-card[data-extra="true"] .topic-art{grid-column:1;grid-row:1/4;height:62px;align-self:center}
+.topic-card[data-extra="true"] .topic-card-top,.topic-card[data-extra="true"] .topic-name,.topic-card[data-extra="true"] .topic-dutch{grid-column:2}
+.topic-detail{display:flex;flex-direction:column;gap:14px}
+.topic-back{display:flex;align-items:center;gap:7px;align-self:flex-start;min-height:44px;padding:6px 0;border:0;background:none;color:var(--ink-2);font-weight:900;font-size:14px;cursor:pointer}
+.topic-back .ico{transform:rotate(180deg);width:18px;height:18px}
+[dir="rtl"] .topic-back .ico{transform:none}
+.topic-hero{display:grid;grid-template-columns:90px minmax(0,1fr);align-items:center;gap:12px;padding:16px;border:1px solid var(--line);background:var(--surface);border-radius:18px}
+.topic-hero .topic-art{height:80px}
+.topic-hero h3{margin:4px 0;font-size:21px;line-height:1.2;font-weight:900}
+.topic-hero p{grid-column:1/-1;margin:0;color:var(--ink-2);font-size:14px;line-height:1.5}
+#topicsSheet .nav-subs{display:flex;flex-direction:column;gap:8px}
+#topicsSheet .nav-subs button{display:flex;align-items:center;gap:12px;justify-content:flex-start;width:100%;padding:12px;min-height:54px;border-radius:14px;font-size:15px;font-weight:800;box-shadow:none}
+#topicsSheet .nav-subs button[aria-selected="true"]{border-color:var(--oranje);background:var(--oranje-soft);color:var(--ink)}
+.topic-lesson-number{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:10px;background:var(--surface-2);color:var(--ink-2);font-size:12px;font-weight:900}
+#topicsSheet .nav-subs .topic-all{background:var(--oranje);border-color:var(--oranje);color:#fff;justify-content:center;min-height:50px;margin-bottom:4px}
+#topicsSheet .nav-subs .topic-all[aria-selected="true"]{background:var(--oranje-deep);border-color:var(--oranje-deep);color:#fff}
+#topicsSheet .nav-subs .topic-all .ico{width:18px;height:18px}
+@media (max-width:350px){.topic-name{font-size:14px}.topic-art{height:72px}#topicsSheet .nav-cats{gap:9px}.topic-hero{grid-template-columns:70px minmax(0,1fr);padding:12px}.topic-hero h3{font-size:19px}}
 .set-list{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
 .set-row{display:flex;align-items:center;gap:12px;min-height:62px;padding:10px 14px}
 .set-row+.set-row{border-top:1px solid var(--line)}
@@ -933,12 +969,19 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="topicsTitle">
     <div class="sheet-head"><h2 id="topicsTitle"></h2><button type="button" class="sheet-x" data-close="topicsSheet" aria-label="Close"></button></div>
     <div class="nav-section">
+     <div class="topic-catalog" id="topicCatalog">
       <div class="section-label" id="lblLevel"></div>
       <div class="level-nav" id="levelNav" role="group" aria-label="Level"></div>
+      <p class="topics-intro" id="topicsIntro"></p>
       <div class="section-label" id="lblCat">Розділ</div>
       <div class="nav-fade-wrap"><nav class="nav-cats" id="catNav" aria-label="Categories"></nav></div>
+     </div>
+     <div class="topic-detail" id="topicDetail" hidden>
+      <button class="topic-back" id="topicBack" type="button"></button>
+      <div class="topic-hero" id="topicHero"></div>
       <div class="section-label" id="lblSub">Підрозділ</div>
       <div class="sub-wrapper"><nav class="nav-subs" id="subNav" aria-label="Subtopics"></nav></div>
+     </div>
       <span hidden id="lblMode"></span>
     </div>
   </div>
@@ -1003,7 +1046,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
-<script src="./course-curriculum.js"></script>
+<script src="./course-curriculum.js?v=86"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -2169,21 +2212,65 @@ function updateHeader(){
  updateModeButtons();
 }
 
+function topicPickerUI(){
+ const labels={
+  uk:{title:"Обери тему",intro:"Вчи мову через знайомі ситуації. Обери тему, а потім заняття всередині.",topics:"Теми курсу",lessons:"Що будемо вчити",back:"Усі теми курсу",topic:"Тема",extra:"Додаткова практика",all:"Вчити весь розділ"},
+  en:{title:"Choose a topic",intro:"Learn through familiar situations. Pick a topic, then choose a lesson inside.",topics:"Course topics",lessons:"What you will learn",back:"All course topics",topic:"Topic",extra:"Extra practice",all:"Study the whole topic"},
+  fr:{title:"Choisis un thème",intro:"Apprends avec des situations familières. Choisis un thème, puis une leçon.",topics:"Thèmes du cours",lessons:"Ce que tu vas apprendre",back:"Tous les thèmes",topic:"Thème",extra:"Entraînement supplémentaire",all:"Étudier tout le thème"},
+  ar:{title:"اختر موضوعاً",intro:"تعلّم من خلال مواقف مألوفة. اختر موضوعاً ثم درساً بداخله.",topics:"مواضيع الدورة",lessons:"ما ستتعلمه",back:"جميع المواضيع",topic:"الموضوع",extra:"تدريبات إضافية",all:"دراسة الموضوع كاملاً"}
+ };
+ return labels[uiLang]||labels.uk;
+}
+function topicArt(info){
+ const img=el("img","topic-art");img.src=info.image;img.alt="";img.width=160;img.height=108;return img;
+}
+function topicStep(detail,focus=false){
+ const sheet=$("topicsSheet"),panel=sheet.querySelector(".sheet-panel");
+ if(detail&&sheet.dataset.step!=="detail")sheet.dataset.catalogScroll=String(panel.scrollTop);
+ $("topicCatalog").hidden=detail;$("topicDetail").hidden=!detail;
+ sheet.dataset.step=detail?"detail":"catalog";
+ panel.scrollTop=!detail&&focus?Number(sheet.dataset.catalogScroll)||0:0;
+ if(focus){const target=detail?$("topicDetailTitle"):$("catNav").querySelector('[aria-selected="true"]');if(target)target.focus({preventScroll:true})}
+}
+function renderTopicDetail(){
+ const p=topicPickerUI(),info=LerenCurriculum.topicInfo(currentCat,uiLang),hero=$("topicHero");
+ $("topicsTitle").textContent=p.title;$("topicsIntro").textContent=p.intro;
+ $("lblCat").textContent=p.topics;$("lblSub").textContent=p.lessons;
+ $("catNav").setAttribute("aria-label",p.topics);$("subNav").setAttribute("aria-label",p.lessons);
+ const back=$("topicBack");back.replaceChildren(ico("chevron"),el("span","",p.back));back.onclick=()=>topicStep(false,true);
+ hero.replaceChildren();
+ if(info){
+  const text=el("div");text.appendChild(el("span","topic-number",info.number?p.topic+" "+String(info.number).padStart(2,"0"):p.extra));
+  const heading=el("h3","",info.title);heading.id="topicDetailTitle";heading.tabIndex=-1;
+  const dutch=el("div","topic-dutch",info.dutch);dutch.lang="nl";dutch.dir="ltr";
+  text.append(heading,dutch);hero.append(topicArt(info),text,el("p","",info.description));
+ }
+}
 function buildNav(){
  const u=getUI();
+ const picker=topicPickerUI();
  renderLevelNav();
  const catNav=$("catNav");catNav.replaceChildren();
  levelCats().forEach(c=>{
-  const b=el("button","",u.cats[c.id]||c.id);
+  const info=LerenCurriculum.topicInfo(c.id,uiLang),b=el("button","topic-card");
   b.type="button";
   const isSelected=(c.id===currentCat);
   b.setAttribute("aria-selected",String(isSelected));
+  b.setAttribute("aria-pressed",String(isSelected));
+  if(info){
+   const top=el("span","topic-card-top");top.appendChild(el("span","topic-number",info.number?picker.topic+" "+String(info.number).padStart(2,"0"):picker.extra));
+   if(isSelected){const check=el("span","topic-current","✓");check.setAttribute("aria-hidden","true");top.appendChild(check)}
+   const dutch=el("span","topic-dutch",info.dutch);dutch.lang="nl";dutch.dir="ltr";
+   b.append(top,topicArt(info),el("strong","topic-name",info.title),dutch);
+   if(!info.number)b.dataset.extra="true";
+  }else b.textContent=u.cats[c.id]||c.id;
   b.onclick=()=>{
    currentCat=c.id;
-   tab=c.tabs[0];
+   tab=c.tabs.find(tabVisible)||"all";
    saveStore();
    buildNav();
    newRound();
+   topicStep(true,true);
   };
   catNav.appendChild(b);
  });
@@ -2191,7 +2278,7 @@ function buildNav(){
  const subNav=$("subNav");subNav.replaceChildren();
  const catObj=CATEGORIES.find(c=>c.id===currentCat)||CATEGORIES[0];
  
- const allBtn=el("button","",u.all);
+ const allBtn=el("button","topic-all");allBtn.append(el("span","",picker.all),ico("chevron"));
  allBtn.type="button";
  allBtn.setAttribute("aria-selected",String(tab==="all"));
  allBtn.onclick=()=>{
@@ -2203,9 +2290,11 @@ function buildNav(){
  };
  subNav.appendChild(allBtn);
 
- catObj.tabs.forEach(k=>{
+ catObj.tabs.forEach((k,i)=>{
   if(!tabVisible(k))return;
-  const b=el("button","",(u.tabs[k]||k).replace(/^\d+\.\s*/,""));
+  const b=el("button");
+  const num=el("span","topic-lesson-number",String(i+1).padStart(2,"0"));num.setAttribute("aria-hidden","true");
+  b.append(num,el("span","",(u.tabs[k]||k).replace(/^\d+\.\s*/,"")));
   b.type="button";
   const isSelected=(k===tab);
   b.setAttribute("aria-selected",String(isSelected));
@@ -2219,6 +2308,7 @@ function buildNav(){
   subNav.appendChild(b);
  });
 
+ renderTopicDetail();
  if(typeof renderTopicBar==="function")renderTopicBar();
 }
 
@@ -4292,7 +4382,7 @@ function renderTopicBar(){
 }
 function openSheet(id){
  const s=$(id);if(!s)return;s.hidden=false;document.body.classList.add("sheet-open");
- if(id==="topicsSheet"){buildNav();const a=s.querySelector('#subNav [aria-selected="true"]');if(a)a.scrollIntoView({block:"nearest"})}
+ if(id==="topicsSheet"){buildNav();topicStep(false)}
  const x=s.querySelector(".sheet-x");if(x)setTimeout(()=>{try{x.focus({preventScroll:true})}catch(e){}},30);
 }
 function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?$("topicBar"):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
