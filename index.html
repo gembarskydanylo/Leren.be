@@ -6014,6 +6014,7 @@ setTimeout(announceRelease,1600);
 async function swVersion(){try{const t=await (await fetch("sw.js?version-check="+Date.now(),{cache:"no-store"})).text();return (t.match(/leren-be-v(\d+)/)||[])[1]||""}catch(e){return ""}}
 async function showUpdateBar(){
  if($("updBar"))return;const u=updU(),v=await swVersion();
+ if(v===RELEASE_VERSION)return; // This page already contains the current release.
  const bar=el("div","upd-bar");bar.id="updBar";bar.setAttribute("role","status");
  const go=el("button","btn primary",u.go);go.type="button";go.onclick=()=>{lsSet("leren_upd_done",v||"1");location.reload()};
  const x=el("button","upd-x","✕");x.type="button";x.setAttribute("aria-label","✕");x.onclick=()=>bar.remove();
