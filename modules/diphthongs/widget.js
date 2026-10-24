@@ -1,677 +1,181 @@
 (() => {
-  "use strict";
-  const SCRIPT = document.currentScript;
-  const base = new URL(".", SCRIPT.src);
-  const dictionary = {
-    uk: {
-      pairsTab: "⚖️ Батл звуків",
-      articTab: "👄 Артикулятор",
-      dictTab: "🎧 Аудіодиктант",
-      pairsIntro:
-        "Порівнюй звучання слів. Це звукові контрасти, не завжди строгі мінімальні пари.",
-      dictIntro:
-        "Слухай слово й визнач групу звуків. ij/ei та ou/au об’єднані: на слух їх не відрізнити.",
-      badge: "Фонетика нідерландської",
-      title: "🛹 Дифтонги: Звукова гірка",
-      subtitle: "Навчися розрізняти ковзні звуки й пастки",
-      language: "Мова",
-      theoryTab: "📖 Теорія та звуки",
-      quizTab: "🎮 Тренажер",
-      whatTitle: "💡 Що таке дифтонг?",
-      whatText:
-        "Це плавний перехід від одного голосного до іншого в межах одного складу.",
-      choose: "Обери звук і послухай приклад:",
-      trap1: "⚠️ Пастка: oe, ie, eu — монофтонги.",
-      trap2: "Trema (ï, ë) позначає роздільну вимову сусідніх голосних.",
-      goQuiz: "Перейти до тренажера 🚀",
-      wordLabel: "Слово",
-      points: "Бали",
-      listen: "🔊 Послухати вимову",
-      yes: "🏂 Це дифтонг!",
-      no: "🚶 Не дифтонг",
-      next: "Наступне слово →",
-      finished: "🎉 Раунд завершено!",
-      result: "Результат",
-      best: "Найкращий результат",
-      again: "Спробувати ще раз 🔄",
-      correct: "✅ Правильно!",
-      wrong: "❌ Помилка!",
-      noVoice: "Озвучування недоступне у цьому браузері.",
-      loadError: "Не вдалося завантажити слова. Перевір шлях до файлів.",
-      trema: "Дві крапки (trema) показують межу складів.",
-      mono: "Це один голосний звук, а не дифтонг.",
-      diph: "У цьому слові є ковзний звук — дифтонг.",
-    },
-    en: {
-      pairsTab: "⚖️ Sound battle",
-      articTab: "👄 Articulation",
-      dictTab: "🎧 Audio dictation",
-      pairsIntro:
-        "Compare word sounds. These are contrasts, not always strict minimal pairs.",
-      dictIntro:
-        "Listen and choose the sound group. ij/ei and ou/au sound identical within each pair.",
-      badge: "Dutch phonetics",
-      title: "🛹 Diphthongs: Sound Slide",
-      subtitle: "Learn to recognize gliding vowels and tricky exceptions",
-      language: "Language",
-      theoryTab: "📖 Theory & sounds",
-      quizTab: "🎮 Practice quiz",
-      whatTitle: "💡 What is a diphthong?",
-      whatText:
-        "A smooth glide from one vowel sound to another within one syllable.",
-      choose: "Choose a sound and listen:",
-      trap1: "⚠️ Trap: oe, ie, eu are monophthongs.",
-      trap2:
-        "A diaeresis (ï, ë) marks separate vowel pronunciation across syllables.",
-      goQuiz: "Start practice 🚀",
-      wordLabel: "Word",
-      points: "Points",
-      listen: "🔊 Listen",
-      yes: "🏂 Diphthong!",
-      no: "🚶 Not a diphthong",
-      next: "Next word →",
-      finished: "🎉 Round complete!",
-      result: "Score",
-      best: "Best score",
-      again: "Try again 🔄",
-      correct: "✅ Correct!",
-      wrong: "❌ Incorrect!",
-      noVoice: "Speech is not available in this browser.",
-      loadError: "Could not load word data. Check the file paths.",
-      trema: "The diaeresis marks a syllable boundary.",
-      mono: "This is a single vowel sound, not a diphthong.",
-      diph: "This word contains a gliding vowel sound.",
-    },
-    fr: {
-      pairsTab: "⚖️ Bataille des sons",
-      articTab: "👄 Articulation",
-      dictTab: "🎧 Dictée audio",
-      pairsIntro:
-        "Comparez les sons. Ces contrastes ne sont pas toujours des paires minimales strictes.",
-      dictIntro:
-        "Écoutez et choisissez le groupe sonore. ij/ei et ou/au sont indiscernables à l’oreille.",
-      badge: "Phonétique néerlandaise",
-      title: "🛹 Diphtongues : glissade sonore",
-      subtitle: "Apprenez à distinguer les sons glissants des pièges",
-      language: "Langue",
-      theoryTab: "📖 Théorie et sons",
-      quizTab: "🎮 Quiz",
-      whatTitle: "💡 Une diphtongue, c’est quoi ?",
-      whatText:
-        "Une transition fluide entre deux sons vocaliques dans une même syllabe.",
-      choose: "Choisissez un son et écoutez :",
-      trap1: "⚠️ Attention : oe, ie, eu sont des monophtongues.",
-      trap2:
-        "Le tréma (ï, ë) indique que les voyelles se prononcent séparément.",
-      goQuiz: "Commencer le quiz 🚀",
-      wordLabel: "Mot",
-      points: "Points",
-      listen: "🔊 Écouter",
-      yes: "🏂 Diphtongue !",
-      no: "🚶 Pas une diphtongue",
-      next: "Mot suivant →",
-      finished: "🎉 Série terminée !",
-      result: "Score",
-      best: "Meilleur score",
-      again: "Réessayer 🔄",
-      correct: "✅ Correct !",
-      wrong: "❌ Erreur !",
-      noVoice: "La synthèse vocale est indisponible.",
-      loadError: "Impossible de charger les mots. Vérifiez les chemins.",
-      trema: "Le tréma marque une séparation des syllabes.",
-      mono: "C’est un seul son vocalique, pas une diphtongue.",
-      diph: "Ce mot contient un son vocalique glissant.",
-    },
-    ar: {
-      pairsTab: "⚖️ مقارنة الأصوات",
-      articTab: "👄 النطق",
-      dictTab: "🎧 إملاء صوتي",
-      pairsIntro: "قارن الأصوات؛ ليست كلها أزواجًا صغرى بالمعنى الدقيق.",
-      dictIntro:
-        "استمع واختر مجموعة الصوت؛ ij/ei و ou/au لهما النطق نفسه في كل زوج.",
-      badge: "أصوات اللغة الهولندية",
-      title: "🛹 الأصوات المزدوجة: الزحليقة الصوتية",
-      subtitle: "تعلّم التمييز بين الأصوات المتحركة والفخاخ",
-      language: "اللغة",
-      theoryTab: "📖 النظرية والأصوات",
-      quizTab: "🎮 التدريب",
-      whatTitle: "💡 ما هو الصوت المزدوج؟",
-      whatText: "انتقال سلس من صوت علة إلى آخر ضمن مقطع واحد.",
-      choose: "اختر صوتًا واستمع:",
-      trap1: "⚠️ انتبه: oe وie وeu أصوات علة مفردة.",
-      trap2: "تشير النقطتان (ï، ë) إلى نطق الحروف المتحركة بشكل منفصل.",
-      goQuiz: "ابدأ التدريب 🚀",
-      wordLabel: "الكلمة",
-      points: "النقاط",
-      listen: "🔊 استمع",
-      yes: "🏂 صوت مزدوج!",
-      no: "🚶 ليس صوتًا مزدوجًا",
-      next: "الكلمة التالية ←",
-      finished: "🎉 انتهت الجولة!",
-      result: "النتيجة",
-      best: "أفضل نتيجة",
-      again: "حاول مجددًا 🔄",
-      correct: "✅ صحيح!",
-      wrong: "❌ خطأ!",
-      noVoice: "النطق غير متاح في هذا المتصفح.",
-      loadError: "تعذر تحميل الكلمات. تحقق من مسارات الملفات.",
-      trema: "تشير النقطتان إلى فصل المقاطع.",
-      mono: "هذا صوت علة واحد وليس صوتًا مزدوجًا.",
-      diph: "تحتوي هذه الكلمة على صوت علة متحرك.",
-    },
+  'use strict';
+  const script=document.currentScript,base=new URL('.',script.src),version=new URL(script.src).search;
+  const asset=name=>new URL(name+version,base);
+  const langs=['uk','en','fr','ar'];
+  const rows={
+    badge:['Фонетика · A1','Pronunciation · A1','Prononciation · A1','النطق · A1'],
+    title:['Дифтонги за 3 кроки','Diphthongs in 3 steps','Les diphtongues en 3 étapes','الأصوات المزدوجة في ٣ خطوات'],
+    subtitle:['Вивчи звук. Почуй різницю. Перевір себе.','Learn the sound. Hear the difference. Test yourself.','Découvre le son. Écoute la différence. Teste-toi.','تعلّم الصوت. اسمع الفرق. اختبر نفسك.'],
+    lessonLabel:['Мініурок','Mini-lesson','Mini-leçon','درس مصغّر'],
+    language:['Мова','Language','Langue','اللغة'],learn:['Вивчи','Learn','Apprends','تعلّم'],listenStep:['Почуй','Listen','Écoute','اسمع'],check:['Перевір','Check','Vérifie','اختبر'],
+    progress:['Завершено кроків: {n}/3','Steps completed: {n}/3','Étapes terminées : {n}/3','الخطوات المكتملة: {n}/٣'],
+    examples:['Послухай та повтори:','Listen and repeat:','Écoute et répète :','استمع وكرّر:'],
+    understood:['Зрозуміло — наступний звук →','Got it — next sound →','Compris — son suivant →','فهمت — الصوت التالي ←'],
+    goListen:['Тепер розрізняй на слух →','Now listen for the difference →','À toi de distinguer les sons →','ميّز الأصوات الآن ←'],
+    reviewed:['Цей звук уже вивчено ✓','Sound studied ✓','Son étudié ✓','تم تعلّم هذا الصوت ✓'],
+    trapsTitle:['Не плутай зі схожими буквами','Similar letters, different sounds','Des lettres semblables, des sons différents','حروف متشابهة وأصوات مختلفة'],
+    traps:['oe, ie, eu передають один голосний. Дві крапки в ruïne або poëzie означають окремі склади: ru-ï-ne, po-ë-zie.','oe, ie and eu represent a single vowel. The diaeresis in ruïne or poëzie separates syllables: ru-ï-ne, po-ë-zie.','oe, ie et eu représentent une seule voyelle. Le tréma de ruïne ou poëzie sépare les syllabes : ru-ï-ne, po-ë-zie.','تمثل oe وie وeu صوتاً صائتاً واحداً. النقطتان في ruïne وpoëzie تفصلان المقاطع: ru-ï-ne وpo-ë-zie.'],
+    extraTitle:['Додатково: ooi та eeuw','Extra: ooi and eeuw','En plus : ooi et eeuw','إضافي: ooi وeeuw'],
+    extra:['Це сполучення голосного з переходом до j або w. Вчи їх окремо від трьох основних дифтонгів. У цьому підсумковому тесті їх немає.','These combine a vowel with a glide towards j or w. Study them separately from the three core diphthongs. They are not in this final quiz.','Ces combinaisons associent une voyelle à un glissement vers j ou w. Étudie-les à part des trois diphtongues principales. Elles ne figurent pas dans ce test final.','تجمع هذه التراكيب بين صوت صائت وانتقال نحو j أو w. تعلّمها منفصلة عن الأصوات المزدوجة الثلاثة الأساسية. لا يتضمنها هذا الاختبار النهائي.'],
+    battle:['Батл слів','Word battle','Bataille de mots','تحدّي الكلمات'],dict:['Впізнай звук','Identify the sound','Reconnais le son','تعرّف على الصوت'],
+    battleHint:['Послухай і вибери слово, яке прозвучало. Після відповіді порівняй обидві вимови.','Listen and choose the word you heard. After answering, compare both pronunciations.','Écoute et choisis le mot entendu. Après ta réponse, compare les deux prononciations.','استمع واختر الكلمة التي سمعتها. بعد الإجابة قارن نطق الكلمتين.'],
+    dictHint:['Послухай та вибери групу звуків. ij/ei та ou/au мають спільні кнопки: однакове звучання, різне написання.','Listen and choose the sound group. ij/ei and ou/au share buttons: the same sound, different spellings.','Écoute et choisis le groupe sonore. ij/ei et ou/au partagent un bouton : même son, graphies différentes.','استمع واختر مجموعة الصوت. تشترك ij/ei وou/au في الأزرار: الصوت نفسه والكتابة مختلفة.'],
+    quizHint:['У слові є один із трьох основних дифтонгів? Зверни увагу на пастки й окремі склади.','Does the word contain one of the three core diphthongs? Watch for single vowels and separate syllables.','Le mot contient-il une des trois diphtongues principales ? Attention aux voyelles simples et aux syllabes séparées.','هل تحتوي الكلمة على أحد الأصوات المزدوجة الثلاثة الأساسية؟ انتبه للصوائت المفردة والمقاطع المنفصلة.'],
+    listen:['🔊 Послухай','🔊 Listen','🔊 Écoute','🔊 استمع'],question:['Завдання {n}/{total}','Question {n}/{total}','Question {n}/{total}','السؤال {n}/{total}'],
+    correct:['Правильних: {n}','Correct: {n}','Bonnes réponses : {n}','الإجابات الصحيحة: {n}'],yes:['Є дифтонг','Diphthong','Une diphtongue','صوت مزدوج'],no:['Не дифтонг','No diphthong','Pas de diphtongue','ليس صوتاً مزدوجاً'],
+    right:['✓ Правильно!','✓ Correct!','✓ Bien joué !','✓ صحيح!'],wrong:['Спробуй запам’ятати різницю','Remember this difference','Retiens cette différence','تذكّر هذا الفرق'],
+    coreRule:['{group} — ковзний звук в одному складі.','{group} — a gliding vowel within one syllable.','{group} — une voyelle qui glisse dans une seule syllabe.','{group} — صوت صائت متحرك داخل مقطع واحد.'],
+    monoRule:['Тут один голосний звук, а не основний дифтонг.','This is a single vowel, not a core diphthong.','C’est une seule voyelle, pas une diphtongue principale.','هذا صوت صائت مفرد وليس صوتاً مزدوجاً أساسياً.'],
+    tremaRule:['Дві крапки позначають окремий склад. Не зливай ці голосні в один звук.','The diaeresis marks a separate syllable. Do not merge these vowels.','Le tréma indique une syllabe séparée. Ne fusionne pas ces voyelles.','تشير النقطتان إلى مقطع منفصل. لا تدمج هذين الصوتين.'],
+    next:['Наступне завдання →','Next question →','Question suivante →','السؤال التالي ←'],finished:['Раунд завершено!','Round complete!','Série terminée !','انتهت الجولة!'],
+    best:['Найкраще: {n}/{total}','Best: {n}/{total}','Record : {n}/{total}','الأفضل: {n}/{total}'],
+    repeat:['Повторити помилки ({n})','Review mistakes ({n})','Revoir les erreurs ({n})','راجع الأخطاء ({n})'],again:['Новий раунд','New round','Nouvelle série','جولة جديدة'],
+    review:['Повторення помилок','Mistake review','Révision des erreurs','مراجعة الأخطاء'],reviewDone:['Помилки повторено. Пройди повний раунд, щоб підтвердити результат.','Mistakes reviewed. Take a full round to confirm your result.','Erreurs revues. Fais une série complète pour confirmer ton résultat.','راجعت الأخطاء. أكمل جولة كاملة لتأكيد نتيجتك.'],
+    scoreHint:['Для засвоєння потрібно щонайменше 80% у кожному раунді.','Aim for at least 80% in each full round.','Vise au moins 80 % dans chaque série complète.','استهدف ٨٠٪ على الأقل في كل جولة كاملة.'],
+    goDict:['Далі: впізнай звук →','Next: identify the sound →','Ensuite : reconnais le son →','التالي: تعرّف على الصوت ←'],goQuiz:['Далі: перевір себе →','Next: test yourself →','Ensuite : teste-toi →','التالي: اختبر نفسك ←'],
+    goLearn:['Повернутися до трьох звуків','Revisit the three sounds','Revoir les trois sons','راجع الأصوات الثلاثة'],
+    mastered:['Мініурок засвоєно! 🎉','Mini-lesson mastered! 🎉','Mini-leçon maîtrisée ! 🎉','أتقنت الدرس المصغّر! 🎉'],
+    masteredHint:['Ти впізнаєш три основні дифтонги. Повернися пізніше та закріпи результат.','You recognise the three core diphthongs. Come back later to reinforce them.','Tu reconnais les trois diphtongues principales. Reviens plus tard pour consolider tes acquis.','تميّز الآن الأصوات المزدوجة الثلاثة الأساسية. عُد لاحقاً لتثبيتها.'],
+    xp:['+{n} балів до твого прогресу','+{n} points towards your progress','+{n} points dans ta progression','+{n} نقطة لتقدّمك'],
+    xpRule:['Бали додатка — за нові найкращі результати. Повторення помилок не додає зайвих балів.','App points reward new personal bests. Mistake reviews do not add extra points.','Les points récompensent les nouveaux records. Revoir les erreurs ne rapporte pas de points supplémentaires.','تُمنح نقاط التطبيق للأرقام القياسية الجديدة. مراجعة الأخطاء لا تضيف نقاطاً إضافية.'],
+    legacy:['Попередній тренажер: {n}/100 — збережено','Previous quiz: {n}/100 — preserved','Ancien quiz : {n}/100 — conservé','الاختبار السابق: {n}/١٠٠ — محفوظ'],
+    resumed:['Твій прогрес відновлено. Можеш продовжити з цього місця.','Your progress is restored. Continue where you left off.','Ta progression est restaurée. Reprends là où tu en étais.','تمت استعادة تقدّمك. تابع من حيث توقفت.'],
+    memoryOnly:['Сховище браузера недоступне: прогрес збережеться лише до закриття сторінки.','Browser storage is unavailable: progress lasts only while this page is open.','Le stockage est indisponible : la progression ne sera conservée que tant que cette page reste ouverte.','تخزين المتصفح غير متاح: سيبقى التقدّم ما دامت الصفحة مفتوحة فقط.'],
+    noVoice:['Не вдалося відтворити звук. Спробуй ще раз або перевір вибраний голос.','Audio could not play. Try again or check the selected voice.','Impossible de lire le son. Réessaie ou vérifie la voix choisie.','تعذّر تشغيل الصوت. حاول مجدداً أو تحقّق من الصوت المختار.'],
+    loadError:['Не вдалося відкрити мініурок. Перевір підключення й онови сторінку.','The mini-lesson could not load. Check your connection and reload.','La mini-leçon n’a pas pu se charger. Vérifie ta connexion et recharge la page.','تعذّر تحميل الدرس. تحقّق من الاتصال وأعد تحميل الصفحة.']
   };
-  const demos = {
-    ui: ["Е-подібний", "І-подібний", "huis", "будинок"],
-    ij: ["Широке [Е]", "Коротке [Й]", "kijken", "дивитися"],
-    ou: ["Звук [О/А]", "Коротке [У/В]", "koud", "холодний"],
-    eeuw: ["Довге [Е:]", "Звук [W/В]", "leeuw", "лев"],
+  const sounds={
+    ui:{examples:['huis','tuin','muis'],text:[
+      ['Плавний перехід між двома положеннями голосного в одному складі.','Округли губи','Підніми язик, зберігай округлення','Це не українське «у-і». Не розділяй звук на два склади.'],
+      ['One smooth glide within a single syllable.','Round your lips','Raise your tongue; keep lips rounded','Do not split the sound into two syllables.'],
+      ['Un glissement continu dans une seule syllabe.','Arrondis les lèvres','Relève la langue ; garde les lèvres arrondies','Ne sépare pas le son en deux syllabes.'],
+      ['انتقال سلس داخل مقطع واحد.','دوّر الشفتين','ارفع اللسان مع إبقاء الشفتين مدورتين','لا تقسّم الصوت إلى مقطعين.']
+    ]},
+    'ij/ei':{examples:['trein','ijs','pijn'],text:[
+      ['ij та ei звучать однаково. Їхнє написання вивчай разом зі словом.','Почни з відкритішого звука','Плавно підніми язик','Не вимовляй дві окремі голосні й не роби паузи посередині.'],
+      ['ij and ei sound alike. Learn the spelling with each word.','Start with a more open vowel','Smoothly raise your tongue','Keep the glide in one syllable, without a pause.'],
+      ['ij et ei se prononcent de la même façon. Apprends la graphie avec le mot.','Commence par une voyelle plus ouverte','Relève progressivement la langue','Garde le glissement dans une seule syllabe, sans pause.'],
+      ['يُنطق ij وei بالطريقة نفسها. تعلّم الكتابة مع كل كلمة.','ابدأ بصوت أكثر انفتاحاً','ارفع اللسان تدريجياً','حافظ على مقطع واحد دون توقف.']
+    ]},
+    'ou/au':{examples:['koud','blauw','hout'],text:[
+      ['ou та au звучать однаково. Звук змінюється, але склад залишається один.','Відкрий рот','Плавно округли губи','Не підміняй цей перехід одним українським «о» або «у».'],
+      ['ou and au sound alike. The vowel changes within one syllable.','Open your mouth','Smoothly round your lips','Keep the movement smooth; do not replace it with a single vowel.'],
+      ['ou et au se prononcent de la même façon. La voyelle change dans une seule syllabe.','Ouvre la bouche','Arrondis progressivement les lèvres','Garde un mouvement continu, sans remplacer le son par une seule voyelle.'],
+      ['يُنطق ou وau بالطريقة نفسها. يتغيّر الصوت داخل مقطع واحد.','افتح الفم','دوّر الشفتين تدريجياً','حافظ على انتقال سلس ولا تستبدله بصوت واحد.']
+    ]}
   };
-  const demoLocales = {
-    en: {
-      ui: ["Front rounded vowel", "Raised tongue", "huis", "house"],
-      ij: ["Open vowel", "Narrower vowel", "kijken", "to look"],
-      ou: ["Open vowel", "Rounded lips", "koud", "cold"],
-      eeuw: ["Long [eː]", "[w] glide", "leeuw", "lion"],
-    },
-    fr: {
-      ui: ["Voyelle antérieure arrondie", "Langue relevée", "huis", "maison"],
-      ij: ["Voyelle ouverte", "Voyelle plus fermée", "kijken", "regarder"],
-      ou: ["Voyelle ouverte", "Lèvres arrondies", "koud", "froid"],
-      eeuw: ["[eː] long", "Glissement vers [w]", "leeuw", "lion"],
-    },
-    ar: {
-      ui: ["صائت أمامي مع تدوير الشفتين", "ارتفاع اللسان", "huis", "منزل"],
-      ij: ["صائت مفتوح", "صائت أضيق", "kijken", "ينظر"],
-      ou: ["صائت مفتوح", "تدوير الشفتين", "koud", "بارد"],
-      eeuw: ["[eː] طويل", "انتقال إلى [w]", "leeuw", "أسد"],
-    },
-  };
-  const articLocales = {
-    en: {
-      ui: [
-        "Rounded lips; tongue forward",
-        "Less rounded lips; tongue rises",
-        "Start with a front rounded vowel and smoothly move the tongue. Keep the glide in one syllable.",
-        "Do not pronounce ui as two separate vowels.",
-      ],
-      ij: [
-        "Jaw more open; lips neutral",
-        "Tongue rises; mouth narrows",
-        "ij and ei sound the same; learn their spelling separately.",
-        "Do not split the glide into two syllables.",
-      ],
-      ou: [
-        "Mouth more open",
-        "Lips round and narrow",
-        "ou and au sound the same; make a smooth glide within one syllable.",
-        "Do not pause between the vowel positions.",
-      ],
-    },
-    fr: {
-      ui: [
-        "Lèvres arrondies ; langue en avant",
-        "Lèvres moins arrondies ; langue relevée",
-        "Commencez par une voyelle antérieure arrondie puis déplacez la langue sans coupure, dans une seule syllabe.",
-        "Ne prononcez pas ui comme deux voyelles séparées.",
-      ],
-      ij: [
-        "Mâchoire plus ouverte ; lèvres neutres",
-        "La langue monte ; la bouche se ferme",
-        "ij et ei ont le même son ; apprenez leur orthographe séparément.",
-        "Ne séparez pas le glissement en deux syllabes.",
-      ],
-      ou: [
-        "Bouche plus ouverte",
-        "Les lèvres s’arrondissent et se resserrent",
-        "ou et au ont le même son ; faites une transition fluide dans une seule syllabe.",
-        "Ne faites pas de pause entre les positions.",
-      ],
-    },
-    ar: {
-      ui: [
-        "الشفتان مستديرتان واللسان إلى الأمام",
-        "تقل استدارة الشفتين ويرتفع اللسان",
-        "ابدأ بصائت أمامي مع تدوير الشفتين ثم حرّك اللسان بسلاسة في مقطع واحد.",
-        "لا تنطق ui كصائتين منفصلين.",
-      ],
-      ij: [
-        "الفك أكثر انفتاحًا والشفتان محايدتان",
-        "يرتفع اللسان ويضيق الفم",
-        "نطق ij وei واحد؛ تعلّم الكتابة بشكل منفصل.",
-        "لا تقسّم الانتقال إلى مقطعين.",
-      ],
-      ou: [
-        "الفم أكثر انفتاحًا",
-        "تستدير الشفتان وتضيقان",
-        "نطق ou وau واحد؛ انتقل بسلاسة ضمن مقطع واحد.",
-        "لا تتوقف بين موضعي الصائت.",
-      ],
-    },
-  };
-  const instances = new Set();
-  const storageKey = "lerenbe.diphthongs.best.v1";
-  const shuffle = (a) => {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+  const instances=new Set();
+  const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
+  const button=(text,fn,cls='')=>{const b=node('button',cls,text);b.type='button';b.addEventListener('click',fn);return b};
+  function init(root,words){
+    if(root.dataset.ready)return;root.dataset.ready='1';
+    const model=globalThis.LerenDiphthongsLesson.create(words,{getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)});
+    const $=s=>root.querySelector(s),$$=s=>[...root.querySelectorAll(s)];
+    let lang='uk',lastGain={};
+    const tr=(key,values={})=>(rows[key]?.[langs.indexOf(lang)]||rows[key]?.[0]||key).replace(/\{(\w+)\}/g,(_,k)=>String(values[k]??''));
+    const translation=w=>w.translations?.[lang]||w.tr;
+    function speak(text,automatic=false){
+      if(window.LerenLessonWidgets){window.LerenLessonWidgets.speak(text,automatic);return}
+      if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){$('[data-role=status]').textContent=tr('noVoice');return}
+      const synth=window.speechSynthesis,voices=synth.getVoices(),voice=voices.find(v=>v.lang.toLowerCase()==='nl-be')||voices.find(v=>v.lang.toLowerCase().startsWith('nl'));
+      synth.cancel();const utterance=new window.SpeechSynthesisUtterance(text);utterance.lang=voice?.lang||'nl-BE';if(voice)utterance.voice=voice;utterance.rate=.85;utterance.onerror=()=>{$('[data-role=status]').textContent=tr('noVoice')};synth.speak(utterance);
     }
-    return a;
-  };
-  function init(root, words) {
-    if (root.dataset.ready) return;
-    root.dataset.ready = "1";
-    const $ = (s) => root.querySelector(s),
-      $$ = (s) => [...root.querySelectorAll(s)];
-    let lang = "uk",
-      deck = [],
-      index = 0,
-      score = 0,
-      answered = false,
-      lastCorrect = null,
-      demo = "ui";
-    const tr = (k) =>
-      (dictionary[lang] || dictionary.uk)[k] || dictionary.uk[k] || k;
-    function setLanguage(next) {
-      lang = dictionary[next] ? next : "uk";
-      root.lang = lang;
-      root.dir = lang === "ar" ? "rtl" : "ltr";
-      $("[data-role=language]").value = lang;
-      $$("[data-i18n]").forEach((el) => {
-        el.textContent = tr(el.dataset.i18n);
-      });
-      updateDemo();
-      renderArtic();
-      const item = deck[index];
-      if (item) {
-        $("[data-role=translation]").textContent =
-          item.translations?.[lang] || item.tr;
-        if (answered) paintFeedback(lastCorrect);
+    const stop=()=>window.LerenLessonWidgets?.stop?.();
+    function example(word){const w=model.word(word),b=button('',()=>speak(word), 'lbe-example');b.append(node('span','','🔊'),node('strong','',word),node('small','',translation(w)));b.setAttribute('aria-label',tr('listen')+': '+word+' — '+translation(w));return b}
+    function setLanguage(next){lang=langs.includes(next)?next:'uk';root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';$('[data-role=language]').value=lang;render()}
+    function stage(name){stop();model.stage(name);render()}
+    function render(){
+      $$('[data-i18n]').forEach(e=>e.textContent=tr(e.dataset.i18n));
+      root.querySelector('[role=tablist]').setAttribute('aria-label',tr('lessonLabel'));
+      const steps=model.steps();$('[data-role=progress]').textContent=tr('progress',{n:steps.filter(Boolean).length});
+      $$('[data-tab]').forEach((b,i)=>{const on=b.dataset.tab===model.state.stage;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;b.classList.toggle('is-done',steps[i]);b.querySelector('.lbe-step-num').textContent=steps[i]?'✓':String(i+1)});
+      $$('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==model.state.stage);
+      $('[data-role=lesson-done]').hidden=!steps.every(Boolean);
+      $('[data-role=status]').textContent=model.persistent?'':tr('memoryOnly');
+      const resume=$('[data-role=resume]');resume.hidden=!Object.values(model.state.rounds).some(r=>r&&!r.mode.includes('review')&&r.index>0&&r.index<r.keys.length);resume.textContent=tr('resumed');
+      if(model.state.stage==='learn')renderLearn();
+      else if(model.state.stage==='listen'){
+        const modes=$('[data-role=listen-modes]');modes.replaceChildren();
+        for(const kind of ['battle','dict']){const b=button(tr(kind),()=>{stop();model.listening(kind);render()},'');b.setAttribute('aria-pressed',String(kind===model.state.listening));modes.appendChild(b)}
+        model.ensure(model.state.listening);renderRound(model.state.listening,$('[data-role=listen-content]'));
+      }else{model.ensure('quiz');renderRound('quiz',$('[data-role=quiz-content]'))}
+    }
+    function renderLearn(){
+      const tabs=$('[data-role=sound-tabs]');tabs.replaceChildren();
+      model.groups.forEach(g=>{const b=button(g+(model.state.learned.includes(g)?' ✓':''),()=>{stop();model.sound(g);renderLearn()});b.setAttribute('aria-pressed',String(g===model.state.sound));tabs.appendChild(b)});
+      const sound=sounds[model.state.sound],text=sound.text[langs.indexOf(lang)];
+      $('[data-role=sound-title]').textContent=model.state.sound;
+      $('[data-role=sound-count]').textContent=model.state.learned.includes(model.state.sound)?tr('reviewed'):(model.groups.indexOf(model.state.sound)+1)+' / 3';
+      for(const [selector,value] of [['sound-rule',text[0]],['artic-start',text[1]],['artic-end',text[2]],['sound-tip',text[3]]])$('[data-role='+selector+']').textContent=value;
+      const examples=$('[data-role=examples]');examples.replaceChildren(...sound.examples.map(example));
+      $('[data-role=learn-next]').textContent=model.state.learned.filter(g=>g!==model.state.sound).length===2?tr('goListen'):tr('understood');
+      $('[data-role=trap-examples]').replaceChildren(...['boek','fiets','neus','ruïne'].map(example));
+      $('[data-role=extra-examples]').replaceChildren(...['mooi','leeuw'].map(example));
+    }
+    function renderRound(kind,box){
+      const r=model.round(kind);box.replaceChildren();
+      if(model.done(kind)){renderResult(kind,box);return}
+      const q=model.current(kind),w=model.word(q.word),answered=r.answers[r.index]!=null;
+      const meta=node('div','lbe-meta');meta.append(node('span','',tr('question',{n:r.index+1,total:r.keys.length})),node('span','',tr('correct',{n:model.count(kind)})));box.appendChild(meta);
+      if(r.mode==='review')box.appendChild(node('p','lbe-caption',tr('review')));
+      box.appendChild(node('p','',tr(kind==='quiz'?'quizHint':kind==='battle'?'battleHint':'dictHint')));
+      if(kind==='quiz'){
+        const wordbox=node('div','lbe-wordbox');const word=node('div','lbe-word',w.word);word.dataset.role='word';wordbox.append(word,node('small','',translation(w)));box.appendChild(wordbox);
+      }
+      const audio=button(tr('listen'),()=>speak(w.word),'lbe-audio');audio.dataset.action='listen';box.appendChild(audio);
+      const choices=node('div','lbe-answers');choices.dataset.role=kind==='quiz'?'quiz-options':kind==='battle'?'battle-options':'dict-options';
+      q.choices.forEach(choice=>{
+        const b=button(kind==='quiz'?tr(choice):choice,()=>{if(model.answer(kind,choice,q.key)){render();box.querySelector('[data-action=next]')?.focus({preventScroll:true})}});
+        b.dataset.choice=choice;b.disabled=answered;
+        if(answered){b.classList.toggle('is-correct',choice===q.answer);b.classList.toggle('is-wrong',choice===r.answers[r.index]&&choice!==q.answer)}
+        choices.appendChild(b);
+      });box.appendChild(choices);
+      if(answered){
+        const fb=node('div','lbe-feedback');fb.setAttribute('role','status');fb.setAttribute('aria-live','polite');fb.append(node('strong','',tr(r.answers[r.index]===q.answer?'right':'wrong')));
+        const group=model.group(w),explanation=w.pattern==='trema'?tr('tremaRule'):model.groups.includes(group)?tr('coreRule',{group}):tr('monoRule');
+        fb.append(node('span','',w.word+' — '+translation(w)+'. '+explanation));
+        const compare=node('div','lbe-compare');(kind==='battle'?q.choices:[q.word]).forEach(word=>compare.appendChild(button('🔊 '+word,()=>speak(word))));fb.appendChild(compare);box.appendChild(fb);
+        const next=button(tr('next'),()=>{if(model.next(kind,q.key)){render();const word=model.current(kind)?.word;if(word)speak(word,true)}},'lbe-primary');next.dataset.action='next';box.appendChild(next);
       }
     }
-    function speak(word, automatic = false) {
-      if (window.LerenLessonWidgets) {
-        window.LerenLessonWidgets.speak(word, automatic);
-        return;
+    function renderResult(kind,box){
+      const r=model.round(kind),correct=model.count(kind),total=r.keys.length;
+      if(r.mode==='full'&&window.LerenLessonWidgets?.completeDiphthongs){const gain=window.LerenLessonWidgets.completeDiphthongs(kind,correct,total);if(gain>0)lastGain[kind]=gain}
+      const result=node('div','lbe-result');result.append(node('h3','',tr('finished')),node('div','lbe-result-score',correct*10+' / '+total*10),node('p','',tr('best',{n:model.state.best[kind]*10,total:model.limits[kind]*10})));
+      if(lastGain[kind]>0&&r.mode==='full')result.appendChild(node('p','',tr('xp',{n:lastGain[kind]})));
+      result.appendChild(node('p','',tr(r.mode==='review'?'reviewDone':'scoreHint')));
+      if(kind==='quiz'&&model.legacyBest)result.appendChild(node('p','',tr('legacy',{n:model.legacyBest})));
+      const pending=model.state.mistakes[kind];
+      if(pending.length){
+        const list=node('ul');pending.forEach(key=>{const q=model.question(kind,key),w=model.word(q.word);list.appendChild(node('li','',w.word+' — '+translation(w)))});result.appendChild(list);
+        result.appendChild(button(tr('repeat',{n:pending.length}),()=>{lastGain[kind]=0;model.start(kind,true);render()},'lbe-primary'));
       }
-      if (
-        !("speechSynthesis" in window) ||
-        !("SpeechSynthesisUtterance" in window)
-      ) {
-        $("[data-role=status]").textContent = tr("noVoice");
-        return;
-      }
-      const synth = window.speechSynthesis;
-      const voices = synth.getVoices();
-      const voice =
-        voices.find((v) => v.lang.toLowerCase() === "nl-be") ||
-        voices.find((v) => v.lang.toLowerCase().startsWith("nl"));
-      synth.cancel();
-      const u = new SpeechSynthesisUtterance(word);
-      u.lang = voice?.lang || "nl-BE";
-      if (voice) u.voice = voice;
-      u.rate = 0.85;
-      u.onerror = () => {
-        $("[data-role=status]").textContent = tr("noVoice");
-      };
-      synth.speak(u);
+      result.appendChild(button(tr('again'),()=>{lastGain[kind]=0;model.start(kind);render()},'lbe-secondary'));
+      const go=kind==='battle'?()=>{model.listening('dict');render()}:kind==='dict'?()=>stage('quiz'):!model.steps()[0]?()=>stage('learn'):()=>stage('listen');
+      result.appendChild(button(tr(kind==='battle'?'goDict':kind==='dict'?'goQuiz':!model.steps()[0]?'goLearn':'listenStep'),go,'lbe-primary'));
+      result.appendChild(node('p','lbe-caption',tr('xpRule')));box.appendChild(result);
     }
-    function updateDemo() {
-      const d = (demoLocales[lang] || demos)[demo];
-      $("[data-role=start]").textContent = d[0];
-      $("[data-role=end]").textContent = d[1];
-      $("[data-role=demo-word]").textContent = d[2];
-      $("[data-role=demo-tr]").textContent = d[3];
-      $$("[data-demo]").forEach((b) =>
-        b.setAttribute("aria-pressed", String(b.dataset.demo === demo)),
-      );
-    }
-    function tab(name) {
-      $$("[data-tab]").forEach((b) =>
-        b.setAttribute("aria-selected", String(b.dataset.tab === name)),
-      );
-      $$("[data-pane]").forEach((p) => (p.hidden = p.dataset.pane !== name));
-      if (name === "quiz" && !deck.length) start();
-    }
-    function start() {
-      deck = shuffle([...words]).slice(0, Math.min(10, words.length));
-      index = 0;
-      score = 0;
-      answered = false;
-      $("[data-role=finished]").hidden = true;
-      $("[data-role=quiz-area]").hidden = false;
-      render(false);
-    }
-    function render(autoSpeak) {
-      const item = deck[index];
-      if (!item) return;
-      $("[data-role=word]").textContent = item.word;
-      $("[data-role=translation]").textContent =
-        item.translations?.[lang] || item.tr;
-      $("[data-role=current]").textContent = String(index + 1);
-      $("[data-role=total]").textContent = String(deck.length);
-      $("[data-role=score]").textContent = String(score);
-      $("[data-role=feedback]").hidden = true;
-      $("[data-action=next]").hidden = true;
-      $$("[data-answer]").forEach((b) => (b.disabled = false));
-      answered = false;
-      if (autoSpeak) speak(item.word, true);
-    }
-    function answer(choice) {
-      if (answered) return;
-      answered = true;
-      const item = deck[index],
-        correct = choice === item.isDiph;
-      if (correct) score += 10;
-      $$("[data-answer]").forEach((b) => (b.disabled = true));
-      lastCorrect = correct;
-      paintFeedback(correct);
-      $("[data-role=score]").textContent = String(score);
-      $("[data-action=next]").hidden = false;
-    }
-    function paintFeedback(correct) {
-      const item = deck[index];
-      const fb = $("[data-role=feedback]");
-      fb.className = "lbe-feedback " + (correct ? "correct" : "wrong");
-      fb.replaceChildren();
-      const strong = document.createElement("strong");
-      strong.textContent = tr(correct ? "correct" : "wrong") + " ";
-      const detail = document.createElement("span");
-      detail.textContent =
-        lang === "uk"
-          ? item.exp
-          : tr(
-              item.pattern === "trema"
-                ? "trema"
-                : item.isDiph
-                  ? "diph"
-                  : "mono",
-            ) +
-            " (" +
-            item.pattern +
-            ")";
-      fb.append(strong, detail);
-      fb.hidden = false;
-      $("[data-role=score]").textContent = String(score);
-      $("[data-action=next]").hidden = false;
-    }
-    function next() {
-      if (!answered) return;
-      index++;
-      if (index < deck.length) {
-        render(true);
-        return;
-      }
-      $("[data-role=quiz-area]").hidden = true;
-      $("[data-role=finished]").hidden = false;
-      const total = deck.length * 10;
-      $("[data-role=final]").textContent = score + " / " + total;
-      let best = 0;
-      try {
-        best = Math.max(0, Math.min(total, Number(localStorage.getItem(storageKey)) || 0));
-        if (score > best) {
-          best = score;
-          localStorage.setItem(storageKey, String(best));
-        }
-      } catch (_e) {}
-      $("[data-role=best]").textContent = best + " / " + total;
-      root.dispatchEvent(
-        new CustomEvent("lerenbe:diphthongs:complete", {
-          bubbles: true,
-          detail: {
-            score,
-            maxScore: total,
-            percent: Math.round((score / total) * 100),
-          },
-        }),
-      );
-    }
-    const contrasts = [
-      [
-        ["huis", "🏠", "ui"],
-        ["haas", "🐇", "aa"],
-        ["hoed", "🎩", "oe"],
-      ],
-      [
-        ["ijs", "🍦", "ij/ei"],
-        ["is", "✔️", "i"],
-      ],
-      [
-        ["koud", "🥶", "ou/au"],
-        ["koot", "🦴", "oo"],
-      ],
-    ];
-    const artic = {
-      ui: {
-        start: "Губи округлені; язик спереду",
-        end: "Губи менш округлені, язик піднімається",
-        bridge:
-          "Почни з переднього округленого голосного й плавно зміни положення язика. Українське «у-і» — не правильний звук.",
-        trap: "🚫 ui НЕ читається як українське «у-і».",
-        word: "huis",
-      },
-      ij: {
-        start: "Щелепа відкритіша, губи нейтральні",
-        end: "Язик піднімається, рот звужується",
-        bridge: "ij та ei мають однакове звучання; написання вивчай окремо.",
-        trap: "🚫 Не вимовляй ij як два окремі звуки «і-й».",
-        word: "trein",
-      },
-      ou: {
-        start: "Рот більш відкритий",
-        end: "Губи округлюються й звужуються",
-        bridge: "ou та au звучать однаково; плавний перехід в одному складі.",
-        trap: "🚫 Не роби паузи між двома голосними.",
-        word: "koud",
-      },
-    };
-    let articKey = "ui";
-    function renderArtic() {
-      const original = artic[articKey],
-        translated = articLocales[lang]?.[articKey];
-      const a = translated
-        ? {
-            start: translated[0],
-            end: translated[1],
-            bridge: translated[2],
-            trap: translated[3],
-            word: original.word,
-          }
-        : original;
-      $("[data-role=artic-start]").textContent = a.start;
-      $("[data-role=artic-end]").textContent = a.end;
-      $("[data-role=artic-bridge]").textContent = a.bridge;
-      $("[data-role=artic-trap]").textContent = a.trap;
-      $("[data-role=artic-word]").textContent = a.word;
-      $$("[data-artic]").forEach((b) =>
-        b.setAttribute("aria-pressed", String(b.dataset.artic === articKey)),
-      );
-    }
-    const pairsBox = $("[data-role=pairs]");
-    contrasts.forEach((group) => {
-      const row = document.createElement("div");
-      row.className = "lbe-pair-row";
-      group.forEach(([word, emoji, sound]) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "lbe-pair-button";
-        b.textContent = emoji + " " + word + " [" + sound + "] 🔊";
-        b.addEventListener("click", () => speak(word));
-        row.appendChild(b);
-      });
-      pairsBox.appendChild(row);
+    $$('[data-tab]').forEach(b=>b.addEventListener('click',()=>stage(b.dataset.tab)));
+    $('[data-action=learn-next]').addEventListener('click',()=>{model.learn();const next=model.groups.find(g=>!model.state.learned.includes(g));if(next){model.sound(next);render()}else stage('listen')});
+    $('[data-role=language]').addEventListener('change',e=>setLanguage(e.target.value));
+    root.addEventListener('keydown',e=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)||!e.target.closest('[data-tab]'))return;
+      const buttons=$$('[data-tab]'),index=buttons.indexOf(e.target.closest('[data-tab]'));let next=e.key==='Home'?0:e.key==='End'?2:(index+(e.key==='ArrowRight'?1:-1)*(lang==='ar'?-1:1)+3)%3;
+      e.preventDefault();stage(buttons[next].dataset.tab);buttons[next].focus();
     });
-    renderArtic();
-    const dictSource = [
-      ["trein", "ij/ei"],
-      ["huis", "ui"],
-      ["koud", "ou/au"],
-      ["kijken", "ij/ei"],
-      ["blauw", "ou/au"],
-      ["muis", "ui"],
-      ["boek", "oe"],
-      ["fiets", "ie"],
-      ["neus", "eu"],
-      ["ijs", "ij/ei"],
-    ];
-    let dictDeck = [],
-      di = 0,
-      ds = 0,
-      dictAnswered = false;
-    const dictGroups = ["ui", "ij/ei", "ou/au", "oe", "ie", "eu"];
-    function startDict() {
-      dictDeck = shuffle([...dictSource]).slice(0, 8);
-      di = 0;
-      ds = 0;
-      $("[data-role=dict-finished]").hidden = true;
-      renderDict();
-    }
-    function renderDict() {
-      dictAnswered = false;
-      const item = dictDeck[di];
-      $("[data-role=dict-index]").textContent = di + 1;
-      $("[data-role=dict-total]").textContent = dictDeck.length;
-      $("[data-role=dict-score]").textContent = ds;
-      $("[data-role=dict-feedback]").hidden = true;
-      $("[data-action=dict-next]").hidden = true;
-      const box = $("[data-role=dict-options]");
-      box.replaceChildren();
-      const choices = shuffle([
-        item[1],
-        ...shuffle(dictGroups.filter((x) => x !== item[1])).slice(0, 3),
-      ]);
-      choices.forEach((c) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.textContent = c;
-        b.addEventListener("click", () => {
-          if (dictAnswered) return;
-          dictAnswered = true;
-          const ok = c === item[1];
-          if (ok) ds += 10;
-          box.querySelectorAll("button").forEach((x) => (x.disabled = true));
-          const fb = $("[data-role=dict-feedback]");
-          fb.hidden = false;
-          fb.className = "lbe-feedback " + (ok ? "correct" : "wrong");
-          fb.textContent = (ok ? "✅ " : "❌ ") + item[0] + " — " + item[1];
-          $("[data-role=dict-score]").textContent = ds;
-          $("[data-action=dict-next]").hidden = false;
-        });
-        box.appendChild(b);
-      });
-    }
-    function nextDict() {
-      if (!dictAnswered) return;
-      di++;
-      if (di < dictDeck.length) {
-        renderDict();
-        speak(dictDeck[di][0], true);
-      } else {
-        $("[data-role=dict-options]").replaceChildren();
-        $("[data-action=dict-next]").hidden = true;
-        $("[data-role=dict-feedback]").hidden = true;
-        $("[data-role=dict-finished]").hidden = false;
-        $("[data-role=dict-final]").textContent =
-          ds + " / " + dictDeck.length * 10;
-        root.dispatchEvent(
-          new CustomEvent("lerenbe:diphthongs:dictation-complete", {
-            bubbles: true,
-            detail: { score: ds, maxScore: dictDeck.length * 10 },
-          }),
-        );
-      }
-    }
-    root.addEventListener("click", (e) => {
-      const b = e.target.closest("button");
-      if (!b || !root.contains(b)) return;
-      if (b.dataset.tab) {
-        tab(b.dataset.tab);
-        if (b.dataset.tab === "dict" && !dictDeck.length) {
-          startDict();
-          speak(dictDeck[0][0]);
-        }
-      } else if (b.dataset.artic) {
-        articKey = b.dataset.artic;
-        renderArtic();
-        speak(artic[articKey].word);
-      } else if (b.dataset.action === "artic-speak")
-        speak(artic[articKey].word);
-      else if (b.dataset.action === "dict-speak" && dictDeck[di])
-        speak(dictDeck[di][0]);
-      else if (b.dataset.action === "dict-next") nextDict();
-      else if (b.dataset.action === "dict-restart") {
-        startDict();
-        speak(dictDeck[0][0]);
-      } else if (b.dataset.demo) {
-        demo = b.dataset.demo;
-        updateDemo();
-        speak(demos[demo][2]);
-      } else if (b.dataset.answer !== undefined)
-        answer(b.dataset.answer === "true");
-      else if (b.dataset.action === "go-quiz") tab("quiz");
-      else if (b.dataset.action === "demo-speak") speak(demos[demo][2]);
-      else if (b.dataset.action === "word-speak" && deck[index])
-        speak(deck[index].word);
-      else if (b.dataset.action === "next") next();
-      else if (b.dataset.action === "restart") start();
-    });
-    $("[data-role=language]").addEventListener("change", (e) =>
-      setLanguage(e.target.value),
-    );
-    instances.add({ root, setLanguage });
-    const globalLang = (
-      window.LerenLessonWidgets?.getLanguage() ||
-      document.documentElement.lang ||
-      ""
-    ).toLowerCase();
-    setLanguage(
-      globalLang.startsWith("fr")
-        ? "fr"
-        : globalLang.startsWith("ar")
-          ? "ar"
-          : globalLang.startsWith("en")
-            ? "en"
-            : "uk",
-    );
-    updateDemo();
+    instances.add({root,setLanguage});
+    const initial=window.LerenLessonWidgets?.getLanguage()||document.documentElement.lang||'uk';setLanguage(initial.slice(0,2));
   }
-  async function mount(target) {
-    const host =
-      typeof target === "string" ? document.querySelector(target) : target;
-    if (!host) return;
-    try {
-      const [html, words] = await Promise.all([
-        fetch(new URL("widget.html", base)).then((r) => {
-          if (!r.ok) throw Error("html");
-          return r.text();
-        }),
-        fetch(new URL("words.json", base)).then((r) => {
-          if (!r.ok) throw Error("json");
-          return r.json();
-        }),
-      ]);
-      if (!document.querySelector("link[data-lbe-diph-css]")) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = new URL("widget.css", base).href;
-        link.dataset.lbeDiphCss = "1";
-        document.head.appendChild(link);
-      }
-      host.innerHTML = html;
-      init(host.querySelector("[data-lbe-diph]"), words);
-    } catch (err) {
-      host.textContent =
-        "Не вдалося завантажити модуль. Перевірте розміщення файлів і запуск через HTTP(S).";
-      console.error("Leren.be diphthongs:", err);
-    }
+  async function mount(target){
+    const host=typeof target==='string'?document.querySelector(target):target;if(!host||host.dataset?.mounted||host.dataset?.mounting)return;
+    host.dataset.mounting='1';
+    try{
+      const [html,words]=await Promise.all([fetch(asset('widget.html')).then(r=>{if(!r.ok)throw Error('html');return r.text()}),fetch(asset('words.json')).then(r=>{if(!r.ok)throw Error('words');return r.json()})]);
+      if(!document.querySelector('link[data-lbe-diph-css]')){const link=document.createElement('link');link.rel='stylesheet';link.href=asset('widget.css').href;link.dataset.lbeDiphCss='1';document.head.appendChild(link)}
+      host.innerHTML=html;init(host.querySelector('[data-lbe-diph]'),words);host.dataset.mounted='1';
+    }catch(error){host.textContent=rows.loadError[langs.indexOf(document.documentElement.lang)]||rows.loadError[0];console.error('Leren.be diphthongs:',error)}finally{delete host.dataset.mounting}
   }
-  window.LerenbeDiphthongs = {
-    mount,
-    setLanguage(lang) {
-      for (const instance of instances) {
-        if (instance.root.isConnected) instance.setLanguage(lang);
-        else instances.delete(instance);
-      }
-    },
-  };
-  document.querySelectorAll("[data-lerenbe-diphthongs]").forEach(mount);
+  window.LerenbeDiphthongs={mount,setLanguage(lang){for(const instance of instances){if(instance.root.isConnected)instance.setLanguage(lang);else instances.delete(instance)}}};
+  document.querySelectorAll('[data-lerenbe-diphthongs]').forEach(mount);
 })();

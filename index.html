@@ -2503,8 +2503,32 @@ function updateProgress(){
 window.LerenLessonWidgets={
  getLanguage:()=>uiLang,
  speak:(text,automatic=false)=>{if(targetLang==="nl"&&(!automatic||autoSpeech))say(text)},
+ completeDiphthongs:(kind,correct,total)=>recordDiphthongsResult(kind,correct,total),
  stop:()=>{++speechToken;++TTS.tok;if(audioEl){audioEl.pause();audioEl=null}if(window.speechSynthesis)window.speechSynthesis.cancel();updateSpeechState(false)}
 };
+// Personal-best rewards are shared with the host's daily goal and protected across reloads.
+const diphthongsSessionBest={};
+function recordDiphthongsResult(kind,correct,total){
+ const limits={battle:6,dict:8,quiz:10};
+ if(!Object.hasOwn(limits,kind)||total!==limits[kind]||!Number.isInteger(correct)||correct<0||correct>total)return 0;
+ let ledger=lsGet("leren_diphthongs_xp_v2",{});if(!ledger||typeof ledger!=="object"||Array.isArray(ledger))ledger={};
+ const old=ledger[kind],stored=Number.isInteger(old)&&old>=0&&old<=total?old:0;
+ const previous=Math.max(stored,diphthongsSessionBest[kind]||0),gain=Math.max(0,correct-previous)*5;
+ if(!gain)return 0;
+ diphthongsSessionBest[kind]=correct;ledger[kind]=correct;lsSet("leren_diphthongs_xp_v2",ledger);
+ addXP(gain);saveStore();updateStats();return gain;
+}
+function renderDiphthongsProgress(container){
+ const labels=({uk:["Дифтонги · мініурок","Батл слів","Впізнай звук","Перевір себе","Відкрити мініурок"],en:["Diphthongs · mini-lesson","Word battle","Identify the sound","Test yourself","Open mini-lesson"],fr:["Diphtongues · mini-leçon","Bataille de mots","Reconnais le son","Teste-toi","Ouvrir la mini-leçon"],ar:["الأصوات المزدوجة · درس مصغّر","تحدّي الكلمات","تعرّف على الصوت","اختبر نفسك","افتح الدرس"]})[uiLang]||["Diphthongs","Battle","Sounds","Quiz","Open"];
+ const data=lsGet("leren_diphthongs_v2",{}),list=el("div","pv-list");
+ Object.entries({battle:6,dict:8,quiz:10}).forEach(([kind,total],i)=>{
+  const best=data?.best?.[kind],attempted=data?.rounds?.[kind]?.index>0;
+  const valid=Number.isInteger(best)&&best>=0&&best<=total;
+  const row=el("div","pv-row");row.append(el("span","",labels[i+1]),el("strong","",valid&&(best>0||attempted)?best+" / "+total:"—"));list.appendChild(row);
+ });
+ const open=el("button","btn",labels[4]);open.type="button";open.onclick=()=>{curLevel="a11";currentCat="grammar";tab="diphthongs";if(mode==="toets")mode=lessonMode;saveStore();buildNav();setView("lesson");newRound()};
+ container.append(el("h3","",labels[0]),list,open);
+}
 function syncDiphthongsLesson(){
  const active=view==="lesson"&&tab==="diphthongs"&&targetLang==="nl";
  if(window.LerenbeDiphthongs)window.LerenbeDiphthongs.setLanguage(uiLang);
@@ -4419,7 +4443,7 @@ function renderProgressView(){
  const best=lsGet("poly_toetsbest",{}),list=el("div","pv-list");
  TOETS.filter(t=>t.kind!=="leveltest").forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
   r.append(el("span","",t.title[uiLang]||t.title.en||t.id),el("strong","",b!=null?b+" / "+t.questions.length:n.pvNone));if(b==null)r.classList.add("none");list.appendChild(r)});
- tb.appendChild(list);
+ tb.appendChild(list);renderDiphthongsProgress(tb);
  const mk=$("pvMistakes");if(mk&&typeof renderMistakes==="function")renderMistakes(mk);
 }
 
@@ -6134,7 +6158,8 @@ setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/diphthongs/widget.js" defer></script>
+<script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
+<script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
