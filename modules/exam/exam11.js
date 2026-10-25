@@ -199,6 +199,7 @@ function home(){
  Object.entries(u.parts).forEach(([id,[ic,t,d]])=>{
   const b=el("button","ex-tile"+(id==="proef"?" wide":""));b.type="button";b.dataset.part=id;
   b.append(el("span","ex-ic",ic),el("strong","",t),el("span","ex-d",d));
+  const run=(s.run||{})[id];if(run&&run.i>0&&run.i<(run.items||[]).length)b.appendChild(el("span","ex-cont",(L()==="uk"?"▶ Продовжити ":"▶ Continue ")+(run.i+1)+"/"+run.items.length));
   const best=s.best&&s.best[id];if(best!=null){b.appendChild(el("span","ex-best","★ "+best+"%"));if(best>=70)b.classList.add("ok")}
   b.onclick=()=>({lezen:()=>quiz("lezen"),luisteren:()=>quiz("luisteren"),woorden:()=>quiz("woorden"),grammatica:()=>quiz("grammatica"),proef:()=>quiz("proef"),schrijven:writePick,spreken:speakPick})[id]();
   grid.appendChild(b);
@@ -208,7 +209,9 @@ function home(){
   const nm=(typeof cx==="function"?cx("{N}"):"Peter");const fix=t=>t.replace(/Peter/g,nm);
   c.appendChild(el("h3","ex-aih",u.ai));c.appendChild(el("p","ex-sub",fix(u.aiS)));
   const mk=(id,t,d,fn)=>{const b=el("button","btn toets-pick ex-ai");b.type="button";b.dataset.ai=id;const av=el("span","tp-no ex-av");try{av.innerHTML=charSvg("happy")}catch(e){av.textContent="🤖"}b.appendChild(av);const tx=el("span","tp-text");tx.append(el("strong","",fix(t)),el("small","tp-meta",fix(d)));b.appendChild(tx);b.onclick=fn;c.appendChild(b)};
-  mk("speak",u.aiSpeak,u.aiSpeakS,()=>aiStart({id:"exam11",fromExam:true}));
+  let aiRun=null;try{aiRun=lsGet("leren_exam11_ai",null)}catch(e){}
+  const cont=aiRun&&aiRun.exam&&!aiRun.exam.done&&aiRun.msgs&&aiRun.msgs.length?(L()==="uk"?" · ▶ Продовжити з питання ":" · ▶ Continue at question ")+(aiRun.exam.i+1)+"/"+aiRun.exam.list.length:"";
+  mk("speak",u.aiSpeak,u.aiSpeakS+cont,()=>aiStart({id:"exam11",fromExam:true}));
   mk("ask",u.aiAsk,u.aiAskS,()=>askStart({focus:"exam11"}));
  }
 }
@@ -235,10 +238,16 @@ function build(part){
  return [...lez,...lui,...w,...pick(GRAM,6).map(mkGram)];
 }
 let QZ=null;
-function quiz(part){QZ={part,items:build(part),i:0,right:0,miss:[],t0:Date.now()};if(part==="proef")toast(U().proefInfo);ask()}
+function qzSave(){if(!QZ)return;const s=st();s.run=s.run||{};const clean=o=>JSON.parse(JSON.stringify(o,(k,v)=>k.startsWith("_")?undefined:v));s.run[QZ.part]={items:clean(QZ.items),i:QZ.i,right:QZ.right,miss:clean(QZ.miss),t0:QZ.t0};save(s)}
+function qzClear(part){const s=st();if(s.run&&s.run[part]){delete s.run[part];save(s)}}
+function quiz(part,fresh){
+ const r=!fresh&&(st().run||{})[part];
+ if(r&&Array.isArray(r.items)&&r.i>0&&r.i<r.items.length){QZ={part,items:r.items,i:r.i,right:r.right||0,miss:r.miss||[],t0:r.t0||Date.now()};toast((L()==="uk"?"Продовжуємо з питання ":"Continuing from question ")+(r.i+1));ask();return}
+ QZ={part,items:build(part),i:0,right:0,miss:[],t0:Date.now()};qzSave();if(part==="proef")toast(U().proefInfo);ask()}
 function ask(){
  const u=U(),s=QZ,it=s.items[s.i],title=u.parts[s.part][0]+" "+u.parts[s.part][1];
  const c=head(title,u.q+" "+(s.i+1)+" "+u.of+" "+s.items.length);bar(s.i/s.items.length);
+ if(s.i>0){const rs=el("button","ex-restart",L()==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>quiz(s.part,true);c.firstChild.after(rs)}
  if(it.text){const box=el("div","ex-text");box.appendChild(el("small","",it.text.title));const p=el("p","");p.appendChild(nl(it.text.body));box.appendChild(p);c.appendChild(box);it._textEl=box}
  if(it.dlg){
   c.appendChild(el("p","ex-hint",u.readFirst));
@@ -269,6 +278,7 @@ function answer(ok,btn,box,orderAnswer){
  box.querySelectorAll("button").forEach(b=>{b.disabled=true;if(it.kind==="mc"&&b.textContent===it.ok)b.classList.add("correct")});
  if(btn&&!ok)btn.classList.add("incorrect");
  if(ok)s.right++;else s.miss.push(it);
+ s.i++;qzSave();s.i--; // the answer counts even if the learner leaves now
  const fb=el("div","ex-fb "+(ok?"ok":"bad"));fb.appendChild(el("strong","",ok?u.right:u.wrong+" "));
  if(!ok){fb.appendChild(nl(it.kind==="order"?it.a:it.ok))}
  if(UKON()){
@@ -282,19 +292,19 @@ function answer(ok,btn,box,orderAnswer){
  c.appendChild(fb);
  if(it._box&&it._box.hidden){it._box.hidden=false}
  if(it.gap||it.kind==="order")say(it.kind==="order"?it.a:it.full.replace(/^.*→\s*/,""));
- const nx=el("button","btn primary ex-next",u.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;s.i<s.items.length?ask():end()};c.appendChild(nx);
+ const nx=el("button","btn primary ex-next",u.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;if(s.i<s.items.length){qzSave();ask()}else end()};c.appendChild(nx);
  setTimeout(()=>{try{nx.scrollIntoView({block:"nearest",behavior:"smooth"})}catch(e){}},30);
 }
 function end(){
  const u=U(),s=QZ,n=s.items.length,pct=Math.round(s.right/n*100),title=u.parts[s.part][0]+" "+u.parts[s.part][1];
  const c=head(title,u.done);bar(1);
- const prev=(st().best||{})[s.part];setBest(s.part,pct);
+ qzClear(s.part);const prev=(st().best||{})[s.part];setBest(s.part,pct);
  const xp=Math.max(0,s.right-Math.round((prev||0)/100*n))*5;if(xp)addXP(xp);
  const box=el("div","ex-end");box.append(el("div","ex-big",pct>=70?"🏆":"💪"),el("h2","",pct+"%"),el("p","ex-score",u.score(s.right,n)+(xp?" · +"+xp+" ⭐":"")));
  if(s.part==="proef"){const m=Math.round((Date.now()-s.t0)/60000);box.appendChild(el("p","ex-hint",u.timer+": "+m+" min"))}
  if(s.miss.length){box.appendChild(el("h3","",u.repeat));const ul=el("ul","ex-miss");s.miss.forEach(it=>{const li=el("li","");li.append(el("span","",(it.gap||it.q||u.order)+" → "));li.appendChild(nl(it.kind==="order"?it.a:it.ok));ul.appendChild(li)});box.appendChild(ul)}
  c.appendChild(box);
- const row=el("div","row");const a=el("button","btn primary",u.restart);a.type="button";a.id="nx";a.onclick=()=>quiz(s.part);const h=el("button","btn",u.back);h.type="button";h.onclick=home;row.append(a,h);c.appendChild(row);
+ const row=el("div","row");const a=el("button","btn primary",u.restart);a.type="button";a.id="nx";a.onclick=()=>quiz(s.part,true);const h=el("button","btn",u.back);h.type="button";h.onclick=home;row.append(a,h);c.appendChild(row);
 }
 
 // ---------------- WRITING ----------------
@@ -335,7 +345,7 @@ function write(w){
 function speakPick(){
  const u=U(),c=head(u.parts.spreken[0]+" "+u.parts.spreken[1],""),s=st();
  c.appendChild(el("p","ex-sub",u.parts.spreken[2]));
- SPREKEN.forEach((t,i)=>{const okN=((s.sp||{})[t.id]||[]).length;const b=el("button","btn toets-pick");b.type="button";b.dataset.speak=t.id;b.append(el("span","tp-no",String(i+1)));const tx=el("span","tp-text");tx.append(el("strong","",tr(t.t)),el("small","tp-meta",u.sDone(okN,t.qa.length)));b.appendChild(tx);if(okN>=t.qa.length)b.classList.add("passed");b.onclick=()=>speak(t,0);c.appendChild(b)});
+ SPREKEN.forEach((t,i)=>{const okN=((s.sp||{})[t.id]||[]).length;const b=el("button","btn toets-pick");b.type="button";b.dataset.speak=t.id;b.append(el("span","tp-no",String(i+1)));const tx=el("span","tp-text");tx.append(el("strong","",tr(t.t)),el("small","tp-meta",u.sDone(okN,t.qa.length)));b.appendChild(tx);if(okN>=t.qa.length)b.classList.add("passed");const pos=((s.spPos||{})[t.id])||0;if(pos>0&&pos<t.qa.length)tx.appendChild(el("small","tp-nl",(L()==="uk"?"Продовжити з питання ":"Continue at question ")+(pos+1)));b.onclick=()=>speak(t,pos>0&&pos<t.qa.length?pos:0);c.appendChild(b)});
 }
 const norm=x=>String(x).toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9à-ÿ' ]+/g," ").replace(/\s+/g," ").trim();
 function speak(topic,i){
@@ -361,6 +371,7 @@ function speak(topic,i){
  const mark=el("div","row ex-mark");const ok=el("button","btn ex-ok",u.sOk),re=el("button","btn",u.sRe);ok.type=re.type="button";
  const go=good=>{const s=st();s.sp=s.sp||{};const a=new Set(s.sp[topic.id]||[]);good?a.add(i):a.delete(i);s.sp[topic.id]=[...a];save(s);
   const all=SPREKEN.reduce((n,t)=>n+t.qa.length,0),done=SPREKEN.reduce((n,t)=>n+((s.sp[t.id]||[]).length),0);setBestRaw("spreken",Math.round(done/all*100));
+  {const s2=st();s2.spPos=s2.spPos||{};s2.spPos[topic.id]=i+1<topic.qa.length?i+1:0;save(s2)}
   i+1<topic.qa.length?speak(topic,i+1):speakPick()};
  ok.onclick=()=>go(true);re.onclick=()=>go(false);mark.append(ok,re);c.appendChild(mark);
 }
