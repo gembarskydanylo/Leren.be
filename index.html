@@ -4937,17 +4937,49 @@ function listenOnce(onText,onFail,lang){ // lang: recognition language, default 
   arm();run();
  }catch(e){gRec=null;onFail("error")}
 }
-function micBox(onAnswer){ // mic button + typing fallback; onAnswer(alternatives[])
+// Long listening for free answers (AI chat, exam speaking): keeps listening through short pauses, shows the text live,
+// stops on the button or after a silence. Android Chrome repeats growing finals ("ik", "ik ga", "ik ga naar …"): merge them.
+function listenLong({onInterim,onDone,onFail,lang,silenceMs=2300,maxMs=40000}){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){onFail&&onFail("unsupported");return null}
+ let r,finals=[],alts=[],interim="",ended=false,silT=0,maxT=0,heard=false;
+ const merge=list=>{let acc="";list.forEach(seg=>{seg=seg.trim();if(!seg)return;const a=acc.toLowerCase(),b=seg.toLowerCase();if(!acc)acc=seg;else if(b.startsWith(a))acc=seg;else if(!a.endsWith(b))acc+=" "+seg});return acc};
+ const text=()=>merge([...finals,interim]);
+ const finish=()=>{if(ended)return;ended=true;clearTimeout(silT);clearTimeout(maxT);gRec=null;const t=text().trim();if(t){const rest=merge(finals.slice(0,-1));onDone&&onDone([t,...alts.slice(1).map(a=>(rest?rest+" ":"")+a)].filter((x,i,arr)=>x&&arr.indexOf(x)===i))}else onFail&&onFail(heard?"no-speech":"no-speech")};
+ const arm=()=>{clearTimeout(silT);silT=setTimeout(()=>{try{r.stop()}catch(e){finish()}},silenceMs)};
+ try{try{window.speechSynthesis.cancel()}catch(e){}if(audioEl){audioEl.pause();audioEl=null}
+  r=new SR();gRec=r;r.lang=lang||speechLang();r.continuous=true;r.interimResults=true;r.maxAlternatives=4;
+  r.onresult=e=>{heard=true;const fin=[];interim="";for(let i=0;i<e.results.length;i++){const res=e.results[i];if(res.isFinal){fin.push(res[0].transcript);if(i===e.results.length-1||i===e.resultIndex)alts=[...res].map(a=>a.transcript)}else interim+=res[0].transcript}
+   finals=fin;onInterim&&onInterim(text());arm()};
+  r.onerror=e=>{if(e.error==="no-speech"||e.error==="aborted"){finish();return}if(e.error==="language-not-supported"&&/^nl-BE$/i.test(r.lang)){ended=true;clearTimeout(silT);clearTimeout(maxT);const j=listenLong({onInterim,onDone,onFail,lang:"nl-NL",silenceMs,maxMs});return}ended=true;clearTimeout(silT);clearTimeout(maxT);gRec=null;onFail&&onFail(e.error||"error")};
+  r.onend=finish;r.start();arm();clearTimeout(silT);silT=setTimeout(()=>{try{r.stop()}catch(e){}},8000); // first words may take a moment
+  maxT=setTimeout(()=>{try{r.stop()}catch(e){}},maxMs);
+  return {stop(){try{r.stop()}catch(e){finish()}}};
+ }catch(e){onFail&&onFail("error");return null}
+}
+function micBox(onAnswer,opts){ // mic button + typing fallback; onAnswer(alternatives[]); opts.edit: put the speech into the text field to check before sending
+ opts=opts||{};
  const g=gU(),box=el("div","g-mic"),st=el("p","g-heard");
  const mic=el("button","btn primary g-mic-btn",g.mic);mic.type="button";
  const typeB=el("button","btn",g.type);typeB.type="button";
  const form=el("form","g-type");form.hidden=true;const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang=targetLang;inp.setAttribute("aria-label",g.write);
  const ok=el("button","btn primary",g.send);ok.type="submit";form.append(inp,ok);
- form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())onAnswer([inp.value])};
+ let spoken=null;
+ form.onsubmit=e=>{e.preventDefault();const v=inp.value.trim();if(!v)return;const a=spoken&&spoken[0].trim()===v?spoken:[v];spoken=null;st.textContent="";onAnswer(a)};
  const showType=msg=>{form.hidden=false;if(msg)st.textContent=msg;setTimeout(()=>inp.focus(),30)};
  typeB.onclick=()=>showType();
  const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
  if(!hasSR){mic.hidden=true;showType(g.noMic)}
+ const MU=({uk:{live:"Говори — я слухаю. Можна робити паузи.",check:"Перевір текст: виправ, якщо треба, і натисни ➤",stop:"⏹ Готово"},en:{live:"Speak — I'm listening. Pauses are fine.",check:"Check the text, fix it if needed, then tap ➤",stop:"⏹ Done"},fr:{live:"Parle — j'écoute. Tu peux faire des pauses.",check:"Vérifie le texte, corrige si besoin, puis touche ➤",stop:"⏹ Terminé"},ar:{live:"تكلّم — أنا أستمع. يمكنك التوقف قليلًا.",check:"راجع النص وصحّحه إن لزم ثم اضغط ➤",stop:"⏹ تم"}})[uiLang]||{live:"",check:"",stop:"⏹"};
+ if(opts.edit){
+  let job=null;
+  mic.onclick=()=>{if(mic.classList.contains("rec")){job&&job.stop();return}
+   mic.textContent=MU.stop;mic.classList.add("rec");form.hidden=false;inp.value="";spoken=null;st.textContent=MU.live;
+   job=listenLong({onInterim:t=>{inp.value=t},
+    onDone:alts=>{job=null;mic.textContent=g.mic;mic.classList.remove("rec");inp.value=alts[0];spoken=alts;st.textContent=MU.check;setTimeout(()=>{try{inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length)}catch(e){}},30)},
+    onFail:err=>{job=null;mic.textContent=g.mic;mic.classList.remove("rec");if(err==="not-allowed"||err==="service-not-allowed")showType(g.micDenied);else if(err==="no-speech"||err==="aborted")st.textContent=g.tryAgain;else showType(g.noMic)}});
+  };
+  const row=el("div","row g-mic-row");row.append(mic,typeB);box.append(row,st,form);return box;
+ }
  mic.onclick=()=>{if(mic.classList.contains("rec")){gRec&&gRec.stop&&gRec.stop();return}
   mic.textContent=g.listening+" ⏹";mic.classList.add("rec");
   listenOnce(alts=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");st.textContent=g.heard+" «"+alts[0]+"»";onAnswer(alts)},
@@ -5872,7 +5904,7 @@ function aiRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  {const mb0=aiMemoryBox(aiRender);if(mb0)card.appendChild(mb0)}card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- const mb=micBox(alts=>aiSend(alts[0],alts));const f=mb.querySelector(".g-type");if(f){f.hidden=false;f.classList.add("ai-type");
+ const mb=micBox(alts=>aiSend(alts[0],alts),{edit:true});const f=mb.querySelector(".g-type");if(f){f.hidden=false;f.classList.add("ai-type");
   const tb=mb.querySelector(".g-mic-row .btn:not(.g-mic-btn)");if(tb)tb.hidden=true;
   const inp=f.querySelector("input");if(inp)inp.placeholder=({uk:"Напиши повідомлення…",en:"Type a message…",fr:"Écris un message…",ar:"اكتب رسالة…"})[uiLang]||"Type a message…";
   const sb=f.querySelector("button[type=submit]");if(sb){sb.textContent="➤";sb.setAttribute("aria-label",({uk:"Надіслати",en:"Send",fr:"Envoyer",ar:"إرسال"})[uiLang]||"Send")}}
@@ -6346,7 +6378,7 @@ setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam11.js?v=95" defer></script>
+<script src="./modules/exam/exam11.js?v=97" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->

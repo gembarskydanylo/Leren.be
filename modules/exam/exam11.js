@@ -346,7 +346,16 @@ function speak(topic,i){
  const row=el("div","row");
  const mic=el("button","btn primary",u.sSpeak);mic.type="button";
  const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);if(!hasSR)mic.hidden=true;
- mic.onclick=()=>{mic.disabled=true;mic.classList.add("rec");listenOnce(alts=>{mic.disabled=false;mic.classList.remove("rec");const said=alts[0]||"";const words=norm(qa[1]).split(" ").filter(w=>w.length>2),got=norm(alts.join(" "));const hit=words.filter(w=>got.includes(w)).length;out.replaceChildren(el("small","",u.sHeard),nl(" «"+said+"» "),el("span",hit/Math.max(1,words.length)>=.6?"ex-good":"ex-meh",hit/Math.max(1,words.length)>=.6?" 👍":" 🙂"));model.hidden=false},()=>{mic.disabled=false;mic.classList.remove("rec");model.hidden=false})};
+ let job=null;
+ const judge=alts=>{const said=alts[0]||"";const words=norm(qa[1]).split(" ").filter(w=>w.length>2),got=norm(alts.join(" "));const hit=words.filter(w=>got.includes(w)).length,good=hit/Math.max(1,words.length)>=.6;
+  out.replaceChildren(el("small","",u.sHeard),nl(" «"+said+"» "),el("span",good?"ex-good":"ex-meh",good?" 👍":" 🙂"));model.hidden=false};
+ mic.onclick=()=>{
+  if(mic.classList.contains("rec")){job&&job.stop();return}
+  mic.classList.add("rec");mic.textContent=L()==="uk"?"⏹ Готово":"⏹ Done";out.replaceChildren(el("small","",L()==="uk"?"Говори — я слухаю…":"Speak — I'm listening…"));
+  const reset=()=>{mic.classList.remove("rec");mic.textContent=u.sSpeak;job=null};
+  if(typeof listenLong==="function")job=listenLong({onInterim:t=>{out.replaceChildren(el("small","",u.sHeard),nl(" «"+t+"»"))},onDone:alts=>{reset();judge(alts)},onFail:()=>{reset();model.hidden=false}});
+  else listenOnce(alts=>{reset();judge(alts)},()=>{reset();model.hidden=false});
+ };
  const sh=el("button","btn",u.sShow);sh.type="button";sh.onclick=()=>{model.hidden=false;say(qa[1])};
  row.append(mic,sh);c.append(row,out,model);
  const mark=el("div","row ex-mark");const ok=el("button","btn ex-ok",u.sOk),re=el("button","btn",u.sRe);ok.type=re.type="button";
