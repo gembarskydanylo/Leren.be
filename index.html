@@ -647,7 +647,9 @@ body.sheet-open{overflow:hidden}
 .set-list{display:flex;flex-direction:column;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
 .set-row{display:flex;align-items:center;gap:12px;min-height:62px;padding:10px 14px}
 .set-row+.set-row{border-top:1px solid var(--line)}
-.acct-btns{display:flex;flex-direction:column;gap:6px;align-items:stretch;flex:none}.acct-del{font-size:12px;opacity:.8}#acctHint{overflow-wrap:anywhere}
+.acct-btns{display:flex;flex-direction:column;gap:6px;align-items:stretch;flex:none}
+#acctRow{flex-wrap:wrap}#acctRow .set-l{flex:1 1 180px;min-width:0}
+@media (max-width:520px){#acctRow .acct-btns{flex:1 1 100%;flex-direction:row;flex-wrap:wrap;padding-inline-start:36px}#acctRow .acct-btns .set-btn{flex:1 1 auto}}.acct-del{font-size:12px;opacity:.8}#acctHint{overflow-wrap:anywhere}
 .set-row>.ico{color:var(--oranje-deep);width:22px;height:22px}
 :root[data-theme="dark"] .set-row>.ico{color:var(--oranje)}
 .set-l{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:800;font-size:15px}
@@ -658,6 +660,8 @@ body.sheet-open{overflow:hidden}
 .switch i{position:absolute;top:3px;inset-inline-start:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:inset-inline-start .15s}
 .switch[aria-checked="true"]{background:var(--ok)}
 .switch[aria-checked="true"] i{inset-inline-start:25px}
+.switch.busy{opacity:.7}
+#remindHint .set-select{display:inline-block;margin:0 2px;padding:1px 4px;min-height:0;font:inherit;font-weight:900;vertical-align:baseline}
 .switch:focus-visible,.set-btn:focus-visible,.sheet-x:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
 .set-row .flag-pick{box-shadow:0 2px 0 var(--edge),inset 0 0 0 2px rgba(255,255,255,.95)}
 .sheet footer{margin-top:14px}
@@ -4529,10 +4533,10 @@ async function shareResult(title,pct,passed){
 // .github/workflows/reminders.yml sends the pushes every hour (tools/send-reminders.mjs).
 const PUSH_CONFIG={projectId:"leren-be",apiKey:"AIzaSyA-v4mkpSlmpjwM5s34nD6jlgRZfVuxOwQ",vapid:"BHqHq_6dEJdpiYYyj52qWiaCZgJoeW12TGaai1KlvP8KnRyBkVGSCOn6A8r2r5JfA_RBMqzQb9SPy65E2T1_UC0"};
 const PUSH_UI={
- uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефона для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування"},
- en:{label:"Reminders",on:h=>"every day at "+h+" if today's goal isn't done yet",off:"I'll remind you to keep your 🔥 streak",denied:"Notifications are blocked. Allow them for Leren.be in your phone settings.",fail:"Couldn't turn on reminders. Check your connection and try again.",ok:"Reminders are on 🔔",time:"Reminder time"},
- fr:{label:"Rappels",on:h=>"chaque jour à "+h+" si l'objectif du jour n'est pas atteint",off:"je te rappellerai de garder ta série 🔥",denied:"Les notifications sont bloquées. Autorise-les pour Leren.be dans les réglages du téléphone.",fail:"Impossible d'activer les rappels. Vérifie la connexion et réessaie.",ok:"Rappels activés 🔔",time:"Heure du rappel"},
- ar:{label:"التذكيرات",on:h=>"يوميًا الساعة "+h+" إن لم تحقق هدف اليوم بعد",off:"سأذكّرك بالحفاظ على سلسلتك 🔥",denied:"الإشعارات محظورة. اسمح بها لـ Leren.be في إعدادات الهاتف.",fail:"تعذّر تفعيل التذكيرات. تحقّق من الاتصال وحاول مجددًا.",ok:"تم تفعيل التذكيرات 🔔",time:"وقت التذكير"}
+ uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефона для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування",wait:"Вмикаю…",waitOff:"Вимикаю…"},
+ en:{label:"Reminders",on:h=>"every day at "+h+" if today's goal isn't done yet",off:"I'll remind you to keep your 🔥 streak",denied:"Notifications are blocked. Allow them for Leren.be in your phone settings.",fail:"Couldn't turn on reminders. Check your connection and try again.",ok:"Reminders are on 🔔",time:"Reminder time",wait:"Turning on…",waitOff:"Turning off…"},
+ fr:{label:"Rappels",on:h=>"chaque jour à "+h+" si l'objectif du jour n'est pas atteint",off:"je te rappellerai de garder ta série 🔥",denied:"Les notifications sont bloquées. Autorise-les pour Leren.be dans les réglages du téléphone.",fail:"Impossible d'activer les rappels. Vérifie la connexion et réessaie.",ok:"Rappels activés 🔔",time:"Heure du rappel",wait:"Activation…",waitOff:"Désactivation…"},
+ ar:{label:"التذكيرات",on:h=>"يوميًا الساعة "+h+" إن لم تحقق هدف اليوم بعد",off:"سأذكّرك بالحفاظ على سلسلتك 🔥",denied:"الإشعارات محظورة. اسمح بها لـ Leren.be في إعدادات الهاتف.",fail:"تعذّر تفعيل التذكيرات. تحقّق من الاتصال وحاول مجددًا.",ok:"تم تفعيل التذكيرات 🔔",time:"وقت التذكير",wait:"جارٍ التفعيل…",waitOff:"جارٍ الإيقاف…"}
 };
 const pushU=()=>PUSH_UI[uiLang]||PUSH_UI.uk;
 const pushReady=()=>!!(PUSH_CONFIG.projectId&&PUSH_CONFIG.apiKey&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window);
@@ -4572,11 +4576,18 @@ async function pushSubscribe(create=false){
  if(sub||!create)return sub;
  return reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToBytes(PUSH_CONFIG.vapid)});
 }
+// One permission prompt: subscribing asks for it. (Asking first with Notification.requestPermission() made the
+// Android app ask twice, because there the page keeps seeing "default" after the app granted it.)
+// Firebase loads in parallel from the tap, so the server step doesn't wait for it afterwards.
 async function pushEnable(){
- const u=pushU(),st=pushState();
- const perm=Notification.permission==="granted"?"granted":await Notification.requestPermission();
- if(perm!=="granted"){toast(u.denied);return false}
- try{const sub=await pushSubscribe(true);st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
+ const u=pushU(),st=pushState();pushToken().catch(()=>{});
+ let sub;
+ try{sub=await pushSubscribe(true)}
+ catch(e){ // a browser that doesn't ask on subscribe: ask once, then subscribe again
+  if(Notification.permission==="default"&&!(e&&e.name==="NotAllowedError")){
+   const perm=await Notification.requestPermission();if(perm==="granted")try{sub=await pushSubscribe(true)}catch(e2){}}
+  if(!sub){toast(Notification.permission==="denied"||e&&e.name==="NotAllowedError"?u.denied:u.fail);return false}}
+ try{st.on=true;await pushWrite(sub,st);lsSet("leren_push",st);toast(u.ok);return true}
  catch(e){st.on=false;lsSet("leren_push",st);toast(u.fail+" ("+String(e&&e.message||e).slice(0,140)+")");return false}
 }
 // Turning reminders off: stop the browser subscription and delete the server copy. If the server can't be reached,
@@ -4607,18 +4618,23 @@ function pushSync(){ // keeps streak / last activity / language / time up to dat
   const sub=await pushSubscribe();if(sub&&pushState().on)await pushWrite(sub,st);
  }catch(e){}},1500);
 }
-function renderPushRow(){
+function renderPushRow(busy){
  const row=$("remindRow");if(!row)return;row.hidden=!pushReady();if(row.hidden)return;
- const u=pushU(),st=pushState(),on=!!st.on&&pushAllowed();
- $("remindLabel").textContent=u.label;$("remindHint").textContent=on?u.on(hh(st.hour)):u.off;
- const t=$("remindToggle");t.setAttribute("aria-checked",String(on));
- const sel=$("remindHour");sel.hidden=!on;sel.setAttribute("aria-label",u.time);
+ const u=pushU(),st=pushState(),on=busy?busy==="on":!!st.on&&pushAllowed(),hint=$("remindHint"),sel=$("remindHour");
+ $("remindLabel").textContent=u.label;
+ const t=$("remindToggle");t.setAttribute("aria-checked",String(on));t.classList.toggle("busy",!!busy);
+ sel.setAttribute("aria-label",u.time);
  if(!sel.options.length)for(let h=7;h<=22;h++){const o=document.createElement("option");o.value=h;o.textContent=hh(h);sel.appendChild(o)}
  sel.value=String(st.hour);
+ // the time is part of the sentence: "every day at [18:00 ▾] if today's goal isn't done yet"
+ if(busy){hint.replaceChildren(busy==="on"?u.wait:u.waitOff);sel.hidden=true;row.appendChild(sel);return}
+ if(on){const [a,b]=u.on("\u0001").split("\u0001");sel.hidden=false;hint.replaceChildren(a,sel,b)}
+ else{sel.hidden=true;row.insertBefore(sel,t);hint.replaceChildren(u.off)}
 }
 $("remindToggle").addEventListener("click",async()=>{
- const t=$("remindToggle");if(t.dataset.busy)return;t.dataset.busy="1";
- try{if(t.getAttribute("aria-checked")==="true")await pushDisable();else await pushEnable()}finally{delete t.dataset.busy;renderPushRow()}
+ const t=$("remindToggle");if(t.dataset.busy)return;t.dataset.busy="1";const off=t.getAttribute("aria-checked")==="true";
+ renderPushRow(off?"off":"on"); // the switch moves at once; the work happens after
+ try{if(off)await pushDisable();else await pushEnable()}finally{delete t.dataset.busy;renderPushRow()}
 });
 $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Number(e.target.value)||18;lsSet("leren_push",st);renderPushRow();pushSync()});
 
