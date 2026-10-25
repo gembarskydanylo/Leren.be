@@ -280,7 +280,7 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .ex-end{text-align:center}.ex-big{font-size:46px}.ex-score{font-weight:800}.ex-miss{text-align:start;padding-inline-start:20px}.ex-miss li{margin:4px 0}
 .ex-task{text-align:start}.ex-ta{width:100%;box-sizing:border-box;font:inherit;font-size:16px;line-height:1.5;padding:12px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);resize:vertical}
 .ex-check{text-align:start;margin:10px 0}.ex-list{list-style:none;padding:0;margin:6px 0}.ex-list li{padding:3px 0;font-weight:700}.ex-list li.bad{color:var(--ink-2)}.ex-list.warn li{color:var(--bad)}
-.ex-model{border-inline-start-color:var(--ok)}.ex-tr{display:block;font-size:13.5px;font-weight:600;color:var(--ink-2);margin-top:3px;white-space:pre-line}.ex-opts .opt{flex-direction:column;gap:2px}.opt .ex-tr{font-size:12.5px;margin-top:0}.ex-full{margin:6px 0 0;font-weight:800}.ex-trbox{margin-top:8px}.ex-trbox summary{cursor:pointer;font-weight:800;color:var(--oranje-deep);font-size:13.5px}.ex-task .ex-tr{margin-top:4px}.ex-say{min-height:40px;padding:4px 12px;margin-inline-start:6px}
+.ex-model{border-inline-start-color:var(--ok)}.ex-aih{font-size:17px;margin:18px 0 4px;text-align:start}.ex-ai .ex-av{background:var(--surface-2);overflow:hidden;padding:0}.ex-ai .ex-av svg,.ex-ai .ex-av img{width:100%;height:100%;object-fit:cover}.ex-tr{display:block;font-size:13.5px;font-weight:600;color:var(--ink-2);margin-top:3px;white-space:pre-line}.ex-opts .opt{flex-direction:column;gap:2px}.opt .ex-tr{font-size:12.5px;margin-top:0}.ex-full{margin:6px 0 0;font-weight:800}.ex-trbox{margin-top:8px}.ex-trbox summary{cursor:pointer;font-weight:800;color:var(--oranje-deep);font-size:13.5px}.ex-task .ex-tr{margin-top:4px}.ex-say{min-height:40px;padding:4px 12px;margin-inline-start:6px}
 .ex-speakq{display:flex;flex-direction:column;align-items:flex-start;gap:6px}.ex-mark{margin-top:14px}.ex-ok{border-color:var(--ok);color:var(--ok)}
 .toets-sec{font-size:17px;margin:14px 2px 2px;text-align:start}.toets-sec-h{margin:0 2px 10px;color:var(--ink-2);font-size:14px;text-align:start}
 
@@ -4897,7 +4897,7 @@ function gHead(title,sub,keep){
  if(!keep)gStop();cardOwner="games";
  $("prog").textContent=title;$("rnd").textContent=sub||"";gBar(0);
  const card=$("card");card.replaceChildren();
- const top=el("div","g-top");const back=el("button","g-back",gU().back);back.type="button";back.onclick=renderGamesHome;top.appendChild(back);card.appendChild(top);
+ const top=el("div","g-top");const fromExam=gState&&gState.fromExam&&window.EXAM11;const back=el("button","g-back",fromExam?(uiLang==="uk"?"← Іспит":"← Exam"):gU().back);back.type="button";back.onclick=()=>{if(gState&&gState.fromExam&&window.EXAM11){if(gState.chat)aiRemember(gState);gStop();EXAM11.open()}else renderGamesHome()};top.appendChild(back);card.appendChild(top);
  return card;
 }
 function gBar(p){const value=String(Math.round(Math.max(0,Math.min(1,p))*100));$("barfill").style.width=value+"%";$("barfill").parentElement.setAttribute("aria-valuenow",value)}
@@ -5851,11 +5851,11 @@ function aiConsent(title,go){
 }
 function aiStart(scene){
  if(!aiConsent(cx(AI_TITLE[targetLang]||AI_TITLE.nl),()=>aiStart(scene)))return;
- gState={chat:true,msgs:[],busy:false,scene:targetLang==="nl"&&scene&&scene.id||null};aiRender();aiSend(null);
+ gState={chat:true,msgs:[],busy:false,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam)};aiRender();aiSend(null);
 }
 function aiRender(){
  const g=aiU(),s=gState,card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);
- if(s.scene){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
+ if(s.scene&&SCENE_ART[s.scene]){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  const chat=el("div","g-chat ai-chat");
  s.msgs.forEach(m=>{
   if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
@@ -5903,9 +5903,10 @@ function sayIn(text,lang){ // examples may be in another language than the one b
   const pre=u.lang.slice(0,2),v=(speechVoices.length?speechVoices:s.getVoices()).find(x=>x.lang.toLowerCase().startsWith(pre));if(v){u.voice=v;u.lang=v.lang}
   ttsSpeak([u])}catch(e){}
 }
-function askStart(){
- const g=aiU();if(!aiConsent(g.askTitle,askStart))return;
- gState={ask:true,msgs:[],busy:false};askRender();
+function askStart(opts){
+ const g=aiU();if(!aiConsent(g.askTitle,()=>askStart(opts)))return;
+ gState={ask:true,msgs:[],busy:false,focus:opts&&opts.focus||null,fromExam:!!(opts&&opts.focus==="exam11")};askRender();
+ if(opts&&opts.send)askSend(opts.send);
 }
 function askRender(){
  const g=aiU(),s=gState,card=gHead(g.askTitle,g.askSub);
@@ -5924,8 +5925,8 @@ function askRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  {const mb0=aiMemoryBox(askRender);if(mb0)card.appendChild(mb0)}card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- if(!s.msgs.length){const chips=el("div","ai-chips");(g.chips[targetLang]||g.chips.nl).forEach(q=>{const c=el("button","btn ai-chip",q);c.type="button";c.onclick=()=>askSend(q);chips.appendChild(c)});card.appendChild(chips)}
- const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.maxLength=600;inp.placeholder=g.askPh;inp.setAttribute("aria-label",g.askPh);
+ if(!s.msgs.length){const chips=el("div","ai-chips");((s.focus==="exam11"&&window.EXAM11&&EXAM11.chips())||g.chips[targetLang]||g.chips.nl).forEach(q=>{const c=el("button","btn ai-chip",q);c.type="button";c.onclick=()=>askSend(q);chips.appendChild(c)});card.appendChild(chips)}
+ const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.maxLength=s.focus==="exam11"?1600:600;inp.placeholder=g.askPh;inp.setAttribute("aria-label",g.askPh);
  const ok=el("button","btn primary",g.send);ok.type="submit";ok.disabled=s.busy;form.append(inp,ok);
  form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())askSend(inp.value)};
  if(window.SpeechRecognition||window.webkitSpeechRecognition){ // questions are asked in the interface language
@@ -5940,10 +5941,10 @@ function askRender(){
  const last=chat.lastElementChild;if(last&&s.msgs.length)last.scrollIntoView({block:"nearest"});
 }
 async function askSend(text,alts){
- const s=gState;if(s.busy||!s.ask)return;s.msgs.push({role:"user",content:String(text).trim().slice(0,600),alts:alts||null});
+ const s=gState;if(s.busy||!s.ask)return;s.msgs.push({role:"user",content:String(text).trim().slice(0,s.focus==="exam11"?1600:600),alts:alts||null});
  s.busy=true;s.err="";askRender();
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",target:targetLang,lang:uiLang,level:curLevel,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)})});
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"ask",focus:s.focus||undefined,target:targetLang,lang:uiLang,level:curLevel,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)})});
   const j=await r.json().catch(()=>({}));
   if(gState!==s)return;
   if(r.status===429){s.msgs.pop();s.busy=false;s.err=j.error==="slow"?aiU().slow:aiU().limit;askRender();return}
@@ -6345,7 +6346,7 @@ setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam11.js?v=94" defer></script>
+<script src="./modules/exam/exam11.js?v=95" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->

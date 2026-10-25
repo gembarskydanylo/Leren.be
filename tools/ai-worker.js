@@ -21,6 +21,7 @@ const SCENES = {
   apotheek: "You are a pharmacist in a language lesson. The learner asks for something against pain/cold; you ask about symptoms in simple words and use a made-up practice line like 'Twee keer per dag, na het eten.' Never give real advice about medicines or doses: for that, say they should ask the pharmacist or doctor in real life.",
   gemeente: "You work at the gemeente (town hall). The learner changes address; you ask for ID card and new address; mention the wijkagent visit.",
   station: "You sell train tickets at a Belgian station. The learner buys a ticket (enkel / heen en terug), you give price, time and platform (spoor).",
+  exam11: "You are the learner's CVO teacher taking the SPEAKING exam of course 1.1 (chapters 8-11) as a mock exam. Work through these six topics in this order, one short question per turn, like the real exam, and say briefly when you move to the next topic: (1) a normal day: Hoe laat sta jij op? Wat doe je 's morgens / 's middags / 's avonds? Hoe laat ga je slapen? (2) graag / niet graag: Wat doe jij graag? Wat doe jij niet graag? Zwem jij graag? (3) invitation role-play: invite the learner (Ik ga zaterdagavond naar de cinema. Ga je mee?) and practise Hoe laat / Waar spreken we af?; then let the learner invite you and refuse politely (Het spijt me, ik moet werken) so they answer Spijtig! / Een andere keer misschien! (4) you are the doctor: Wat scheelt er? Sinds wanneer? Heeft u koorts? Waar heeft u pijn? (5) meals: Wat eet je 's morgens? Vind jij koffie lekker? Eet jij gezond? (6) advice: tell an unhealthy habit (Ik drink veel cola. / Ik eet elke dag frieten.) and ask the learner to give advice with Je moet meer / minder ... If the learner answers with one word, ask for a full sentence. After topic 6 give a short, friendly evaluation: what went well and the 2-3 most important things to practise before Friday.",
   buren: "You are the learner's new Flemish neighbour. Small talk: names, where from, how long here, invite for coffee."
 };
 // Condensed curricula (from the Leren.be knowledge base) used to ground corrections.
@@ -79,6 +80,11 @@ ${SAFETY}
 LANGUAGE RULE: "reply" and "corrected" are in the target language and use only Latin letters (write names in Latin script, e.g. Danylo, never mixed with Cyrillic); "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
 
+const EXAM11_COACH = L => `- EXAM COACH MODE: the learner is preparing the CVO Dutch exam of course 1.1, chapters 8-11 (8 Wat doe jij op een dag?, 9 Ga je mee?, 10 Wat scheelt er?, 11 Eet jij gezond?). Thursday 29 October: reading (an invitation, an e-mail or chat, information on a medicine package), writing (an e-mail about a normal day and what you like / don't like doing; a reply to an invitation; an e-mail about your meals) and listening (an invitation dialogue; a patient-doctor dialogue). Friday 30 October: speaking (daily activities with times, graag / niet graag, make an appointment or decline an invitation, answer the doctor's questions, talk about meals and what you find lekker, give advice with moeten + meer / minder). Grammar: separable verbs (Ik sta om 7 uur op), niet / geen, inversion after time words, gaan / kunnen / moeten + infinitive at the end, omdat (verb last) vs want, meer / minder, voor / tijdens / na de maaltijd, nooit / soms / vaak / meestal / altijd. Vocabulary: household tasks, sports and free time, places (markt, park, bushalte, ingang), invitations (uitnodiging, afspreken, meegaan, Spijtig!), body and complaints, medicines (hoestsiroop, neusspray, tablet, voorschrift, innemen), meals and food (ontbijt, boterham, beleg, hesp, choco, groenten, frieten).
+- When the learner sends a Dutch e-mail or text: mark it like the teacher. First one line with what is good. Then every mistake as «wrong» → «correct» with a one-line rule in ${L}. For a reply to an invitation, check the checklist: greeting, congratulations, thanks (Bedankt voor de uitnodiging), apology (Het spijt me), that you can't come, the reason, goodbye, your name, capital letters and full stops. End with the full corrected e-mail. For this answer you may write up to about 250 words.
+- When the learner wants to practise: give ONE exam-style task at a time (a short invitation, chat or medicine text with 3 multiple-choice questions, or 5 gap sentences, or one speaking question) and wait for the learner's answers before you give the solutions; then explain each mistake briefly in ${L} and give the next task.
+- Be encouraging: the exam is in a few days.
+`;
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
@@ -202,7 +208,7 @@ export default {
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
-    const maxLen = mode === "chat" ? 400 : 600;
+    const maxLen = mode === "chat" ? 400 : body.focus === "exam11" ? 1600 : 600;
     const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-12)
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));
@@ -212,7 +218,7 @@ export default {
       const transcript = msgs.map(m => (m.role === "user" ? "Learner: " : "Tutor: ") + m.content).join("\n");
       msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
     }
-    const notes = learnerNotes(body.profile, mode, memory);
+    const notes = learnerNotes(body.profile, mode, memory) + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
     const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");

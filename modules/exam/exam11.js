@@ -15,6 +15,7 @@ const T={
   order:"Натискай слова по порядку",clear:"Очистити",
   wTask:"Завдання",wWrite:"Напиши лист тут…",wCheck:"Перевірити лист",wModel:"Показати зразок",wHideModel:"Сховати зразок",wTips:"Перевірка:",wSaved:"Чернетка зберігається на цьому пристрої.",
   sAsk:"🔊 Питання",sSpeak:"🎤 Відповісти",sShow:"Показати відповідь",sHeard:"Ти сказав:",sModel:"Зразок:",sOk:"✓ Вмію",sRe:"↺ Ще потренуватись",sTopic:"Тема",sDone:(a,b)=>a+" з "+b+" питань вже вмієш",
+  ai:"🤖 AI-тренер",aiS:"Peter знає весь листок до іспиту й тренує тебе за ним.",aiSpeak:"🗣️ Пробний іспит з говоріння",aiSpeakS:"Peter — твій вчитель: 6 тем по черзі, в кінці оцінка",aiAsk:"✍️ Перевірка листів і вправи",aiAskS:"Встав свій лист — Peter виправить. Або попроси вправу",wAi:"🤖 Перевірити з Peter",wAiEmpty:"Спершу напиши лист.",
   timer:"Час",proefInfo:"22 питання: читання, слухання, слова й граматика. Як на іспиті — без підказок до кінця."},
  en:{title:"🎓 Exam 1.1 · part 8 → 11",sub:"Preparation that follows the teacher's exam sheet: reading, listening, writing, speaking, words and grammar.",
   when:"Thu 29.10 — Reading · Writing · Listening\nFri 30.10 — Speaking",back:"← Exam",toets:"← Tests",
@@ -25,6 +26,7 @@ const T={
   order:"Tap the words in order",clear:"Clear",
   wTask:"Task",wWrite:"Write your e-mail here…",wCheck:"Check my e-mail",wModel:"Show model",wHideModel:"Hide model",wTips:"Checklist:",wSaved:"Your draft is saved on this device.",
   sAsk:"🔊 Question",sSpeak:"🎤 Answer",sShow:"Show answer",sHeard:"You said:",sModel:"Model:",sOk:"✓ I can do it",sRe:"↺ Practise more",sTopic:"Topic",sDone:(a,b)=>a+" of "+b+" questions mastered",
+  ai:"🤖 AI coach",aiS:"Peter knows the whole exam sheet and practises it with you.",aiSpeak:"🗣️ Mock speaking exam",aiSpeakS:"Peter is your teacher: 6 topics in turn, feedback at the end",aiAsk:"✍️ E-mail check & exercises",aiAskS:"Paste your e-mail and Peter corrects it, or ask for an exercise",wAi:"🤖 Check with Peter",wAiEmpty:"Write your e-mail first.",
   timer:"Time",proefInfo:"22 questions: reading, listening, words and grammar. Like the real exam — no hints until the end."}
 };
 const U=()=>T[L()];
@@ -202,6 +204,13 @@ function home(){
   grid.appendChild(b);
  });
  c.appendChild(grid);
+ if(typeof AI_ENDPOINT!=="undefined"&&AI_ENDPOINT&&targetLang==="nl"){
+  const nm=(typeof cx==="function"?cx("{N}"):"Peter");const fix=t=>t.replace(/Peter/g,nm);
+  c.appendChild(el("h3","ex-aih",u.ai));c.appendChild(el("p","ex-sub",fix(u.aiS)));
+  const mk=(id,t,d,fn)=>{const b=el("button","btn toets-pick ex-ai");b.type="button";b.dataset.ai=id;const av=el("span","tp-no ex-av");try{av.innerHTML=charSvg("happy")}catch(e){av.textContent="🤖"}b.appendChild(av);const tx=el("span","tp-text");tx.append(el("strong","",fix(t)),el("small","tp-meta",fix(d)));b.appendChild(tx);b.onclick=fn;c.appendChild(b)};
+  mk("speak",u.aiSpeak,u.aiSpeakS,()=>aiStart({id:"exam11",fromExam:true}));
+  mk("ask",u.aiAsk,u.aiAskS,()=>askStart({focus:"exam11"}));
+ }
 }
 
 // ---------------- QUIZ ENGINE ----------------
@@ -316,7 +325,10 @@ function write(w){
   if(pct===100&&!tips.length)toast("🏆 "+pct+"%");
  };
  md.onclick=()=>{model.hidden=!model.hidden;md.textContent=model.hidden?u.wModel:u.wHideModel};
- row.append(ck,md);c.append(row,res,model);
+ row.append(ck,md);
+ if(typeof AI_ENDPOINT!=="undefined"&&AI_ENDPOINT){const ai=el("button","btn",(U().wAi).replace(/Peter/g,typeof cx==="function"?cx("{N}"):"Peter"));ai.type="button";ai.onclick=()=>{const t=ta.value.trim();if(t.length<20){toast(U().wAiEmpty);return}
+  askStart({focus:"exam11",send:"Kijk mijn e-mail na (examen 1.1). Opdracht: "+w.task+(w.card?"\nUitnodiging: "+w.card.replace(/\n/g," "):"")+"\n\nMijn e-mail:\n"+t})};row.appendChild(ai)}
+ c.append(row,res,model);
 }
 
 // ---------------- SPEAKING ----------------
@@ -352,5 +364,6 @@ function texts(){ // every Dutch text this module can speak (for tools/collect-a
  SPREKEN.forEach(t=>t.qa.forEach(([q,a])=>{out.push(q);out.push(a)}));
  return out;
 }
-window.EXAM11={open:home,texts,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},_quiz:quiz,_write:write,_speak:speak};
+function chips(){return L()==="uk"?["Дай мені вправу на читання (запрошення)","Потренуй мене: omdat чи want","5 речень на niet / geen","Які питання будуть на говорінні?","Перевір: Beste Rita, bedenkt voor de uitnodiging. Ik kan niet komen."]:["Give me a reading exercise (invitation)","Practise omdat vs want with me","5 sentences with niet / geen","Which questions come in the speaking exam?","Check: Beste Rita, bedenkt voor de uitnodiging. Ik kan niet komen."]}
+window.EXAM11={open:home,texts,chips,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},_quiz:quiz,_write:write,_speak:speak};
 })();
