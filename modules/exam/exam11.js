@@ -373,6 +373,11 @@ function texts(){ // every Dutch text this module can speak (for tools/collect-a
  SPREKEN.forEach(t=>t.qa.forEach(([q,a])=>{out.push(q);out.push(a)}));
  return out;
 }
+function speakScript(){ // mock speaking exam for the AI: 6 topics in course order, ~22 questions
+ const take={dag:[4,true],graag:[3,true],afspraak:[5,false],dokter:[4,false],eten:[3,true],advies:[3,true]};
+ const out=[];SPREKEN.forEach((t,ti)=>{const [n,rnd]=take[t.id]||[3,true];let qa=t.qa.slice();if(rnd){const first=qa[0];qa=[first,...shuffle(qa.slice(1))]}qa.slice(0,n).forEach(x=>out.push({q:x[0],ti:ti+1,tn:tr(t.t)}))});
+ return out;
+}
 function chips(){return L()==="uk"?["Дай мені вправу на читання (запрошення)","Потренуй мене: omdat чи want","5 речень на niet / geen","Які питання будуть на говорінні?","Перевір: Beste Rita, bedenkt voor de uitnodiging. Ik kan niet komen."]:["Give me a reading exercise (invitation)","Practise omdat vs want with me","5 sentences with niet / geen","Which questions come in the speaking exam?","Check: Beste Rita, bedenkt voor de uitnodiging. Ik kan niet komen."]}
-window.EXAM11={open:home,texts,chips,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},_quiz:quiz,_write:write,_speak:speak};
+window.EXAM11={open:home,texts,chips,speakScript,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},_quiz:quiz,_write:write,_speak:speak};
 })();

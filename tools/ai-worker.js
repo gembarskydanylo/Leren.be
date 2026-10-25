@@ -21,7 +21,7 @@ const SCENES = {
   apotheek: "You are a pharmacist in a language lesson. The learner asks for something against pain/cold; you ask about symptoms in simple words and use a made-up practice line like 'Twee keer per dag, na het eten.' Never give real advice about medicines or doses: for that, say they should ask the pharmacist or doctor in real life.",
   gemeente: "You work at the gemeente (town hall). The learner changes address; you ask for ID card and new address; mention the wijkagent visit.",
   station: "You sell train tickets at a Belgian station. The learner buys a ticket (enkel / heen en terug), you give price, time and platform (spoor).",
-  exam11: "You are the learner's CVO teacher taking the SPEAKING exam of course 1.1 (chapters 8-11) as a mock exam. Work through these six topics in this order, one short question per turn, like the real exam, and say briefly when you move to the next topic: (1) a normal day: Hoe laat sta jij op? Wat doe je 's morgens / 's middags / 's avonds? Hoe laat ga je slapen? (2) graag / niet graag: Wat doe jij graag? Wat doe jij niet graag? Zwem jij graag? (3) invitation role-play: invite the learner (Ik ga zaterdagavond naar de cinema. Ga je mee?) and practise Hoe laat / Waar spreken we af?; then let the learner invite you and refuse politely (Het spijt me, ik moet werken) so they answer Spijtig! / Een andere keer misschien! (4) you are the doctor: Wat scheelt er? Sinds wanneer? Heeft u koorts? Waar heeft u pijn? (5) meals: Wat eet je 's morgens? Vind jij koffie lekker? Eet jij gezond? (6) advice: tell an unhealthy habit (Ik drink veel cola. / Ik eet elke dag frieten.) and ask the learner to give advice with Je moet meer / minder ... If the learner answers with one word, ask for a full sentence. After topic 6 give a short, friendly evaluation: what went well and the 2-3 most important things to practise before Friday.",
+  exam11: "You are the learner's CVO teacher taking the SPEAKING exam of course 1.1 (chapters 8-11: daily routine, graag / niet graag, invitations and appointments, at the doctor, meals, advice with meer / minder) as a mock exam. The app gives you an EXAM SCRIPT for every turn with the exact question to ask: follow it strictly. Never make up other questions, never ask why, never repeat a question that was already answered correctly, no small talk. Keep every reply very short.",
   buren: "You are the learner's new Flemish neighbour. Small talk: names, where from, how long here, invite for coffee."
 };
 // Condensed curricula (from the Leren.be knowledge base) used to ground corrections.
@@ -62,6 +62,16 @@ const PERSONA = {
 const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
 - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
 
+// Mock speaking exam: the app sends the exact question for this turn, so the tutor follows the course and never loops.
+function examScript(x, L) {
+  if (!x || typeof x !== "object") return "";
+  const q = v => String(v || "").replace(/[\r\n{}<>«»"]/g, " ").slice(0, 240).trim();
+  const cur = q(x.cur), next = q(x.next);
+  if (x.first && next) return `- EXAM SCRIPT: say hello in one very short sentence and ask exactly this question: «${next}». Ask nothing else.\n`;
+  if (x.end) return `- EXAM SCRIPT: the learner answered the LAST question («${cur}»). React to the answer in one short sentence, say the mock exam is finished, and give a short evaluation in reply: what went well and the 2-3 most important things to practise before the exam. Ask no new question.\n`;
+  if (!cur) return "";
+  return `- EXAM SCRIPT (strict): the learner is answering «${cur}». If the answer is correct and a full sentence: praise in at most three words and then ask exactly: «${next}». If it has a mistake${x.retry ? "" : " or is not a full sentence"}: ${x.retry ? `say the correct sentence, ask the learner to remember it, and then ask exactly: «${next}»` : `say kindly that it is not quite right and ask «${cur}» again (do NOT ask «${next}» yet)`}. Ask no other question.\n`;
+}
 function chatSystem(t, lang, level, scene, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
@@ -75,7 +85,7 @@ Rules:
 - learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
 - Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
-${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
+${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
 ` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
 LANGUAGE RULE: "reply" and "corrected" are in the target language and use only Latin letters (write names in Latin script, e.g. Danylo, never mixed with Cyrillic); "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
@@ -219,7 +229,7 @@ export default {
       const transcript = msgs.map(m => (m.role === "user" ? "Learner: " : "Tutor: ") + m.content).join("\n");
       msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
     }
-    const notes = learnerNotes(body.profile, mode, memory) + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
+    const notes = learnerNotes(body.profile, mode, memory) + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
     const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
