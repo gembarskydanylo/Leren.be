@@ -8,7 +8,7 @@ const L=()=>uiLang==="uk"?"uk":"en";
 const T={
  uk:{title:"🎓 Іспит 1.1 · deel 8 → 11",sub:"Підготовка точно за листком вчителя: читання, слухання, письмо, говоріння, слова й граматика.",
   when:"Чт 29.10 — Lezen · Schrijven · Luisteren\nПт 30.10 — Spreken",back:"← Іспит",toets:"← Toets",
-  parts:{lezen:["📖","Lezen","Запрошення, чат, інформація на ліках"],luisteren:["🎧","Luisteren","Запрошення й діалог у лікаря"],schrijven:["✍️","Schrijven","3 листи: мій день, відповідь на запрошення, мої страви"],spreken:["🗣️","Spreken","6 тем: питання вчителя + твоя відповідь"],woorden:["📚","Woordenschat","Слова розділів 8–11"],grammatica:["🧩","Grammatica","Inversie, niet/geen, omdat, moeten, meer/minder"],proef:["🏁","Proefexamen","Великий пробний тест: половина всього"]},
+  parts:{lezen:["📖","Lezen","Запрошення, чат, інформація на ліках"],luisteren:["🎧","Luisteren","Запрошення й діалог у лікаря"],schrijven:["✍️","Schrijven","3 листи: мій день, відповідь на запрошення, мої страви"],spreken:["🗣️","Spreken","6 тем: питання вчителя + твоя відповідь"],woorden:["📚","Woordenschat","Усі слова розділів 8–11 (25 випадкових за раз)"],grammatica:["🧩","Grammatica","Inversie, niet/geen, omdat, moeten, meer/minder"],proef:["🏁","Proefexamen","Великий пробний тест: половина всього"]},
   q:"Питання",of:"з",next:"Далі",check:"Перевірити",right:"Правильно!",wrong:"Неправильно. Правильна відповідь:",
   listen:"▶ Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
   done:"Готово!",score:(a,b)=>a+" з "+b+" правильно",repeat:"Повтори:",restart:"Пройти ще раз",best:"Найкраще",
@@ -219,8 +219,15 @@ function home(){
 // ---------------- QUIZ ENGINE ----------------
 function mkLezen(x){return{kind:"mc",text:TEXTS[x.t],q:tr(x.q),o:x.o,ok:x.o[0]}}
 function mkLuisteren(x){return{kind:"mc",dlg:DLG[x.d],q:tr(x.q),o:x.o,ok:x.o[0]}}
+function wordPool(){ // the exam words + every word of the four "exam words" lessons (chapters 8-11)
+ const seen=new Set(),out=[];const add=x=>{const k=x[0].toLowerCase();if(!seen.has(k)&&x[1]){seen.add(k);out.push(x)}};
+ WOORDEN.forEach(add);
+ try{["ex8","ex9","ex10","ex11"].forEach(t=>(DATA[t]?.items||[]).forEach(it=>add([it.nl,it.uk,it.en])))}catch(e){}
+ return out;
+}
 function mkWoord(w,i,all){
- const others=shuffle(all.filter(x=>x!==w)).slice(0,3),dir=i%2;
+ const kind=x=>/[.?!]$/.test(x[0])?"s":/\s/.test(x[0].replace(/^(de|het|een) /i,""))?"p":"w";
+ const same=all.filter(x=>x!==w&&kind(x)===kind(w)&&x[1]!==w[1]);const others=shuffle(same.length>=3?same:all.filter(x=>x!==w)).slice(0,3),dir=i%2;
  return dir?{kind:"mc",pair:w,q:(L()==="uk"?"Як нідерландською: «":"In Dutch: “")+(L()==="uk"?w[1]:w[2])+(L()==="uk"?"»?":"”?"),o:[w[0],...others.map(x=>x[0])],ok:w[0],nlOpts:true}
   :{kind:"mc",pair:w,q:(L()==="uk"?"Що означає «":"What does “")+w[0]+(L()==="uk"?"»?":"” mean?"),o:[L()==="uk"?w[1]:w[2],...others.map(x=>L()==="uk"?x[1]:x[2])],ok:L()==="uk"?w[1]:w[2],nlQ:w[0]};
 }
@@ -228,13 +235,13 @@ function mkGram(g){return g.w?{kind:"order",w:g.w,a:g.a,e:tr(g.e),u:g.u}:{kind:"
 function build(part){
  if(part==="lezen")return LEZEN.map(mkLezen);
  if(part==="luisteren")return LUISTEREN.map(mkLuisteren);
- if(part==="woorden"){const w=shuffle(WOORDEN).slice(0,20);return w.map((x,i)=>mkWoord(x,i,WOORDEN))}
+ if(part==="woorden"){const P=wordPool(),w=shuffle(P).slice(0,25);return w.map((x,i)=>mkWoord(x,i,P))}
  if(part==="grammatica")return shuffle(GRAM).map(mkGram);
  // mock exam: half of everything, grouped like the exam
  const pick=(a,n)=>shuffle(a).slice(0,n);
  const lez=pick(["karim","sofie","chat","mail","siroop","tabletten"],3).flatMap(t=>pick(LEZEN.filter(x=>x.t===t),2)).map(mkLezen);
  const lui=pick(Object.keys(DLG),2).flatMap(d=>pick(LUISTEREN.filter(x=>x.d===d),2)).map(mkLuisteren);
- const w=pick(WOORDEN,6).map((x,i)=>mkWoord(x,i,WOORDEN));
+ const P=wordPool(),w=pick(P,6).map((x,i)=>mkWoord(x,i,P));
  return [...lez,...lui,...w,...pick(GRAM,6).map(mkGram)];
 }
 let QZ=null;
