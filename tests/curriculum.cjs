@@ -46,7 +46,7 @@ vm.runInContext(`
    }
   }
  }
- for(const [id] of [...LerenCurriculum.chapters,...LerenCurriculum.advanced])assert(testIds.has('course_'+id+'_v1'));
+ for(const [id] of [...LerenCurriculum.chapters,...LerenCurriculum.advanced])assert(testIds.has('course_'+id+'_v2'));
  assert.equal(TOETS.find(t=>t.kind==='leveltest').questions.length,12);
  assert.equal(TOETS.find(t=>t.id==='t5').lvl,'a11');
  assert.equal(TOETS.find(t=>t.id==='t10_course_v2').lvl,'a11');

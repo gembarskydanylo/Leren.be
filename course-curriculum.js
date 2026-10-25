@@ -349,13 +349,26 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    const lvl=chapters.some(c=>c[0]===id)?'a11':'a12',g=gaps[id];
    const pool=tabs.flatMap(t=>DATA[t]?.items||[]).filter(x=>x.id.startsWith('course_'));
    const fallback=tabs.flatMap(t=>DATA[t]?.items||[]);
-   const chosen=(pool.length>=4?pool:fallback).slice(0,4);
+   const src=(pool.length>=6?pool:fallback).filter(x=>x.nl&&x.uk&&!/[→:]/.test(x.nl));
+   // up to 9 words spread over the whole chapter; distractors come from the same chapter
+   const step=Math.max(1,src.length/9),chosen=[];for(let k=0;k<9&&Math.floor(k*step)<src.length;k++)chosen.push(src[Math.floor(k*step)]);
    const questions=[{type:'gap',sentence:g[0],q:prompt,opts:g.slice(1),ok:0}];
    chosen.forEach((item,i)=>{
-    const candidates=[item,...chosen.filter(x=>x.id!==item.id)].slice(0,4);
-    questions.push({type:'mc',q:translated(`Що означає «${item.nl}»?`,`What does “${item.nl}” mean?`,`Que signifie « ${item.nl} » ?`,`ما معنى «${item.nl}»؟`),opts:candidates.map(x=>translated(x.uk,x.en,x.fr,x.ar)),ok:0});
+    const kind=x=>/[.?!]$/.test(x.nl)||x.nl.replace(/^(de|het) /i,'').includes(' ')?'p':'w';
+    const langs=['nl','uk','en','fr','ar'],dis=[],taken=[item];
+    const fits=o=>o.id!==item.id&&langs.every(l=>!o[l]||taken.every(t=>String(t[l]||'').trim().toLowerCase()!==String(o[l]).trim().toLowerCase()));
+    const wide=fallback.filter(x=>x.nl&&x.uk&&!/[→:]/.test(x.nl));
+    for(const group of [src.filter(x=>kind(x)===kind(item)),src,wide.filter(x=>kind(x)===kind(item)),wide]){
+     for(let k=1;dis.length<3&&k<=group.length;k++){const o=group[(i*7+k*5)%group.length];if(o&&fits(o)){dis.push(o);taken.push(o)}}
+     if(dis.length>=3)break;
+    }
+    if(dis.length<3)return;
+    const cand=[item,...dis];
+    if(i%2===0)questions.push({type:'mc',q:translated(`Що означає «${item.nl}»?`,`What does “${item.nl}” mean?`,`Que signifie « ${item.nl} » ?`,`ما معنى «${item.nl}»؟`),opts:cand.map(x=>translated(x.uk,x.en,x.fr,x.ar)),ok:0});
+    else questions.push({type:'mc',q:translated(`Як нідерландською «${item.uk}»?`,`How do you say “${item.en}” in Dutch?`,`Comment dit-on « ${item.fr||item.en} » en néerlandais ?`,`كيف تقول «${item.ar||item.en}» بالهولندية؟`),opts:cand.map(x=>x.nl),ok:0});
    });
-   tests.push({id:`course_${id}_v1`,lvl,title:translated(`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`,`${lvl==='a11'?'A1.1':'A1.2'} · ${title}`),questions});
+   const no=lvl==='a11'?chapters.findIndex(c=>c[0]===id)+1:advanced.findIndex(c=>c[0]===id)+1,clean=title.replace(/^\S+\s/,m=>/\p{Extended_Pictographic}/u.test(m)?'':m);
+   tests.push({id:`course_${id}_v2`,lvl,group:'chapter',no,chapter:id,dutch:clean,title:translated(`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`),questions});
   }
   const levelTest=tests.find(t=>t.kind==='leveltest'&&t.unlocks==='a12');
   levelTest.id='lt_a12_course_v2';
