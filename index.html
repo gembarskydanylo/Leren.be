@@ -5740,17 +5740,22 @@ async function aiReport(text,mode){
 }
 // Memory between conversations: short notes about the learner, written by the tutor, kept only on this device.
 const aiMemory=()=>String(lsGet("leren_ai_memory","")||"");
+// "Forget" bumps a revision: an answer that was already on its way is dropped, and the messages said before
+// forgetting are no longer used to write notes (only what is said after it).
+const aiMemRev=()=>Number(lsGet("leren_ai_memrev",0))||0;
+function aiForget(){lsSet("leren_ai_memory","");lsSet("leren_ai_memrev",aiMemRev()+1);if(gState&&Array.isArray(gState.msgs)){gState.memoFrom=gState.msgs.length;gState.memoAt=gState.msgs.filter(m=>m.role==="user").length}}
 async function aiRemember(s){
- const uc=s.msgs.filter(m=>m.role==="user").length;if(s.memoBusy||uc<=(s.memoAt||0)||!AI_ENDPOINT)return;
- s.memoBusy=true;s.memoAt=uc;
- try{const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"memo",target:targetLang,lang:uiLang,memory:aiMemory(),messages:aiMsgs(s.msgs)})});
-  const j=await r.json().catch(()=>({}));if(r.ok&&typeof j.memory==="string"&&lsGet("leren_ai_consent18",false))lsSet("leren_ai_memory",j.memory.trim())}catch(e){}
+ const msgs=s.msgs.slice(s.memoFrom||0),uc=s.msgs.filter(m=>m.role==="user").length;
+ if(s.memoBusy||uc<=(s.memoAt||0)||!AI_ENDPOINT||!msgs.some(m=>m.role==="user"))return;
+ s.memoBusy=true;s.memoAt=uc;const rev=aiMemRev();
+ try{const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"memo",target:targetLang,lang:uiLang,memory:aiMemory(),messages:aiMsgs(msgs)})});
+  const j=await r.json().catch(()=>({}));if(r.ok&&typeof j.memory==="string"&&lsGet("leren_ai_consent18",false)&&rev===aiMemRev())lsSet("leren_ai_memory",j.memory.trim())}catch(e){}
  s.memoBusy=false;
 }
 function aiMemoryBox(rerender){
  const mem=aiMemory();if(!mem)return null;const g=aiU();
  const d=el("details","ai-mem");d.append(el("summary","",g.memT),el("p","",mem),el("small","",g.memNote));
- const f=el("button","btn",g.memForget);f.type="button";f.onclick=()=>{lsSet("leren_ai_memory","");rerender()};d.appendChild(f);return d;
+ const f=el("button","btn",g.memForget);f.type="button";f.onclick=()=>{aiForget();rerender()};d.appendChild(f);return d;
 }
 // Voice input: send the other transcriptions too, so the tutor can guess what was really said.
 const aiMsgs=msgs=>msgs.slice(-12).map(m=>({role:m.role,content:m.alts&&m.alts.length>1?m.content+"\n[spoken; other possible transcriptions: "+m.alts.slice(1,4).join(" | ")+"]":m.content}));
@@ -5868,28 +5873,55 @@ function renderMistakes(box){
  const list=el("div","pv-list");m.slice(0,6).forEach(x=>{const r=el("button","pv-row mk");r.type="button";const n=tgt(el("strong","","🔊 "+x.nl));r.append(n,el("span","",x.why||""));r.onclick=()=>say(x.nl);list.appendChild(r)});box.appendChild(list);
 }
 
-// ========== ACCOUNT (optional): Google sign-in; progress, settings and AI memory synced to Firestore users/{uid} ==========
+// ========== ACCOUNT (optional): Google or e-mail sign-in; progress and settings synced to Firestore users/{uid} ==========
 // Without signing in nothing changes. Firebase is loaded only when the user signs in (or signed in before on this device).
 const FB_SDK="https://www.gstatic.com/firebasejs/10.12.2/";
 const ACCT_UI={
- uk:{label:"Акаунт (необов’язково)",out:"Прогрес і пам’ять AI на всіх пристроях. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",emailIn:"Увійти через e-mail",emailQ:"Твоя e-mail адреса:",emailSent:"Лист із посиланням для входу надіслано на {e}. Відкрий його на цьому пристрої.",emailAgain:"Підтвердь e-mail, на який прийшов лист:",signOut:"Вийти",del:"Видалити акаунт",
+ uk:{label:"Акаунт (необов’язково)",out:"Прогрес і налаштування на всіх пристроях. Пам’ять AI лишається тільки на цьому пристрої. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",emailIn:"Увійти через e-mail",emailQ:"Твоя e-mail адреса:",emailSent:"Лист із посиланням для входу надіслано на {e}. Відкрий його на цьому пристрої.",emailAgain:"Підтвердь e-mail, на який прийшов лист:",signOut:"Вийти",del:"Видалити акаунт",
   delQ:"Видалити акаунт і всі дані в хмарі? Прогрес на цьому пристрої залишиться.",deleted:"Акаунт і дані в хмарі видалено.",err:"Не вдалося. Перевір інтернет і спробуй ще раз.",
-  keepQ:"В акаунті вже є прогрес: {c} балів. На цьому пристрої: {l} балів.\n\nOK: взяти прогрес з акаунта.\nСкасувати: залишити прогрес цього пристрою (він замінить дані в акаунті)."},
- en:{label:"Account (optional)",out:"Progress and AI memory on all your devices. Without it everything works as before.",signIn:"Sign in with Google",synced:"synced",never:"not synced yet",emailIn:"Sign in with e-mail",emailQ:"Your e-mail address:",emailSent:"A sign-in link was sent to {e}. Open it on this device.",emailAgain:"Confirm the e-mail address the link was sent to:",signOut:"Sign out",del:"Delete account",
+  keepQ:"В акаунті вже є прогрес: {c} балів. На цьому пристрої: {l} балів.\n\nOK: взяти прогрес з акаунта.\nСкасувати: залишити прогрес цього пристрою (він замінить дані в акаунті).",delLink:"Щоб видалити акаунт, підтвердь, що це ти: ми надіслали посилання на {e}. Відкрий його на цьому пристрої.",delCancel:"Видалення скасовано. Нічого не видалено.",delAgain:"Дані з хмари видалено, але сам акаунт ще ні. Натисни «Видалити акаунт» ще раз.",delPending:"Видалення не завершено: натисни «Видалити акаунт» ще раз."},
+ en:{label:"Account (optional)",out:"Progress and settings on all your devices. The AI memory stays on this device only. Without it everything works as before.",signIn:"Sign in with Google",synced:"synced",never:"not synced yet",emailIn:"Sign in with e-mail",emailQ:"Your e-mail address:",emailSent:"A sign-in link was sent to {e}. Open it on this device.",emailAgain:"Confirm the e-mail address the link was sent to:",signOut:"Sign out",del:"Delete account",
   delQ:"Delete your account and all cloud data? Progress on this device stays.",deleted:"Account and cloud data deleted.",err:"That didn't work. Check your connection and try again.",
-  keepQ:"Your account already has progress: {c} points. This device: {l} points.\n\nOK: use the progress from your account.\nCancel: keep this device's progress (it will replace the account data)."},
- fr:{label:"Compte (facultatif)",out:"Progression et mémoire de l’IA sur tous tes appareils. Sans compte, tout fonctionne comme avant.",signIn:"Se connecter avec Google",synced:"synchronisé",never:"pas encore synchronisé",emailIn:"Se connecter par e-mail",emailQ:"Ton adresse e-mail :",emailSent:"Un lien de connexion a été envoyé à {e}. Ouvre-le sur cet appareil.",emailAgain:"Confirme l’adresse e-mail qui a reçu le lien :",signOut:"Se déconnecter",del:"Supprimer le compte",
+  keepQ:"Your account already has progress: {c} points. This device: {l} points.\n\nOK: use the progress from your account.\nCancel: keep this device's progress (it will replace the account data).",delLink:"To delete your account, confirm it’s you: we sent a link to {e}. Open it on this device.",delCancel:"Deletion cancelled. Nothing was deleted.",delAgain:"Your cloud data is deleted, but the account isn’t yet. Tap “Delete account” again.",delPending:"Deletion isn’t finished: tap “Delete account” again."},
+ fr:{label:"Compte (facultatif)",out:"Progression et réglages sur tous tes appareils. La mémoire de l’IA reste uniquement sur cet appareil. Sans compte, tout fonctionne comme avant.",signIn:"Se connecter avec Google",synced:"synchronisé",never:"pas encore synchronisé",emailIn:"Se connecter par e-mail",emailQ:"Ton adresse e-mail :",emailSent:"Un lien de connexion a été envoyé à {e}. Ouvre-le sur cet appareil.",emailAgain:"Confirme l’adresse e-mail qui a reçu le lien :",signOut:"Se déconnecter",del:"Supprimer le compte",
   delQ:"Supprimer ton compte et toutes les données en ligne ? La progression sur cet appareil reste.",deleted:"Compte et données en ligne supprimés.",err:"Échec. Vérifie ta connexion et réessaie.",
-  keepQ:"Ton compte a déjà une progression : {c} points. Cet appareil : {l} points.\n\nOK : prendre la progression du compte.\nAnnuler : garder celle de cet appareil (elle remplacera les données du compte)."},
- ar:{label:"الحساب (اختياري)",out:"تقدّمك وذاكرة الذكاء الاصطناعي على كل أجهزتك. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",emailIn:"تسجيل الدخول عبر البريد الإلكتروني",emailQ:"بريدك الإلكتروني:",emailSent:"أُرسل رابط تسجيل الدخول إلى {e}. افتحه على هذا الجهاز.",emailAgain:"أكّد البريد الإلكتروني الذي وصل إليه الرابط:",signOut:"تسجيل الخروج",del:"حذف الحساب",
+  keepQ:"Ton compte a déjà une progression : {c} points. Cet appareil : {l} points.\n\nOK : prendre la progression du compte.\nAnnuler : garder celle de cet appareil (elle remplacera les données du compte).",delLink:"Pour supprimer ton compte, confirme que c’est toi : nous avons envoyé un lien à {e}. Ouvre-le sur cet appareil.",delCancel:"Suppression annulée. Rien n’a été supprimé.",delAgain:"Tes données en ligne sont supprimées, mais pas encore le compte. Touche « Supprimer le compte » encore une fois.",delPending:"Suppression pas terminée : touche « Supprimer le compte » encore une fois."},
+ ar:{label:"الحساب (اختياري)",out:"تقدّمك وإعداداتك على كل أجهزتك. ذاكرة الذكاء الاصطناعي تبقى على هذا الجهاز فقط. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",emailIn:"تسجيل الدخول عبر البريد الإلكتروني",emailQ:"بريدك الإلكتروني:",emailSent:"أُرسل رابط تسجيل الدخول إلى {e}. افتحه على هذا الجهاز.",emailAgain:"أكّد البريد الإلكتروني الذي وصل إليه الرابط:",signOut:"تسجيل الخروج",del:"حذف الحساب",
   delQ:"حذف حسابك وكل البيانات السحابية؟ يبقى التقدّم على هذا الجهاز.",deleted:"تم حذف الحساب والبيانات السحابية.",err:"لم ينجح ذلك. تحقّق من الاتصال وحاول مرة أخرى.",
-  keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب)."}};
+  keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب).",delLink:"لحذف حسابك، أكّد أنك أنت: أرسلنا رابطًا إلى {e}. افتحه على هذا الجهاز.",delCancel:"أُلغي الحذف. لم يُحذف شيء.",delAgain:"حُذفت بياناتك السحابية، لكن الحساب لم يُحذف بعد. اضغط «حذف الحساب» مرة أخرى.",delPending:"لم يكتمل الحذف: اضغط «حذف الحساب» مرة أخرى."}};
 const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
-const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email"]);
+// Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
+const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
+ "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
+// Three-way merge: base = the copy both sides last agreed on, local = this device, cloud = the account.
+// A side that didn't change a value takes the other side's change (deletions included); when both changed it,
+// objects merge field by field, lists keep what either side added and drop what either side removed,
+// numbers and dates take the larger value, and anything else keeps this device's value. Nothing is summed.
+const syncEq=(a,b)=>a===b||JSON.stringify(a)===JSON.stringify(b);
+const syncObj=v=>v!==null&&typeof v==="object"&&!Array.isArray(v);
+const syncDate=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}/.test(v);
+function syncMergeVal(b,l,c){
+ if(syncEq(l,c))return l;if(syncEq(l,b))return c;if(syncEq(c,b))return l;
+ if(syncObj(l)&&syncObj(c)){const bb=syncObj(b)?b:{},o={};new Set([...Object.keys(l),...Object.keys(c)]).forEach(k=>{const v=syncMergeVal(bb[k],l[k],c[k]);if(v!==undefined)o[k]=v});return o}
+ if(Array.isArray(l)&&Array.isArray(c)){const key=x=>JSON.stringify(x),bs=new Set((Array.isArray(b)?b:[]).map(key)),ls=new Set(l.map(key)),cs=new Set(c.map(key)),out=[],seen=new Set();
+  [...l,...c].forEach(x=>{const k=key(x);if(seen.has(k))return;seen.add(k);if(bs.has(k)&&(!ls.has(k)||!cs.has(k)))return;out.push(x)});return out}
+ if(typeof l==="number"&&typeof c==="number")return Math.max(l,c);
+ if(syncDate(l)&&syncDate(c))return l>c?l:c;
+ return l===undefined?c:l;
+}
+const syncParse=v=>{if(v===undefined||v===null)return undefined;try{return JSON.parse(v)}catch(e){return {__raw:String(v)}}};
+const syncStr=v=>v===undefined?undefined:(syncObj(v)&&"__raw" in v&&Object.keys(v).length===1?v.__raw:JSON.stringify(v));
+function syncMerge(base,local,cloud){
+ const out={};new Set([...Object.keys(local),...Object.keys(cloud)]).forEach(k=>{if(!syncable(k))return;
+  const l=local[k],c=cloud[k],b=base[k];let v;
+  if(l===c)v=l;else if(l===b)v=c;else if(c===b)v=l;else v=syncStr(syncMergeVal(syncParse(b),syncParse(l),syncParse(c)));
+  if(typeof v==="string")out[k]=v});
+ return out;
+}
 function syncApply(o){if(!o||typeof o!=="object"||Array.isArray(o))throw new Error("Invalid cloud progress");Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
-const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false};
+const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false,rev:"",syncing:null};
 async function acctLoad(){
  if(acct.mod)return acct.mod;
  const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
@@ -5901,23 +5933,40 @@ async function fsUserDoc(method,body){
  const t=await acct.user.getIdToken();
  return fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid,{method,headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
 }
-async function syncPush(){
- if(!acct.user)return;const snap=JSON.stringify(syncSnapshot());if(snap===acct.lastSnap)return;
- const ts=Date.now(),r=await fsUserDoc("PATCH",{fields:{blob:{stringValue:snap},updated:{integerValue:String(ts)},v:{integerValue:"1"}}});
- if(r.ok){acct.lastSnap=snap;lsSet("leren_sync_at",ts);acctRender()}
+const syncPaused=()=>!acct.user||acct.deleting||lsGet("leren_del_pending",false);
+// Writes only if the cloud copy is still the one we last saw (Firestore precondition), so two devices can't
+// overwrite each other: a conflict makes us read the newer copy, merge and try again.
+async function syncWrite(snap){
+ const ts=Date.now(),q=acct.rev?"?currentDocument.updateTime="+encodeURIComponent(acct.rev):"?currentDocument.exists=false";
+ const t=await acct.user.getIdToken();
+ const r=await fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid+q,
+  {method:"PATCH",headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({fields:{blob:{stringValue:JSON.stringify(snap)},updated:{integerValue:String(ts)},v:{integerValue:"2"}}})});
+ if(!r.ok)return r.status===400||r.status===409||r.status===412?"conflict":"error";
+ const d=await r.json().catch(()=>({}));acct.rev=d.updateTime||"";
+ lsSet("leren_sync_base",snap);acct.lastSnap=JSON.stringify(snap);lsSet("leren_sync_at",ts);acctRender();return "ok";
 }
-async function syncPull(){ // newest copy wins; the first sign-in on a device asks when both sides have progress
- const r=await fsUserDoc("GET");if(r.status===404){await syncPush();return}if(!r.ok)return;
- const d=await r.json(),cloudTs=Number(d.fields&&d.fields.updated&&d.fields.updated.integerValue||0);let cloud;try{cloud=JSON.parse(d.fields.blob.stringValue)}catch(e){return}
- if(!cloud||typeof cloud!=="object"||Array.isArray(cloud))return;
- const localAt=Number(lsGet("leren_sync_at",0)),take=()=>{syncApply(cloud);lsSet("leren_sync_at",cloudTs);location.reload()};
- if(!localAt){
-  const c=Number(cloud.poly_score||0),l=Number(localStorage.getItem("poly_score")||0);
-  if(c>0&&(l===0||confirm(acctU().keepQ.replace("{c}",c).replace("{l}",l)))){take();return}
-  acct.lastSnap="";await syncPush();return;
- }
- if(cloudTs>localAt){take();return}
- await syncPush();
+function syncOnce(fn){ // one sync at a time; later calls wait for the running one
+ const run=(acct.syncing||Promise.resolve()).catch(()=>{}).then(fn);acct.syncing=run.finally(()=>{if(acct.syncing===run)acct.syncing=null});return run;
+}
+function syncPush(){return syncOnce(async()=>{
+ if(syncPaused())return;const base=lsGet("leren_sync_base",null);if(!base||!acct.rev)return syncPullNow();
+ const snap=syncSnapshot(),str=JSON.stringify(snap);if(str===acct.lastSnap)return;
+ if(await syncWrite(snap)==="conflict")return syncPullNow();
+})}
+function syncPull(){return syncOnce(syncPullNow)}
+async function syncPullNow(tries=0){
+ if(syncPaused()||tries>3)return;
+ const r=await fsUserDoc("GET");let cloud={},cloudKeys=0;
+ if(r.status===404)acct.rev="";
+ else{if(!r.ok)return;const d=await r.json();acct.rev=d.updateTime||"";
+  try{const o=JSON.parse(d.fields.blob.stringValue);if(syncObj(o)){cloudKeys=Object.keys(o).length;Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")cloud[k]=v})}}catch(e){}}
+ const local=syncSnapshot(),merged=syncMerge(lsGet("leren_sync_base",{})||{},local,cloud),changedHere=!syncEq(merged,local);
+ if(changedHere){lsSet("leren_sync_backup",{at:Date.now(),snap:local}); // one step back, if a merge ever goes wrong
+  Object.keys(local).forEach(k=>{if(!(k in merged))localStorage.removeItem(k)});Object.entries(merged).forEach(([k,v])=>{if(local[k]!==v)localStorage.setItem(k,v)})}
+ if(!syncEq(merged,cloud)||cloudKeys!==Object.keys(cloud).length||r.status===404){ // also rewrites old copies that still hold device-only keys
+  const w=await syncWrite(merged);if(w==="conflict")return syncPullNow(tries+1);if(w!=="ok")return;
+ }else{lsSet("leren_sync_base",merged);acct.lastSnap=JSON.stringify(merged);lsSet("leren_sync_at",Date.now());acctRender()}
+ if(changedHere)location.reload();
 }
 async function acctSignIn(){
  const u=acctU();try{const b=await acctLoad(),p=new b.GoogleAuthProvider();
@@ -5934,23 +5983,46 @@ async function acctEmailIn(){ // passwordless: Firebase e-mails a one-time link 
 async function acctEmailLinkReturn(){ // the page was opened from the sign-in e-mail
  const u=acctU();try{const b=await acctLoad();if(!b.isSignInWithEmailLink(acct.auth,location.href))return;
   let email=lsGet("leren_acct_email","");if(!email)email=(prompt(u.emailAgain)||"").trim();if(!email)return;
-  await b.signInWithEmailLink(acct.auth,email,location.href);lsSet("leren_acct",true);
+  const del=Date.now()-Number(lsGet("leren_del_after_link",0))<3600000;localStorage.removeItem("leren_del_after_link");
+  if(del)acct.deleting=true; // no sync between this sign-in and the deletion
+  const cred=await b.signInWithEmailLink(acct.auth,email,location.href);lsSet("leren_acct",true);
+  if(del){acct.user=cred.user;if(confirm(u.delQ))await acctDeleteNow();else{acct.deleting=false;toast(u.delCancel);syncPull().catch(()=>{})}}
  }catch(e){toast(u.err)}
  history.replaceState(null,"",location.origin+location.pathname); // drop the one-time code from the address
 }
-async function acctSignOut(){try{await acct.mod.signOut(acct.auth)}catch(e){}lsSet("leren_acct",false);localStorage.removeItem("leren_sync_at");acct.lastSnap="";acctRender()}
+async function acctSignOut(){try{await acct.mod.signOut(acct.auth)}catch(e){}lsSet("leren_acct",false);["leren_sync_at","leren_sync_base","leren_del_pending","leren_del_after_link"].forEach(k=>localStorage.removeItem(k));acct.lastSnap="";acct.rev="";acctRender()}
+// Deleting the account: first prove it's the owner the way they signed in (Google popup or a fresh e-mail link),
+// then delete the cloud copy and the account while sync is paused. If anything breaks halfway, a flag remembers it
+// and the next tap on "Delete account" finishes the job instead of leaving an unknown state.
+const acctFresh=user=>Date.now()-Date.parse(user.metadata&&user.metadata.lastSignInTime||0)<4*60*1000;
 async function acctDelete(){
- const u=acctU();if(!acct.user||!confirm(u.delQ))return;
- try{const r=await fsUserDoc("DELETE");if(!r.ok&&r.status!==404)throw new Error("fs "+r.status);
-  try{await acct.user.delete()}catch(e){if(e&&e.code==="auth/requires-recent-login"){await acct.mod.reauthenticateWithPopup(acct.user,new acct.mod.GoogleAuthProvider());await acct.user.delete()}else throw e}
-  await acctSignOut();toast(u.deleted,true);
- }catch(e){toast(u.err)}
+ const u=acctU(),user=acct.user;if(!user||!confirm(u.delQ))return;
+ const prov=(user.providerData&&user.providerData[0]||{}).providerId||"";
+ try{
+  if(!acctFresh(user)){
+   if(prov==="google.com")await acct.mod.reauthenticateWithPopup(user,new acct.mod.GoogleAuthProvider());
+   else{ // e-mail link: send a fresh link; deletion continues when it is opened on this device
+    await acct.mod.sendSignInLinkToEmail(acct.auth,user.email,{url:location.origin+location.pathname,handleCodeInApp:true});
+    lsSet("leren_acct_email",user.email);lsSet("leren_del_after_link",Date.now());toast(u.delLink.replace("{e}",user.email),true);return;
+   }
+  }
+  await acctDeleteNow();
+ }catch(e){toast(e&&/popup-closed|cancelled-popup|user-mismatch|user-cancelled/.test(e.code||"")?u.delCancel:u.err)}
+}
+async function acctDeleteNow(){
+ const u=acctU();acct.deleting=true;lsSet("leren_del_pending",true);
+ try{
+  const r=await fsUserDoc("DELETE");if(!r.ok&&r.status!==404)throw new Error("fs "+r.status);
+  await acct.user.delete();
+  localStorage.removeItem("leren_del_pending");await acctSignOut();toast(u.deleted,true);
+ }catch(e){toast(e&&e.code==="auth/requires-recent-login"?u.delAgain:u.err);acctRender()}
+ finally{acct.deleting=false}
 }
 function acctRender(){
  const u=acctU(),lab=$("acctLabel");if(!lab)return;lab.textContent=u.label;
  const btn=$("acctBtn"),del=$("acctDelBtn"),hint=$("acctHint"),user=acct.user;
  if(user){const at=Number(lsGet("leren_sync_at",0));
-  hint.textContent=(user.email||user.displayName||"")+" · "+(at?u.synced+" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):u.never);
+  hint.textContent=(user.email||user.displayName||"")+" · "+(lsGet("leren_del_pending",false)?u.delPending:at?u.synced+" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):u.never);
   btn.textContent=u.signOut;btn.onclick=acctSignOut;del.hidden=false;del.textContent=u.del;del.onclick=acctDelete;
  }else{hint.textContent=u.out;btn.textContent=u.signIn;btn.onclick=acctSignIn;del.hidden=false;del.textContent=u.emailIn;del.onclick=acctEmailIn}
 }
