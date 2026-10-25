@@ -11,14 +11,14 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-23-a1-parts"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-25-limits"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
   cafe: "You are a barista in a Flemish café. The learner orders a drink, chooses milk/size and pays.",
   super: "You work in a Belgian supermarket. The learner asks where products are, asks prices, loyalty card.",
   huisarts: "You are the GP's assistant (huisarts). The learner explains symptoms (keelpijn, koorts, hoest); you ask since when and give simple advice.",
-  apotheek: "You are a pharmacist. The learner asks for something against pain/cold; you ask about symptoms and explain dosage simply.",
+  apotheek: "You are a pharmacist in a language lesson. The learner asks for something against pain/cold; you ask about symptoms in simple words and use a made-up practice line like 'Twee keer per dag, na het eten.' Never give real advice about medicines or doses: for that, say they should ask the pharmacist or doctor in real life.",
   gemeente: "You work at the gemeente (town hall). The learner changes address; you ask for ID card and new address; mention the wijkagent visit.",
   station: "You sell train tickets at a Belgian station. The learner buys a ticket (enkel / heen en terug), you give price, time and platform (spoor).",
   buren: "You are the learner's new Flemish neighbour. Small talk: names, where from, how long here, invite for coffee."
@@ -167,11 +167,20 @@ export default {
     const json = (o, status = 200) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION}});
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
 
-    // daily limit per visitor (optional KV binding RATE)
-    // KV on the free plan allows ~1000 writes a day: if KV fails, keep the chat working
-    // (the monthly spend limit in the Anthropic Console is the hard cap).
+    // Emergency switch: set the variable AI_OFF = 1 in Cloudflare to stop all model calls at once.
+    if (env.AI_OFF === "1") return json({error: "off"}, 503);
+    // Spend guard. Rate limiting bindings (wrangler.toml) are counted per Cloudflare location without a daily write
+    // quota, so they keep working when KV doesn't: per visitor per minute, and for everybody together per minute
+    // (a ceiling on what the model can cost per minute). If a binding is missing or fails, refuse rather than spend.
+    const ip = req.headers.get("CF-Connecting-IP") || "x";
+    for (const [b, key] of [[env.PER_IP, ip], [env.ALL, "all"]]) {
+      if (!b) continue;
+      let ok = false; try { ok = (await b.limit({key})).success; } catch (e) { console.log("limiter", String(e)); }
+      if (!ok) return json({error: "slow"}, 429); // the app says "wait a moment", not "come back tomorrow"
+    }
+    // Daily limit per visitor (KV "leren-ai-rate", best effort): the free plan allows ~1000 KV writes a day; when KV
+    // fails the per-minute limits above still apply, and the monthly spend limit in the Anthropic Console is the hard cap.
     if (env.RATE) {
-      const ip = req.headers.get("CF-Connecting-IP") || "x";
       const key = new Date().toISOString().slice(0, 10) + ":" + ip;
       let n = 0;
       try { n = Number(await env.RATE.get(key)) || 0; } catch (e) { console.log("rate get", String(e)); }
@@ -179,7 +188,11 @@ export default {
       try { await env.RATE.put(key, String(n + 1), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
     }
 
-    let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }
+    // Requests from the app are a few KB: refuse big bodies before parsing them.
+    if (Number(req.headers.get("Content-Length") || 0) > 64000) return json({error: "too big"}, 413);
+    let raw; try { raw = await req.text(); } catch { return json({error: "bad body"}, 400); }
+    if (raw.length > 64000) return json({error: "too big"}, 413);
+    let body; try { body = JSON.parse(raw); } catch { return json({error: "bad json"}, 400); }
     // JSON parsing also accepts null, arrays and primitives; validate before reading fields.
     if (!body || typeof body !== "object" || Array.isArray(body)) return json({error: "bad request"}, 400);
     if (body.mode === "report") { // Google Play: users can flag AI content inside the app; read them in Cloudflare → leren-ai → Logs
@@ -203,11 +216,13 @@ export default {
     const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
+    // Don't wait forever for the model: the app shows "try again" instead of hanging.
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 45000);
     try {
       let text = "";
       if (provider === "anthropic") {
         // Structured outputs guarantee valid JSON; low effort keeps replies fast and cheap.
-        const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
+        const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", signal: ctl.signal, headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
           body: JSON.stringify({model: env.MODEL || "claude-haiku-5-5", max_tokens: 4000, system: sys, messages: msgs,
             output_config: {effort: env.EFFORT || (mode === "ask" ? "medium" : "low"), format: {type: "json_schema", schema}}})});
         const j = await r.json();
@@ -239,6 +254,9 @@ export default {
       if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)};
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
-    } catch (e) { return json({error: "ai"}, 502); }
+    } catch (e) {
+      const late = e && e.name === "AbortError";
+      return json({error: late ? "timeout" : "ai"}, late ? 504 : 502);
+    } finally { clearTimeout(timer); }
   }
 };
