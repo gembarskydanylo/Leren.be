@@ -259,7 +259,30 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 
 /* ---------- toets ---------- */
 .toets-text{font-size:16px;font-weight:700;white-space:pre-line;text-align:start;padding:14px;margin-bottom:6px;background:var(--surface-2);border-radius:var(--r-md);border-inline-start:5px solid var(--oranje)}
-.toets-pick{width:100%;flex:none;margin-bottom:10px;text-align:start;justify-content:flex-start;display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:64px}.toets-pick .tp-no{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--oranje);color:var(--on-oranje);font-family:var(--font-display);font-size:17px;font-weight:800}.toets-pick.passed .tp-no{background:var(--ok)}.toets-pick .tp-text{display:flex;flex-direction:column;gap:2px;min-width:0}.toets-pick .tp-text strong{font-size:16px;line-height:1.2}.toets-pick .tp-nl{font-size:13.5px;color:var(--oranje-deep);font-weight:800}.toets-pick .tp-meta{font-size:12.5px;color:var(--ink-2);font-weight:700}.toets-sec{font-size:17px;margin:14px 2px 2px;text-align:start}.toets-sec-h{margin:0 2px 10px;color:var(--ink-2);font-size:14px;text-align:start}
+.toets-pick{width:100%;flex:none;margin-bottom:10px;text-align:start;justify-content:flex-start;display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:64px}.toets-pick .tp-no{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--oranje);color:var(--on-oranje);font-family:var(--font-display);font-size:17px;font-weight:800}.toets-pick.passed .tp-no{background:var(--ok)}.toets-pick .tp-text{display:flex;flex-direction:column;gap:2px;min-width:0}.toets-pick .tp-text strong{font-size:16px;line-height:1.2}.toets-pick .tp-nl{font-size:13.5px;color:var(--oranje-deep);font-weight:800}.toets-pick .tp-meta{font-size:12.5px;color:var(--ink-2);font-weight:700}.exam-pick{border-color:var(--oranje);background:var(--oranje-soft)}.exam-pick .tp-no{background:var(--be-yellow);color:#1E1712}
+.ex-back{align-self:flex-start;border:0;background:none;color:var(--oranje-deep);font-weight:800;font-size:15px;padding:4px 0;margin-bottom:6px;cursor:pointer}
+.ex-h{font-family:var(--font-display);font-size:21px;margin:4px 0 6px;text-align:start}.ex-sub{color:var(--ink-2);margin:0 0 8px;text-align:start}
+.ex-when{display:inline-block;white-space:pre-line;line-height:1.5;margin:0 0 14px;padding:6px 12px;border-radius:var(--r-pill);background:var(--be-yellow);color:#1E1712;font-weight:800;font-size:13.5px}
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ex-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:118px;padding:12px;text-align:start;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge)}
+.ex-tile:active{transform:translateY(var(--depth-sm));box-shadow:none}.ex-tile.wide{grid-column:1/-1;min-height:0;border-color:var(--oranje);background:var(--oranje-soft)}
+.ex-tile .ex-ic{font-size:26px}.ex-tile strong{font-size:16px}.ex-tile .ex-d{font-size:13px;color:var(--ink-2);font-weight:700;line-height:1.3}
+.ex-tile .ex-best{position:absolute;top:10px;right:10px;font-size:12px;font-weight:800;color:var(--ink-2)}.ex-tile.ok .ex-best{color:var(--ok)}
+.ex-text{background:var(--surface-2);border-radius:var(--r-md);padding:12px 14px;margin:6px 0 10px;text-align:start;white-space:pre-line;font-weight:700;border-inline-start:5px solid var(--oranje)}
+.ex-text small{display:block;color:var(--ink-2);font-size:12px;margin-bottom:4px;text-transform:none}.ex-text p{margin:0 0 4px}
+.ex-card{background:color-mix(in srgb,var(--be-yellow) 18%,var(--surface))}
+.ex-q{font-size:17px;margin:10px 0;text-align:start}.ex-hint{color:var(--ink-2);font-size:13.5px;text-align:start;margin:4px 0}
+.ex-play{margin:4px 0 6px}.ex-opts{margin-top:4px}
+.ex-line{min-height:46px;padding:10px;border:2px dashed var(--line);border-radius:var(--r-md);display:flex;flex-wrap:wrap;gap:6px;font-weight:800;margin-bottom:8px}
+.ex-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.ex-chip{width:auto;min-height:44px;padding:6px 12px}.ex-chip:disabled{opacity:.35}
+.ex-fb{margin:12px 0 8px;padding:10px 12px;border-radius:var(--r-md);text-align:start}.ex-fb.ok{background:color-mix(in srgb,var(--ok) 14%,var(--surface))}.ex-fb.bad{background:color-mix(in srgb,var(--bad) 12%,var(--surface))}.ex-fb p{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
+.ex-next{width:100%;margin-top:6px}
+.ex-end{text-align:center}.ex-big{font-size:46px}.ex-score{font-weight:800}.ex-miss{text-align:start;padding-inline-start:20px}.ex-miss li{margin:4px 0}
+.ex-task{text-align:start}.ex-ta{width:100%;box-sizing:border-box;font:inherit;font-size:16px;line-height:1.5;padding:12px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);resize:vertical}
+.ex-check{text-align:start;margin:10px 0}.ex-list{list-style:none;padding:0;margin:6px 0}.ex-list li{padding:3px 0;font-weight:700}.ex-list li.bad{color:var(--ink-2)}.ex-list.warn li{color:var(--bad)}
+.ex-model{border-inline-start-color:var(--ok)}.ex-say{min-height:40px;padding:4px 12px;margin-inline-start:6px}
+.ex-speakq{display:flex;flex-direction:column;align-items:flex-start;gap:6px}.ex-mark{margin-top:14px}.ex-ok{border-color:var(--ok);color:var(--ok)}
+.toets-sec{font-size:17px;margin:14px 2px 2px;text-align:start}.toets-sec-h{margin:0 2px 10px;color:var(--ink-2);font-size:14px;text-align:start}
 
 /* ---------- Kort / lang ---------- */
 .kl-word{display:flex;justify-content:center;margin:12px 0 6px}
@@ -3431,6 +3454,12 @@ function startToets(){
     b.onclick=()=>open(t);card.appendChild(b);
   };
   const sec=(t,h)=>{card.appendChild(el("h3","toets-sec",t));if(h)card.appendChild(el("p","toets-sec-h",h))};
+  if(curLevel==="a11"&&window.EXAM11){
+    const eb=el("button","btn toets-pick exam-pick");eb.type="button";eb.id="examPick";
+    eb.appendChild(el("span","tp-no","🎓"));const et=el("span","tp-text");
+    et.append(el("strong","",uiLang==="uk"?"Іспит 1.1 · deel 8 → 11":"Exam 1.1 · part 8 → 11"),el("small","tp-nl",uiLang==="uk"?"Читання · слухання · письмо · говоріння · пробний іспит":"Reading · listening · writing · speaking · mock exam"));
+    eb.appendChild(et);eb.onclick=()=>EXAM11.open();card.appendChild(eb);
+  }
   const chap=list.filter(t=>t.group==="chapter").sort((a,b)=>a.no-b.no);
   if(chap.length){sec(L.chapters,L.chaptersH);chap.forEach(t=>{const info=LerenCurriculum.topicInfo(t.chapter,uiLang);pick(t,String(t.no),info?info.title:t.dutch,t.dutch)})}
   const sumIds=["t1","t2","t3","t4","t5","t10_course_v2","course_reading_texts_v1","t6"];
@@ -6316,6 +6345,7 @@ setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
+<script src="./modules/exam/exam11.js?v=93" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
