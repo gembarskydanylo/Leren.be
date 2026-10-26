@@ -35,7 +35,7 @@ function brussels(date = new Date()) {
   return {hour: +p.hour, weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday), day};
 }
 const pick = (list, n) => list[((n % list.length) + list.length) % list.length];
-const appButton = env => ({inline_keyboard: [[{text: "📲 Відкрити Leren.be", url: SITE},
+const appButton = env => ({inline_keyboard: [[{text: "📲 Відкрити lerenbe.com", url: SITE},
   ...(env.BOT_USERNAME ? [{text: "🤖 Запитати бота", url: `https://t.me/${env.BOT_USERNAME}?start=channel`}] : [])]]});
 
 // --- Posts -------------------------------------------------------------------------------------
@@ -86,6 +86,7 @@ const SYSTEM = `You are the Leren.be Telegram assistant. You help Ukrainians who
 - Prefer Flemish usage when it differs from the Netherlands, and say so.
 - Only help with the Dutch language and the language of daily life in Belgium (gemeente, huisarts, school, work, shopping). For other requests, say kindly that you only help with Dutch.
 - Do not give medical, legal or financial decisions; teach the words and suggest a professional. Never ask for passwords, national register, bank or card numbers.
+- When you mention the app, write its address as lerenbe.com (never "Leren.be": Telegram would link that to a different site).
 - Formatting: plain text with Telegram HTML, ONLY <b> and <i> tags. No markdown, no headings, no tables.`;
 
 // Escape everything, then allow back only <b> and <i> so a stray "<" from the model can't break Telegram HTML.
@@ -112,7 +113,7 @@ async function limited(env, id) {
   } catch { return true; } // no limiter → refuse rather than spend
 }
 
-const WELCOME = `Привіт! 👋 Я бот <b>Leren.be</b> — допомагаю вчити нідерландську українцям у Бельгії.
+const WELCOME = `Привіт! 👋 Я бот <b>lerenbe.com</b> — допомагаю вчити нідерландську українцям у Бельгії.
 
 Просто напишіть мені питання, наприклад:
 • <i>Як сказати «я хочу записатися до лікаря»?</i>
@@ -122,7 +123,7 @@ const WELCOME = `Привіт! 👋 Я бот <b>Leren.be</b> — допомаг
 Команди:
 /word — випадкове слово
 /quiz — міні-вікторина
-/app — застосунок Leren.be`;
+/app — застосунок lerenbe.com`;
 
 async function onMessage(env, msg) {
   const chat = msg.chat.id, text = (msg.text || "").trim();
@@ -164,9 +165,9 @@ async function setup(env, origin) {
     commands: await tg(env, "setMyCommands", {commands: [
       {command: "word", description: "Випадкове слово з озвученням"},
       {command: "quiz", description: "Міні-вікторина"},
-      {command: "app", description: "Застосунок Leren.be"}]}),
-    description: await tg(env, "setMyDescription", {description: "Нідерландська для українців у Бельгії. Питайте про слова й граматику, перевіряйте речення, тренуйтеся щодня з Leren.be 🇧🇪"}),
-    short: await tg(env, "setMyShortDescription", {short_description: "Помічник з нідерландської від Leren.be 🇧🇪"})
+      {command: "app", description: "Застосунок lerenbe.com"}]}),
+    description: await tg(env, "setMyDescription", {description: "Нідерландська для українців у Бельгії. Питайте про слова й граматику, перевіряйте речення, тренуйтеся щодня з lerenbe.com 🇧🇪"}),
+    short: await tg(env, "setMyShortDescription", {short_description: "Помічник з нідерландської від lerenbe.com 🇧🇪"})
   };
   return Response.json(Object.fromEntries(Object.entries(results).map(([k, v]) => [k, v.ok ? "ok" : v.description])));
 }

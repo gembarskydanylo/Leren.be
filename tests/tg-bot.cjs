@@ -31,7 +31,7 @@ calls=[];await bot.scheduled({scheduledTime:Date.parse('2026-11-02T08:00:00Z')},
 assert.equal(calls.at(-1).body.chat_id,'42');assert.match(calls.at(-1).body.text,/150/);
 
 // Commands
-let c=await send('/start channel');assert.match(c[0].body.text,/Leren\.be/);assert.equal(kv.get('tg:u:7'),'channel');
+let c=await send('/start channel');assert.match(c[0].body.text,/lerenbe\.com/);assert.equal(kv.get('tg:u:7'),'channel');
 c=await send('/quiz');assert.equal(c[0].method,'sendPoll');assert.equal(c[0].body.is_anonymous,false);
 c=await send('/word');assert(['sendVoice','sendMessage'].includes(c[0].method));
 c=await send('/post tip');assert.equal(c[0].method,'sendMessage');assert.notEqual(c[0].body.chat_id,'@lerenbe'); // not admin: treated as unknown command
