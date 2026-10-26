@@ -6372,7 +6372,7 @@ function initLearningPath(){
   free:()=>{setView("lesson");newRound()},
   answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
   complete:recordPathResult,rewards:()=>setView("progress"),
-  assess:id=>{const test=TOETS.find(t=>t.id==="course_"+id+"_v1");if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
+  assess:id=>{const test=TOETS.find(t=>t.id==="course_"+id+"_v2");if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
  });
  $("pathReturn").onclick=()=>setView("path");
 }
