@@ -104,7 +104,7 @@
    const help=node('details','lp-placement-help');help.append(node('summary','',({uk:'Як це працює?',en:'How does it work?',fr:'Comment ça marche ?',ar:'كيف يعمل؟'})[lang]),node('p','',t('placeHint')));box.appendChild(help);
    if(p.answers.length===12){const first=p.answers.indexOf(false),ch=course.chapters[first<0?12:first];box.append(node('h3','',t('placeDone')),node('p','lp-meaning',ch.level+' · '+title(ch)),node('p','',t('placeNote')),button(t('accept'),()=>{model.acceptPlacement();begin(model.recommended())},true));}
    else{
-    const w=model.placementCard(),progress=node('div','lp-placement-progress'),meter=node('progress');meter.max=12;meter.value=p.answers.length;meter.setAttribute('aria-label',t('place'));progress.append(node('span','lp-caption',(p.answers.length+1)+' / 12'),meter);box.append(progress,node('p','lp-word',w.nl));
+    const w=model.placementCard(),progress=node('div','lp-placement-progress'),meter=node('progress');meter.max=12;meter.value=p.answers.length;meter.setAttribute('aria-label',t('place'));progress.append(node('span','lp-caption',(p.answers.length+1)+' / 12'),meter);const prompt=node('p','lp-word',w.nl);prompt.lang='nl';prompt.dir='ltr';box.append(progress,prompt);
     const opts=node('div','lp-options');options(w,true).forEach(o=>opts.appendChild(button(o.text,()=>{if(model.placementAnswer(w.id,o.ok))render()})));box.appendChild(opts);
    }
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
