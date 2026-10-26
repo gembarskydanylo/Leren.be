@@ -49,3 +49,8 @@
 .wb-art svg{max-height:min(24vh,200px)}
 .wb-hint-line:empty,.wb-live:empty{display:none}
 @media(max-height:700px){.wb-art svg{max-height:140px}.wb-slot{height:42px;min-height:42px}.wb-tile{height:48px;min-height:48px}}
+/* Solved: tiles and keyboard tip disappear, result with "Next" right under the word */
+.wb.is-solved .wb-pool,.wb.is-solved .wb-keys,.wb.is-solved .wb-live{display:none}
+.wb-result{scroll-margin-bottom:120px;gap:2px;padding:12px 14px}
+.wb-res-word{font-size:24px}
+.wb-result .row{margin-top:6px}

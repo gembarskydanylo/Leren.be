@@ -90,15 +90,16 @@
     if(gaveUp||st.wrong)host.mistake(w[1]+' '+word+' — '+meaning(w,lang));
     results.push({w,ok:clean});
     if(gaveUp){st.placed=[...word].map(ch=>({ch}))}
-    fill();slots.classList.add(gaveUp?'is-shown':'is-done');
-    live.textContent=(gaveUp?u.shown:u.right)+' '+w[1]+' '+word+' — '+meaning(w,lang);
+    fill();slots.classList.add(gaveUp?'is-shown':'is-done');box.classList.add('is-solved');
+    // the result replaces the used tiles, so "Next" sits right under the word without scrolling
+    live.textContent='';pool.replaceChildren();
     top.lastChild.textContent='+'+xp+' XP';
     const res=node('div','wb-result '+(gaveUp?'is-shown':'is-ok'));
     const head=node('p','wb-res-word');const art2=node('span','wb-art-de',w[1]+' ');const wd=node('strong','',word);wd.lang='nl';head.lang='nl';head.dir='ltr';head.append(art2,wd);
     res.append(node('strong','wb-res-title',gaveUp?u.shown:u.right+(gain?'  +'+gain+' XP':'')),head,node('p','wb-res-tr',meaning(w,lang)));
     if(w[2]){const pl=node('p','wb-res-pl');const b=node('b','',u.plural+': ');const v=node('span','','de '+w[2]);v.lang='nl';pl.append(b,v);res.appendChild(pl)}
     const row=node('div','row');row.append(btn(u.listen,'btn',()=>host.say(w[1]+' '+word)),btn(u.next,'btn primary',()=>{i++;if(i<list.length)round();else end()}));res.appendChild(row);
-    after.replaceChildren(res);host.say(w[1]+' '+word);setTimeout(()=>row.lastChild.focus({preventScroll:true}),30);
+    after.replaceChildren(res);host.say(w[1]+' '+word);setTimeout(()=>{row.lastChild.focus({preventScroll:true});res.scrollIntoView({block:'nearest',behavior:'smooth'})},30);
    }
    keyHandler=e=>{if(!box.isConnected){unbind();return}if(e.ctrlKey||e.metaKey||e.altKey||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target?.tagName||'')||e.target?.isContentEditable)return;
     if(st.solved){if(e.key==='Enter'&&document.activeElement?.tagName!=='BUTTON'){e.preventDefault();after.querySelector('.btn.primary')?.click()}return}
