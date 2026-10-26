@@ -19,3 +19,4 @@ User-requested compact mobile layout published 26 October 2026 (4ee9505 / 124d23
 
 ## UI-107 - Focused learning home
 Explicitly approved for production by the user on 26 October 2026. Latest production v106 retained as the base; beta untouched. New focused-home module plus route UI, shared speech button integration and responsive navigation. Existing IDs/keys/account and cloud contracts unchanged; no data migration. JS/CSS are in the v107 offline cache. Decisions, checks, limitations and rollout receipt: UX-REVIEW-2026-10-26.md and TESTING-JOURNAL.md.
+Final polish release is v108 (7d29f79), including whole-illustration fitting. UI/route JavaScript URLs remain v107; focused CSS/cache/release are v108. No additional migration. Deployment receipt in TESTING-JOURNAL.md.
