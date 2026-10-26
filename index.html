@@ -79,6 +79,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font-bo
 button,select,input{font:inherit;color:inherit}
 button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+/* Route headings keep screen-reader focus without a decorative focus rectangle. */
+:is(h1,h2,h3,h4,h5,h6)[tabindex="-1"]:focus{outline:none}
 main{width:100%;max-width:640px;margin:0 auto;padding:12px 14px 24px;display:flex;flex-direction:column;gap:14px}
 
 /* reusable 3D surface: solid "edge" under the element, pressed state removes it */
@@ -969,7 +971,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=107">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=108">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=110">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 </head>
 <body>
@@ -6405,8 +6407,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="109";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Тести стали зрозумілішими.", "items": ["Теми A1.1 об’єднано у два блоки: 1–6 та 7–12, з новими ілюстраціями кота.", "У кожному блоці є спільний тест і перевірки окремих тем.", "Іспит, підсумки та вимова мають окремі входи. Твої попередні результати збережено."], "hint": "Відкрий «Тести» в навігації та обери свій блок.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A clearer place to test your knowledge.", "items": ["A1.1 topics are grouped into blocks 1–6 and 7–12, with new cat illustrations.", "Each block has a combined test and individual topic checks.", "Exam preparation, review and pronunciation have separate entries. Previous results are preserved."], "hint": "Open Tests and choose a block.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Des tests mieux organisés.", "items": ["Les thèmes A1.1 sont regroupés en deux blocs : 1–6 et 7–12, avec de nouvelles illustrations.", "Chaque bloc propose un bilan et des tests par thème.", "Examen, bilans et prononciation ont leurs propres entrées. Tes résultats sont conservés."], "hint": "Ouvre les tests et choisis un bloc.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "اختبارات أكثر وضوحًا.", "items": ["تم تقسيم مواضيع A1.1 إلى جزأين: 1–6 و7–12 مع رسومات جديدة للقط.", "لكل جزء اختبار شامل واختبارات للمواضيع الفردية.", "مداخل منفصلة للامتحان والمراجعة والنطق، مع الاحتفاظ بنتائجك السابقة."], "hint": "افتح الاختبارات واختر جزءًا.", "ok": "فهمت"}};
+const RELEASE_VERSION="110";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Охайніші акценти в навчанні.", "items": ["Прибрано чорні рамки навколо заголовків після переходів.", "Головна кнопка яскравіша й має м’яку тінь.", "Поточна тема помітніша, наступні — спокійніші, а шкали прогресу стали товщими."], "hint": "На головному екрані видно наступний урок і поточну тему.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Clearer learning highlights.", "items": ["Removed unwanted heading outlines after navigation.", "A brighter main button with a soft shadow.", "The current topic stands out, upcoming topics are quieter and progress bars are thicker."], "hint": "Your home screen highlights the next lesson and current topic.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Des repères plus clairs.", "items": ["Suppression des cadres indésirables autour des titres.", "Un bouton principal plus lumineux avec une ombre douce.", "Le thème actuel ressort mieux, les suivants sont plus discrets et les barres de progression sont plus visibles."], "hint": "L’accueil met en avant la prochaine leçon et le thème actuel.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "إشارات تعليمية أوضح.", "items": ["إزالة الإطارات غير المرغوبة حول العناوين بعد التنقل.", "زر رئيسي أكثر إشراقًا مع ظل ناعم.", "تمييز الموضوع الحالي وتخفيف المواضيع القادمة وزيادة وضوح أشرطة التقدم."], "hint": "تبرز الصفحة الرئيسية الدرس التالي والموضوع الحالي.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

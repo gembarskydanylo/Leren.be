@@ -24,3 +24,6 @@ Final polish release is v108 (7d29f79), including whole-illustration fitting. UI
 ## UI-109 — Illustrated Tests library
 Production-only follow-up requested 26 October 2026. Main Tests entry now groups A1.1 topics 1–6 / 7–12 (A1.2: 1–4 / 5–8), with three generated cat scenes, a progress summary and optional combined tests. Existing tests, IDs, saved bests, pronunciation and gated A1.2 access retained. Four new stable block IDs use existing personal-best scoring and sync; no account/data migration. Source: modules/test-library; assets/prompts: img/tests/ASSETS.md; validation and rollout receipt: TESTING-JOURNAL.md. Beta untouched.
 UI-109 shipped as ed3e4f7; Pages deployment40380479285 succeeded. All seven changed live code/image files match the validated source; release/cache109. Final live evidence and checks are recorded in TESTING-JOURNAL.md.
+
+## UI-110 — Home polish
+User-requested production visual follow-up to109: remove accidental focus rectangles from programmatically focused headings, brighten/shadow the home CTA, quiet upcoming topics, double topic meter thickness and reduce cat caption emphasis. CSS-only behaviour change, no migrations. Previous look is preserved in baseline432ad75; rollback must publish a new higher cache version. Validation/receipt in TESTING-JOURNAL.md.
