@@ -807,6 +807,7 @@ header .brand h1{font-size:clamp(12px,calc((100cqw - 52px)/5.6),22px)}
 .g-seg{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:4px;border-radius:var(--r-md);background:var(--surface-2)}
 .g-seg small{font-weight:800;color:var(--ink-2);padding:0 8px;min-width:70px}
 .g-seg .seg-btn{flex:1 1 auto}
+.g-seg:has(.seg-btn:nth-of-type(3)){display:grid;grid-template-columns:repeat(3,1fr)}.g-seg:has(.seg-btn:nth-of-type(3)) small{grid-column:1/-1;padding:2px 8px}
 .g-seg .seg-btn[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--edge),0 0 0 2px var(--oranje) inset}
 .g-chat{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .g-bub{display:flex;flex-direction:column;gap:2px;max-width:85%;padding:9px 13px;border-radius:16px;background:var(--surface-2);cursor:pointer}
@@ -884,6 +885,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 .st-map{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .st-place{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:96px;padding:12px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:start;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge)}
 .st-place .g-ic{font-size:28px}.st-place small{color:var(--ink-2);font-size:12.5px}
+.st-place strong,.st-place small{overflow-wrap:anywhere;hyphens:auto;max-width:100%}
 .st-place.done{border-color:var(--ok)}.st-place.locked{opacity:.55}
 .st-chat{display:flex;gap:12px;align-items:center;margin-bottom:10px;padding:12px;border-radius:20px;background:var(--surface-2)}
 .st-bub{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;padding:2px 4px;border-radius:12px;border:0;background:none;color:var(--ink);text-align:start;font:inherit;cursor:pointer}
@@ -1070,8 +1072,8 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     </div>
     <footer>
     <span id="footText"></span>
-    <span>Danylo Hembarskyi • All rights reserved</span>
-    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit">Privacy</a></span>
+    <span>Danylo Hembarskyi • <span id="footRights">All rights reserved</span></span>
+    <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit" id="footPrivacy">Privacy</a></span>
     <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
     <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
       <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
@@ -1106,25 +1108,25 @@ const NL_ONLY_TABS=["dehet","klanken","vervoegen"];
 const tabVisible=k=>targetLang==="nl"||!NL_ONLY_TABS.includes(k);
 
 const UI={
- uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам'ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",repeat:"🔊 Ще раз",autoOn:"🔊 Авто: увімкнено",autoOff:"🔇 Авто: вимкнено",autoOnShort:"🔊 Авто",autoOffShort:"🔇 Авто",speechPlaying:"Зараз звучить",voiceSettings:"🎙️ Голос",voiceTitle:"Налаштування голосу",voiceLabel:"Голос для озвучення",voiceDefault:"Голос пристрою за замовчуванням",voiceRecorded:"🎙 Голос Пітера (чоловічий, Бельгія)",voiceRecordedF:"🎙 Голос Дафни (жіночий, Бельгія)",voiceRecHint:"Записаний голос однаковий на всіх пристроях. Голос пристрою залежить від телефона чи браузера; кращі голоси можна встановити в налаштуваннях системи. Вибір збережеться на цьому пристрої.",voiceSample:"▶ Прослухати зразок",voiceClose:"Готово",voiceHint:"Доступні голоси залежать від пристрою та браузера. Вибір збережеться на цьому пристрої.",voiceMissing:"Для цієї мови не знайдено голосів на пристрої.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",speechHelp:"Нідерландський голос не знайдено. На Android відкрий Налаштування → Спеціальні можливості → Виведення тексту в мовлення → Встановити голосові дані та завантаж потрібну мову. Потім повернись у Leren.be і натисни «Повторити».",speechAndroidHelp:"Інструкція Android",speechStore:"Speech Services у Google Play",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови A1.1.",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
+ uk:{build:"Складання",buildLevel:"Рівень",studySub:"Запам’ятай слово",buildSub:"Склади питання з карток",byEar:"🎧 На слух",hint:"💡 Підказка",roles:{Q:"питання",V:"дієслово",S:"підмет",R:"решта"},tagline:"A1.1",target:"Вчу",ui:"Пояснення",learned:"Вивчено",review:"До повторення",round:"Раунд",listen:"🔊 Прослухати",repeat:"🔊 Ще раз",autoOn:"🔊 Авто: увімкнено",autoOff:"🔇 Авто: вимкнено",autoOnShort:"🔊 Авто",autoOffShort:"🔇 Авто",speechPlaying:"Зараз звучить",voiceSettings:"🎙️ Голос",voiceTitle:"Налаштування голосу",voiceLabel:"Голос для озвучення",voiceDefault:"Голос пристрою за замовчуванням",voiceRecorded:"🎙 Голос Пітера · Бельгія",voiceRecordedF:"🎙 Голос Дафни · Бельгія",voiceRecHint:"Записаний голос однаковий на всіх пристроях. Голос пристрою залежить від телефону чи браузера; кращі голоси можна встановити в налаштуваннях системи. Вибір збережеться на цьому пристрої.",voiceSample:"▶ Прослухати зразок",voiceClose:"Готово",voiceHint:"Доступні голоси залежать від пристрою та браузера. Вибір збережеться на цьому пристрої.",voiceMissing:"Для цієї мови не знайдено голосів на пристрої.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Далі",study:"Вивчати",quiz:"Тест",audio:"Аудіювання",reviewMode:"Повторити",correct:"Правильно! Чудова робота.",incorrect:"Не зовсім. Правильна відповідь:",meaning:"Переклад",noSpeech:"Озвучування недоступне або немає голосу для цієї мови.",speechHelp:"Нідерландський голос не знайдено. На Android відкрий Налаштування → Спеціальні можливості → Виведення тексту в мовлення → Встановити голосові дані та завантаж потрібну мову. Потім повернись у Leren.be і натисни «Повторити».",speechAndroidHelp:"Інструкція Android",speechStore:"Speech Services у Google Play",nextTopic:"Наступна тема",again:"Ще раз",accuracy:"точність",finished:"Раунд завершено!",points:"Балів за раунд",right:"Правильні",emptyReview:"Поки немає слів для повторення. Пройди тест, щоб додати слова.",noItems:"У цій темі поки немає слів.",footer:"Тренажер для вивчення та повторення мови: рівні A1.1 і A1.2.",rights:"Усі права захищено",privacy:"Конфіденційність",reportBug:"⚠ Повідомити про помилку",exportProg:"💾 Зберегти прогрес",importProg:"📥 Відновити прогрес",searchPh:"Шукати слово…",searchEmpty:"Нічого не знайдено",searchTitle:"Пошук / перекладач",light:"Світла",dark:"Темна",oranje:"Помаранчева",glass:"Скло",markKnown:"Далі",markAgain:"Повторити пізніше",correctWord:"Правильна відповідь",lessonProgress:"Питання",all:"Усе",
   lCat:"Розділ",lSub:"Підрозділ",lMode:"Режим",
-  cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров'я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
-  tabs:{ex8:"Слова до іспиту: мій день",ex9:"Слова до іспиту: запрошення",ex10:"Слова до іспиту: аптека й лікар",ex11:"Слова до іспиту: їжа",lichaammv:"Тіло: множина",klachten:"Мені погано: скарги",klanken:"Kort / lang",graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Годинник (крути годинник)",months:"Місяці",weather:"Погода й дні",family:"Сім'я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
+  cats:{comm:"🗣 Спілкування",grammar:"📘 Граматика",nums:"🔢 Числа й час",people:"👨‍👩‍👧 Люди та здоров’я",home:"🏠 Дім і речі",city:"🏙 Місто та послуги"},
+  tabs:{ex8:"Слова до іспиту: мій день",ex9:"Слова до іспиту: запрошення",ex10:"Слова до іспиту: аптека й лікар",ex11:"Слова до іспиту: їжа",lichaammv:"Тіло: множина",klachten:"Мені погано: скарги",klanken:"Kort / lang",graag:"Люблю / не люблю",phrases:"Фрази та привітання",questions:"Питання",pronouns:"Займенники",verbs:"Дієслова",dehet:"Артиклі (de/het)",adjectives:"Прикметники",numbers:"Числа",time:"Час",clock:"Годинник (крути годинник)",months:"Місяці",weather:"Погода й дні",family:"Сім’я",jobs:"Професії",body:"Тіло",doctor:"Лікар та аптека",home:"Дім і кімнати",shop:"Покупки та продукти",clothes:"Одяг",colors:"Кольори",animals:"Тварини",city:"Місто та місця",transport:"Транспорт",gemeente:"Муніципалітет",cvo:"Школа (CVO)",werk:"Робота та банк"},
   subs:{ex8:"Що це означає?",ex9:"Що це означає?",ex10:"Що це означає?",ex11:"Що це означає?",lichaammv:"Як буде множина? У множині завжди de",klachten:"Що в тебе болить?",klanken:"Коротка чи довга голосна?",graag:"Що означає ця активність?",phrases:"Обери правильну фразу",questions:"Що означає це запитальне слово?",pronouns:"Обери переклад займенника",verbs:"Обери переклад дієслова",dehet:"Обери правильний артикль",adjectives:"Обери переклад слова",numbers:"Обери слово для числа",time:"Обери правильне слово",clock:"Котра година на годиннику?",months:"Обери назву місяця",weather:"Погода, дні та час",family:"Хто це в родині?",jobs:"Обери професію",body:"Подивись на іконку та обери слово",doctor:"Обери правильну назву",home:"Подивись на іконку та обери слово",shop:"Супермаркет, продукти та фрази",clothes:"Подивись на іконку та обери слово",colors:"Подивись на колір і обери слово",animals:"Подивись на іконку та обери слово",city:"Подивись на іконку та обери слово",transport:"Орієнтування та транспорт",gemeente:"Подивись на іконку та обери слово",cvo:"Подивись на іконку та обери слово",werk:"Робота, офіс і банк"},
   modes:{study:"Вивчати",quiz:"Тест",audio:"Аудіювання",review:"Повторити",toets:"Toets A1"},audioSub:"Послухай і обери переклад",toetsTitle:"Toets A1",toetsChoose:"Обери тест",toetsScore:"Твій результат",toetsPassed:"Склав!",toetsFailed:"Ще трохи практики",toetsNext:"Наступне питання",toetsFinish:"Завершити тест",toetsAgain:"Ще раз цей тест",toetsBack:"До списку тестів",toetsQ:"Питання",toetsOf:"з"},
- en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",repeat:"🔊 Again",autoOn:"🔊 Auto: on",autoOff:"🔇 Auto: off",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Speaking now",voiceSettings:"🎙️ Voice",voiceTitle:"Voice settings",voiceLabel:"Speech voice",voiceDefault:"Device default voice",voiceRecorded:"🎙 Peter’s voice (male, Belgium)",voiceRecordedF:"🎙 Dafna’s voice (female, Belgium)",voiceRecHint:"The recorded voice sounds the same on every device. Device voices depend on your phone or browser; you can install better ones in your system settings. Your choice is saved on this device.",voiceSample:"▶ Play sample",voiceClose:"Done",voiceHint:"Available voices depend on this device and browser. Your choice is saved on this device.",voiceMissing:"No voices for this language were found on this device.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",speechHelp:"No Dutch voice was found. On Android, open Settings → Accessibility → Text-to-speech output → Install voice data, then download the language you need. Return to Leren.be and tap Replay.",speechAndroidHelp:"Android instructions",speechStore:"Speech Services on Google Play",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for A1.1 level.",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
+ en:{build:"Build",buildLevel:"Level",studySub:"Learn this word",buildSub:"Build the question from the tiles",byEar:"🎧 By ear",hint:"💡 Hint",roles:{Q:"question",V:"verb",S:"subject",R:"rest"},tagline:"A1.1",target:"Learn",ui:"Explain in",learned:"Learned",review:"To review",round:"Round",listen:"🔊 Listen",repeat:"🔊 Again",autoOn:"🔊 Auto: on",autoOff:"🔇 Auto: off",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Speaking now",voiceSettings:"🎙️ Voice",voiceTitle:"Voice settings",voiceLabel:"Speech voice",voiceDefault:"Device default voice",voiceRecorded:"🎙 Peter’s voice · Belgium",voiceRecordedF:"🎙 Dafna’s voice · Belgium",voiceRecHint:"The recorded voice sounds the same on every device. Device voices depend on your phone or browser; you can install better ones in your system settings. Your choice is saved on this device.",voiceSample:"▶ Play sample",voiceClose:"Done",voiceHint:"Available voices depend on this device and browser. Your choice is saved on this device.",voiceMissing:"No voices for this language were found on this device.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Next",study:"Study",quiz:"Quiz",audio:"Listening",reviewMode:"Review",correct:"Correct! Great job.",incorrect:"Not quite. The correct answer is:",meaning:"Translation",noSpeech:"Speech is unavailable or there is no voice for this language.",speechHelp:"No Dutch voice was found. On Android, open Settings → Accessibility → Text-to-speech output → Install voice data, then download the language you need. Return to Leren.be and tap Replay.",speechAndroidHelp:"Android instructions",speechStore:"Speech Services on Google Play",nextTopic:"Next topic",again:"Try again",accuracy:"accuracy",finished:"Round complete!",points:"Points this round",right:"Correct",emptyReview:"No words to review yet. Take a quiz to add words.",noItems:"There are no words in this topic yet.",footer:"Language trainer for levels A1.1 and A1.2.",rights:"All rights reserved",privacy:"Privacy",reportBug:"⚠ Report a bug",exportProg:"💾 Save progress",importProg:"📥 Restore progress",searchPh:"Search a word…",searchEmpty:"Nothing found",searchTitle:"Search / translator",light:"Light",dark:"Dark",oranje:"Orange",glass:"Glass",markKnown:"Next",markAgain:"Review later",correctWord:"Correct answer",lessonProgress:"Question",all:"All",
   lCat:"Category",lSub:"Subtopic",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammar",nums:"🔢 Numbers & Time",people:"👨‍👩‍👧 People & Health",home:"🏠 Home & Things",city:"🏙 City & Services"},
   tabs:{ex8:"Exam words: my day",ex9:"Exam words: invitations",ex10:"Exam words: pharmacy & doctor",ex11:"Exam words: food",lichaammv:"Body: plurals",klachten:"Feeling ill: complaints",klanken:"Short / long",graag:"Like / don't like",phrases:"Phrases & greetings",questions:"Questions",pronouns:"Pronouns",verbs:"Verbs",dehet:"Articles (de/het)",adjectives:"Adjectives",numbers:"Numbers",time:"Time",clock:"Clock (Hours)",months:"Months",weather:"Weather & Days",family:"Family",jobs:"Jobs",body:"Body",doctor:"Doctor & Pharmacy",home:"Home & rooms",shop:"Shopping & Groceries",clothes:"Clothes",colors:"Colours",animals:"Animals",city:"City & places",transport:"Transport",gemeente:"Municipality",cvo:"School (CVO)",werk:"Work & bank"},
   subs:{ex8:"What does it mean?",ex9:"What does it mean?",ex10:"What does it mean?",ex11:"What does it mean?",lichaammv:"What is the plural? Plural is always de",klachten:"What hurts?",klanken:"Short or long vowel?",graag:"What does this activity mean?",phrases:"Choose the right phrase",questions:"What does this question word mean?",pronouns:"Choose the pronoun translation",verbs:"Choose the verb translation",dehet:"Choose the correct article",adjectives:"Choose the translation",numbers:"Choose the word for the number",time:"Choose the right word",clock:"What time is it on the clock?",months:"Choose the month",weather:"Weather, days and time",family:"Who is this in family?",jobs:"Choose the job",body:"Look at the icon and choose the word",doctor:"Doctor's appointment & health",home:"Look at the icon and choose the word",shop:"Supermarket, groceries and phrases",clothes:"Look at the icon and choose the word",colors:"Look at the colour and choose the word",animals:"Look at the icon and choose the word",city:"Look at the icon and choose the word",transport:"Transport and directions",gemeente:"Look at the icon and choose the word",cvo:"Look at the icon and choose the word",werk:"Work, office and bank"},
   modes:{study:"Study",quiz:"Quiz",audio:"Audio",review:"Review",toets:"Toets A1"},audioSub:"Listen and choose the translation",toetsTitle:"Toets A1",toetsChoose:"Choose a test",toetsScore:"Your score",toetsPassed:"Passed!",toetsFailed:"Need more practice",toetsNext:"Next question",toetsFinish:"Finish test",toetsAgain:"Retry this test",toetsBack:"Back to tests",toetsQ:"Question",toetsOf:"of"},
- fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",repeat:"🔊 Encore",autoOn:"🔊 Auto : activé",autoOff:"🔇 Auto : désactivé",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Lecture en cours",voiceSettings:"🎙️ Voix",voiceTitle:"Paramètres vocaux",voiceLabel:"Voix de synthèse",voiceDefault:"Voix par défaut de l’appareil",voiceRecorded:"🎙 Voix de Peter (homme, Belgique)",voiceRecordedF:"🎙 Voix de Dafna (femme, Belgique)",voiceRecHint:"La voix enregistrée est identique sur tous les appareils. Les voix de l’appareil dépendent du téléphone ou du navigateur ; vous pouvez en installer de meilleures dans les réglages du système. Votre choix est enregistré sur cet appareil.",voiceSample:"▶ Écouter un exemple",voiceClose:"Terminé",voiceHint:"Les voix disponibles dépendent de l’appareil et du navigateur. Votre choix est enregistré sur cet appareil.",voiceMissing:"Aucune voix pour cette langue n’a été trouvée sur cet appareil.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",speechHelp:"Aucune voix néerlandaise n’a été trouvée. Sur Android, ouvrez Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales, puis téléchargez la langue souhaitée. Revenez dans Leren.be et touchez Réécouter.",speechAndroidHelp:"Instructions Android",speechStore:"Speech Services sur Google Play",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision niveau A1.1.",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
+ fr:{build:"Construire",buildLevel:"Niveau",studySub:"Apprends ce mot",buildSub:"Construis la question avec les cartes",byEar:"🎧 À l'oreille",hint:"💡 Indice",roles:{Q:"question",V:"verbe",S:"sujet",R:"reste"},tagline:"A1.1",target:"J'apprends",ui:"Explications",learned:"Appris",review:"À réviser",round:"Tour",listen:"🔊 Écouter",repeat:"🔊 Encore",autoOn:"🔊 Auto : activé",autoOff:"🔇 Auto : désactivé",autoOnShort:"🔊 Auto",autoOffShort:"🔇 Auto",speechPlaying:"Lecture en cours",voiceSettings:"🎙️ Voix",voiceTitle:"Paramètres vocaux",voiceLabel:"Voix de synthèse",voiceDefault:"Voix par défaut de l’appareil",voiceRecorded:"🎙 Voix de Peter · Belgique",voiceRecordedF:"🎙 Voix de Dafna · Belgique",voiceRecHint:"La voix enregistrée est identique sur tous les appareils. Les voix de l’appareil dépendent du téléphone ou du navigateur ; vous pouvez en installer de meilleures dans les réglages du système. Votre choix est enregistré sur cet appareil.",voiceSample:"▶ Écouter un exemple",voiceClose:"Terminé",voiceHint:"Les voix disponibles dépendent de l’appareil et du navigateur. Votre choix est enregistré sur cet appareil.",voiceMissing:"Aucune voix pour cette langue n’a été trouvée sur cet appareil.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"Suivant",study:"Apprendre",quiz:"Quiz",audio:"Écoute",reviewMode:"Révision",correct:"Correct ! Bravo.",incorrect:"Pas tout à fait. La bonne réponse est :",meaning:"Traduction",noSpeech:"La synthèse vocale est indisponible ou il n'y a pas de voix pour cette langue.",speechHelp:"Aucune voix néerlandaise n’a été trouvée. Sur Android, ouvrez Paramètres → Accessibilité → Synthèse vocale → Installer les données vocales, puis téléchargez la langue souhaitée. Revenez dans Leren.be et touchez Réécouter.",speechAndroidHelp:"Instructions Android",speechStore:"Speech Services sur Google Play",nextTopic:"Sujet suivant",again:"Récommencer",accuracy:"précision",finished:"Tour terminé !",points:"Points de ce tour",right:"Correctes",emptyReview:"Aucun mot à réviser. Fais un quiz pour ajouter des mots.",noItems:"Il n'y a pas encore de mots dans ce thème.",footer:"Application de révision, niveaux A1.1 et A1.2.",rights:"Tous droits réservés",privacy:"Confidentialité",reportBug:"⚠ Signaler une erreur",exportProg:"💾 Sauvegarder",importProg:"📥 Restaurer",searchPh:"Chercher un mot…",searchEmpty:"Rien trouvé",searchTitle:"Recherche / traducteur",light:"Clair",dark:"Sombre",oranje:"Orange",glass:"Verre",markKnown:"Suivant",markAgain:"À réviser",correctWord:"Bonne réponse",lessonProgress:"Question",all:"Tout",
   lCat:"Catégorie",lSub:"Sous-thème",lMode:"Mode",
   cats:{comm:"🗣 Communication",grammar:"📘 Grammaire",nums:"🔢 Nombres & Temps",people:"👨‍👩‍👧 Personnes & Santé",home:"🏠 Maison & Objets",city:"🏙 Ville & Services"},
   tabs:{ex8:"Mots d'examen : ma journée",ex9:"Mots d'examen : invitations",ex10:"Mots d'examen : pharmacie et médecin",ex11:"Mots d'examen : alimentation",lichaammv:"Corps : pluriel",klachten:"Je suis malade : plaintes",klanken:"Court / long",graag:"J'aime / je n'aime pas",phrases:"Phrases & salutations",questions:"Questions",pronouns:"Pronoms",verbs:"Verbes",dehet:"Articles (de/het)",adjectives:"Adjectifs",numbers:"Nombres",time:"Temps",clock:"Heures",months:"Mois",weather:"Météo & Jours",family:"Famille",jobs:"Métiers",body:"Corps",doctor:"Médecin",home:"Maison & pièces",shop:"Achats & Courses",clothes:"Vêtements",colors:"Couleurs",animals:"Animaux",city:"Ville & lieux",transport:"Transports",gemeente:"Commune",cvo:"École (CVO)",werk:"Travail & banque"},
   subs:{ex8:"Qu'est-ce que ça veut dire ?",ex9:"Qu'est-ce que ça veut dire ?",ex10:"Qu'est-ce que ça veut dire ?",ex11:"Qu'est-ce que ça veut dire ?",lichaammv:"Quel est le pluriel ? Toujours de au pluriel",klachten:"Qu'est-ce qui te fait mal ?",klanken:"Voyelle courte ou longue ?",graag:"Que signifie cette activité ?",phrases:"Choisis la bonne expression",questions:"Que signifie ce mot interrogatif ?",pronouns:"Choisis la traduction du pronom",verbs:"Choisis la traduction du verbe",dehet:"Choisis le bon article",adjectives:"Choisis la traduction",numbers:"Choisis le mot du nombre",time:"Choisis le bon mot",clock:"Quelle heure est-il sur l'horloge ?",months:"Choisis le mois",weather:"Météo, jours et temps",family:"Qui est-ce dans la famille ?",jobs:"Choisis le métier",body:"Regarde l'icône et choisis le mot",doctor:"Rendez-vous médical et santé",home:"Regarde l'icône et choisis le mot",shop:"Supermarché, courses et phrases",clothes:"Regarde l'icône et choisis le mot",colors:"Regarde la couleur et choisis le mot",animals:"Regarde l'icône et choisis le mot",city:"Regarde l'icône et choisis le mot",transport:"Transports et directions",gemeente:"Regarde l'icône et choisis le mot",cvo:"Regarde l\'icône et choisis le mot",werk:"Travail, bureau et banque"},
   modes:{study:"Apprendre",quiz:"Quiz",audio:"Écoute",review:"Révision",toets:"Toets A1"},audioSub:"Écoute et choisis la traduction",toetsTitle:"Toets A1",toetsChoose:"Choisis un test",toetsScore:"Ton résultat",toetsPassed:"Réussi !",toetsFailed:"Encore un peu de pratique",toetsNext:"Question suivante",toetsFinish:"Terminer le test",toetsAgain:"Refaire ce test",toetsBack:"Liste des tests",toetsQ:"Question",toetsOf:"sur"},
- ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",repeat:"🔊 مرة أخرى",autoOn:"🔊 تلقائي: تشغيل",autoOff:"🔇 تلقائي: إيقاف",autoOnShort:"🔊 تلقائي",autoOffShort:"🔇 تلقائي",speechPlaying:"يُشغَّل الآن",voiceSettings:"🎙️ الصوت",voiceTitle:"إعدادات الصوت",voiceLabel:"صوت القراءة",voiceDefault:"الصوت الافتراضي للجهاز",voiceRecorded:"🎙 صوت بيتر (رجل، بلجيكا)",voiceRecordedF:"🎙 صوت دافنا (امرأة، بلجيكا)",voiceRecHint:"الصوت المسجَّل هو نفسه على كل الأجهزة. أصوات الجهاز تعتمد على الهاتف أو المتصفح، ويمكنك تثبيت أصوات أفضل من إعدادات النظام. سيتم حفظ اختيارك على هذا الجهاز.",voiceSample:"▶ استمع إلى عينة",voiceClose:"تم",voiceHint:"تعتمد الأصوات المتاحة على الجهاز والمتصفح. سيتم حفظ اختيارك على هذا الجهاز.",voiceMissing:"لم يتم العثور على أصوات لهذه اللغة على الجهاز.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",speechHelp:"لم يتم العثور على صوت هولندي. على Android افتح الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت، ثم نزّل اللغة المطلوبة. ارجع إلى Leren.be واضغط إعادة الاستماع.",speechAndroidHelp:"تعليمات Android",speechStore:"Speech Services على Google Play",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلم ومراجعة اللغة المستوى A1.1.",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
+ ar:{build:"تركيب",buildLevel:"المستوى",studySub:"تعلّم هذه الكلمة",buildSub:"ركّب السؤال من البطاقات",byEar:"🎧 بالسمع",hint:"💡 تلميح",roles:{Q:"سؤال",V:"فعل",S:"فاعل",R:"البقية"},tagline:"A1.1",target:"أتعلّم",ui:"الشرح بـ",learned:"المتعلمة",review:"للمراجعة",round:"جولة",listen:"🔊 استمع",repeat:"🔊 مرة أخرى",autoOn:"🔊 تلقائي: تشغيل",autoOff:"🔇 تلقائي: إيقاف",autoOnShort:"🔊 تلقائي",autoOffShort:"🔇 تلقائي",speechPlaying:"يُشغَّل الآن",voiceSettings:"🎙️ الصوت",voiceTitle:"إعدادات الصوت",voiceLabel:"صوت القراءة",voiceDefault:"الصوت الافتراضي للجهاز",voiceRecorded:"🎙 صوت بيتر · بلجيكا",voiceRecordedF:"🎙 صوت دافنا · بلجيكا",voiceRecHint:"الصوت المسجَّل هو نفسه على كل الأجهزة. أصوات الجهاز تعتمد على الهاتف أو المتصفح، ويمكنك تثبيت أصوات أفضل من إعدادات النظام. سيتم حفظ اختيارك على هذا الجهاز.",voiceSample:"▶ استمع إلى عينة",voiceClose:"تم",voiceHint:"تعتمد الأصوات المتاحة على الجهاز والمتصفح. سيتم حفظ اختيارك على هذا الجهاز.",voiceMissing:"لم يتم العثور على أصوات لهذه اللغة على الجهاز.",voiceSampleText:"Hallo! Dit is een voorbeeld van de Nederlandse uitspraak.",next:"التالي",study:"دراسة",quiz:"اختبار",audio:"استماع",reviewMode:"مراجعة",correct:"صحيح! عمل ممتاز.",incorrect:"ليس تماماً. الإجابة الصحيحة:",meaning:"الترجمة",noSpeech:"الصوت غير متاح أو لا يوجد صوت لهذه اللغة.",speechHelp:"لم يتم العثور على صوت هولندي. على Android افتح الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت، ثم نزّل اللغة المطلوبة. ارجع إلى Leren.be واضغط إعادة الاستماع.",speechAndroidHelp:"تعليمات Android",speechStore:"Speech Services على Google Play",nextTopic:"الموضوع التالي",again:"مرة أخرى",accuracy:"الدقة",finished:"اكتملت الجولة!",points:"النقاط هذه الجولة",right:"صحيح",emptyReview:"لا توجد كلمات للمراجعة بعد. قم بإجراء اختبار لإضافة كلمات.",noItems:"لا توجد كلمات في هذا الموضوع بعد.",footer:"تطبيق لتعلّم اللغة ومراجعتها: المستويان A1.1 وA1.2.",rights:"جميع الحقوق محفوظة",privacy:"الخصوصية",reportBug:"⚠ الإبلاغ عن خطأ",exportProg:"💾 حفظ التقدم",importProg:"📥 استعادة",searchPh:"ابحث عن كلمة…",searchEmpty:"لم يتم العثور على شيء",searchTitle:"بحث / مترجم",light:"فاتح",dark:"داكن",oranje:"برتقالي",glass:"زجاج",markKnown:"التالي",markAgain:"مراجعة لاحقاً",correctWord:"الإجابة الصحيحة",lessonProgress:"سؤال",all:"الكل",
   lCat:"التصنيف",lSub:"القسم الفرعي",lMode:"الوضع",
   cats:{comm:"🗣 التواصل",grammar:"📘 القواعد",nums:"🔢 الأرقام والوقت",people:"👨‍👩‍👧 الناس والصحة",home:"🏠 البيت والأشياء",city:"🏙 المدينة والخدمات"},
   tabs:{ex8:"كلمات الامتحان: يومي",ex9:"كلمات الامتحان: الدعوات",ex10:"كلمات الامتحان: الصيدلية والطبيب",ex11:"كلمات الامتحان: الطعام",lichaammv:"الجسم: الجمع",klachten:"الشكاوى الصحية",klanken:"قصير / طويل",graag:"أحب / لا أحب",phrases:"عبارات وتحيات",questions:"الأسئلة",pronouns:"الضمائر",verbs:"الأفعال",dehet:"أدوات التعريف",adjectives:"الصفات",numbers:"الأعداد",time:"الوقت",clock:"الساعات",months:"الشهور",weather:"الطقس والأيام",family:"العائلة",jobs:"المهن",body:"الجسم",doctor:"الطبيب والصيدلية",home:"البيت وغرف",shop:"التسوق والمواد الغذائية",clothes:"الملابس",colors:"الألوان",animals:"الحيوانات",city:"المدينة والأماكن",transport:"المواصلات",gemeente:"البلدية",cvo:"المدرسة (CVO)",werk:"العمل والبنك"},
@@ -1193,7 +1195,7 @@ const DATA={
   ["fam_vrouw","mijn vrouw","my wife","ma femme","моя дружина","زوجتي","👩","Mijn vrouw leert Nederlands.","Моя дружина вчить нідерландську."],
   ["fam_tante","de tante","aunt","la tante","тітка","العمة / الخالة","👩","Mijn tante woont in Lviv.","Моя тітка живе у Львові."],
   ["fam_oom","de oom","uncle","l'oncle","дядько","العم / الخال","👨","Mijn oom heeft een auto.","У мого дядька є автомобіль."],
-  ["fam_gezin","het gezin","family","la famille","сім'я","الأسرة","👪","Ons gezin woont in België.","Наша сім'я живе в Бельгії."]
+  ["fam_gezin","het gezin","family","la famille","сім’я","الأسرة","👪","Ons gezin woont in België.","Наша сім’я живе в Бельгії."]
  ]),
  graag:R([
   ["gr_koken", "koken", "to cook", "cuisiner", "готувати", "الطهي", "🍳", "Ik kook graag.", "Я люблю готувати."],
@@ -1251,7 +1253,7 @@ const DATA={
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
   ["art_huis","huis","house","maison","будинок","بيت","🏠","Het huis is groot.","Будинок великий.","het","la"],
-  ["art_school","school","school","école","школа","مدرسة","🏫","De school begint om negen uur.","Школа починається о дев'ятій.","de","la"],
+  ["art_school","school","school","école","школа","مدرسة","🏫","De school begint om negen uur.","Школа починається о дев’ятій.","de","la"],
   ["art_auto","auto","car","voiture","автомобіль","سيارة","🚗","De auto is rood.","Автомобіль червоний.","de","la"],
   ["art_raam","raam","window","fenêtre","вікно","نافذة","🪟","Het raam is open.","Вікно відчинене.","het","la"],
   ["art_stoel","stoel","chair","chaise","стілець","كرسي","🪑","De stoel is vrij.","Стілець вільний.","de","la"]
@@ -1277,7 +1279,7 @@ const DATA={
   ["cvo_5","het potlood","pencil","le crayon","олівець","قلم رصاص","✏️","Heb je een potlood?","У тебе є олівець?"],
   ["cvo_6","de gom","eraser","la gomme","гумка","ممحاة","🧽","Mag ik de gom gebruiken?","Можна скористатися гумкою?"],
   ["cvo_7","het schrift","notebook","le cahier","зошит","الدفتر","📓","Schrijf in je schrift.","Пиши в зошиті."],
-  ["cvo_8","de les","lesson","le cours","урок","الدرس","📚","De les begint om negen uur.","Урок починається о дев'ятій."],
+  ["cvo_8","de les","lesson","le cours","урок","الدرس","📚","De les begint om negen uur.","Урок починається о дев’ятій."],
   ["cvo_9","het examen","exam","l'examen","іспит","الامتحان","📋","Volgende week heb ik een examen.","Наступного тижня в мене іспит."],
   ["cvo_10","de klas","class / classroom","la classe","клас","الفصل","🏫","Onze klas is groot.","Наш клас великий."],
   ["cvo_11","het bord","blackboard / board","le tableau","дошка","السبورة","黒板","Schrijf het op het bord.","Напиши це на дошці."],
@@ -1345,7 +1347,7 @@ const DATA={
   ["sh_water","het water","water","l'eau","вода","الماء","💧","Spuitwater of plat water?","Газована чи негазована вода?"],
   ["sh_rijst","de rijst","rice","le riz","рис","الأرز","🍚","Ik kook rijst.","Я варю рис."],
   ["sh_pasta","de pasta","pasta","les pâtes","паста / макарони","المعكرونة","🍝","Pasta met tomatensaus.","Паста з томатним соусом."],
-  ["sh_vlees","het vlees","meat","la viande","м'ясо","اللحم","🥩","Ik eet weinig vlees.","Я їм мало м'яса."],
+  ["sh_vlees","het vlees","meat","la viande","м’ясо","اللحم","🥩","Ik eet weinig vlees.","Я їм мало м’яса."],
   ["sh_vis","de vis","fish","le poisson","риба","السمك","🐟","Verse vis is gezond.","Свіжа риба корисна."],
   ["sh_kip","de kip","chicken","le poulet","курка","الدجاج","🍗","Kip met groenten.","Курка з овочами."],
   ["sh_soep","de soep","soup","la soupe","суп","الحساء","🍲","Oma maakt lekkere soep.","Бабуся готує смачний суп."],
@@ -1389,7 +1391,7 @@ const DATA={
   ["d_2","dinsdag","Tuesday","mardi","вівторок","الثلاثاء","📅"],
   ["d_3","woensdag","Wednesday","mercredi","середа","الأربعاء","📅"],
   ["d_4","donderdag","Thursday","jeudi","четвер","الخميس","📅"],
-  ["d_5","vrijdag","Friday","vendredi","п'ятниця","الجمعة","📅"],
+  ["d_5","vrijdag","Friday","vendredi","п’ятниця","الجمعة","📅"],
   ["d_6","zaterdag","Saturday","samedi","субота","السبت","📅"],
   ["d_7","zondag","Sunday","dimanche","неділя","الأحد","📅"]
  ])
@@ -1430,18 +1432,18 @@ Object.assign(DATA,{
   ["num_3", "twee", "2 · two", "2 · deux", "2 · два", "2 · اثنان", "2️⃣", "Ik heb twee kinderen.", "У мене двоє дітей."],
   ["num_4", "drie", "3 · three", "3 · trois", "3 · три", "3 · ثلاثة", "3️⃣", "Drie koffie, alstublieft.", "Три кави, будь ласка."],
   ["num_5", "vier", "4 · four", "4 · quatre", "4 · чотири", "4 · أربعة", "4️⃣", "Het is vier uur.", "Зараз четверта година."],
-  ["num_6", "vijf", "5 · five", "5 · cinq", "5 · п'ять", "5 · خمسة", "5️⃣", "Vijf minuten pauze.", "П'ять хвилин перерви."],
+  ["num_6", "vijf", "5 · five", "5 · cinq", "5 · п’ять", "5 · خمسة", "5️⃣", "Vijf minuten pauze.", "П’ять хвилин перерви."],
   ["num_7", "zes", "6 · six", "6 · six", "6 · шість", "6 · ستة", "6️⃣", "Ik heb zes eieren nodig.", "Мені потрібно шість яєць."],
   ["num_8", "zeven", "7 · seven", "7 · sept", "7 · сім", "7 · سبعة", "7️⃣", "De les begint om zeven uur.", "Урок починається о сьомій."],
   ["num_9", "acht", "8 · eight", "8 · huit", "8 · вісім", "8 · ثمانية", "8️⃣", "Ik sta om acht uur op.", "Я встаю о восьмій."],
-  ["num_10", "negen", "9 · nine", "9 · neuf", "9 · дев'ять", "9 · تسعة", "9️⃣", "De winkel sluit om negen uur.", "Магазин зачиняється о дев'ятій."],
+  ["num_10", "negen", "9 · nine", "9 · neuf", "9 · дев’ять", "9 · تسعة", "9️⃣", "De winkel sluit om negen uur.", "Магазин зачиняється о дев’ятій."],
   ["num_11", "tien", "10 · ten", "10 · dix", "10 · десять", "10 · عشرة", "🔟", "Tien euro, alstublieft.", "Десять євро, будь ласка."],
   ["num_12", "elf", "11 · eleven", "11 · onze", "11 · одинадцять", "11 · أحد عشر", "🔢", "Er zijn elf studenten.", "Є одинадцять студентів."],
   ["num_13", "twaalf", "12 · twelve", "12 · douze", "12 · дванадцять", "12 · اثنا عشر", "🔢", "Het is twaalf uur.", "Зараз дванадцята година."],
-  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п'ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п'ятнадцять євро."],
+  ["num_14", "vijftien", "15 · fifteen", "15 · quinze", "15 · п’ятнадцять", "15 · خمسة عشر", "🔢", "Het kost vijftien euro.", "Це коштує п’ятнадцять євро."],
   ["num_15", "twintig", "20 · twenty", "20 · vingt", "20 · двадцять", "20 · عشرون", "🔢", "Twintig minuten wachten.", "Чекати двадцять хвилин."],
   ["num_16", "dertig", "30 · thirty", "30 · trente", "30 · тридцять", "30 · ثلاثون", "🔢", "Dertig minuten pauze.", "Тридцять хвилин перерви."],
-  ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п'ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п'ятдесят відсотків."],
+  ["num_17", "vijftig", "50 · fifty", "50 · cinquante", "50 · п’ятдесят", "50 · خمسون", "🔢", "Vijftig procent korting.", "Знижка п’ятдесят відсотків."],
   ["num_18", "honderd", "100 · one hundred", "100 · cent", "100 · сто", "100 · مئة", "🔢", "Het kost honderd euro.", "Це коштує сто євро."]
  ]),
  time:R([
@@ -1449,7 +1451,7 @@ Object.assign(DATA,{
   ["tim_2", "morgen", "tomorrow", "demain", "завтра", "غدًا", "🌅", "Morgen ga ik naar de dokter.", "Завтра я йду до лікаря."],
   ["tim_3", "gisteren", "yesterday", "hier", "вчора", "أمس", "⏮️", "Gisteren was het koud.", "Вчора було холодно."],
   ["tim_4", "nu", "now", "maintenant", "зараз", "الآن", "⏱️", "Ik leer nu Nederlands.", "Зараз я вчу нідерландську."],
-  ["tim_5", "de ochtend", "morning", "le matin", "ранок", "الصباح", "🌄", "In de ochtend drink ik koffie.", "Вранці я п'ю каву."],
+  ["tim_5", "de ochtend", "morning", "le matin", "ранок", "الصباح", "🌄", "In de ochtend drink ik koffie.", "Вранці я п’ю каву."],
   ["tim_sm", "'s morgens", "in the morning", "le matin (adv.)", "вранці", "صباحاً", "🌅", "Ik werk 's morgens.", "Я працюю вранці."],
   ["tim_6", "de middag", "afternoon", "l'après-midi", "після обіду", "بعد الظهر", "🌞", "In de middag heb ik les.", "Після обіду в мене урок."],
   ["tim_7", "de avond", "evening", "le soir", "вечір", "المساء", "🌆", "In de avond kijk ik tv.", "Ввечері я дивлюся телевізор."],
@@ -1469,13 +1471,13 @@ Object.assign(DATA,{
   ["clk_5", "het is kwart voor drie", "it is quarter to three (2:45)", "il est trois heures moins le quart", "зараз за чверть третя (2:45)", "إلا ربع الثالثة", "🕒", "Kom om kwart voor drie.", "Приходь за чверть третя."],
   ["clk_6", "het is drie uur", "it is three o'clock", "il est trois heures", "зараз третя година", "الساعة الثالثة", "🕒", "Om drie uur is er pauze.", "О третій є перерва."],
   ["clk_7", "het is half vier", "it is half past three (3:30)", "il est trois heures et demie", "зараз пів на четверту (3:30)", "الثالثة والنصف", "🕞", "De winkel sluit om half vier.", "Магазин зачиняється о пів на четверту."],
-  ["clk_8", "het is vijf uur", "it is five o'clock", "il est cinq heures", "зараз п'ята година", "الساعة الخامسة", "🕔", "Ik ga om vijf uur naar huis.", "Я йду додому о п'ятій."],
+  ["clk_8", "het is vijf uur", "it is five o'clock", "il est cinq heures", "зараз п’ята година", "الساعة الخامسة", "🕔", "Ik ga om vijf uur naar huis.", "Я йду додому о п’ятій."],
   ["clk_9", "het is half zes", "it is half past five (5:30)", "il est cinq heures et demie", "зараз пів на шосту (5:30)", "الخامسة والنصف", "🕠", "Het eten is om half zes.", "Вечеря о пів на шосту."],
   ["clk_10", "het is zeven uur", "it is seven o'clock", "il est sept heures", "зараз сьома година", "الساعة السابعة", "🕖", "Ik sta om zeven uur op.", "Я встаю о сьомій."],
   ["clk_11", "het is half acht", "it is half past seven (7:30)", "il est sept heures et demie", "зараз пів на восьму (7:30)", "السابعة والنصف", "🕢", "De bus komt om half acht.", "Автобус приїжджає о пів на восьму."],
-  ["clk_12", "het is negen uur", "it is nine o'clock", "il est neuf heures", "зараз дев'ята година", "الساعة التاسعة", "🕘", "De les begint om negen uur.", "Урок починається о дев'ятій."],
+  ["clk_12", "het is negen uur", "it is nine o'clock", "il est neuf heures", "зараз дев’ята година", "الساعة التاسعة", "🕘", "De les begint om negen uur.", "Урок починається о дев’ятій."],
   ["clk_13", "het is tien uur", "it is ten o'clock", "il est dix heures", "зараз десята година", "الساعة العاشرة", "🕙", "Om tien uur ga ik slapen.", "О десятій я лягаю спати."],
-  ["clk_14", "het is kwart over acht", "it is quarter past eight (8:15)", "il est huit heures et quart", "зараз чверть на дев'яту (8:15)", "الثامنة والربع", "🕣", "Ik vertrek om kwart over acht.", "Я вирушаю о чверть на дев'яту."],
+  ["clk_14", "het is kwart over acht", "it is quarter past eight (8:15)", "il est huit heures et quart", "зараз чверть на дев’яту (8:15)", "الثامنة والربع", "🕣", "Ik vertrek om kwart over acht.", "Я вирушаю о чверть на дев’яту."],
   ["clk_15", "het is kwart voor tien", "it is quarter to ten (9:45)", "il est dix heures moins le quart", "зараз за чверть десята (9:45)", "إلا ربع العاشرة", "🕤", "De winkel opent om kwart voor tien.", "Магазин відкривається за чверть десята."]
  ]),
  months:R([
@@ -1542,7 +1544,7 @@ Object.assign(DATA,{
   ["hom_5", "het toilet", "toilet", "les toilettes", "туалет", "المرحاض", "🚽", "Waar is het toilet?", "Де туалет?"],
   ["hom_6", "de tuin", "garden", "le jardin", "сад", "الحديقة", "🌳", "De tuin is mooi.", "Сад гарний."],
   ["hom_7", "de deur", "door", "la porte", "двері", "الباب", "🚪", "Doe de deur dicht.", "Зачини двері."],
-  ["hom_8", "het bed", "bed", "le lit", "ліжко", "السرير", "🛏️", "Het bed is zacht.", "Ліжко м'яке."],
+  ["hom_8", "het bed", "bed", "le lit", "ліжко", "السرير", "🛏️", "Het bed is zacht.", "Ліжко м’яке."],
   ["hom_9", "de tafel", "table", "la table", "стіл", "الطاولة", "🍽️", "De tafel is rond.", "Стіл круглий."],
   ["hom_10", "de koelkast", "fridge", "le réfrigérateur", "холодильник", "الثلاجة", "🧊", "De melk staat in de koelkast.", "Молоко стоїть у холодильнику."],
   ["hom_11", "de lamp", "lamp", "la lampe", "лампа", "المصباح", "💡", "Doe de lamp aan.", "Увімкни лампу."],
@@ -1565,7 +1567,7 @@ Object.assign(DATA,{
   ["bod_9", "de arm", "arm", "le bras", "рука (від плеча)", "الذراع", "💪", "Mijn arm doet pijn.", "У мене болить рука."],
   ["bod_10", "het been", "leg", "la jambe", "нога", "الساق / الرجل", "🦵", "Mijn been doet pijn.", "У мене болить нога."],
   ["bod_11", "de voet", "foot", "le pied", "стопа", "القدم", "🦶", "Mijn voet doet pijn.", "У мене болить стопа."],
-  ["bod_12", "het hart", "heart", "le cœur", "серце", "القلب", "❤️", "Mijn hart klopt snel.", "Моє серце б'ється швидко."],
+  ["bod_12", "het hart", "heart", "le cœur", "серце", "القلب", "❤️", "Mijn hart klopt snel.", "Моє серце б’ється швидко."],
   ["bod_13", "het lichaam", "body", "le corps", "тіло", "الجسم", "🧍", "Sport is goed voor je lichaam.", "Спорт корисний для тіла."],
   ["bod_14", "de schouder", "shoulder", "l'épaule", "плече", "الكتف", "🤷", "Mijn schouder doet pijn.", "У мене болить плече."],
   ["bod_15", "de buik", "belly", "le ventre", "живіт", "البطن", "🫃", "Ik heb pijn in mijn buik.", "У мене болить живіт."],
@@ -1737,8 +1739,8 @@ Object.assign(DATA,{
   ["kl_4","Ik heb oorpijn.","I have an earache.","J'ai mal à l'oreille.","У мене болить вухо.","لدي ألم في الأذن.","👂","Mijn zoon heeft oorpijn.","У мого сина болить вухо."],
   ["kl_5","Ik heb rugpijn.","I have back pain.","J'ai mal au dos.","У мене болить спина.","لدي ألم في الظهر.","🧍","Van het werk heb ik rugpijn.","Від роботи в мене болить спина."],
   ["kl_6","Ik heb tandpijn.","I have toothache.","J'ai mal aux dents.","У мене болить зуб.","لدي ألم في الأسنان.","🦷","Ik heb tandpijn, ik bel de tandarts.","У мене болить зуб, я дзвоню стоматологу."],
-  ["kl_7","Ik heb keelpijn.","I have a sore throat.","J'ai mal à la gorge.","У мене болить горло.","لدي ألم في الحلق.","🗣️","Met keelpijn drink ik thee met honing.","Коли болить горло, я п'ю чай з медом."],
-  ["kl_8","Ik heb hoofdpijn.","I have a headache.","J'ai mal à la tête.","У мене болить голова.","لدي صداع.","🤕","Ik heb hoofdpijn van de computer.","У мене болить голова від комп'ютера."],
+  ["kl_7","Ik heb keelpijn.","I have a sore throat.","J'ai mal à la gorge.","У мене болить горло.","لدي ألم في الحلق.","🗣️","Met keelpijn drink ik thee met honing.","Коли болить горло, я п’ю чай з медом."],
+  ["kl_8","Ik heb hoofdpijn.","I have a headache.","J'ai mal à la tête.","У мене болить голова.","لدي صداع.","🤕","Ik heb hoofdpijn van de computer.","У мене болить голова від комп’ютера."],
   ["kl_9","Ik ben verkouden.","I have a cold.","Je suis enrhumé.","Я застудився.","أنا مصاب بالزكام.","🤧","Ik ben verkouden en ik blijf thuis.","Я застудився і лишаюся вдома."],
   ["kl_10","Ik heb koorts.","I have a fever.","J'ai de la fièvre.","У мене температура.","لدي حمى.","🌡️","Ik heb 38,5 graden koorts.","У мене температура 38,5."],
   ["kl_11","Ik heb pijn aan mijn schouder.","My shoulder hurts.","J'ai mal à l'épaule.","У мене болить плече.","كتفي يؤلمني.","🤷","Ik heb pijn aan mijn schouder van de tas.","У мене болить плече від сумки."],
@@ -1783,7 +1785,7 @@ Object.assign(DATA,{
   ["cit_7", "het station", "train station", "la gare", "вокзал / станція", "المحطة", "🚉", "Het station is groot.", "Вокзал великий."],
   ["cit_8", "de straat", "street", "la rue", "вулиця", "الشارع", "🛣️", "Ik woon in deze straat.", "Я живу на цій вулиці."],
   ["cit_9", "het park", "park", "le parc", "парк", "الحديقة العامة", "🌳", "De kinderen spelen in het park.", "Діти грають у парку."],
-  ["cit_10", "de bank", "bank", "la banque", "банк (установа)", "البنك", "🏦", "De bank sluit om vijf uur.", "Банк зачиняється о п'ятій."],
+  ["cit_10", "de bank", "bank", "la banque", "банк (установа)", "البنك", "🏦", "De bank sluit om vijf uur.", "Банк зачиняється о п’ятій."],
   ["cit_11", "het postkantoor", "post office", "la poste", "пошта", "مكتب البريد", "📮", "Ik breng een brief naar het postkantoor.", "Я несу листа на пошту."],
   ["cit_12", "het centrum", "town centre", "le centre-ville", "центр міста", "وسط المدينة", "🏙️", "Het centrum is druk.", "Центр міста людний."]
  ]),
@@ -1804,7 +1806,7 @@ werk:R([
   ["wk_2", "de collega", "colleague", "le collègue", "колега", "الزميل", "👥", "Mijn collega is aardig.", "Мій колега добрий."],
   ["wk_3", "de baas / chef", "boss", "le patron", "бос / начальник", "المدير", "👔", "Mijn baas is streng.", "Мій бос суворий."],
   ["wk_4", "de vergadering", "meeting", "la réunion", "нарада / зустріч", "الاجتماع", "🗓️", "We hebben een vergadering om 10 uur.", "У нас нарада о 10."],
-  ["wk_5", "de computer", "computer", "l'ordinateur", "комп'ютер", "الحاسوب", "💻", "Ik werk op de computer.", "Я працюю за комп'ютером."],
+  ["wk_5", "de computer", "computer", "l'ordinateur", "комп’ютер", "الحاسوب", "💻", "Ik werk op de computer.", "Я працюю за комп’ютером."],
   ["wk_6", "de email", "email", "l'e-mail", "електронна пошта", "البريد الإلكتروني", "📧", "Ik stuur een email.", "Я надсилаю email."],
   ["wk_7", "het salaris / loon", "salary", "le salaire", "зарплата", "الراتب", "💰", "Ik krijg mijn salaris op het einde van de maand.", "Я отримую зарплату в кінці місяця."],
   ["wk_8", "de bank", "bank", "la banque", "банк", "البنك", "🏦", "Ik ga naar de bank.", "Я йду в банк."],
@@ -1817,7 +1819,7 @@ werk:R([
   ["wk_15", "het contract", "contract", "le contrat", "контракт / договір", "العقد", "📄", "Ik teken het contract morgen.", "Я підпишу контракт завтра."],
   ["wk_16", "de sollicitatie", "job application", "la candidature", "заява на роботу", "طلب التوظيف", "📝", "Ik doe een sollicitatie.", "Я подаю заяву на роботу."],
   ["wk_17", "het gesprek", "interview / conversation", "l'entretien", "співбесіда / розмова", "المقابلة", "🗣️", "Ik heb een gesprek bij een bedrijf.", "У мене співбесіда в компанії."],
-  ["wk_18", "de pauzetijd", "break time", "le temps de pause", "час перерви", "وقت الاستراحة", "☕", "In de pauzetijd drink ik koffie.", "У перерві я п'ю каву."],
+  ["wk_18", "de pauzetijd", "break time", "le temps de pause", "час перерви", "وقت الاستراحة", "☕", "In de pauzetijd drink ik koffie.", "У перерві я п’ю каву."],
   ["wk_19", "overwerken", "to work overtime", "faire des heures supplémentaires", "працювати понаднормово", "العمل الإضافي", "⏰", "Ik moet vandaag overwerken.", "Сьогодні мені треба працювати понаднормово."],
   ["wk_20", "de vakantie", "holiday / vacation", "les vacances", "відпустка", "الإجازة", "🏖️", "In juli heb ik vakantie.", "У липні в мене відпустка."]
  ])
@@ -1829,7 +1831,7 @@ DATA.verbs.items.push(...R([
   ["vx_2", "gaan", "to go", "aller", "іти / їхати", "يذهب", "🚶", "Ik ga naar school.", "Я йду до школи."],
   ["vx_3", "doen", "to do", "faire", "робити (займатися)", "يفعل", "🔧", "Wat doe je?", "Що ти робиш?"],
   ["vx_4", "eten", "to eat", "manger", "їсти", "يأكل", "🍽️", "Wij eten brood.", "Ми їмо хліб."],
-  ["vx_5", "drinken", "to drink", "boire", "пити", "يشرب", "🥤", "Ik drink water.", "Я п'ю воду."],
+  ["vx_5", "drinken", "to drink", "boire", "пити", "يشرب", "🥤", "Ik drink water.", "Я п’ю воду."],
   ["vx_6", "slapen", "to sleep", "dormir", "спати", "ينام", "😴", "De baby slaapt.", "Немовля спить."],
   ["vx_7", "lezen", "to read", "lire", "читати", "يقرأ", "📖", "Ik lees een boek.", "Я читаю книгу."],
   ["vx_8", "schrijven", "to write", "écrire", "писати", "يكتب", "✍️", "Ik schrijf een brief.", "Я пишу листа."],
@@ -1853,7 +1855,7 @@ DATA.verbs.items.push(...R([
   ["vx_26", "moeten", "to have to", "devoir", "мусити / треба", "يجب عليه", "⚠️", "Ik moet naar de dokter.", "Мені треба до лікаря."],
   ["vx_27", "heten", "to be called", "s'appeler", "називатися", "اسمه / يُدعى", "🏷️", "Ik heet Anna.", "Мене звати Анна."]
 
-  ["vx_28", "beginnen", "to begin / start", "commencer", "починати", "يبدأ", "▶️", "De les begint om negen uur.", "Урок починається о дев'ятій."],
+  ["vx_28", "beginnen", "to begin / start", "commencer", "починати", "يبدأ", "▶️", "De les begint om negen uur.", "Урок починається о дев’ятій."],
   ["vx_29", "eindigen", "to end / finish", "finir", "закінчувати", "ينتهي", "⏹️", "De film eindigt om tien uur.", "Фільм закінчується о десятій."],
   ["vx_30", "openen", "to open", "ouvrir", "відчиняти", "يفتح", "🔓", "Ik open de deur.", "Я відчиняю двері."],
   ["vx_31", "sluiten", "to close", "fermer", "зачиняти", "يغلق", "🔒", "Sluit het raam, alstublieft.", "Зачини вікно, будь ласка."],
@@ -1872,7 +1874,7 @@ DATA.verbs.items.push(...R([
   ["vx_44", "gebruiken", "to use", "utiliser", "використовувати", "يستخدم", "🛠️", "Mag ik je telefoon gebruiken?", "Можна скористатися твоїм телефоном?"],
   ["vx_45", "nodig hebben", "to need", "avoir besoin de", "потребувати", "يحتاج", "❗", "Ik heb hulp nodig.", "Мені потрібна допомога."],
   ["vx_46", "vergeten", "to forget", "oublier", "забувати", "ينسى", "🤦", "Ik ben mijn paspoort vergeten.", "Я забув свій паспорт."],
-  ["vx_47", "onthouden", "to remember", "se souvenir", "пам'ятати", "يتذكر", "🧠", "Ik kan het niet onthouden.", "Я не можу це запам'ятати."],
+  ["vx_47", "onthouden", "to remember", "se souvenir", "пам’ятати", "يتذكر", "🧠", "Ik kan het niet onthouden.", "Я не можу це запам’ятати."],
   ["vx_48", "uitleggen", "to explain", "expliquer", "пояснювати", "يشرح", "💬", "Kunt u dat uitleggen?", "Чи можете це пояснити?"],
   ["vx_49", "vertellen", "to tell", "raconter / dire", "розповідати", "يروي", "🗣️", "Vertel me over je werk.", "Розкажи мені про свою роботу."],
   ["vx_50", "ontmoeten", "to meet", "rencontrer", "зустрічати", "يلتقي", "🤝", "Leuk je te ontmoeten!", "Приємно познайомитися!"],
@@ -1958,7 +1960,7 @@ DATA.separable=R([
  ["b_meenemen","meenemen → ik neem mee","to take along","emporter","брати з собою","يأخذ معه","☂️","Ik neem een paraplu mee.","Я беру з собою парасольку."],
  ["b_afspreken","afspreken → ik spreek af","to arrange to meet","se donner rendez-vous","домовлятися про зустріч","يتفق على موعد","🤝","Ik spreek af met een vriendin.","Я домовляюся про зустріч з подругою."],
  ["b_uitgaan","uitgaan → ik ga uit","to go out","sortir","йти розважатися","يخرج للسهر","🎉","Op zaterdag gaan we uit.","У суботу ми йдемо розважатися."],
- ["b_aankomen","aankomen → ik kom aan","to arrive","arriver","прибувати","يصل","🚉","De trein komt om negen uur aan.","Потяг прибуває о дев'ятій."],
+ ["b_aankomen","aankomen → ik kom aan","to arrive","arriver","прибувати","يصل","🚉","De trein komt om negen uur aan.","Потяг прибуває о дев’ятій."],
  ["b_terugkomen","terugkomen → ik kom terug","to come back","revenir","повертатися","يعود","↩️","Ik kom morgen terug.","Я повернуся завтра."],
  ["b_opruimen","opruimen → ik ruim op","to tidy up","ranger","прибирати","يرتّب","🧹","De kinderen ruimen hun kamer op.","Діти прибирають свою кімнату."],
  ["b_invullen","invullen → ik vul in","to fill in","remplir","заповнювати","يملأ (استمارة)","📝","Ik vul het formulier in.","Я заповнюю формуляр."],
@@ -2015,7 +2017,7 @@ DATA.afspraak=R([
  ["b_uitgang","de uitgang","exit","la sortie","вихід","المخرج","🚶","De uitgang is links.","Вихід ліворуч."],
  ["b_bijmijthuis","bij mij thuis","at my place","chez moi","у мене вдома","في بيتي","🏠","We spreken af bij mij thuis.","Зустрінемося в мене вдома."],
  ["b_morgenvroeg","morgenvroeg","tomorrow morning","demain matin","завтра вранці","غدًا صباحًا","🌅","Ik bel je morgenvroeg.","Я подзвоню тобі завтра вранці."],
- ["b_nadeles","na de les","after class","après le cours","після заняття","بعد الدرس","📚","Drinken we koffie na de les?","Вип'ємо кави після заняття?"],
+ ["b_nadeles","na de les","after class","après le cours","після заняття","بعد الدرس","📚","Drinken we koffie na de les?","Вип’ємо кави після заняття?"],
  ["b_misschien","misschien","maybe","peut-être","можливо","ربما","🤔","Misschien kom ik morgen.","Можливо, я прийду завтра."],
  ["b_ikgamee","Ik ga mee!","I'll come along!","Je viens avec toi !","Я піду з тобою!","سآتي معك!","🙋","Ga je zwemmen? Leuk, ik ga mee!","Ти йдеш плавати? Класно, я з тобою!"],
  ["b_spijtig","Spijtig!","What a pity!","Dommage !","Шкода! (так кажуть у Бельгії)","يا للأسف!","😔","Spijtig, ik kan niet komen.","Шкода, я не можу прийти."],
@@ -2370,7 +2372,7 @@ function updateHeader(){
  if($("voiceDialog")?.open)populateVoicePicker();
  $("tagline").textContent=u.tagline;
  $("progressLabel").textContent=u.learned;
- $("footText").textContent=u.footer;
+ $("footText").textContent=u.footer;$("footRights").textContent=u.rights||"All rights reserved";$("footPrivacy").textContent=u.privacy||"Privacy";
  const rbtn=$("reportBugBtn");
  if(rbtn){
   rbtn.textContent=u.reportBug||"⚠ Report a bug";
@@ -2592,13 +2594,14 @@ function afterLangChange(){
   const c0=levelCats()[0];currentCat=c0.id;tab=c0.tabs.find(tabVisible)||"all";
  }
  saveStore();updateHeader();buildNav();newRound();
+ if(typeof acctRender==="function")acctRender();if(typeof renderPushRow==="function")renderPushRow(); // blocks built once at start
 }
 function changeTargetLang(l){if(!LANGS.includes(l))return;targetLang=l;if(targetLang===uiLang)uiLang=targetLang==="en"?"uk":"en";afterLangChange()}
 function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang===uiLang)targetLang=uiLang==="en"?"nl":"en";afterLangChange()}
 
 let autoSpeech=lsGet("leren_auto_speech",true);
 function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>b.classList.remove("is-speaking"));if(active&&button)button.classList.add("is-speaking");const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
-const SPEECH_STUCK={uk:"Голос пристрою не відповідає. Повністю закрий браузер або застосунок і відкрий знову. Якщо не допоможе, перезавантаж телефон чи комп'ютер.",
+const SPEECH_STUCK={uk:"Голос пристрою не відповідає. Повністю закрий браузер або застосунок і відкрий знову. Якщо не допоможе, перезавантаж телефон чи комп’ютер.",
  en:"The device voice isn't responding. Close the browser or app completely and open it again. If that doesn't help, restart your phone or computer.",
  fr:"La voix de l’appareil ne répond pas. Ferme complètement le navigateur ou l’application et rouvre-le. Si ça ne suffit pas, redémarre ton téléphone ou ton ordinateur.",
  ar:"صوت الجهاز لا يستجيب. أغلق المتصفح أو التطبيق تمامًا ثم افتحه من جديد. إذا لم ينجح ذلك، أعد تشغيل الهاتف أو الحاسوب."};
@@ -3140,8 +3143,8 @@ const VH_STORIES=[
   {v:"hebben",s:"Taras ___ twee kinderen: een zoon en een dochter.",ok:"heeft",bad:["hebt","heb","hebben"],r:["irr"],uk:"Тарас має двох дітей: сина й доньку.",en:"Taras has two children: a son and a daughter."},
   {v:"heten",s:"Zijn zoon ___ Ostap en zijn dochter heet Solomiia.",ok:"heet",bad:["heett","heten","het"],r:["tt","vowel"],uk:"Його сина звати Остап, а доньку — Соломія.",en:"His son is called Ostap and his daughter Solomiia."},
   {v:"nemen",s:"Taras ___ een douche om 6:45 u.",ok:"neemt",bad:["nemt","nemen","neem"],r:["t","vowel"],uk:"Тарас приймає душ о 6:45.",en:"Taras takes a shower at 6:45."},
-  {v:"eten",s:"Na de douche ___ hij brood met kaas en hij drinkt koffie.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу він їсть хліб із сиром і п'є каву.",en:"After the shower he eats bread with cheese and drinks coffee."},
-  {v:"eten",s:"De kinderen ___ cornflakes en ze drinken melk.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Діти їдять пластівці й п'ють молоко.",en:"The children eat cornflakes and drink milk."},
+  {v:"eten",s:"Na de douche ___ hij brood met kaas en hij drinkt koffie.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу він їсть хліб із сиром і п’є каву.",en:"After the shower he eats bread with cheese and drinks coffee."},
+  {v:"eten",s:"De kinderen ___ cornflakes en ze drinken melk.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Діти їдять пластівці й п’ють молоко.",en:"The children eat cornflakes and drink milk."},
   {v:"vertrekken",s:"Om 7:45 u ___ Taras naar zijn werk en de kinderen vertrekken naar school.",ok:"vertrekt",bad:["vertrekkt","vertrekken","vertrek"],r:["t","dbl"],uk:"О 7:45 Тарас вирушає на роботу, а діти — до школи.",en:"At 7:45 Taras leaves for work and the children leave for school."},
   {v:"nemen",s:"Ostap en Solomiia ___ de bus.",ok:"nemen",bad:["neemt","nemmen","neem"],r:["en"],uk:"Остап і Соломія їдуть автобусом.",en:"Ostap and Solomiia take the bus."},
   {v:"zwemmen",s:"Vandaag doen de kinderen sport op school. Ze ___.",ok:"zwemmen",bad:["zwemt","zwemen","zwemmt"],r:["en"],uk:"Сьогодні в дітей спорт у школі. Вони плавають.",en:"Today the children do sport at school. They swim."},
@@ -3154,8 +3157,8 @@ const VH_STORIES=[
   {v:"komen",s:"Om 16:00 u stopt de school. De kinderen ___ thuis om 16:20 u.",ok:"komen",bad:["komt","kommen","koomen"],r:["en"],uk:"О 16:00 уроки закінчуються. Діти приходять додому о 16:20.",en:"School ends at 16:00. The children come home at 16:20."},
   {v:"spelen",s:"Ze ___ samen: Ostap speelt met Lego en Solomiia speelt met haar pop.",ok:"spelen",bad:["speelt","spellen","speel"],r:["en"],uk:"Вони граються разом: Остап — з Lego, а Соломія — з лялькою.",en:"They play together: Ostap with Lego and Solomiia with her doll."},
   {v:"verjaren",s:"Vandaag is een speciale dag: Solomiia ___!",ok:"verjaart",bad:["verjart","verjaren","verjaard"],r:["t","vowel"],uk:"Сьогодні особливий день: у Соломії день народження!",en:"Today is a special day: it's Solomiia's birthday!"},
-  {t:"Ze is negen jaar. Taras en de kinderen doen een verjaardagsfeest.",uk:"Їй дев'ять років. Тарас і діти влаштовують свято.",en:"She is nine. Taras and the children have a birthday party."},
-  {v:"drinken",s:"Ze eten taart en ze ___ cola.",ok:"drinken",bad:["drinkt","drink","drinkken"],r:["en"],uk:"Вони їдять торт і п'ють колу.",en:"They eat cake and drink cola."},
+  {t:"Ze is negen jaar. Taras en de kinderen doen een verjaardagsfeest.",uk:"Їй дев’ять років. Тарас і діти влаштовують свято.",en:"She is nine. Taras and the children have a birthday party."},
+  {v:"drinken",s:"Ze eten taart en ze ___ cola.",ok:"drinken",bad:["drinkt","drink","drinkken"],r:["en"],uk:"Вони їдять торт і п’ють колу.",en:"They eat cake and drink cola."},
   {v:"geven",s:"Taras ___ een cadeau aan zijn dochter.",ok:"geeft",bad:["geevt","geft","geven"],r:["t","vf"],uk:"Тарас дарує доньці подарунок.",en:"Taras gives his daughter a present."},
   {t:"Na het feest poetst Taras het huis. De kinderen gaan slapen.",uk:"Після свята Тарас прибирає. Діти йдуть спати.",en:"After the party Taras cleans the house. The children go to bed."},
   {v:"lezen",s:"Taras ___ de krant tot 22:30 u.",ok:"leest",bad:["leezt","lezt","lezen"],r:["t","zs"],uk:"Тарас читає газету до 22:30.",en:"Taras reads the paper until 22:30."},
@@ -3188,8 +3191,8 @@ const VH_STORIES=[
   {v:"hebben",s:"Mykola ___ twee kinderen: een jongen en een meisje.",ok:"heeft",bad:["hebt","heb","hebben"],r:["irr"],uk:"Микола має двох дітей: хлопчика й дівчинку.",en:"Mykola has two children: a boy and a girl."},
   {v:"heten",s:"Zijn zoon ___ Marko en zijn dochter heet Iryna.",ok:"heet",bad:["heett","heten","het"],r:["tt","vowel"],uk:"Його сина звати Марко, а доньку — Ірина.",en:"His son is called Marko and his daughter Iryna."},
   {v:"nemen",s:"Mykola ___ een douche om 6:45 u.",ok:"neemt",bad:["nemt","nemen","neem"],r:["t","vowel"],uk:"Микола приймає душ о 6:45.",en:"Mykola takes a shower at 6:45."},
-  {v:"eten",s:"Na de douche ___ Mykola brood en hij drinkt koffie.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу Микола їсть хліб і п'є каву.",en:"After the shower Mykola eats bread and drinks coffee."},
-  {v:"eten",s:"De kinderen ___ cornflakes en ze drinken water.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Діти їдять пластівці й п'ють воду.",en:"The children eat cornflakes and drink water."},
+  {v:"eten",s:"Na de douche ___ Mykola brood en hij drinkt koffie.",ok:"eet",bad:["eett","eten","et"],r:["tt","vowel"],uk:"Після душу Микола їсть хліб і п’є каву.",en:"After the shower Mykola eats bread and drinks coffee."},
+  {v:"eten",s:"De kinderen ___ cornflakes en ze drinken water.",ok:"eten",bad:["eet","etten","eeten"],r:["en"],uk:"Діти їдять пластівці й п’ють воду.",en:"The children eat cornflakes and drink water."},
   {v:"vertrekken",s:"Om 7:45 u ___ Mykola naar zijn werk.",ok:"vertrekt",bad:["vertrekkt","vertrekken","vertrek"],r:["t","dbl"],uk:"О 7:45 Микола вирушає на роботу.",en:"At 7:45 Mykola leaves for work."},
   {v:"nemen",s:"Marko en Iryna ___ de bus naar school.",ok:"nemen",bad:["neemt","nemmen","neem"],r:["en"],uk:"Марко й Ірина їдуть автобусом до школи.",en:"Marko and Iryna take the bus to school."},
   {v:"zwemmen",s:"Vandaag doen de kinderen sport op school. Ze ___.",ok:"zwemmen",bad:["zwemt","zwemen","zwemmt"],r:["en"],uk:"Сьогодні в дітей спорт у школі. Вони плавають.",en:"Today the children do sport at school. They swim."},
@@ -3208,7 +3211,7 @@ const VH_STORIES=[
 ];
 VH_STORIES.forEach(st=>{let n=0;st.items.forEach((it,i)=>{it.i=i;if(it.v)it.n=++n});st.gaps=st.items.filter(it=>it.v)});
 const VH_RULES={
- uk:{t:"hij / zij / ім'я → основа + t (Taras slaapt)",en:"вони, ми, ze (мн.), двоє людей → інфінітив на -en (de kinderen slapen)",vowel:"довга голосна в основі пишеться двома літерами: slapen → slaap, nemen → neem",dbl:"подвійна приголосна в основі стає однією: zwemmen → zwem, vertrekken → vertrek",zs:"z в кінці основи стає s: lezen → lees → hij leest",vf:"v в кінці основи стає f: geven → geef → hij geeft",tt:"основа вже закінчується на t — друге t не додаємо: hij eet, hij heet",dt:"основа на d + t = dt: vinden → hij vindt, worden → hij wordt",irr:"неправильне дієслово: hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij після дієслова (питання) — без t: Heb jij …? Woon jij …?"},
+ uk:{t:"hij / zij / ім’я → основа + t (Taras slaapt)",en:"вони, ми, ze (мн.), двоє людей → інфінітив на -en (de kinderen slapen)",vowel:"довга голосна в основі пишеться двома літерами: slapen → slaap, nemen → neem",dbl:"подвійна приголосна в основі стає однією: zwemmen → zwem, vertrekken → vertrek",zs:"z в кінці основи стає s: lezen → lees → hij leest",vf:"v в кінці основи стає f: geven → geef → hij geeft",tt:"основа вже закінчується на t — друге t не додаємо: hij eet, hij heet",dt:"основа на d + t = dt: vinden → hij vindt, worden → hij wordt",irr:"неправильне дієслово: hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij після дієслова (питання) — без t: Heb jij …? Woon jij …?"},
  en:{t:"he / she / a name → stem + t (Taras slaapt)",en:"they, we, ze (pl.), two people → infinitive in -en (de kinderen slapen)",vowel:"a long vowel in the stem is written double: slapen → slaap, nemen → neem",dbl:"a double consonant becomes single in the stem: zwemmen → zwem",zs:"z at the end of the stem becomes s: lezen → lees → hij leest",vf:"v at the end of the stem becomes f: geven → geef → hij geeft",tt:"the stem already ends in t — no extra t: hij eet, hij heet",dt:"stem in d + t = dt: vinden → hij vindt, worden → hij wordt",irr:"irregular verb: hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij after the verb (question) — no t: Heb jij …? Woon jij …?"},
  fr:{t:"il / elle / un prénom → radical + t (Taras slaapt)",en:"ils, nous, ze (pl.), deux personnes → infinitif en -en (de kinderen slapen)",vowel:"une voyelle longue dans le radical s'écrit double : slapen → slaap, nemen → neem",dbl:"une consonne double devient simple dans le radical : zwemmen → zwem",zs:"z à la fin du radical devient s : lezen → lees → hij leest",vf:"v à la fin du radical devient f : geven → geef → hij geeft",tt:"le radical finit déjà par t — pas de t en plus : hij eet, hij heet",dt:"radical en d + t = dt : vinden → hij vindt, worden → hij wordt",irr:"verbe irrégulier : hebben → hij heeft, zijn → hij is, gaan → hij gaat",inv:"jij après le verbe (question) — sans t : Heb jij …? Woon jij …?"},
  ar:{t:"هو / هي / اسم ← الجذر + t (Taras slaapt)",en:"هم، نحن، ze (جمع)، شخصان ← المصدر بـ -en (de kinderen slapen)",vowel:"حرف العلة الطويل في الجذر يُكتب مضاعفاً: slapen ← slaap",dbl:"الحرف الساكن المضاعف يصبح مفرداً في الجذر: zwemmen ← zwem",zs:"z في آخر الجذر تصبح s: lezen ← lees ← hij leest",vf:"v في آخر الجذر تصبح f: geven ← geef ← hij geeft",tt:"الجذر ينتهي بـ t — لا نضيف t أخرى: hij eet",dt:"جذر بـ d + t = dt: vinden ← hij vindt",irr:"فعل شاذ: hebben ← hij heeft، zijn ← hij is",inv:"jij بعد الفعل (سؤال) — بدون t: Heb jij …؟"}
@@ -3316,7 +3319,7 @@ const SEP={
  b_meenemen:{s:"Ik ___ een paraplu ___.",v:"neem",p:"mee",w:"neemt",uk:"Я беру з собою парасольку.",en:"I take an umbrella along."},
  b_afspreken:{s:"Ik ___ met een vriendin ___.",v:"spreek",p:"af",w:"spreekt",uk:"Я домовляюся про зустріч з подругою.",en:"I arrange to meet a friend."},
  b_uitgaan:{s:"Op zaterdag ___ we ___.",v:"gaan",p:"uit",w:"gaat",uk:"У суботу ми йдемо гуляти.",en:"On Saturday we go out."},
- b_aankomen:{s:"De trein ___ om negen uur ___.",v:"komt",p:"aan",w:"kom",uk:"Потяг прибуває о дев'ятій.",en:"The train arrives at nine."},
+ b_aankomen:{s:"De trein ___ om negen uur ___.",v:"komt",p:"aan",w:"kom",uk:"Потяг прибуває о дев’ятій.",en:"The train arrives at nine."},
  b_terugkomen:{s:"Ik ___ morgen ___.",v:"kom",p:"terug",w:"komt",uk:"Я повернуся завтра.",en:"I'll come back tomorrow."},
  b_opruimen:{s:"De kinderen ___ hun kamer ___.",v:"ruimen",p:"op",w:"ruimt",uk:"Діти прибирають свою кімнату.",en:"The children tidy their room."},
  b_invullen:{s:"Ik ___ het formulier ___.",v:"vul",p:"in",w:"vult",uk:"Я заповнюю формуляр.",en:"I fill in the form."},
@@ -3610,7 +3613,7 @@ const TOETS = [
 ];
 
 const TOETS_UI={
- uk:{chapters:"📚 Тести по розділах",chaptersH:"Розділи йдуть по порядку, як у курсі. Пройшов розділ — склади його тест.",summary:"🏁 Підсумкові тести",summaryH:"Великі тести на кілька розділів одразу.",sum:"Підсумок",extra:"🎧 Вимова",level:"🔓 Перехід на наступний рівень",levelH:"Склади на 80% — і відкриється наступний рівень.",qn:n=>n+" "+(n%10===1&&n%100!==11?"питання":n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?"питання":"питань")},
+ uk:{chapters:"📚 Тести за розділами",chaptersH:"Розділи йдуть по порядку, як у курсі. Пройшов розділ — склади його тест.",summary:"🏁 Підсумкові тести",summaryH:"Великі тести на кілька розділів одразу.",sum:"Підсумок",extra:"🎧 Вимова",level:"🔓 Перехід на наступний рівень",levelH:"Склади на 80% — і відкриється наступний рівень.",qn:n=>n+" "+(n%10===1&&n%100!==11?"питання":n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?"питання":"питань")},
  en:{chapters:"📚 Chapter tests",chaptersH:"Chapters follow the course order. Finished a chapter? Take its test.",summary:"🏁 Review tests",summaryH:"Bigger tests covering several chapters.",sum:"Review",extra:"🎧 Pronunciation",level:"🔓 Next level",levelH:"Score 80% to unlock the next level.",qn:n=>n+" questions"},
  fr:{chapters:"📚 Tests par chapitre",chaptersH:"Les chapitres suivent l'ordre du cours. Chapitre fini ? Passe son test.",summary:"🏁 Tests de révision",summaryH:"De plus grands tests sur plusieurs chapitres.",sum:"Révision",extra:"🎧 Prononciation",level:"🔓 Niveau suivant",levelH:"Obtiens 80 % pour débloquer le niveau suivant.",qn:n=>n+" questions"},
  ar:{chapters:"📚 اختبارات الفصول",chaptersH:"الفصول مرتبة كما في الدورة. أنهيت فصلًا؟ أجرِ اختباره.",summary:"🏁 اختبارات المراجعة",summaryH:"اختبارات أكبر تشمل عدة فصول.",sum:"مراجعة",extra:"🎧 النطق",level:"🔓 المستوى التالي",levelH:"احصل على 80% لفتح المستوى التالي.",qn:n=>n+" أسئلة"}
@@ -3647,7 +3650,7 @@ function startToets(){
   if(curLevel==="a11"&&window.EXAM11){
     const eb=el("button","btn toets-pick exam-pick");eb.type="button";eb.id="examPick";
     eb.appendChild(el("span","tp-no","🎓"));const et=el("span","tp-text");
-    et.append(el("strong","",uiLang==="uk"?"Іспит 1.1 · deel 8 → 11":"Exam 1.1 · part 8 → 11"),el("small","tp-nl",uiLang==="uk"?"Читання · слухання · письмо · говоріння · пробний іспит":"Reading · listening · writing · speaking · mock exam"));
+    et.append(el("strong","",uiLang==="uk"?"Іспит 1.1 · частини 8 → 11":"Exam 1.1 · part 8 → 11"),el("small","tp-nl",uiLang==="uk"?"Читання · слухання · письмо · говоріння · пробний іспит":"Reading · listening · writing · speaking · mock exam"));
     eb.appendChild(et);eb.onclick=()=>EXAM11.open();card.appendChild(eb);
   }
   const chap=list.filter(t=>t.group==="chapter").sort((a,b)=>a.no-b.no);
@@ -4061,7 +4064,7 @@ TOETS.push(
    {type:"mc",q:Q("«Past dinsdag?» означає:","«Past dinsdag?» means:","« Past dinsdag? » signifie :","«Past dinsdag?» تعني:"),opts:[Q("Вівторок підходить?","Is Tuesday OK?","Mardi, ça va ?","هل يناسبك الثلاثاء؟"),Q("Вівторок минув?","Is Tuesday over?","Mardi est passé ?","هل انتهى الثلاثاء؟"),Q("Що у вівторок?","What's on Tuesday?","Quoi mardi ?","ماذا يوم الثلاثاء؟"),Q("Ти був у вівторок?","Were you there on Tuesday?","Tu étais là mardi ?","هل كنت هناك الثلاثاء؟")],ok:0}
   ]},
  {id:"t10",lvl:"a12",
-  title:Q("Тест A1.2 · Тіло, здоров'я, gaan + інфінітив","Test A1.2 · Body, health, gaan + infinitive","Test A1.2 · Corps, santé, gaan + infinitif","اختبار A1.2 · الجسم، الصحة، gaan + المصدر"),
+  title:Q("Тест A1.2 · Тіло, здоров’я, gaan + інфінітив","Test A1.2 · Body, health, gaan + infinitive","Test A1.2 · Corps, santé, gaan + infinitif","اختبار A1.2 · الجسم، الصحة، gaan + المصدر"),
   questions:[
    {type:"mc",q:Q("Обери правильний артикль: ___ been (нога)","Choose the article: ___ been (leg)","Choisis l'article : ___ been (jambe)","اختر الأداة: ___ been (الساق)"),opts:["het","de","een","—"],ok:0},
    {type:"mc",q:Q("Обери правильний артикль: ___ knie","Choose the article: ___ knie","Choisis l'article : ___ knie","اختر الأداة: ___ knie"),opts:["de","het","een","—"],ok:0},
@@ -4168,7 +4171,7 @@ function renderBuild(){
  s.roles.split("").forEach((r,k)=>{
   const w=el("div","sw2 r"+r);w.appendChild(el("span","role",u.roles[r]));
   const t=bs.slots[k],b=el("button","slot"+(t?" filled":"")+(bs.bad.includes(k)?" bad":"")+(bs.done?" good":""),t?t.w:"");
-  b.type="button";if(t)tgt(b);b.onclick=()=>clearSlot(k);w.appendChild(b);slots.appendChild(w);
+  b.type="button";if(t)tgt(b);else b.setAttribute("aria-label",u.roles[r]||"");b.onclick=()=>clearSlot(k);w.appendChild(b);slots.appendChild(w);
  });
  card.appendChild(slots);
  const bank=el("div","bank");
@@ -4589,7 +4592,7 @@ const ICONS={
 function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
 function fillIcons(root){(root||document).querySelectorAll("[data-ico]").forEach(e=>{if(!e.firstChild)e.replaceWith(Object.assign(ico(e.dataset.ico,e.className.replace(/\bico\b/,"").trim()),{}))})}
 const NAV_UI={
- uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з'являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
+ uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з’являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
  en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Search in Dutch or English. The dictionary understands word forms (huizen → huis, ging → gaan) and typos.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
  fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Cherche en néerlandais ou en français. Le dictionnaire reconnaît les formes (huizen → huis, ging → gaan) et les fautes de frappe.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
  ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"ابحث بالهولندية أو العربية أو الإنجليزية. يفهم القاموس صيغ الكلمات والأخطاء الإملائية.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
@@ -4669,7 +4672,8 @@ function renderShellText(){
  document.querySelectorAll(".sheet-x").forEach(x=>{x.replaceChildren(ico("close"));x.setAttribute("aria-label",n.close)});
  $("targetLabel").textContent=n.learn;$("uiLabel").textContent=n.expl;
  $("voiceRowLabel").textContent=n.voice;
- const saved=lsGet("leren_voice_"+targetLang,"");$("voiceRowValue").textContent=saved?saved.split("|")[1]||saved:n.voiceDevice;
+ const saved=lsGet("leren_voice_"+targetLang,""),ru=getUI();
+ $("voiceRowValue").textContent=recordedAvailable()&&useRecorded()?String((recVoice()==="f"?ru.voiceRecordedF:ru.voiceRecorded)||"").replace(/^🎙\s*/,""):saved?saved.split("|")[1]||saved:n.voiceDevice;
  $("voiceSettingsBtn").textContent=n.voicePick;
  $("autoRowLabel").textContent=n.auto;$("autoRowHint").textContent=n.autoHint;
  $("themeRowLabel").textContent=n.theme;$("goalRowLabel").textContent=n.goal;$("goalBtn").textContent=n.goalV(dailyGoal());
@@ -4776,7 +4780,7 @@ async function shareResult(title,pct,passed){
 // .github/workflows/reminders.yml sends the pushes every hour (tools/send-reminders.mjs).
 const PUSH_CONFIG={projectId:"leren-be",apiKey:"AIzaSyA-v4mkpSlmpjwM5s34nD6jlgRZfVuxOwQ",vapid:"BHqHq_6dEJdpiYYyj52qWiaCZgJoeW12TGaai1KlvP8KnRyBkVGSCOn6A8r2r5JfA_RBMqzQb9SPy65E2T1_UC0"};
 const PUSH_UI={
- uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефона для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування",wait:"Вмикаю…",waitOff:"Вимикаю…"},
+ uk:{label:"Нагадування",on:h=>"щодня о "+h+", якщо ціль дня ще не виконана",off:"нагадаю зберегти серію 🔥",denied:"Сповіщення заборонені. Дозволь їх у налаштуваннях телефону для Leren.be.",fail:"Не вдалося ввімкнути нагадування. Перевір інтернет і спробуй ще раз.",ok:"Нагадування ввімкнено 🔔",time:"Час нагадування",wait:"Вмикаю…",waitOff:"Вимикаю…"},
  en:{label:"Reminders",on:h=>"every day at "+h+" if today's goal isn't done yet",off:"I'll remind you to keep your 🔥 streak",denied:"Notifications are blocked. Allow them for Leren.be in your phone settings.",fail:"Couldn't turn on reminders. Check your connection and try again.",ok:"Reminders are on 🔔",time:"Reminder time",wait:"Turning on…",waitOff:"Turning off…"},
  fr:{label:"Rappels",on:h=>"chaque jour à "+h+" si l'objectif du jour n'est pas atteint",off:"je te rappellerai de garder ta série 🔥",denied:"Les notifications sont bloquées. Autorise-les pour Leren.be dans les réglages du téléphone.",fail:"Impossible d'activer les rappels. Vérifie la connexion et réessaie.",ok:"Rappels activés 🔔",time:"Heure du rappel",wait:"Activation…",waitOff:"Désactivation…"},
  ar:{label:"التذكيرات",on:h=>"يوميًا الساعة "+h+" إن لم تحقق هدف اليوم بعد",off:"سأذكّرك بالحفاظ على سلسلتك 🔥",denied:"الإشعارات محظورة. اسمح بها لـ Leren.be في إعدادات الهاتف.",fail:"تعذّر تفعيل التذكيرات. تحقّق من الاتصال وحاول مجددًا.",ok:"تم تفعيل التذكيرات 🔔",time:"وقت التذكير",wait:"جارٍ التفعيل…",waitOff:"جارٍ الإيقاف…"}
@@ -4884,7 +4888,7 @@ $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Numbe
 // ========== GAMES: dialogue puzzle, role-play, speaking, blitz, memory, dictation, my day ==========
 const G_UI={
  uk:{games:"Ігри",story:"Een dag in België",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",ask:"Запитай {Пітера|Дафну} · AI",askS:"Граматика, слова, переклад, вправи: питай українською",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
-  dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Memory",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
+  dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Мемо",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
   pick:"Обери діалог",order:"Натискай репліки по порядку — від першої до останньої",check:"Перевірити",again:"Ще раз",wrongOrder:"Майже! Зелені репліки на місці, решту переставимо.",solved:"Правильно! Ось увесь діалог:",play:"▶ Прослухати діалог",clear:"Очистити",
   role:"Твоя роль",level:"Рівень",l1:"Вибрати",l2:"Скласти",l3:"Сказати",yourTurn:"Твоя черга:",choose:"Обери, що сказати",build:"Склади репліку з карток",say:"Натисни 🎤 і скажи",mic:"🎤 Говорити",listening:"Слухаю…",type:"⌨ Написати",send:"Готово",heard:"Почуто:",tryAgain:"Спробуй ще раз",noMic:"Розпізнавання мови недоступне тут — напиши відповідь.",micDenied:"Немає доступу до мікрофона. Дозволь його в налаштуваннях або напиши відповідь.",wellDone:"Чудова розмова! 🎉",
   spQ:"Питання",model:"Приклад відповіді",ok:"Правильно!",chkIk:"є «ik»",chkVerb:v=>"дієслово «"+v+"» поруч з «ik»",chkPart:p=>"«"+p+"» у кінці речення",chkForm:(w,v)=>"з «ik» без -t: «ik "+v+"», а не «"+w+"»",chkInf:(w,v)=>"не інфінітив «"+w+"», а «ik "+v+"»",chkLen:"повне речення (3+ слова)",next:"Далі",
@@ -4965,7 +4969,7 @@ const DIALOGUES=[
   ["B","Nee, alleen pijn als ik zit.","Ні, тільки болить, коли сиджу.","No, it only hurts when I sit."],
   ["A","Neem deze zalf, twee keer per dag. En wandel veel.","Беріть цю мазь, двічі на день. І багато гуляйте.","Use this ointment twice a day. And walk a lot."],
   ["B","Dank u. Hoeveel kost het?","Дякую. Скільки коштує?","Thank you. How much is it?"],
-  ["A","Acht euro vijftig.","Вісім євро п'ятдесят.","Eight euros fifty."],
+  ["A","Acht euro vijftig.","Вісім євро п’ятдесят.","Eight euros fifty."],
   ["B","Kan ik met de kaart betalen?","Можна оплатити карткою?","Can I pay by card?"],
   ["A","Natuurlijk. Beterschap!","Звісно. Одужуйте!","Of course. Get well!"]]},
  {id:"eric_peter",icon:"💬",title:{uk:"Чат: Ерік і Пітер",en:"Chat: Eric and Peter"},a:"Eric",b:"Peter",hint:"🏊 dinsdag · 🏃 woensdag · 🚴 donderdag",lines:[
@@ -5000,7 +5004,7 @@ const DIALOGUES=[
   ["B","Een bruin brood, alstublieft.","Сірий хліб, будь ласка.","A brown bread, please."],
   ["A","Gesneden?","Нарізаний?","Sliced?"],
   ["B","Ja, graag. Hoeveel kost het?","Так, будь ласка. Скільки коштує?","Yes, please. How much is it?"],
-  ["A","Twee euro vijftig.","Два євро п'ятдесят.","Two euros fifty."],
+  ["A","Twee euro vijftig.","Два євро п’ятдесят.","Two euros fifty."],
   ["B","Alstublieft. Dank u wel, tot ziens!","Ось, будь ласка. Дякую, до побачення!","Here you are. Thank you, goodbye!"]]},
  {id:"dokter",icon:"🩺",title:{uk:"Запис до лікаря",en:"Doctor's appointment"},a:"Praktijk",b:"Patiënt",hint:"🩺 koorts · hoofdpijn · morgen om tien uur",lines:[
   ["A","Dokterspraktijk, goedemiddag.","Лікарська практика, добрий день.","Doctor's office, good afternoon."],
@@ -5185,7 +5189,7 @@ function micBox(onAnswer,opts){ // mic button + typing fallback; onAnswer(altern
 
 // --- 11. Korean fold sheet: learn verb forms on an A4 sheet folded like an accordion ---
 const KS_UI={
- uk:{title:"Корейський аркуш",sub:"Формула, щоб швидко запам'ятати дієслова",hook:"Хочеш швидко запам'ятати дієслова?",hookS:"Ось тобі формула та інструкція. Починай!",formula:"1 аркуш A4 × 10 дієслів × 4 колонки × 5 хвилин на день",
+ uk:{title:"Корейський аркуш",sub:"Формула, щоб швидко запам’ятати дієслова",hook:"Хочеш швидко запам’ятати дієслова?",hookS:"Ось тобі формула та інструкція. Починай!",formula:"1 аркуш A4 × 10 дієслів × 4 колонки × 5 хвилин на день",
   steps:[["📄","Підготовка","Візьми звичайний аркуш A4 і ручку."],["✍️","Перша колонка","Випиши дієслова в інфінітиві з перекладом: gaan — йти. Одне дієслово — один рядок."],["🪗","Наступні колонки","Склади аркуш гармошкою на 4 смуги. На тому ж рядку пиши інші форми: ik ga · ik ging · ik ben gegaan."],["🧠","Тренування","Загни колонки 2–4 назад — видно лише першу. Згадай форми вголос, розгорни й перевір. Помилки познач і повтори. Потім навпаки: сховай першу колонку."]],
   scheme:"Як розкреслити аркуш",cInf:"Інфінітив — переклад",cIk:"Теперішній",cPast:"Imperfectum",cPerf:"Perfectum",foldL:"загни ↶",always:"завжди видно",
   pickSet:"Обери 10 дієслів",sets:{top:"Топ A1",irr:"Неправильні",day:"Мій день",mine:"Мої слова",rnd:"Випадкові"},mineFew:"У «Моїх словах» мало дієслів (треба 4+). Додай їх ☆ у словнику.",
@@ -5388,10 +5392,10 @@ const OM_ONE=[
  ["Ik ben moe","ik *werk elke dag","Я втомлений, бо працюю щодня.","I'm tired because I work every day.","Je suis fatigué parce que je travaille tous les jours.","أنا متعب لأنني أعمل كل يوم."],
  ["Ik ben blij","mijn familie *komt morgen","Я радий, бо завтра приїжджає моя родина.","I'm happy because my family is coming tomorrow.","Je suis content parce que ma famille vient demain.","أنا سعيد لأن عائلتي ستأتي غدًا."],
  ["Ik ga naar de gemeente","ik *heb een afspraak","Я йду до комуни, бо маю запис на прийом.","I'm going to the municipality because I have an appointment.","Je vais à la commune parce que j'ai un rendez-vous.","أذهب إلى البلدية لأن لدي موعدًا."],
- ["Ik eet geen vlees","ik *ben vegetariër","Я не їм м'яса, бо я вегетаріанець.","I don't eat meat because I'm a vegetarian.","Je ne mange pas de viande parce que je suis végétarien.","لا آكل اللحم لأنني نباتي."],
+ ["Ik eet geen vlees","ik *ben vegetariër","Я не їм м’яса, бо я вегетаріанець.","I don't eat meat because I'm a vegetarian.","Je ne mange pas de viande parce que je suis végétarien.","لا آكل اللحم لأنني نباتي."],
  ["Ik fiets naar het werk","het *is dichtbij","Я їжджу на роботу велосипедом, бо це близько.","I cycle to work because it's close.","Je vais au travail à vélo parce que c'est tout près.","أذهب إلى العمل بالدراجة لأنه قريب."],
  ["Ik zoek een appartement","ons huis *is te klein","Я шукаю квартиру, бо наш будинок замалий.","I'm looking for a flat because our house is too small.","Je cherche un appartement parce que notre maison est trop petite.","أبحث عن شقة لأن بيتنا صغير جدًا."],
- ["Ik drink koffie","ik *ben moe","Я п'ю каву, бо втомився.","I'm drinking coffee because I'm tired.","Je bois du café parce que je suis fatigué.","أشرب القهوة لأنني متعب."],
+ ["Ik drink koffie","ik *ben moe","Я п’ю каву, бо втомився.","I'm drinking coffee because I'm tired.","Je bois du café parce que je suis fatigué.","أشرب القهوة لأنني متعب."],
  ["Ik bel de huisbaas","de verwarming *werkt niet","Я телефоную орендодавцю, бо не працює опалення.","I'm calling the landlord because the heating isn't working.","J'appelle le propriétaire parce que le chauffage ne marche pas.","أتصل بالمالك لأن التدفئة لا تعمل."],
  ["Ik neem de bus","mijn auto *is kapot","Я їду автобусом, бо моя машина зламалася.","I'm taking the bus because my car is broken.","Je prends le bus parce que ma voiture est en panne.","أركب الحافلة لأن سيارتي معطلة."],
  ["Ik ga vroeg slapen","ik *begin morgen om zeven uur","Я рано лягаю спати, бо завтра починаю о сьомій.","I'm going to bed early because I start at seven tomorrow.","Je me couche tôt parce que je commence à sept heures demain.","أنام مبكرًا لأنني أبدأ غدًا في الساعة السابعة."],
@@ -5588,6 +5592,11 @@ function dlgCheck(){
 }
 
 // --- 2. role-play ---
+const RP_ROLES={Apotheker:{uk:"фармацевт",en:"pharmacist",fr:"pharmacien",ar:"صيدلي"},Assistente:{uk:"асистентка",en:"assistant",fr:"assistante",ar:"مساعدة"},
+ Bakker:{uk:"пекар",en:"baker",fr:"boulanger",ar:"خبّاز"},Klant:{uk:"клієнт",en:"customer",fr:"client",ar:"زبون"},Cursist:{uk:"слухач курсу",en:"student",fr:"élève",ar:"متعلّم"},
+ Juf:{uk:"вчителька",en:"teacher",fr:"institutrice",ar:"معلّمة"},Mama:{uk:"мама",en:"mum",fr:"maman",ar:"الأم"},Praktijk:{uk:"кабінет лікаря",en:"GP practice",fr:"cabinet médical",ar:"عيادة الطبيب"},
+ "Patiënt":{uk:"пацієнт",en:"patient",fr:"patient",ar:"مريض"},Reiziger:{uk:"пасажир",en:"passenger",fr:"voyageur",ar:"مسافر"},Chauffeur:{uk:"водій",en:"driver",fr:"chauffeur",ar:"سائق"}};
+const rpRoleName=n=>(RP_ROLES[n]&&(RP_ROLES[n][uiLang]||RP_ROLES[n].en))||n; // people's names stay as they are
 function rpPick(){
  const g=gU(),card=gHead(g.rp,g.pick);
  const opts=el("div","g-opts-row");
@@ -5596,7 +5605,7 @@ function rpPick(){
  opts.append(mk(g.level,[[1,"1 · "+g.l1],[2,"2 · "+g.l2],[3,"3 · "+g.l3]],lvl,"leren_rp_level"),mk(g.role,[["A","A"],["B","B"]],role,"leren_rp_role"));
  card.appendChild(opts);
  const list=el("div","g-list");
- DIALOGUES.filter(d=>(d.lvl||"a11")===curLevel).forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)+" · "+(role==="A"?d.a:d.b)));b.onclick=()=>rpStart(d,role,lvl);list.appendChild(b)});
+ DIALOGUES.filter(d=>(d.lvl||"a11")===curLevel).forEach(d=>{const b=el("button","opt g-pick");b.type="button";b.append(el("span","g-ic",d.icon),el("span","",gTr(d.title)+" · "+rpRoleName(role==="A"?d.a:d.b)));b.onclick=()=>rpStart(d,role,lvl);list.appendChild(b)});
  card.appendChild(list);
 }
 function rpStart(d,role,lvl){gState={d,role,lvl,i:0,log:[],ok:0,tiles:null,placed:[]};rpStep()}
@@ -5812,7 +5821,7 @@ function pickCharPopup(then){
 function renderCharRow(){
  const row=$("charRow");if(!row)return;const u=chU();$("charLabel").textContent=u.row;
  const box=$("charSeg");box.replaceChildren();
- Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");
+ Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");b.setAttribute("aria-label",uiLang==="uk"?c.u:uiLang==="ar"?c.a:c.n);
   const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
   b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
 }
@@ -5929,7 +5938,7 @@ const SCENES=[
    ["Dank u, tot ziens!",1],["Goede reis!",0,"Так кажуть тому, хто їде. Ти дякуєш: «Dank u!»","You say that to the traveller."],["Ik reis goed.",0,"Просто подякуй: «Dank u, tot ziens!»","Just say thanks."]]]]},
  {id:"buren",icon:"🏡",uk:"{Новий сусід|Нова сусідка}",en:"The new neighbour",role:{uk:"{Nu} — {твій сусід|твоя сусідка}",en:"{N} is your neighbour"},turns:[
   ["Hallo! Ik ben {N}, je nieuwe {buurman|buurvrouw}.","Привіт! Я {Nu}, {твій новий сусід|твоя нова сусідка}.","Hi! I'm {N}, your new neighbour.",[
-   ["Hallo {N}! Ik ben Danylo. Aangenaam.",1],["Hallo, ik ben {buurman|buurvrouw}.",0,"«{buurman|buurvrouw}» — це {він|вона}. Ти називаєш своє ім'я.","{He|She}'s the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім'я: «Ik ben …»","Greet {him|her} and say your name."]]],
+   ["Hallo {N}! Ik ben Danylo. Aangenaam.",1],["Hallo, ik ben {buurman|buurvrouw}.",0,"«{buurman|buurvrouw}» — це {він|вона}. Ти називаєш своє ім’я.","{He|She}'s the neighbour; say your name."],["Ik heb buren.",0,"Привітайся й назви ім’я: «Ik ben …»","Greet {him|her} and say your name."]]],
   ["Woon je hier al lang?","Ти давно тут живеш?","Have you lived here long?",[
    ["Nee, ik woon hier sinds maart.",1],["Nee, ik woon hier lang.",0,"«Ні, я живу тут довго» — суперечність. Скажи, з якого часу: «sinds maart».","That contradicts itself."],["Ik woon in een huis.",0,"Питають, як давно. Відповідай з «sinds».","{He|She} asks how long."]]],
   ["Leuk! Waar kom je vandaan?","Класно! Звідки ти?","Nice! Where are you from?",[
@@ -5948,8 +5957,8 @@ const ACCEPT={cafe:[["koffie","thee","water","cappuccino","chocolademelk","cola"
  station:[["naar"],["enkel","heen en terug","retour"],["kaart","betalen","bancontact","cash","hier"],["spoor","dank","bedankt"],["dank","bedankt","ziens"]],
  buren:[["ik ben","ik heet","aangenaam"],["sinds","jaar","maand","lang"],["kom uit","uit"],["graag","sorry","kan niet"],["tot zaterdag","super","oke"]]};
 const sceneTr=o=>cx(uiLang==="uk"?o.uk:(o.en||o.uk));
-const ST_UI={uk:{hello:"Привіт! Я {Nu} 🇧🇪 Проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!",locked:"Спершу пройди попереднє місце",own:"Або скажи / напиши своїми словами",understood:"Зрозуміло! 👍 Ще один природний варіант:",hint:"Підказка:",great:"Супер! Ти впорався.",map:"Далі по карті",free:"💬 Вільна розмова з {Nu} тут",mistakes:"Що варто повторити",mistakesNone:"Поки помилок немає — так тримати!"},
- en:{hello:"Hi! I'm {N} 🇧🇪 Let's spend a normal day in Belgium. Pick a place and let's speak Dutch!",locked:"Finish the previous place first",own:"Or say / type it in your own words",understood:"Got it! 👍 Another natural way:",hint:"Hint:",great:"Great job!",map:"Back to the map",free:"💬 Free chat with {N} here",mistakes:"Worth reviewing",mistakesNone:"No mistakes yet — keep going!"}};
+const ST_UI={uk:{hello:"Привіт! Я {Nu} 🇧🇪 — проведу тебе через звичайний день у Бельгії. Обирай місце — і говоримо нідерландською!",locked:"Спершу пройди попереднє місце",own:"Або скажи / напиши своїми словами",understood:"Зрозуміло! 👍 Ще один природний варіант:",hint:"Підказка:",great:"Супер! Ти впорався.",map:"Далі по карті",free:"💬 Вільна розмова з {Nu} тут",mistakes:"Що варто повторити",mistakesNone:"Поки помилок немає — так тримати!"},
+ en:{hello:"Hi! I’m {N} 🇧🇪 — let’s spend a normal day in Belgium. Pick a place and let’s speak Dutch!",locked:"Finish the previous place first",own:"Or say / type it in your own words",understood:"Got it! 👍 Another natural way:",hint:"Hint:",great:"Great job!",map:"Back to the map",free:"💬 Free chat with {N} here",mistakes:"Worth reviewing",mistakesNone:"No mistakes yet — keep going!"}};
 const stU=()=>cxDeep(ST_UI[uiLang]||ST_UI.en);
 function storyState(){return lsGet("leren_story",{done:[],best:{}})}
 function logMistake(nl,why){const m=lsGet("leren_mistakes",[]).filter(x=>x.nl!==nl);m.unshift({nl,why,d:dayStr()});lsSet("leren_mistakes",m.slice(0,30))}
@@ -6024,7 +6033,7 @@ function storyAnswer(k,spoken,loose){
 // For local testing of tools/ai-worker.js: localStorage.leren_ai_endpoint="http://localhost:8787" (works on localhost only).
 const AI_ENDPOINT=(location.hostname==="localhost"&&lsGet("leren_ai_endpoint",""))||"https://leren-ai.gembarsky-d.workers.dev/";
 const AI_TITLE={nl:"Praat met {N} · AI",en:"Talk to {N} · AI",fr:"Parle avec {N} · IA"};
-const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландською",en:"Пиши або говори англійською",fr:"Пиши або говори французькою"},intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані. {Nu} запам'ятовує кілька фактів про тебе лише на цьому пристрої, щоб наступного разу продовжити розмову; їх можна переглянути й видалити.",adult:"Мені виповнилося 18 років",trShow:"🇺🇦 Перекласти українською",trHide:"Сховати переклад",memT:"🧠 Що {Nu} пам'ятає про тебе",memForget:"Забути все",memNote:"Зберігається лише на цьому пристрої.",report:"⚑ Поскаржитися",reportQ:"Поскаржитися на цю відповідь AI (образлива, небезпечна або хибна)? Текст відповіді буде надіслано розробнику.",reportOk:"Дякуємо! Скаргу надіслано.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!",slow:"Забагато повідомлень за хвилину. Зачекай трохи й надішли ще раз.",
+const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландською",en:"Пиши або говори англійською",fr:"Пиши або говори французькою"},intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер Leren.be і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані. {Nu} запам’ятовує кілька фактів про тебе лише на цьому пристрої, щоб наступного разу продовжити розмову; їх можна переглянути й видалити.",adult:"Мені виповнилося 18 років",trShow:"🇺🇦 Перекласти українською",trHide:"Сховати переклад",memT:"🧠 Що {Nu} пам’ятає про тебе",memForget:"Забути все",memNote:"Зберігається лише на цьому пристрої.",report:"⚑ Поскаржитися",reportQ:"Поскаржитися на цю відповідь AI (образлива, небезпечна або хибна)? Текст відповіді буде надіслано розробнику.",reportOk:"Дякуємо! Скаргу надіслано.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!",slow:"Забагато повідомлень за хвилину. Зачекай трохи й надішли ще раз.",
   askTitle:"Запитай {Пітера|Дафну} · AI",askSub:"Нідерландська, англійська, французька",askIntro:"Привіт! Я {Nu}. Питай мене про граматику, слова, переклад чи вимову, або попроси вправу.",askPh:"Твоє питання…",send:"Надіслати",ex:"Приклади (натисни, щоб послухати)",
   chips:{nl:["Коли «de», а коли «het»?","Поясни інверсію: «Om 7 uur sta ik op»","Як утворюється perfectum?","Дай мені вправу на дієслово «zijn»"],en:["Коли «do», а коли «does»?","Яка різниця між «a» і «the»?","Як утворюється Past Simple?","Дай мені вправу на «to be»"],fr:["Коли «le», а коли «la»?","Як відмінюється «être»?","Що таке «septante» і «nonante»?","Дай мені вправу на «avoir»"]}},
  en:{sub:{nl:"Write or speak Dutch",en:"Write or speak English",fr:"Write or speak French"},intro:"Talk to me simply, A1 style. I'll correct and explain your mistakes.",consentT:"Before you start",consent:"The AI chat works online. Your messages are sent to the Leren.be server and an AI model so {N} can answer. Chats are not stored. Don't type passwords, ID numbers or bank details. {N} remembers a few facts about you, only on this device, to continue next time; you can view and delete them.",adult:"I am 18 or older",trShow:"Show translation",trHide:"Hide translation",memT:"🧠 What {N} remembers about you",memForget:"Forget everything",memNote:"Stored only on this device.",report:"⚑ Report",reportQ:"Report this AI answer (offensive, harmful or wrong)? The answer text will be sent to the developer.",reportOk:"Thank you! Your report was sent.",agree:"OK, start",fix:"Better:",tr:"Translation",err:"{N} is unavailable right now. Check your connection and try again.",limit:"That's enough chatting for today 🙂 Come back tomorrow!",slow:"Too many messages in a minute. Wait a moment and send it again.",
@@ -6418,8 +6427,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="105";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Вимова bom - boom", "items": ["Перезаписали коротке o та довге oo Пітером і Дафною. Нові адреси записів обходять старий кеш."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Updated bom - boom pronunciation", "items": ["Re-recorded short o and long oo with Peter and Dafna. New clip URLs bypass old cached audio."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Prononciation de bom - boom", "items": ["Nouveaux enregistrements du o court et du oo long avec Peter et Dafna."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تحديث نطق bom - boom", "items": ["تسجيل جديد للصوت القصير o والطويل oo بصوت بيتر ودافنا."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
+const RELEASE_VERSION="106";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Дрібні виправлення в оформленні й текстах", "items": ["Блок «Акаунт» тепер перекладається разом з усім застосунком.", "Нагадування просять дозвіл лише один раз, а час нагадування видно прямо в реченні.", "Виправили написання кількох слів і підписи в нагородах."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Small design and text fixes", "items": ["The Account block now follows the app language.", "Reminders ask for permission only once, and the time is shown right in the sentence.", "Fixed some wording and the labels of the gifts."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Petites corrections de mise en page et de texte", "items": ["Le bloc « Compte » suit maintenant la langue de l’application.", "Les rappels ne demandent l’autorisation qu’une seule fois, et l’heure est affichée dans la phrase.", "Quelques formulations et les libellés des cadeaux ont été corrigés."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تحسينات صغيرة في التصميم والنصوص", "items": ["قسم «الحساب» يظهر الآن بلغة التطبيق.", "التذكيرات تطلب الإذن مرة واحدة فقط، ووقت التذكير يظهر داخل الجملة.", "صحّحنا بعض العبارات وأسماء الهدايا."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -6431,8 +6440,11 @@ function showReleaseNotes(){
  });
  lsSet("leren_release_seen",RELEASE_VERSION);
 }
+// Someone opening the app for the first time has nothing "new" to compare with: no release notes for them.
+const releaseFirstVisit=!lsGet("leren_release_seen","")&&!Number(localStorage.getItem("poly_score")||0)&&!lsGet("leren_tour_done",false);
 function announceRelease(){
  if(lsGet("leren_release_seen","")===RELEASE_VERSION)return;
+ if(releaseFirstVisit){lsSet("leren_release_seen",RELEASE_VERSION);return}
  // Wait for onboarding and other dialogs rather than replacing an active dialog.
  const busy=[...document.querySelectorAll('[role="dialog"]')].some(p=>p.getClientRects().length>0);
  if(busy||tourRoot){setTimeout(announceRelease,1500);return}
@@ -6489,12 +6501,12 @@ const TOUR_STEPS=[
   fr:["Comment t'entraîner","<b>Étude</b> — un mot nouveau avec un exemple · <b>Quiz</b> — choisis la traduction · <b>Écoute</b> — écoute et choisis le sens · <b>Phrases</b> — construis une phrase · <b>Révision</b> — les mots ratés."],
   ar:["طرق التدريب","<b>دراسة</b> — كلمة جديدة مع مثال · <b>اختبار</b> — اختر الترجمة · <b>استماع</b> — اسمع واختر المعنى · <b>تركيب</b> — ركّب جملة · <b>مراجعة</b> — الكلمات التي أخطأت فيها."]},
  {id:"card",at:["#card .q"],
-  uk:["Завдання","Тут питання і варіанти відповідей. Кнопка «🔊 Ще раз» знову озвучує слово. Після відповіді з'являється пояснення і кнопка «Далі»."],
+  uk:["Завдання","Тут питання і варіанти відповідей. Кнопка «🔊 Ще раз» знову озвучує слово. Після відповіді з’являється пояснення і кнопка «Далі»."],
   en:["The exercise","Here is the question and the answer options. “🔊 Again” reads the word once more. After you answer you get an explanation and a “Next” button."],
   fr:["L'exercice","Ici, la question et les réponses. « 🔊 Encore » relit le mot. Après ta réponse, tu vois une explication et le bouton « Suivant »."],
   ar:["التمرين","هنا السؤال وخيارات الإجابة. زر «🔊 مرة أخرى» ينطق الكلمة من جديد. بعد الإجابة يظهر شرح وزر «التالي»."]},
  {id:"dock",at:["#modeButtons"],
-  uk:["П'ять розділів","<b>Урок</b> — навчання за темами · <b>Ігри</b> — діалоги, говоріння, бліц, Memory, диктант · <b>Toets</b> — міні-іспити, як на курсі · <b>Словник</b> — знайди будь-яке слово й послухай його · <b>Прогрес</b> — бали, серія днів, результати іспитів."],
+  uk:["П’ять розділів","<b>Урок</b> — навчання за темами · <b>Ігри</b> — діалоги, говоріння, бліц, Memory, диктант · <b>Toets</b> — міні-іспити, як на курсі · <b>Словник</b> — знайди будь-яке слово й послухай його · <b>Прогрес</b> — бали, серія днів, результати іспитів."],
   en:["Five sections","<b>Lesson</b> — learn by topic · <b>Games</b> — dialogues, speaking, blitz, memory, dictation · <b>Toets</b> — mini exams like in class · <b>Dictionary</b> — look up any word and hear it · <b>Progress</b> — points, streak and exam results."],
   fr:["Cinq rubriques","<b>Leçon</b> — apprendre par thème · <b>Jeux</b> — dialogues, oral, blitz, memory, dictée · <b>Toets</b> — mini-examens comme en classe · <b>Dico</b> — cherche un mot et écoute-le · <b>Progrès</b> — points, série et résultats."],
   ar:["خمسة أقسام","<b>الدرس</b> — التعلّم حسب الموضوع · <b>ألعاب</b> — حوارات ونطق وتحدٍّ وذاكرة وإملاء · <b>Toets</b> — امتحانات قصيرة كما في الصف · <b>القاموس</b> — ابحث عن كلمة واستمع إليها · <b>التقدّم</b> — النقاط والسلسلة والنتائج."]},
@@ -6510,7 +6522,7 @@ const TOUR_STEPS=[
   ar:["⚙ الإعدادات","هنا تختار اللغة التي تتعلّمها (🇧🇪 BE — الهولندية كما في بلجيكا) ولغة الشرح والصوت والنطق التلقائي والوضع الداكن وهدف اليوم وهذا الشرح."]},
  {id:"voice",at:["#settingsBtn"],actions:["pickVoice","sample"],
   uk:["🎙 Хто озвучує слова",
-   "Слова читає не записаний диктор, а голос, вбудований у твій телефон чи комп'ютер. Тому на різних пристроях звучання різне.",
+   "Слова читає не записаний диктор, а голос, вбудований у твій телефон чи комп’ютер. Тому на різних пристроях звучання різне.",
    "⚙ Налаштування → «Голос озвучення» → «Вибрати». Обери голос з позначкою <b>nl-BE</b> (бельгійський) або <b>nl-NL</b> (нідерландський) і натисни «▶ Прослухати зразок». Вибір збережеться.",
    "Немає нідерландського голосу? <b>Android:</b> Налаштування → Спеціальні можливості → Синтез мовлення → Встановити голосові дані → Nederlands. <b>iPhone:</b> Параметри → Доступність → Усний вміст → Голоси → Nederlands."],
   en:["🎙 Who reads the words",
@@ -6526,7 +6538,7 @@ const TOUR_STEPS=[
    "⚙ الإعدادات ← «صوت النطق» ← «اختيار». اختر صوتًا مكتوبًا عليه <b>nl-BE</b> (بلجيكي) أو <b>nl-NL</b> (هولندي) ثم اضغط «▶ استمع إلى عيّنة». سيُحفظ اختيارك.",
    "لا يوجد صوت هولندي؟ <b>أندرويد:</b> الإعدادات ← إمكانية الوصول ← تحويل النص إلى كلام ← تثبيت بيانات الصوت ← Nederlands. <b>آيفون:</b> الإعدادات ← تسهيلات الاستخدام ← المحتوى المنطوق ← الأصوات ← الهولندية."]},
  {id:"auto",at:["#settingsBtn"],actions:["auto"],
-  uk:["🔊 Автоозвучення","<b>Увімкнено</b> (так за замовчуванням): нове слово звучить одразу, щойно з'являється. <b>Вимкнено</b>: тиша, слово звучить лише коли натиснеш «🔊 Ще раз». Перемикач — у ⚙ Налаштуваннях."],
+  uk:["🔊 Автоозвучення","<b>Увімкнено</b> (так за замовчуванням): нове слово звучить одразу, щойно з’являється. <b>Вимкнено</b>: тиша, слово звучить лише коли натиснеш «🔊 Ще раз». Перемикач — у ⚙ Налаштуваннях."],
   en:["🔊 Auto-play","<b>On</b> (the default): each new word is spoken as soon as it appears. <b>Off</b>: silence; a word is spoken only when you press “🔊 Again”. The switch is in ⚙ Settings."],
   fr:["🔊 Lecture auto","<b>Activée</b> (par défaut) : chaque nouveau mot est lu dès qu'il apparaît. <b>Désactivée</b> : silence ; le mot n'est lu que si tu appuies sur « 🔊 Encore ». L'interrupteur est dans ⚙ Réglages."],
   ar:["🔊 النطق التلقائي","<b>مُفعَّل</b> (افتراضيًا): تُنطق كل كلمة جديدة فور ظهورها. <b>مُطفأ</b>: صمت، ولا تُنطق الكلمة إلا عند الضغط على «🔊 مرة أخرى». المفتاح في ⚙ الإعدادات."]},
