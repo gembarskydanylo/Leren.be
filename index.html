@@ -973,6 +973,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
 <link rel="stylesheet" href="./modules/focused-home/style.css?v=110">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
+<link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 </head>
 <body>
 <main data-view="path">
@@ -5342,14 +5343,15 @@ function renderGamesHome(){
  wk.append(el("strong","",(w.done?"✅ ":"🏆 ")+g.week),el("span","",g.weekT),dots);card.appendChild(wk);
  const grid=el("div","g-grid");
  GAMES.filter(([id])=>curLevel==="a11"||!["story","md","om","ks"].includes(id)).forEach(([id,icon,nl])=>{
-  const b=el("button","g-card");b.type="button";b.dataset.game=id;
+  const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  b.append(el("span","g-ic",icon),el("strong","",id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]),el("span","g-s",g[id+"S"]));
-  if(best)b.appendChild(el("span","g-best","🏅 "+best));
+  const art=el("img","g-art");art.src="./img/games/"+id+"-v111.webp";art.alt="";art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  b.append(art,el("strong","",id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]),el("span","g-s",g[id+"S"]));
+  if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
-  if(id==="story"){b.classList.add("wide");const ic=b.querySelector(".g-ic");ic.classList.add("g-av");ic.innerHTML=charSvg("happy")}
+  if(id==="story")b.classList.add("wide");
   b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart})[id]()};
   grid.appendChild(b);
  });
@@ -6407,8 +6409,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="110";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Охайніші акценти в навчанні.", "items": ["Прибрано чорні рамки навколо заголовків після переходів.", "Головна кнопка яскравіша й має м’яку тінь.", "Поточна тема помітніша, наступні — спокійніші, а шкали прогресу стали товщими."], "hint": "На головному екрані видно наступний урок і поточну тему.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Clearer learning highlights.", "items": ["Removed unwanted heading outlines after navigation.", "A brighter main button with a soft shadow.", "The current topic stands out, upcoming topics are quieter and progress bars are thicker."], "hint": "Your home screen highlights the next lesson and current topic.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Des repères plus clairs.", "items": ["Suppression des cadres indésirables autour des titres.", "Un bouton principal plus lumineux avec une ombre douce.", "Le thème actuel ressort mieux, les suivants sont plus discrets et les barres de progression sont plus visibles."], "hint": "L’accueil met en avant la prochaine leçon et le thème actuel.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "إشارات تعليمية أوضح.", "items": ["إزالة الإطارات غير المرغوبة حول العناوين بعد التنقل.", "زر رئيسي أكثر إشراقًا مع ظل ناعم.", "تمييز الموضوع الحالي وتخفيف المواضيع القادمة وزيادة وضوح أشرطة التقدم."], "hint": "تبرز الصفحة الرئيسية الدرس التالي والموضوع الحالي.", "ok": "فهمت"}};
+const RELEASE_VERSION="111";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Кіт тепер грає разом із тобою.", "items": ["Усі 12 ігор отримали нові ілюстрації з помаранчевим котом замість емодзі.", "Мікрофон, пазли, картки та інші предмети підказують, що робити у грі.", "Рекорди й позначки пройдених ігор залишилися на картках."], "hint": "Відкрий «Ігри» та обери вправу.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Your cat joins every game.", "items": ["All 12 games now have orange-cat illustrations instead of emoji.", "Microphones, puzzles and cards hint at what each game practises.", "Records and played-game markers remain on the cards."], "hint": "Open Games and choose an activity.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Le chat joue avec toi.", "items": ["Les 12 jeux ont de nouvelles illustrations du chat orange à la place des émojis.", "Micro, puzzles et cartes indiquent le contenu de chaque jeu.", "Les records et les repères des jeux joués restent visibles."], "hint": "Ouvre Jeux et choisis une activité.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "قطك يشاركك كل لعبة.", "items": ["رسومات جديدة للقط البرتقالي بدل الرموز التعبيرية في الألعاب الاثنتي عشرة.", "الميكروفون والألغاز والبطاقات توضح نشاط كل لعبة.", "تبقى الأرقام القياسية وعلامات الألعاب المكتملة ظاهرة."], "hint": "افتح الألعاب واختر نشاطًا.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
