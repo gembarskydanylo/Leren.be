@@ -3,6 +3,7 @@ const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\
 const curriculum=fs.readFileSync('course-curriculum.js','utf8');
 const prefix=curriculum+'\n'+script.slice(0,script.indexOf('function validStored'));
 const ctx=vm.createContext({assert,console,shuffle:a=>a});
+vm.runInContext(fs.readFileSync('modules/test-library/ui.js','utf8'),ctx);
 vm.runInContext(prefix,ctx);
 const testStart=script.indexOf('const DIPH_UI = '),testEnd=script.indexOf('\nlet toetsId',testStart);
 vm.runInContext(script.slice(testStart,testEnd)+'\n'+script.slice(script.indexOf('const BUILD_BANK='),script.indexOf('const SENT=')),ctx);

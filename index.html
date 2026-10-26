@@ -22,6 +22,7 @@
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=107"></script>
+<script src="./modules/test-library/ui.js?v=109"></script>
 <script src="./modules/learning-path/ui.js?v=107"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
@@ -969,6 +970,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
 <link rel="stylesheet" href="./modules/focused-home/style.css?v=108">
+<link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 </head>
 <body>
 <main data-view="path">
@@ -2794,6 +2796,7 @@ function showInteractiveClock(){
  if(bar){bar.style.width="0%";bar.parentElement.setAttribute("aria-valuenow","0")}
 }
 function newRound(){
+ if(mode!=="toets"){$("card").classList.remove("test-library");$("card").removeAttribute("dir");}
  if(syncDiphthongsLesson())return;
  if(view==="lesson"&&tab==="clock"&&targetLang==="nl"){showInteractiveClock();return;}
  q=0;right=0;roundPoints=0;locked=false;sessionIds=[];
@@ -3623,50 +3626,19 @@ const TOETS_UI={
 let toetsId = null, toetsQ = 0, toetsRight = 0, toetsLocked = false;
 
 function startToets(){
-  // Neutralize category highlight — toets is independent of topic tabs
-  document.querySelectorAll("#catNav button").forEach(b=>b.setAttribute("aria-selected","false"));
-  document.querySelectorAll("#subNav button").forEach(b=>b.setAttribute("aria-selected","false"));
-  const u = getUI();
-  const card = $("card");
-  card.replaceChildren();
-  $("prog").textContent = "";
-  $("rnd").textContent = "Toets · " + levelById(curLevel).name;
-  $("barfill").style.width = "0%";
-  $("barfill").parentElement.setAttribute("aria-valuenow", "0");
-  const title = el("div","q");
-  title.appendChild(el("h2","",u.toetsChoose || "Обери тест"));
-  card.appendChild(title);
-  const L=TOETS_UI[uiLang]||TOETS_UI.en,bestAll=lsGet("poly_toetsbest",{}),tr=x=>x[uiLang]||x.en||"";
-  const list=TOETS.filter(t => (t.lvl||"a11") === curLevel && !(t.kind==="leveltest" && levelUnlocked(t.unlocks)));
-  const open=t=>{toetsId=t.id;toetsQ=0;toetsRight=0;toetsLocked=false;if(t.id==="diphthongs")diphTheory();else nextToetsQuestion()};
-  const pick=(t,badge,main,sub)=>{
-    const b=el("button","btn toets-pick"+(t.kind==="leveltest"?" leveltest":""));b.type="button";b.dataset.test=t.id;
-    const best=bestAll[t.id],n=t.questions.length;
-    b.appendChild(el("span","tp-no",badge));
-    const tx=el("span","tp-text");tx.appendChild(el("strong","",main));if(sub){const sm=el("small","tp-nl",sub);tx.appendChild(/[a-z]/i.test(sub)&&!/[\u0400-\u04FF\u0600-\u06FF]/.test(sub)?tgt(sm):sm)}
-    tx.appendChild(el("small","tp-meta",L.qn(n)+(best!=null?" · ★ "+best+"/"+n:"")));b.appendChild(tx);
-    if(best!=null&&best>=Math.ceil(n*.7))b.classList.add("passed");
-    b.onclick=()=>open(t);card.appendChild(b);
-  };
-  const sec=(t,h)=>{card.appendChild(el("h3","toets-sec",t));if(h)card.appendChild(el("p","toets-sec-h",h))};
-  if(curLevel==="a11"&&window.EXAM11){
-    const eb=el("button","btn toets-pick exam-pick");eb.type="button";eb.id="examPick";
-    eb.appendChild(el("span","tp-no","🎓"));const et=el("span","tp-text");
-    et.append(el("strong","",uiLang==="uk"?"Іспит 1.1 · частини 8 → 11":"Exam 1.1 · part 8 → 11"),el("small","tp-nl",uiLang==="uk"?"Читання · слухання · письмо · говоріння · пробний іспит":"Reading · listening · writing · speaking · mock exam"));
-    eb.appendChild(et);eb.onclick=()=>EXAM11.open();card.appendChild(eb);
-  }
-  const chap=list.filter(t=>t.group==="chapter").sort((a,b)=>a.no-b.no);
-  if(chap.length){sec(L.chapters,L.chaptersH);chap.forEach(t=>{const info=LerenCurriculum.topicInfo(t.chapter,uiLang);pick(t,String(t.no),info?info.title:t.dutch,t.dutch)})}
-  const sumIds=["t1","t2","t3","t4","t5","t10_course_v2","course_reading_texts_v1","t6"];
-  const sums=list.filter(t=>sumIds.includes(t.id)).sort((a,b)=>sumIds.indexOf(a.id)-sumIds.indexOf(b.id));
-  if(sums.length){sec(L.summary,L.summaryH);sums.forEach((t,i)=>pick(t,"🏁",L.sum+" "+(i+1),tr(t.title).replace(/^[^·]*·\s*/,"")))}
-  const rest=list.filter(t=>t.group!=="chapter"&&!sumIds.includes(t.id)&&t.kind!=="leveltest");
-  if(rest.length){sec(L.extra);rest.forEach(t=>pick(t,t.kind==="pronunciation"?"🎧":"⭐",tr(t.title).replace(/^\S*\p{Extended_Pictographic}\S*\s*/u,""),""))}
-  const lt=list.filter(t=>t.kind==="leveltest");
-  if(lt.length){sec(L.level,L.levelH);lt.forEach(t=>pick(t,"🔓",tr(t.title).replace(/^🔓\s*/,""),""))}
+  document.querySelectorAll("#catNav button, #subNav button").forEach(b=>b.setAttribute("aria-selected","false"));
+  $("prog").textContent="";$("rnd").textContent=levelById(curLevel).name;
+  $("barfill").style.width="0%";$("barfill").parentElement.setAttribute("aria-valuenow","0");
+  LerenTestLibrary.render({card:$("card"),el,tests:TOETS,level:curLevel,lang:uiLang,best:lsGet("poly_toetsbest",{}),
+    topicInfo:(id,lang)=>LerenCurriculum.topicInfo(id,lang),unlocked:levelUnlocked,
+    exam:curLevel==="a11"&&window.EXAM11?()=>EXAM11.open():null,
+    changeLevel:id=>{if(!levelUnlocked(id)){$("card").classList.remove("test-library");showLevelLocked(levelById(id));return}curLevel=id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";saveStore();buildNav();startToets()},
+    open:t=>{toetsId=t.id;toetsQ=0;toetsRight=0;toetsLocked=false;if(t.id==="diphthongs")diphTheory();else nextToetsQuestion()}
+  });
 }
 
 function nextToetsQuestion(){
+  $("card").classList.remove("test-library");$("card").removeAttribute("dir");
   cardToTop();
   const test = TOETS.find(t => t.id === toetsId);
   if(!test){ startToets(); return; }
@@ -4106,6 +4078,7 @@ TOETS.push(
 
 LerenCurriculum.buildBank(BUILD_BANK);
 LerenCurriculum.assessments(TOETS,DATA);
+LerenTestLibrary.ensureCombined(TOETS);
 
 const SENT=Object.entries(BUILD_BANK).flatMap(([cat,rows])=>(rows||[]).filter(r=>Array.isArray(r)&&typeof r[1]==="string").map(r=>({cat,level:r[0],q:r[1].split("|"),roles:String(r[2]||"").replace(/\s/g,""),uk:r[3],en:r[4],fr:r[5],ar:r[6],x:r[7],again:false}))); 
 let bAudio=false,bs=null,buildLevel=Number(validStored("poly_buildLevel",["1","2"],"1"))||1;
@@ -4606,6 +4579,7 @@ let view=targetLang==="nl"?"path":"lesson",lessonMode=validStored("leren_lesson_
 if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
 mode=lessonMode;
 function applyView(){
+ if(view!=="toets"){$("card").classList.remove("test-library");$("card").removeAttribute("dir");}
  const m=document.querySelector("main");if(m)m.dataset.view=view;
  document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
  syncDiphthongsLesson();
@@ -6431,8 +6405,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="108";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Менше зайвого. Більше навчання.", "items": ["На головній — один наступний урок. Повна карта тем відкривається окремо.", "Теми з ілюстраціями, прогресом і чіткими станами уроків.", "Мова, темна тема та голос учителя — у швидких налаштуваннях.", "Приклади у кроці «Вивчи» можна розгорнути; кнопка звуку підсвічується під час відтворення."], "hint": "Почни або продовжуй урок із головного екрана. «Усі теми» відкриє карту курсу.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Less clutter. More learning.", "items": ["One next lesson on the home screen. Open the complete topic map separately.", "Illustrated topics, progress meters and clear lesson states.", "Quick access to language, dark theme and the teacher’s voice.", "Expand example sentences when needed; the sound button highlights during playback."], "hint": "Start or resume from Home. All topics opens the course map.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Moins de distractions. Plus d’apprentissage.", "items": ["Une seule prochaine leçon à l’accueil. La carte complète s’ouvre séparément.", "Thèmes illustrés, progression et états des leçons.", "Accès rapide à la langue, au thème et à la voix.", "Exemples dépliables ; le bouton audio s’illumine pendant la lecture."], "hint": "Commence ou reprends à l’accueil. Tous les thèmes ouvre la carte.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تشتيت أقل. تعلّم أكثر.", "items": ["درس تالٍ واحد في الرئيسية، وخريطة المواضيع في شاشة منفصلة.", "مواضيع مصوّرة وتقدّم وحالات واضحة للدروس.", "وصول سريع للغة والوضع الداكن والصوت.", "أمثلة قابلة للتوسيع وزر صوت يظهر حالة التشغيل."], "hint": "ابدأ أو تابع من الرئيسية. كل المواضيع تفتح خريطة الدورة.", "ok": "فهمت"}};
+const RELEASE_VERSION="109";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Тести стали зрозумілішими.", "items": ["Теми A1.1 об’єднано у два блоки: 1–6 та 7–12, з новими ілюстраціями кота.", "У кожному блоці є спільний тест і перевірки окремих тем.", "Іспит, підсумки та вимова мають окремі входи. Твої попередні результати збережено."], "hint": "Відкрий «Тести» в навігації та обери свій блок.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A clearer place to test your knowledge.", "items": ["A1.1 topics are grouped into blocks 1–6 and 7–12, with new cat illustrations.", "Each block has a combined test and individual topic checks.", "Exam preparation, review and pronunciation have separate entries. Previous results are preserved."], "hint": "Open Tests and choose a block.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Des tests mieux organisés.", "items": ["Les thèmes A1.1 sont regroupés en deux blocs : 1–6 et 7–12, avec de nouvelles illustrations.", "Chaque bloc propose un bilan et des tests par thème.", "Examen, bilans et prononciation ont leurs propres entrées. Tes résultats sont conservés."], "hint": "Ouvre les tests et choisis un bloc.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "اختبارات أكثر وضوحًا.", "items": ["تم تقسيم مواضيع A1.1 إلى جزأين: 1–6 و7–12 مع رسومات جديدة للقط.", "لكل جزء اختبار شامل واختبارات للمواضيع الفردية.", "مداخل منفصلة للامتحان والمراجعة والنطق، مع الاحتفاظ بنتائجك السابقة."], "hint": "افتح الاختبارات واختر جزءًا.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

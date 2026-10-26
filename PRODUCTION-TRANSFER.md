@@ -20,3 +20,6 @@ User-requested compact mobile layout published 26 October 2026 (4ee9505 / 124d23
 ## UI-107 - Focused learning home
 Explicitly approved for production by the user on 26 October 2026. Latest production v106 retained as the base; beta untouched. New focused-home module plus route UI, shared speech button integration and responsive navigation. Existing IDs/keys/account and cloud contracts unchanged; no data migration. JS/CSS are in the v107 offline cache. Decisions, checks, limitations and rollout receipt: UX-REVIEW-2026-10-26.md and TESTING-JOURNAL.md.
 Final polish release is v108 (7d29f79), including whole-illustration fitting. UI/route JavaScript URLs remain v107; focused CSS/cache/release are v108. No additional migration. Deployment receipt in TESTING-JOURNAL.md.
+
+## UI-109 — Illustrated Tests library
+Production-only follow-up requested 26 October 2026. Main Tests entry now groups A1.1 topics 1–6 / 7–12 (A1.2: 1–4 / 5–8), with three generated cat scenes, a progress summary and optional combined tests. Existing tests, IDs, saved bests, pronunciation and gated A1.2 access retained. Four new stable block IDs use existing personal-best scoring and sync; no account/data migration. Source: modules/test-library; assets/prompts: img/tests/ASSETS.md; validation and rollout receipt: TESTING-JOURNAL.md. Beta untouched.
