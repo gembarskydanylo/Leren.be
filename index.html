@@ -2636,6 +2636,9 @@ let speechToken=0;
 const audioNorm=t=>String(t||"").trim().replace(/\s+/g," ").toLowerCase();
 function audioHash(t){let h=0x811c9dc5;const s=audioNorm(t);for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return h.toString(16).padStart(8,"0")}
 const AUDIO_DIRS={m:"audio/nl/",f:"audio/nl-f/"};
+// Versioned repairs bypass cached clips, retaining each teacher and text hash.
+const AUDIO_PRONUNCIATION_FIXES=new Set(["7dc692a9","c79493aa"]);
+function recordedAudioUrl(k,h){return AUDIO_DIRS[k]+(AUDIO_PRONUNCIATION_FIXES.has(h)?"pronunciation-v105/":"")+h+".m4a";}
 let audioSets={m:new Set(),f:new Set()},audioEl=null;
 function loadAudioManifest(){for(const k in AUDIO_DIRS){try{fetch(AUDIO_DIRS[k]+"manifest.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))audioSets[k]=new Set(a)}).catch(()=>{})}catch(e){}}}
 const REC_VOICE="__recorded",REC_VOICE_F="__recorded_f";
@@ -2650,7 +2653,7 @@ function playRecorded(text,button,onDone){
  try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
  if(audioEl){audioEl.pause();audioEl=null}
  updateSpeechState(false);
- const a=new Audio(AUDIO_DIRS[k]+h+".m4a");audioEl=a;a.preservesPitch=true;a.playbackRate=REC_RATE;
+ const a=new Audio(recordedAudioUrl(k,h));audioEl=a;a.preservesPitch=true;a.playbackRate=REC_RATE;
  const done=()=>{if(token===speechToken){updateSpeechState(false);if(onDone)onDone()}};
  a.onplaying=()=>{if(token===speechToken)updateSpeechState(true,button)};a.onended=done;
  a.onerror=()=>{done();audioSets[k].delete(h);if(token===speechToken)sayTTS(text,button,onDone)};
@@ -6415,8 +6418,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="104";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Компактніший екран навчання", "items": ["Навігація зібрана в один рядок, пояснення можна розгорнути, відповіді розміщені компактніше."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A more compact learning screen", "items": ["Navigation in one row, expandable instructions and a more compact answer layout."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Un écran de leçon plus compact", "items": ["Navigation sur une ligne, explications dépliables et réponses plus compactes."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "شاشة تعلّم أكثر اختصاراً", "items": ["التنقّل في صف واحد، شرح قابل للتوسيع وإجابات بتخطيط أكثر اختصاراً."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
+const RELEASE_VERSION="105";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Вимова bom - boom", "items": ["Перезаписали коротке o та довге oo Пітером і Дафною. Нові адреси записів обходять старий кеш."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Updated bom - boom pronunciation", "items": ["Re-recorded short o and long oo with Peter and Dafna. New clip URLs bypass old cached audio."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Prononciation de bom - boom", "items": ["Nouveaux enregistrements du o court et du oo long avec Peter et Dafna."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تحديث نطق bom - boom", "items": ["تسجيل جديد للصوت القصير o والطويل oo بصوت بيتر ودافنا."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
