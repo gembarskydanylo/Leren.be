@@ -25,3 +25,4 @@
 - Physical phone QA not performed. Publication receipt will be added after live verification.
 
 - Follow-up RTL check: the 320px Arabic screen also fits (card bottom y545, dock y644, width=scrollWidth=320), More menu exposes Free practice. Added explicit Dutch language/LTR direction to the placement prompt to preserve question-mark order within Arabic UI. Final cache/release and route assets v104 supersede v103.
+- Published code: 4ee9505 (compact layout), 124d23c (final v104 RTL prompt). Final Pages deployment succeeded: https://github.com/gembarskydanylo/Leren.be/actions/runs/40328086316 . Live index, SW, route UI and CSS matched local release bytes. Published 390x844 placement screen visually checked; width=scrollWidth=390. Screenshot: /tmp/leren-compact-placement-live.png. Reload preserved the local 6/12 placement state. All 11 suites passed for the final code.

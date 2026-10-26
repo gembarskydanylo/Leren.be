@@ -13,3 +13,6 @@ Points: existing production scoring retained; route earns +5 per correct answer 
 Offline cache: v102, all 61 assets preloaded, including the ~2 MB original transparent cat atlas. Original generation prompts/provenance: img/mascot/ASSETS.md. The illustration atlas/CSS are not a 3D engine.
 
 Checks and deployment receipt: TESTING-JOURNAL.md. Rollback: restore the previous production source with a NEW higher cache/release version; do not erase user progress keys or roll cache versions backwards.
+
+## UI follow-up - v104
+User-requested compact mobile layout published 26 October 2026 (4ee9505 / 124d23c): single-row navigation, More menu, expandable placement explanation, progress meter, two-column answers and reduced spacing. Main site verified at 390px; local 320px Ukrainian/Arabic layouts fit above the dock. No learning-data migration or score changes. See TESTING-JOURNAL.md for deployment/check details.
