@@ -20,6 +20,7 @@ async function scenario(permission, existing, enabled = true) {
     PUSH_CONFIG: {vapid: ''}, b64uToBytes: () => [],
     pushReady: () => true, pushState: () => state,
     pushU: () => ({}), toast: () => {}, lsSet: (_, value) => {state = value;},
+    pushToken: async () => ({t:"test"}),
     pushWrite: async () => {writes++;},
     clearTimeout: () => {}, setTimeout: callback => {timer = callback; return 1;}
   });
@@ -34,7 +35,7 @@ async function scenario(permission, existing, enabled = true) {
   if(permission !== 'denied') {
     await vm.runInContext('pushEnable()', context);
     assert.equal(creates, existing ? 0 : 1, 'explicit enable creates only a missing subscription');
-    assert.equal(prompts, permission === 'granted' ? 0 : 1);
+    assert.equal(prompts, 0, 'a successful subscribe must not also call requestPermission');
   }
 }
 (async () => {

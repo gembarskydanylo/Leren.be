@@ -1,0 +1,12 @@
+# Production testing journal
+
+## TEST-007 production transfer · 26 October 2026 · Europe/Brussels
+
+- Explicit approval: transfer TEST-007 from beta to the main lerenbe.com app. Baseline 74ad2c4 (exam worksheets/cache v101); production release v102. Isolated checkout used so the user's uncommitted audio generation is preserved.
+- Integration and dependencies are listed in PRODUCTION-TRANSFER.md. Latest course/exam content, teacher IDs, voice code, push code and the diphthongs module are retained. No experimental AI coach/personal-plan modules, beta cloud adapter or beta user results are imported.
+- Added cat entry, course map/three-phase lessons, support/reinforcement after errors, explanatory topic bar/hints, 13 distinct gift illustrations, gift reaction/PNG cards and localized release notes. Automatic NL onboarding is now the cat; the existing detailed guide remains available in Settings. Release notes scroll within the viewport on small phones.
+- Browser QA on local production build: start lesson, 5 study cards, advance to listening, wrong answer → reinforcement → correct answer (score unchanged), reload → cat greeting/resume, free practice and gifts collection rendered. No browser JS errors at the checked entry. Four languages, safe accessible hints, retry state/XP immutability, distinct gift shapes and reduced motion are covered by companion.cjs.
+- All current course cards are in the route: 20 chapters, 204 lessons, 885 cards. learning-path.cjs traverses every lesson and checks reload/phase progression, placement, corrupt/blocked storage and repeat-safe host XP. production-companion.cjs checks actual production sync merge of concurrent sessions/results/gifts and retains CAS; reward persistence and blocked storage are tested.
+- Existing push test initially failed: its fake runtime lacked pushToken and expected the old separate requestPermission call. Updated the fixture for production's existing subscribe-first implementation; production push logic unchanged. All 12 permission scenarios pass.
+- Limitations: browser viewport checks are not physical Android/iPhone tests; no real account login/two-device cloud or physical microphone/AI-service test performed for this UI transfer. Existing max-based XP merge does not sum independent offline gains. Existing production account lifecycle is preserved rather than replaced by beta's account adapter.
+- Deployment receipt to follow after publication and verification of the actual live site.

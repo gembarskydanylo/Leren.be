@@ -16,6 +16,12 @@
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<script src="./modules/learning-path/core.js?v=102"></script>
+<script src="./modules/rewards/core.js?v=102"></script>
+<script src="./modules/companion/ui.js?v=102"></script>
+<script src="./modules/rewards/gifts.js?v=102"></script>
+<script src="./modules/rewards/ui.js?v=102"></script>
+<script src="./modules/learning-path/ui.js?v=102"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -76,6 +82,8 @@ main{width:100%;max-width:640px;margin:0 auto;padding:12px 14px 24px;display:fle
 /* reusable 3D surface: solid "edge" under the element, pressed state removes it */
 .btn,.opt,.listen,.nav-cats button,.kl-col,.theme-btn,.score-pill,.lang-select,.report-bug-btn,.slot.filled{
  transition:transform var(--press) var(--ease),box-shadow var(--press) var(--ease),background-color .15s,border-color .15s,color .15s}
+
+.goal-panel[aria-labelledby="releaseTitle"]{max-height:calc(100dvh - 40px);overflow:auto;display:block}
 
 /* ---------- header ---------- */
 header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
@@ -954,11 +962,15 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=102">
+<link rel="stylesheet" href="./modules/rewards/style.css?v=102">
+<link rel="stylesheet" href="./modules/companion/style.css?v=102">
 </head>
 <body>
-<main data-view="lesson">
+<main data-view="path">
   <header>
     <div class="brand"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
+    <button type="button" class="comp-header-route" id="headerRoute"></button>
     <div class="hdr-stats">
       <button type="button" class="hdr-pill streak-pill" id="streakPill"></button>
       <span id="score" class="hdr-pill score-pill" aria-live="polite"></span>
@@ -966,8 +978,11 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     </div>
   </header>
 
+  <section id="learningPath" class="learning-path" data-views="path" aria-label="Learning path"></section>
+  <button type="button" id="pathReturn" class="btn" data-views="lesson" hidden></button>
   <button type="button" class="topic-bar" id="topicBar" data-views="lesson" aria-haspopup="dialog"></button>
   <div class="lesson-modes" id="lessonModes" role="tablist" data-views="lesson"></div>
+  <section id="lessonGuide" data-views="lesson" hidden></section>
   <span id="toetsTitle" hidden></span>
 
   <div class="meta" data-views="lesson toets games"><span id="prog"></span><span id="rnd"></span></div>
@@ -2158,6 +2173,32 @@ function saveStore(){
  }catch(e){}
 }
 const getUI=()=>UI[uiLang]||UI.uk;
+const rewardStorage={getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)};
+const rewards=LerenRewards.create(rewardStorage);
+let rewardTimer=0,rewardPending=[];
+function rewardFacts(){
+ const path=lsGet("leren_path_v1",{}),done=path&&typeof path.completed==="object"?path.completed:{};
+ const course=LerenLearningPath.catalog(DATA,LerenCurriculum),best=lsGet("poly_toetsbest",{});
+ return {xp:score,lessons:Object.keys(done||{}).filter(id=>course.lessons.some(l=>l.id===id)).length,
+  chapters:course.chapters.filter(c=>c.lessons.length&&c.lessons.every(l=>Object.hasOwn(done||{},l.id))).length,
+  perfect:TOETS.filter(t=>best[t.id]===t.questions.length&&t.questions.length>0).length,streak:streakState().n};
+}
+function rewardCheck(celebrate=false){
+ const added=rewards.observe(rewardFacts());if(!celebrate||!added.length)return;
+ rewardPending.push(...added);clearTimeout(rewardTimer);rewardTimer=setTimeout(()=>{
+  if(!rewardPending.length)return;const b=rewardPending.at(-1);rewardPending=[];
+  if(document.querySelector('dialog[open],.sheet:not([hidden]),[role="dialog"]'))return;
+  LerenRewards.celebrate(b,uiLang,rewards.state.earned[b.id]);
+ },450);
+}
+function renderRewards(){
+ const host=$("pvToets");if(!host)return;document.getElementById("rewardsPanel")?.remove();rewardCheck();
+ const panel=LerenRewards.panel(rewards,{lang:uiLang,score,user:acct.user,
+  synced:acct.lastSnap===JSON.stringify(syncSnapshot())?lsGet("leren_sync_at",0):0,
+  onLogin:acctSignIn,onBackup:()=>$("exportProgBtn").click()});panel.id="rewardsPanel";host.before(panel);
+}
+function queueProgressSync(){if(!acct.user)return;clearTimeout(acct.saveTimer);acct.saveTimer=setTimeout(()=>syncPush().catch(()=>{}),1500)}
+
 
 function itemsFor(k=tab){
  if(k==="all"){
@@ -2213,9 +2254,10 @@ function streakState(){const s=lsGet("poly_streak",{n:0,last:""});const live=s.l
 const dailyGoal=()=>{const g=Number(lsGet("poly_goal",50));return [30,50,100,200].includes(g)?g:50};
 // every XP gain goes through here
 function addXP(n){
- if(!(n>0))return;
+ if(!Number.isFinite(n)||!(n>0))return;
  const before=rankInfo().cur.id;
  score+=n;
+ try{localStorage.setItem("poly_score",String(score))}catch(e){}
  const d=dailyState();d.xp+=n;
  if(!d.done&&d.xp>=dailyGoal()){
   d.done=true;
@@ -2227,6 +2269,7 @@ function addXP(n){
  if(typeof pushSync==="function")pushSync();
  const after=rankInfo().cur;
  if(after.id!==before)toast(pgU().levelUp(after.name),true);
+ rewardCheck(true);queueProgressSync();
 }
 // XP for a correct answer: full for new/due words, small for words already mastered and not due
 function xpForCorrect(s){return (s.known&&s.due>Date.now())?2:10}
@@ -2343,7 +2386,7 @@ function updateHeader(){
  const exp=$("exportProgBtn"), imp=$("importProgBtn");
  if(exp){ exp.textContent=u.exportProg||"💾 Save progress";
   exp.onclick=()=>{
-   const data={score,store,v:1,ts:Date.now()};
+   const data={score,store,v:2,ts:Date.now(),companion:Object.fromEntries(["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"].map(k=>[k,lsGet(k,null)]))};
    const txt=JSON.stringify(data);
    try{
     navigator.clipboard.writeText(txt).then(()=>alert("OK — progress copied. Paste on another device.")).catch(()=>{prompt("Copy this:", txt)});
@@ -2359,9 +2402,10 @@ function updateHeader(){
     if(data&&data.store&&typeof data.store==="object"&&!Array.isArray(data.store)&&
        Object.values(data.store).every(v=>v&&typeof v==="object"&&!Array.isArray(v))&&
        (data.score===undefined||typeof data.score==="number"&&Number.isFinite(data.score)&&data.score>=0)){
+     if(data.v===2&&data.companion&&typeof data.companion==="object")for(const k of ["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"]){const value=data.companion[k];if(value&&typeof value==="object"&&!Array.isArray(value))lsSet(k,value)}
      store=data.store;
      if(typeof data.score==="number")score=data.score;
-     saveStore();updateStats();alert("OK");
+     saveStore();rewards.refresh();if(learningPath){learningPath=null;initLearningPath()}rewardCheck();queueProgressSync();updateStats();alert("OK");
     }else alert("Invalid data");
    }catch(e){alert("Invalid JSON")}
   };
@@ -2381,6 +2425,7 @@ function updateHeader(){
  const themeLabel=th==="dark"?(u.light||"Light"):(u.dark||"Dark"); // label = what the button switches to
  $("themeToggle").title=themeLabel;
  updateStats();renderShellText();
+ if(learningPath)learningPath.refresh();
  updateModeButtons();
 }
 
@@ -2538,6 +2583,7 @@ function bindNavSlider(navId,sliderId,labelKey){
 }
 
 function afterLangChange(){
+ if(view==="path"&&targetLang!=="nl")view="lesson";
  if(mode==="build"&&targetLang!=="nl")mode="quiz";
  if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
  if(tab!=="all"&&!tabVisible(tab)){const cat=CATEGORIES.find(c=>c.tabs.includes(tab))||CATEGORIES[0];currentCat=cat.id;tab=cat.tabs.find(tabVisible)||"all";}
@@ -2889,6 +2935,7 @@ function answer(ok,btn){
  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.ok==="1")b.classList.add("correct")});
  if(!ok)btn.classList.add("incorrect");
  const fb=$("feedback");fb.replaceChildren();
+ fb.appendChild(LerenCompanion.feedback(ok,uiLang,q));
  fb.appendChild(el("strong","",ok?u.correct:u.incorrect));
  fb.appendChild(tgt(el("p","",shown(item))));
  fb.appendChild(el("p","",meaningFor(item)));
@@ -4546,19 +4593,23 @@ const NAV_UI={
 };
 const navU=()=>NAV_UI[uiLang]||NAV_UI.uk;
 const LESSON_MODES=()=>["study","quiz","audio"].concat(targetLang==="nl"?["build"]:[],["review"]);
-let view="lesson",lessonMode=validStored("leren_lesson_mode",["study","quiz","audio","build","review"],"quiz");
+let learningPath=null;
+let view=targetLang==="nl"?"path":"lesson",lessonMode=validStored("leren_lesson_mode",["study","quiz","audio","build","review"],"quiz");
 if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
 mode=lessonMode;
 function applyView(){
  const m=document.querySelector("main");if(m)m.dataset.view=view;
  document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
  syncDiphthongsLesson();
+ const guide=$("lessonGuide");if(guide)guide.hidden=view!=="lesson"||tab==="diphthongs";
+ $("headerRoute").hidden=targetLang!=="nl";
 }
 function setView(v){
- const prev=view;view=v;if(typeof gStop==="function")gStop();
+ const prev=view;if(v==="path"&&targetLang!=="nl")v="lesson";view=v;if(learningPath)learningPath.pauseSpeech();if(typeof gStop==="function")gStop();
  if(prev==="games"&&v!=="games"){if(gState&&gState.chat)aiRemember(gState);gState=null;}
  const wasGames=cardOwner==="games";
- if(v==="toets"){cardOwner="lesson";mode="toets";updateModeButtons();newRound()}
+ if(v==="path"){if(learningPath)learningPath.open();updateModeButtons()}
+ else if(v==="toets"){cardOwner="lesson";mode="toets";updateModeButtons();newRound()}
  else if(v==="lesson"){const need=mode!==lessonMode||wasGames;cardOwner="lesson";mode=lessonMode;updateModeButtons();if(need)newRound()}
  else if(v==="games"){if(mode==="toets")mode=lessonMode;updateModeButtons();renderGamesHome()}
  else{updateModeButtons();
@@ -4569,13 +4620,14 @@ function setView(v){
 function renderDock(){
  const u=navU(),wrap=$("modeButtons");if(!wrap)return;wrap.replaceChildren();
  [["lesson",u.lesson],["games",gU().games],["toets",u.toets],["dict",u.dict],["progress",u.progress]].forEach(([v,label])=>{
-  const b=el("button",v===view?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
-  if(v===view)b.setAttribute("aria-current","page");
+  const b=el("button",v===view||(v==="lesson"&&view==="path")?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
+  if(v===view||(v==="lesson"&&view==="path"))b.setAttribute("aria-current","page");
   b.append(ico(v,"dock-ic"),el("span","dock-tx",label));
-  b.onclick=()=>setView(v);wrap.appendChild(b);
+  b.onclick=()=>setView(v==="lesson"&&targetLang==="nl"?"path":v);wrap.appendChild(b);
  });
 }
 function renderLessonModes(){
+ const guide=$("lessonGuide");if(guide){guide.replaceChildren(LerenCompanion.help(uiLang,mode));guide.hidden=view!=="lesson"||tab==="diphthongs"}
  const wrap=$("lessonModes");if(!wrap)return;wrap.replaceChildren();
  const u=getUI(),d=DOCK[uiLang]||DOCK.uk;
  LESSON_MODES().forEach(m=>{
@@ -4587,15 +4639,12 @@ function renderLessonModes(){
  });
 }
 function renderTopicBar(){
- const b=$("topicBar");if(!b)return;const u=getUI(),n=navU();
- const cat=CATEGORIES.find(c=>c.id===currentCat);
- b.replaceChildren();
- const lv=el("span","tb-level",(levelById(curLevel)||{}).name||"A1.1");
- const txt=el("span","tb-text");
- txt.append(el("small","",cat?(u.cats[cat.id]||cat.id):""),el("strong","",tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,"")));
- const ch=el("span","tb-change");ch.append(el("span","",n.change),ico("chevron"));
- b.append(lv,txt,ch);b.title=n.topics;
+ const b=$("topicBar");if(!b)return;const u=getUI(),cat=CATEGORIES.find(c=>c.id===currentCat);
+ const topic=LerenCompanion.topic({lang:uiLang,id:tab,title:tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),category:cat?(u.cats[cat.id]||cat.id):"",level:(levelById(curLevel)||{}).name||"A1.1",onChoose:()=>openSheet("topicsSheet")});
+ b.className=topic.className;b.replaceChildren(...topic.childNodes);b.title=LerenCompanion.tr(uiLang).choose;b.setAttribute("aria-label",topic.getAttribute("aria-label"));
+ const guide=$("lessonGuide");if(guide){guide.setAttribute("aria-label",LerenCompanion.tr(uiLang).help);guide.replaceChildren(LerenCompanion.help(uiLang,mode));guide.hidden=view!=="lesson"||tab==="diphthongs"}
 }
+
 function openSheet(id){
  const s=$(id);if(!s)return;s.hidden=false;document.body.classList.add("sheet-open");
  if(id==="topicsSheet"){buildNav();topicStep(false)}
@@ -4607,6 +4656,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
+$("headerRoute").addEventListener("click",()=>{setView("path");if(learningPath)learningPath.home()});
 $("streakPill").addEventListener("click",()=>setView("progress"));
 $("goalBtn").addEventListener("click",openGoalModal);
 function renderShellText(){
@@ -4623,11 +4673,14 @@ function renderShellText(){
  $("helpRowLabel").textContent=n.guide;$("helpBtn").textContent=n.guideBtn;
  $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
  const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
- const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)));sc.title=(u.points||"Points")+": "+score;
+ const guideText=LerenCompanion.tr(uiLang),route=$("headerRoute");route.replaceChildren(el("strong","","🐾 "+guideText.route),el("small","",guideText.routeHint));route.hidden=targetLang!=="nl";
+ $("tagline").textContent=targetLang==="nl"?guideText.brand:({en:"English",fr:"Français"})[targetLang]||guideText.brand;
+ const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)),el("span","comp-points-label",pgU().xp));sc.title=(u.points||"Points")+": "+score;
+ const pathBack=$("pathReturn");if(pathBack)pathBack.textContent=({uk:"‹ До навчального маршруту",en:"‹ Back to my learning path",fr:"‹ Retour au parcours",ar:"العودة إلى مسار التعلّم ›"})[uiLang];
  fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();if(typeof renderCharRow==="function")renderCharRow();
 }
 function renderProgressView(){
- const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;
+ const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;renderRewards();
  renderProgressPanel();
  grid.replaceChildren();
  [[n.pvLearned,learnedCount()],[n.pvReview,dueItems().length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
@@ -5736,10 +5789,10 @@ const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
 // text templates: {N}=name (nl/en/fr), {Nu}=Ukrainian name, {Na}=Arabic name, {male|female}
 const cx=t=>{if(typeof t!=="string")return t;const c=curChar();return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g,(_,m,f)=>c.m?m:f).replace(/\{Nu\}/g,c.u).replace(/\{Na\}/g,c.a).replace(/\{N\}/g,c.n)};
 const cxDeep=o=>typeof o==="string"?cx(o):Array.isArray(o)?o.map(cxDeep):o&&typeof o==="object"?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,typeof v==="function"?v:cxDeep(v)])):o;
-const CHAR_UI={uk:{pick:"Обери свого персонажа",pickHint:"Він або вона вестиме тебе через діалоги й ігри. Змінити можна в налаштуваннях.",row:"Персонаж",peter:"Вчитель. Пояснює правила спокійно, як на дошці",dafna:"Бельгійка. Весела й швидка, як у житті",chosen:"Обрано",go:"Далі"},
- en:{pick:"Choose your character",pickHint:"They'll guide you through dialogues and games. You can change this in Settings.",row:"Character",peter:"Teacher. Explains rules calmly, like on the whiteboard",dafna:"Belgian. Cheerful and quick, like real life",chosen:"Chosen",go:"Next"},
- fr:{pick:"Choisis ton personnage",pickHint:"Il ou elle te guidera dans les dialogues et les jeux. Modifiable dans les réglages.",row:"Personnage",peter:"Professeur. Explique calmement, comme au tableau",dafna:"Belge. Joyeuse et rapide, comme dans la vraie vie",chosen:"Choisi",go:"Suivant"},
- ar:{pick:"اختر شخصيتك",pickHint:"سيرافقك في الحوارات والألعاب. يمكنك تغييره من الإعدادات.",row:"الشخصية",peter:"معلّم. يشرح القواعد بهدوء كما على السبورة",dafna:"بلجيكية. مرحة وسريعة كما في الحياة",chosen:"تم الاختيار",go:"التالي"}};
+const CHAR_UI={uk:{pick:"Обери вчителя",pickHint:"Пітер і Дафна навчають нас із котом. Обери, з ким практикувати розмови; змінити вчителя можна в налаштуваннях.",row:"Вчитель",peter:"Вчитель. Пояснює правила спокійно, як на дошці",dafna:"Вчителька з Бельгії. Практикує живі щоденні розмови",chosen:"Обрано",go:"Далі"},
+ en:{pick:"Choose your teacher",pickHint:"Peter and Dafna teach you and the cat. Choose a teacher for conversation practice; change this in Settings.",row:"Teacher",peter:"Teacher. Explains rules calmly, like on the whiteboard",dafna:"Belgian teacher. Practise everyday conversations",chosen:"Chosen",go:"Next"},
+ fr:{pick:"Choisis ton professeur",pickHint:"Peter et Dafna vous enseignent, à toi et au chat. Choisis un professeur pour les dialogues, modifiable dans les réglages.",row:"Professeur",peter:"Professeur. Explique calmement, comme au tableau",dafna:"Professeure belge. Pratique les conversations du quotidien",chosen:"Choisi",go:"Suivant"},
+ ar:{pick:"اختر معلّمك",pickHint:"بيتر ودافنا يعلّمانك أنت والقط. اختر معلّماً للمحادثة ويمكنك تغييره من الإعدادات.",row:"المعلّم",peter:"معلّم. يشرح القواعد بهدوء كما على السبورة",dafna:"معلّمة بلجيكية. تدرّب على محادثات الحياة اليومية",chosen:"تم الاختيار",go:"التالي"}};
 const chU=()=>CHAR_UI[uiLang]||CHAR_UI.uk;
 function charPicker(onPick){
  const u=chU(),wrap=el("div","ch-pick");wrap.setAttribute("role","radiogroup");wrap.setAttribute("aria-label",u.pick);
@@ -6194,7 +6247,11 @@ const syncStr=v=>v===undefined?undefined:(syncObj(v)&&"__raw" in v&&Object.keys(
 function syncMerge(base,local,cloud){
  const out={};new Set([...Object.keys(local),...Object.keys(cloud)]).forEach(k=>{if(!syncable(k))return;
   const l=local[k],c=cloud[k],b=base[k];let v;
-  if(l===c)v=l;else if(l===b)v=c;else if(c===b)v=l;else v=syncStr(syncMergeVal(syncParse(b),syncParse(l),syncParse(c)));
+  if(k==="leren_path_v1"&&l&&c){
+   const ll=syncParse(l),cc=syncParse(c),bb=syncParse(b)||{};
+   if(syncObj(ll)&&syncObj(cc))v=JSON.stringify({...cc,...ll,completed:syncMergeVal(bb.completed,ll.completed||{},cc.completed||{}),mistakes:syncMergeVal(bb.mistakes,ll.mistakes||[],cc.mistakes||[])});
+   else v=l;
+  }else if(l===c)v=l;else if(l===b)v=c;else if(c===b)v=l;else v=syncStr(syncMergeVal(syncParse(b),syncParse(l),syncParse(c)));
   if(typeof v==="string")out[k]=v});
  return out;
 }
@@ -6312,12 +6369,36 @@ function acctInit(){
  document.addEventListener("visibilitychange",()=>{if(document.hidden&&acct.user)syncPush().catch(()=>{})});
 }
 
+function initLearningPath(){
+ const root=$("learningPath");if(!root||learningPath)return;
+ learningPath=LerenLearningPath.mount(root,{
+  data:DATA,curriculum:LerenCurriculum,language:()=>uiLang,
+  lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
+  setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
+  speak:text=>window.LerenLessonWidgets.speak(text,false),stop:()=>window.LerenLessonWidgets.stop(),
+  free:()=>{setView("lesson");newRound()},
+  answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
+  complete:recordPathResult,rewards:()=>setView("progress"),
+  assess:id=>{const test=TOETS.find(t=>t.id==="course_"+id+"_v1");if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
+ });
+ $("pathReturn").onclick=()=>setView("path");
+}
+const pathSessionRewards={};
+function recordPathResult(id,correct,total){
+ const lesson=learningPath?learningPath.model.lesson(id):LerenLearningPath.catalog(DATA,LerenCurriculum).lessons.find(l=>l.id===id);
+ if(!lesson||total!==lesson.ids.length||!Number.isInteger(correct)||correct<0||correct>total)return 0;
+ let best=lsGet("leren_path_rewards_v1",{});if(!best||typeof best!=="object"||Array.isArray(best))best={};
+ const old=best[id],previous=Math.max(Number.isInteger(old)&&old>=0&&old<=total?old:0,pathSessionRewards[id]||0);
+ const gain=Math.max(0,correct-previous)*5;if(!gain){rewardCheck(true);queueProgressSync();return 0}
+ pathSessionRewards[id]=correct;best[id]=correct;lsSet("leren_path_rewards_v1",best);addXP(gain);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
+}
+
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
- updateHeader();buildNav();newRound();applyView();loadAudioManifest();pushSync();acctInit();
+ rewardCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
 }
 
 if (document.readyState === "loading") {
@@ -6334,13 +6415,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="88";
-const RELEASE_UI={
- uk:{title:"Що нового в Leren.be",intro:"Дифтонги — тепер повноцінний мініурок!",items:["Три кроки: вивчи звуки → розрізни на слух → перевір себе.","Батл слів, порівняння вимови та повторення тільки своїх помилок.","Незавершений урок зберігається. Результати й бали видно в розділі «Прогрес»."],hint:"Де знайти: «Змінити» → «Граматика й вимова» → «Дифтонги».",ok:"Зрозуміло"},
- en:{title:"What’s new in Leren.be",intro:"Diphthongs are now a complete mini-lesson!",items:["Three steps: learn the sounds → hear the difference → test yourself.","Word battles, pronunciation comparisons and reviews of your mistakes.","Unfinished lessons are saved. Results and points appear in Progress."],hint:"Find it: Change → Grammar & pronunciation → Diphthongs.",ok:"Got it"},
- fr:{title:"Les nouveautés de Leren.be",intro:"Les diphtongues deviennent une mini-leçon complète !",items:["Trois étapes : découvre les sons → écoute la différence → teste-toi.","Batailles de mots, comparaison des prononciations et révision de tes erreurs.","Les leçons inachevées sont sauvegardées. Retrouve tes résultats et points dans Progrès."],hint:"Où la trouver : Changer → Grammaire et prononciation → Diphtongues.",ok:"Compris"},
- ar:{title:"الجديد في Leren.be",intro:"الأصوات المزدوجة أصبحت درساً مصغّراً متكاملاً!",items:["ثلاث خطوات: تعلّم الأصوات ← ميّزها بالسمع ← اختبر نفسك.","تحدّي الكلمات ومقارنة النطق ومراجعة أخطائك فقط.","تُحفظ الدروس غير المكتملة. تظهر النتائج والنقاط في قسم التقدّم."],hint:"المكان: تغيير ← القواعد والنطق ← الأصوات المزدوجة.",ok:"فهمت"}
-};
+const RELEASE_VERSION="102";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Няв! Тепер навчаємося разом із котиком.", "items": ["Кіт-учень з України зустрічає тебе й підказує, з чого почати. Пітер і Дафна — наші вчителі.", "Починай перший урок або продовжуй збережений: вивчи → почуй → перевір себе.", "Отримуй 13 різних подарунків за навчання, даруй їх котику та зберігай листівки.", "Після помилки кіт підтримає й запропонує ще одну спробу без додаткових балів."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Meow! Learn with our student cat.", "items": ["Our Ukrainian cat guides you. Peter and Dafna are the teachers.", "Start or resume a lesson: learn → listen → check.", "Collect 13 different gifts, give them to the cat and save celebration cards.", "Try a tricky answer again with support and no extra points."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Miaou ! Apprends avec notre chat.", "items": ["Le chat ukrainien te guide. Peter et Dafna sont les professeurs.", "Commence ou reprends une leçon : apprends → écoute → vérifie.", "Collectionne 13 cadeaux, offre-les au chat et enregistre les cartes.", "Réessaie après une erreur, sans points supplémentaires."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "مواء! تعلّم مع قطّنا.", "items": ["القط الأوكراني رفيقك. بيتر ودافنا هما المعلّمان.", "ابدأ درسك أو تابعه: تعلّم ثم استمع ثم اختبر نفسك.", "اجمع ١٣ هدية مختلفة وقدّمها للقط واحفظ بطاقات التهنئة.", "حاول مجدداً بعد الخطأ دون نقاط إضافية."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -6534,7 +6610,7 @@ function tourEnd(){
 }
 $("helpBtn").addEventListener("click",()=>{closeSheet("settingsSheet");setTimeout(startTour,250)});
 function updateHelpBtn(){}
-setTimeout(firstRun,600);
+if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
