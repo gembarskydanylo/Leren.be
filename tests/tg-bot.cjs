@@ -37,6 +37,8 @@ c=await send('/word');assert(['sendVoice','sendMessage'].includes(c[0].method));
 c=await send('/post tip');assert.equal(c[0].method,'sendMessage');assert.notEqual(c[0].body.chat_id,'@lerenbe'); // not admin: treated as unknown command
 c=await send('/post quiz',42);assert.equal(c[0].body.chat_id,'@lerenbe');assert.equal(c[0].body.is_anonymous,true);assert.match(c[1].body.text,/Опубліковано/);
 
+c=await send('/post welcome',42);assert.match(c[0].body.text,/Вітаємо/);assert.equal(c[1].method,'pinChatMessage');assert.equal(c[1].body.chat_id,'@lerenbe');
+
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
 assert.equal(ans.body.text,'Kort: <b>geen</b> перед іменником. &lt;script&gt;x&lt;/script&gt;');

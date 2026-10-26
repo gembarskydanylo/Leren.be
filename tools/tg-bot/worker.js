@@ -1,7 +1,7 @@
 // Leren.be Telegram bot (Cloudflare Worker "leren-tg"). Deploy: .github/workflows/deploy-tg-bot.yml (tools/tg-bot/wrangler.toml).
 // Channel: word of the day with audio, evening quiz, tips, weekly app promo (schedule below, Brussels time).
 // Private chat: /start, /word, /quiz, /app, /id, and any question about Dutch → Claude answers in Ukrainian.
-// Admin (ADMIN_ID): /post word|quiz|tip|promo (to the channel now), /preview … (to you only), /report.
+// Admin (ADMIN_ID): /post word|quiz|tip|promo|welcome (to the channel now; welcome is also pinned), /preview … (to you only), /report.
 // Secrets: TG_TOKEN, ANTHROPIC_KEY, WEBHOOK_SECRET. Variables: CHANNEL (@name or -100…), ADMIN_ID, BOT_USERNAME,
 // optional MODEL (default claude-haiku-5-5), AI_OFF = 1 stops all model calls.
 // After the first deploy open https://leren-tg.<account>.workers.dev/setup?secret=WEBHOOK_SECRET once.
@@ -77,6 +77,11 @@ async function runJob(env, job, chat, day) {
   if (job === "tip") return postText(env, chat, pick(content.tips, tipNumber(day)));
   if (job === "promo") return postText(env, chat, pick(content.promos, Math.floor(day / 7)));
   if (job === "report") return report(env);
+  if (job === "welcome") {
+    const r = await postText(env, chat, content.welcome);
+    if (r.ok && chat === env.CHANNEL) await tg(env, "pinChatMessage", {chat_id: chat, message_id: r.result.message_id, disable_notification: true});
+    return r;
+  }
 }
 
 // --- Private chat ------------------------------------------------------------------------------
@@ -142,7 +147,7 @@ async function onMessage(env, msg) {
   if (cmd === "/app") return postText(env, chat, pick(content.promos, random));
   if (cmd === "/id") return tg(env, "sendMessage", {chat_id: chat, text: `Ваш id: <code>${msg.from.id}</code>`, parse_mode: "HTML"});
   if (isAdmin && (cmd === "/post" || cmd === "/preview")) {
-    if (!["word", "quiz", "tip", "promo"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | promo`});
+    if (!["word", "quiz", "tip", "promo", "welcome"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | promo | welcome`});
     const r = await runJob(env, arg, cmd === "/post" ? env.CHANNEL : chat, day);
     return cmd === "/post" && tg(env, "sendMessage", {chat_id: chat, text: r?.ok ? "✅ Опубліковано" : "❌ " + (r?.description || "помилка")});
   }
