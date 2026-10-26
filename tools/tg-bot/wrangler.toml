@@ -1,0 +1,36 @@
+# Cloudflare Worker "leren-tg" (Telegram bot). Deployed by .github/workflows/deploy-tg-bot.yml.
+# Secrets are NOT here: TG_TOKEN, ANTHROPIC_KEY, WEBHOOK_SECRET stay in Cloudflare (Settings → Variables and Secrets).
+# Variables CHANNEL, ADMIN_ID, BOT_USERNAME are set there too (keep_vars keeps them across deploys).
+name = "leren-tg"
+main = "worker.js"
+account_id = "b0bf56f30d5188f0da28d699847e793d"
+compatibility_date = "2025-09-01"
+workers_dev = true
+keep_vars = true
+
+# Every hour; worker.js picks the posts for the current Brussels hour (so summer/winter time just works).
+[triggers]
+crons = ["0 * * * *"]
+
+# Shares the KV namespace of leren-ai; the bot's keys start with "tg:" (bot users, last week's member count).
+[[kv_namespaces]]
+binding = "RATE"
+id = "09641fb73afe40d69bf47f75a7c15bf5"
+
+# Spend guard for AI answers: 6 questions a minute per Telegram user, 120 a minute for everybody.
+[[ratelimits]]
+name = "PER_USER"
+namespace_id = "1003"
+  [ratelimits.simple]
+  limit = 6
+  period = 60
+
+[[ratelimits]]
+name = "ALL"
+namespace_id = "1004"
+  [ratelimits.simple]
+  limit = 120
+  period = 60
+
+[observability]
+enabled = true
