@@ -27,3 +27,4 @@ UI-109 shipped as ed3e4f7; Pages deployment40380479285 succeeded. All seven chan
 
 ## UI-110 — Home polish
 User-requested production visual follow-up to109: remove accidental focus rectangles from programmatically focused headings, brighten/shadow the home CTA, quiet upcoming topics, double topic meter thickness and reduce cat caption emphasis. CSS-only behaviour change, no migrations. Previous look is preserved in baseline432ad75; rollback must publish a new higher cache version. Validation/receipt in TESTING-JOURNAL.md.
+UI-110 published as ae43a72; Pages run40387074746 succeeded. All three changed live source files match the validated release. Prior look remains in432ad75 (v109); restore only this visual patch with a higher cache version if requested.

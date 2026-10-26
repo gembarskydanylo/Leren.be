@@ -73,3 +73,8 @@
 - Verification: all **14 tests/*.cjs suites passed**; git diff --check clean. Real local navigation home→resumed lesson→home→map: focused H2 outline-style none; pressing Tab moved to the example summary with a solid3px keyboard outline. Actual CTA RGB200,77,0 and two shadows; topic progress computed8px. Light390×844, desktop1280×1000 and dark320×720 checked; no horizontal overflow. Dark upcoming/current cards have distinct surfaces and readable text. No physical device QA claimed; no answers submitted or progress modified by this patch.
 - Local visual evidence: /tmp/leren-polish-v110-desktop.png, /tmp/leren-polish-v110-mobile.png. Publication receipt to follow.
 - Rollback: restore UI changes from baseline432ad75 while keeping the v109 illustrated test library; then publish with a NEW higher release/cache version (e.g.111). Do not reset user progress or decrease cache versions.
+
+### UI-110 publication receipt
+- Feature commit **ae43a72** deployed successfully: https://github.com/gembarskydanylo/Leren.be/actions/runs/40387074746.
+- Live index.html, sw.js and focused-home/style.css?v=110 match the local validated source byte-for-byte. Live release announcement has the correct polish description and home-screen hint.
+- Live map→home navigation focused H2 with outline-style none; topic meters computed8px. Home CTA computed RGB200,77,0. Mobile390px document width equals viewport width; no console errors. Desktop1280×1000 and mobile screenshots saved as /tmp/leren-polish-v110-live-desktop.png and /tmp/leren-polish-v110-live-mobile.png. Browser viewport reset; sample production score180 and paused placement preserved, no answers submitted. Local HTTP server stopped.
