@@ -8,7 +8,7 @@ const L=()=>uiLang==="uk"?"uk":"en";
 const T={
  uk:{title:"🎓 Іспит 1.1 · deel 8 → 11",sub:"Підготовка точно за листком вчителя: читання, слухання, письмо, говоріння, слова й граматика.",
   when:"Чт 29.10 — Lezen · Schrijven · Luisteren\nПт 30.10 — Spreken",back:"← Іспит",toets:"← Toets",
-  parts:{lezen:["📖","Lezen","Запрошення, чат, інформація на ліках"],luisteren:["🎧","Luisteren","Запрошення й діалог у лікаря"],schrijven:["✍️","Schrijven","3 листи: мій день, відповідь на запрошення, мої страви"],spreken:["🗣️","Spreken","6 тем: питання вчителя + твоя відповідь"],woorden:["📚","Woordenschat","Усі слова розділів 8–11 (25 випадкових за раз)"],grammatica:["🧩","Grammatica","Inversie, niet/geen, omdat, moeten, meer/minder"],proef:["🏁","Proefexamen","Великий пробний тест: половина всього"]},
+  parts:{lezen:["📖","Lezen","Запрошення, чат, інформація на ліках"],luisteren:["🎧","Luisteren","Запрошення й діалог у лікаря"],schrijven:["✍️","Schrijven","3 листи: мій день, відповідь на запрошення, мої страви"],spreken:["🗣️","Spreken","6 тем: питання вчителя + твоя відповідь"],woorden:["📚","Woordenschat","Усі слова розділів 8–11 (25 випадкових за раз)"],grammatica:["🧩","Grammatica","Inversie, niet/geen, omdat, moeten, meer/minder"],meervoud:["🔢","Meervoud","Множина: +en, +s, ’s, raam → ramen (з уроку 26.10)"],omdat:["❓","Waarom? Omdat …","Відповідай «Omdat …» — дієслово в кінці (з уроку 26.10)"],proef:["🏁","Proefexamen","Великий пробний тест: половина всього"]},
   q:"Питання",of:"з",next:"Далі",check:"Перевірити",right:"Правильно!",wrong:"Неправильно. Правильна відповідь:",
   listen:"▶ Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
   done:"Готово!",score:(a,b)=>a+" з "+b+" правильно",repeat:"Повтори:",restart:"Пройти ще раз",best:"Найкраще",
@@ -19,7 +19,7 @@ const T={
   timer:"Час",proefInfo:"22 питання: читання, слухання, слова й граматика. Як на іспиті — без підказок до кінця."},
  en:{title:"🎓 Exam 1.1 · part 8 → 11",sub:"Preparation that follows the teacher's exam sheet: reading, listening, writing, speaking, words and grammar.",
   when:"Thu 29.10 — Reading · Writing · Listening\nFri 30.10 — Speaking",back:"← Exam",toets:"← Tests",
-  parts:{lezen:["📖","Lezen","Invitation, chat, medicine label"],luisteren:["🎧","Luisteren","Invitation and doctor dialogue"],schrijven:["✍️","Schrijven","3 e-mails: my day, reply to an invitation, my meals"],spreken:["🗣️","Spreken","6 topics: teacher's questions + your answer"],woorden:["📚","Woordenschat","Words of chapters 8–11"],grammatica:["🧩","Grammatica","Inversion, niet/geen, omdat, moeten, meer/minder"],proef:["🏁","Proefexamen","Big mock test: half of everything"]},
+  parts:{lezen:["📖","Lezen","Invitation, chat, medicine label"],luisteren:["🎧","Luisteren","Invitation and doctor dialogue"],schrijven:["✍️","Schrijven","3 e-mails: my day, reply to an invitation, my meals"],spreken:["🗣️","Spreken","6 topics: teacher's questions + your answer"],woorden:["📚","Woordenschat","Words of chapters 8–11"],grammatica:["🧩","Grammatica","Inversion, niet/geen, omdat, moeten, meer/minder"],meervoud:["🔢","Meervoud","Plurals: +en, +s, ’s, raam → ramen"],omdat:["❓","Waarom? Omdat …","Answer with «Omdat …» — verb at the end"],proef:["🏁","Proefexamen","Big mock test: half of everything"]},
   q:"Question",of:"of",next:"Next",check:"Check",right:"Correct!",wrong:"Not quite. The right answer:",
   listen:"▶ Listen",again:"🔁 Again",showText:"Show text",hideText:"Hide text",readFirst:"Read the question first, then listen.",
   done:"Done!",score:(a,b)=>a+" of "+b+" correct",repeat:"Review:",restart:"Try again",best:"Best",
@@ -170,6 +170,20 @@ const SPREKEN=[
  {id:"advies",t:Q("Інструкції: meer / minder","Advice: meer / minder"),qa:[["Ik drink veel cola.", "Je moet minder cola drinken.", "Я п’ю багато коли.", "Тобі треба пити менше коли."], ["Ik drink elke dag maar een glas water.", "Je moet meer water drinken.", "Я п’ю лише одну склянку води на день.", "Тобі треба пити більше води."], ["Ik eet elke dag frieten.", "Je moet minder frieten eten.", "Я щодня їм картоплю фрі.", "Тобі треба їсти менше картоплі фрі."], ["Ik eet weinig groenten.", "Je moet meer groenten eten.", "Я їм мало овочів.", "Тобі треба їсти більше овочів."], ["Ik eet veel chocolade.", "Je moet minder chocolade eten.", "Я їм багато шоколаду.", "Тобі треба їсти менше шоколаду."], ["Ik sport nooit.", "Je moet meer sporten.", "Я ніколи не займаюся спортом.", "Тобі треба більше займатися спортом."]]}
 ];
 
+// ---- class worksheets (26 Oct): plural (meervoud) and «Waarom? — Omdat …» ----
+const MV=[["Ze wast de ___ van haar huis.", "raam", "ramen", ["raamen", "raams", "rammen"], "Вона миє вікна свого будинку."], ["De patiënt moet 3 ___ siroop per dag nemen.", "lepel", "lepels", ["lepelen", "lepells", "lepelles"], "Пацієнт мусить приймати 3 ложки сиропу на день."], ["5 ___ per dag is te veel!", "maaltijd", "maaltijden", ["maaltijds", "maaltijdden", "maaltijde"], "5 прийомів їжі на день — це забагато!"], ["Een persoon heeft 2 ___.", "arm", "armen", ["arms", "armmen", "arme"], "Людина має 2 руки."], ["Een persoon heeft 2 ___.", "schouder", "schouders", ["schouderen", "schouderren", "schouder's"], "Людина має 2 плечі."], ["Ik heb 10 ___.", "vinger", "vingers", ["vingeren", "vingerren", "vinger's"], "У мене 10 пальців."], ["In het ziekenhuis werken veel ___.", "dokter", "dokters", ["dokteren", "doktors", "dokter's"], "У лікарні працює багато лікарів."], ["We kopen ___ bij Ikea.", "tafel", "tafels", ["tafelen", "taffels", "tafel's"], "Ми купуємо столи в Ikea."], ["Heb je ___?", "kind", "kinderen", ["kinds", "kinden", "kinderens"], "У тебе є діти?"], ["Ja, 2 ___ en 2 dochters.", "zoon", "zonen|zoons", ["zoonen", "zonnen", "zoon's"], "Так, 2 сини і 2 доньки."], ["Ja, 2 zonen en 2 ___.", "dochter", "dochters", ["dochteren", "dochterren", "dochter's"], "Так, 2 сини і 2 доньки."], ["2 ___ en 2 meisjes. Wat een grote familie!", "jongen", "jongens", ["jongenen", "jongennen", "jongen's"], "2 хлопчики і 2 дівчинки. Яка велика сім’я!"], ["2 jongens en 2 ___. Wat een grote familie!", "meisje", "meisjes", ["meisjen", "meisje's", "meisjens"], "2 хлопчики і 2 дівчинки. Яка велика сім’я!"], ["Vandaag is een feestdag: alle ___ zijn gesloten.", "winkel", "winkels", ["winkelen", "winkells", "winkel's"], "Сьогодні свято: усі магазини зачинені."], ["We schrijven ___.", "brief", "brieven", ["briefen", "briefs", "brieffen"], "Ми пишемо листи."], ["We luisteren naar ___.", "liedje", "liedjes", ["liedjen", "liedje's", "liedjens"], "Ми слухаємо пісеньки."], ["Hij eet 2 ___ met eieren.", "boterham", "boterhammen", ["boterhamen", "boterhams", "boterhammes"], "Він їсть 2 бутерброди з яйцями."], ["Hij eet 2 boterhammen met ___.", "ei", "eieren", ["eien", "eis", "eiers"], "Він їсть 2 бутерброди з яйцями."], ["Zij heeft veel ___ op Facebook.", "foto", "foto's", ["fotos", "fotoën", "fotoes"], "У неї багато фото у Facebook."], ["De dokter schrijft 3 ___ voor de patiënt.", "briefje", "briefjes", ["briefjen", "briefje's", "brieven"], "Лікар пише пацієнтові 3 довідки."], ["Wat scheelt er? Ik heb pijn aan mijn ___.", "oog", "ogen", ["oogen", "oogs", "oggen"], "Що з тобою? У мене болять очі."], ["Hij loopt niet graag, omdat hij pijn aan zijn ___ heeft.", "been", "benen", ["beenen", "beens", "bennen"], "Він не любить ходити, бо в нього болять ноги."], ["We kopen ___ voor de kinderen.", "snoepje", "snoepjes", ["snoepjen", "snoepje's", "snoepen"], "Ми купуємо цукерки для дітей."], ["We kopen 2 ___ eieren.", "doos", "dozen", ["doosen", "doozen", "doos's"], "Ми купуємо 2 коробки яєць."], ["Ik vind ___ niet lekker.", "oester", "oesters", ["oesteren", "oesterren", "oester's"], "Мені не смакують устриці."], ["Hij vertrekt naar de supermarkt met 2 ___.", "zak", "zakken", ["zaken", "zaks", "zakkens"], "Він іде в супермаркет із 2 пакетами."], ["Hij heeft 2 ___.", "auto", "auto's", ["autos", "autoën", "auto'en"], "У нього 2 машини."], ["Hij heeft 6 ___.", "paraplu", "paraplu's", ["paraplus", "paraplu'en", "parapluën"], "У нього 6 парасольок."], ["Hij heeft 2 ___.", "computer", "computers", ["computeren", "computer's", "computerren"], "У нього 2 комп’ютери."], ["Hij gaat graag naar de ___ en restaurants.", "café", "cafés", ["caféen", "café's", "cafeeën"], "Він любить ходити в кафе й ресторани."], ["In de winkel liggen veel ___.", "kaas", "kazen", ["kaasen", "kaazen", "kazzen"], "У магазині лежить багато сирів."], ["Het huis heeft 2 ingangen met 2 ___.", "deur", "deuren", ["deurs", "deurren", "deur's"], "У будинку 2 входи з 2 дверима."], ["Het huis heeft 2 ___.", "ingang", "ingangen", ["ingangs", "ingangens", "ingang's"], "У будинку 2 входи."], ["Ik heb 3 ___ in mijn tas.", "pen", "pennen", ["penen", "pens", "pen's"], "У мене в сумці 3 ручки."], ["’s Morgens eten ze ___ en croissants.", "pistolet", "pistolets", ["pistoleten", "pistoletten", "pistolet's"], "Уранці вони їдять булочки й круасани."]];
+const MV_PICK={"text": "Carlo heeft een grote familie: hij heeft 4 kinderen, 2 jongens en 2 meisjes. Zijn 2 zonen heten Christof en Matthieu. Zijn 2 dochters heten Christine en Chantal. ’s Morgens eten ze veel pistolets en croissants. ’s Middags eten ze 2 boterhammen met soep. In de namiddag eten ze graag koekjes. Carlo heeft 2 grote tafels in zijn huis. Zijn huis heeft 2 ingangen met 2 deuren. Hij gaat graag naar de cafés, restaurants en winkels in het centrum van de stad. Hij heeft 2 auto’s, 2 computers en 6 paraplu’s.", "targets": ["kinderen", "jongens", "meisjes", "zonen", "dochters", "pistolets", "croissants", "boterhammen", "koekjes", "tafels", "ingangen", "deuren", "cafés", "restaurants", "winkels", "auto’s", "computers", "paraplu’s"], "uk": "Карло має велику сім’ю: у нього 4 дітей, 2 хлопчики і 2 дівчинки. Його 2 синів звуть Крістоф і Матьє. Його 2 доньок звуть Крістін і Шанталь. Уранці вони їдять багато булочок і круасанів. Удень вони їдять 2 бутерброди із супом. Після обіду вони люблять їсти печиво. У Карло вдома 2 великі столи. У його будинку 2 входи з 2 дверима. Він любить ходити в кафе, ресторани й магазини в центрі міста. У нього 2 машини, 2 комп’ютери і 6 парасольок."};
+const OM=[["Waarom huilt de baby?", "Omdat hij honger heeft.", "Чому плаче дитина?", "Тому що вона голодна."], ["Waarom dragen de kinderen een handdoek?", "Omdat ze gaan zwemmen.", "Чому діти несуть рушник?", "Тому що вони підуть плавати."], ["Waarom zijn An en Bart niet in de klas?", "Omdat ze te laat zijn.", "Чому Ан і Барта немає в класі?", "Тому що вони запізнюються."], ["Waarom dragen de kinderen warme kleren?", "Omdat ze in de sneeuw gaan spelen.", "Чому діти в теплому одязі?", "Тому що вони підуть гратися в сніг."], ["Waarom zitten moeder en dochter in de wachtkamer?", "Omdat het meisje buikpijn heeft.", "Чому мама з донькою сидять у приймальні?", "Тому що в дівчинки болить живіт."], ["Waarom gaat Monserrat naar de supermarkt?", "Omdat de koelkast leeg is.", "Чому Монсеррат іде в супермаркет?", "Тому що холодильник порожній."], ["Waarom telt Améline haar geld?", "Omdat ze een boek gaat kopen.", "Чому Амелін рахує гроші?", "Тому що вона купуватиме книжку."], ["Waarom staat Lutgarde op een ladder?", "Omdat ze de ramen gaat wassen.", "Чому Лютгард стоїть на драбині?", "Тому що вона митиме вікна."], ["Waarom blijf je thuis?", "Omdat ik ziek ben.", "Чому ти лишаєшся вдома?", "Тому що я хворий."], ["Waarom kom je niet naar het feest?", "Omdat ik moet werken.", "Чому ти не прийдеш на свято?", "Тому що я мушу працювати."], ["Waarom ga je naar de apotheek?", "Omdat ik hoestsiroop nodig heb.", "Чому ти йдеш в аптеку?", "Тому що мені потрібен сироп від кашлю."], ["Waarom eet je geen frieten?", "Omdat frieten ongezond zijn.", "Чому ти не їси картоплю фрі?", "Тому що картопля фрі шкідлива."], ["Waarom ga je naar de dokter?", "Omdat ik koorts heb.", "Чому ти йдеш до лікаря?", "Тому що в мене температура."], ["Waarom drink je veel water?", "Omdat het gezond is.", "Чому ти п’єш багато води?", "Тому що це корисно."], ["Waarom sta je zo vroeg op?", "Omdat mijn les om 8 uur begint.", "Чому ти так рано встаєш?", "Тому що мій урок починається о 8:00."], ["Waarom ga je niet mee naar de cinema?", "Omdat ik geen tijd heb.", "Чому ти не підеш у кіно?", "Тому що в мене немає часу."]];
+const OM_MC=[["Omdat ik ziek ben.", ["Omdat ik ben ziek.", "Omdat ben ik ziek.", "Omdat ziek ik ben."], "Тому що я хворий."], ["Omdat ik moet werken.", ["Omdat ik werken moet niet.", "Omdat moet ik werken.", "Omdat ik moet werk."], "Тому що я мушу працювати."], ["Want ik ben ziek.", ["Want ik ziek ben.", "Want ben ik ziek.", "Want ziek ik ben."], "Бо я хворий."], ["Omdat de koelkast leeg is.", ["Omdat de koelkast is leeg.", "Omdat is de koelkast leeg.", "Omdat leeg de koelkast is."], "Тому що холодильник порожній."], ["Omdat hij om 6 uur opstaat.", ["Omdat hij staat om 6 uur op.", "Omdat hij om 6 uur staat op.", "Omdat staat hij om 6 uur op."], "Тому що він встає о 6:00."]];
+const RULES={
+ meervoud:{uk:"<b>Meervoud: +en (70%)</b> — більшість слів: zoon → zonen, deur → deuren, ingang → ingangen.<br><b>+s (30%)</b> — слова на <b>-en, -el, -er, -je</b> і міжнародні: jongen → jongens, tafel → tafels, dochter → dochters, meisje → meisjes, computer → computers, café → cafés.<br><b>'s</b> — слова на <b>a, o, u, i</b>: auto → auto’s, foto → foto’s, paraplu → paraplu’s.<br><b>Довгий / короткий звук:</b> raam → ramen, oog → ogen (aa → a, oo → o); zak → zakken, pen → pennen, boterham → boterhammen (подвоюємо приголосну!).<br><b>Особливі:</b> brief → brieven, kaas → kazen, doos → dozen (f → v, s → z), kind → kinderen, ei → eieren.<br><b>Увага:</b> heten, eten — це дієслова, а не множина!",en:"<b>Plural +en (70%)</b>: zoon → zonen, deur → deuren.<br><b>+s (30%)</b>: words in -en, -el, -er, -je and international words: jongens, tafels, dochters, meisjes, computers, cafés.<br><b>'s</b> after a, o, u, i: auto’s, foto’s, paraplu’s.<br><b>Long/short vowel:</b> raam → ramen, oog → ogen; zak → zakken, pen → pennen, boterham → boterhammen.<br><b>Special:</b> brief → brieven, kaas → kazen, doos → dozen, kind → kinderen, ei → eieren."},
+ omdat:{uk:"<b>Omdat</b> + хто + … + <b>дієслово в кінці</b>.<br>Waarom huilt de baby? → Omdat hij honger <b>heeft</b>.<br>Два дієслова — обидва в кінці: Omdat ze een boek <b>gaat kopen</b>. Omdat ik <b>moet werken</b>.<br>Розділюване дієслово зливається: Omdat hij om 6 uur <b>opstaat</b>.<br><b>Want</b> — звичайний порядок: Want ik <b>ben</b> ziek.<br>Підмет — правильна особа: Monserrat → <b>ze</b>, de baby → <b>hij</b>, het meisje → <b>ze</b>.",en:"<b>Omdat</b> + subject + … + <b>verb at the end</b>: Omdat hij honger <b>heeft</b>. Two verbs at the end: Omdat ze een boek <b>gaat kopen</b>. Separable verbs join: Omdat hij om 6 uur <b>opstaat</b>. <b>Want</b> keeps normal order: Want ik <b>ben</b> ziek."}
+};
+function mkMV(m,i){const acc=m[2].split("|"),gap=m[0].replace("___","___ ("+m[1]+")"),full=m[0].replace("___",acc[0]);
+ return i%2?{kind:"type",gap,acc,ok:acc[0],full,u:m[4],e:L()==="uk"?m[1]+" → "+acc.join(" / "):m[1]+" → "+acc[0]}:{kind:"mc",gap,o:[acc[0],...m[3]],ok:acc[0],full,u:m[4],e:m[1]+" → "+acc.join(" / "),nlOpts:true}}
+function mkOM(o){const w=o[1].replace(/\.$/,"").split(" ");return{kind:"order",prompt:o[0],promptU:o[2],w:w.map((x,i)=>i===w.length-1?x+".":x),a:o[1],u:o[3],e:tr(Q("Omdat → дієслово в кінці речення","Omdat → verb at the end"))}}
+function mkOMmc(o){return{kind:"mc",q:L()==="uk"?"Яке речення правильне?":"Which sentence is correct?",o:[o[0],...o[1]],ok:o[0],full:o[0],u:o[2],nlOpts:true,e:/^Want/.test(o[0])?tr(Q("want → звичайний порядок: підмет + дієслово","want → normal order")):tr(Q("omdat → дієслово(а) в кінці","omdat → verb(s) at the end"))}}
+function mkPick(){return{kind:"pick",ptext:MV_PICK.text,targets:MV_PICK.targets,ok:MV_PICK.targets.join(", "),textUk:MV_PICK.uk,e:tr(Q("heten, eten — дієслова, не множина іменників","heten, eten are verbs, not plural nouns"))}}
 // ---------------- HELPERS ----------------
 const st=()=>{try{const s=lsGet(KEY,{});return s&&typeof s==="object"?s:{}}catch(e){return{}}};
 const save=s=>{try{lsSet(KEY,s)}catch(e){}};
@@ -201,7 +215,7 @@ function home(){
   b.append(el("span","ex-ic",ic),el("strong","",t),el("span","ex-d",d));
   const run=(s.run||{})[id];if(run&&run.i>0&&run.i<(run.items||[]).length)b.appendChild(el("span","ex-cont",(L()==="uk"?"▶ Продовжити ":"▶ Continue ")+(run.i+1)+"/"+run.items.length));
   const best=s.best&&s.best[id];if(best!=null){b.appendChild(el("span","ex-best","★ "+best+"%"));if(best>=70)b.classList.add("ok")}
-  b.onclick=()=>({lezen:()=>quiz("lezen"),luisteren:()=>quiz("luisteren"),woorden:()=>quiz("woorden"),grammatica:()=>quiz("grammatica"),proef:()=>quiz("proef"),schrijven:writePick,spreken:speakPick})[id]();
+  b.onclick=()=>({lezen:()=>quiz("lezen"),meervoud:()=>quiz("meervoud"),omdat:()=>quiz("omdat"),luisteren:()=>quiz("luisteren"),woorden:()=>quiz("woorden"),grammatica:()=>quiz("grammatica"),proef:()=>quiz("proef"),schrijven:writePick,spreken:speakPick})[id]();
   grid.appendChild(b);
  });
  c.appendChild(grid);
@@ -237,12 +251,14 @@ function build(part){
  if(part==="luisteren")return LUISTEREN.map(mkLuisteren);
  if(part==="woorden"){const P=wordPool(),w=shuffle(P).slice(0,25);return w.map((x,i)=>mkWoord(x,i,P))}
  if(part==="grammatica")return shuffle(GRAM).map(mkGram);
+ if(part==="meervoud")return [mkPick(),...shuffle(MV).slice(0,19).map(mkMV)];
+ if(part==="omdat")return [...shuffle(OM).slice(0,12).map(mkOM),...shuffle(OM_MC).slice(0,3).map(mkOMmc)];
  // mock exam: half of everything, grouped like the exam
  const pick=(a,n)=>shuffle(a).slice(0,n);
  const lez=pick(["karim","sofie","chat","mail","siroop","tabletten"],3).flatMap(t=>pick(LEZEN.filter(x=>x.t===t),2)).map(mkLezen);
  const lui=pick(Object.keys(DLG),2).flatMap(d=>pick(LUISTEREN.filter(x=>x.d===d),2)).map(mkLuisteren);
  const P=wordPool(),w=pick(P,6).map((x,i)=>mkWoord(x,i,P));
- return [...lez,...lui,...w,...pick(GRAM,6).map(mkGram)];
+ return [...lez,...lui,...w,...pick(GRAM,4).map(mkGram),...pick(MV,3).map(mkMV),...pick(OM,3).map(mkOM)];
 }
 let QZ=null;
 function qzSave(){if(!QZ)return;const s=st();s.run=s.run||{};const clean=o=>JSON.parse(JSON.stringify(o,(k,v)=>k.startsWith("_")?undefined:v));s.run[QZ.part]={items:clean(QZ.items),i:QZ.i,right:QZ.right,miss:clean(QZ.miss),t0:QZ.t0};save(s)}
@@ -264,14 +280,28 @@ function ask(){
   sh.onclick=()=>{box.hidden=!box.hidden;sh.textContent=box.hidden?u.showText:u.hideText};
   row.append(pl,sh);c.append(row,box);it._box=box;
  }
+ if(RULES[s.part]){const d=el("details","ex-rules");if(s.i===0)d.open=true;d.appendChild(el("summary","",L()==="uk"?"📘 Правило":"📘 Rule"));const r=el("div","ex-rtext");r.innerHTML=RULES[s.part][L()]||RULES[s.part].uk;d.appendChild(r);c.appendChild(d)}
+ if(it.prompt){const pq=el("div","ex-text ex-speakq");const qt=el("p","ex-q");qt.appendChild(nl(it.prompt));pq.appendChild(qt);const sb=el("button","btn ex-say","🔊");sb.type="button";sb.onclick=()=>say(it.prompt,sb);pq.appendChild(sb);if(UKON()&&it.promptU)pq.appendChild(trEl(it.promptU));c.appendChild(pq)}
  const qh=el("h3","ex-q");
  if(it.gap){qh.appendChild(nl(it.gap))}else if(it.nlQ){qh.textContent=it.q.split(it.nlQ)[0];qh.appendChild(nl(it.nlQ));qh.append(it.q.split(it.nlQ)[1]||"")}else qh.textContent=it.q;
- if(it.kind==="order")qh.textContent=u.order;
+ if(it.kind==="order")qh.textContent=it.prompt?(L()==="uk"?"Склади відповідь: Omdat …":"Build the answer: Omdat …"):u.order;
+ if(it.kind==="pick")qh.textContent=L()==="uk"?"Натисни всі іменники в множині (meervoud), потім «Перевірити».":"Tap every plural noun, then «Check».";
  c.appendChild(qh);
  if(it.kind==="mc"){
   const box=el("div","opts ex-opts");
   shuffle(it.o).forEach(o=>{const b=el("button","opt");b.type="button";b.appendChild(it.nlOpts||it.text||it.dlg||it.gap?nl(o):el("span","",o));b.onclick=()=>answer(o===it.ok,b,box);box.appendChild(b)});
   c.appendChild(box);
+ }else if(it.kind==="type"){
+  const f=el("form","g-type ex-typef"),inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.placeholder=L()==="uk"?"Напиши множину…":"Type the plural…";
+  const b=el("button","btn primary",u.check);b.type="submit";f.append(inp,b);
+  f.onsubmit=e=>{e.preventDefault();const v=inp.value.trim().toLowerCase().replace(/[’`´]/g,"'");if(!v)return;inp.disabled=true;const ok=it.acc.some(a=>a.toLowerCase().replace(/[’]/g,"'")===v);inp.classList.add(ok?"ok":"bad");answer(ok,null,f)};
+  c.appendChild(f);setTimeout(()=>{try{inp.focus()}catch(e){}},50);
+ }else if(it.kind==="pick"){
+  const box=el("div","ex-pick"),sel=new Set(),norm2=w=>w.toLowerCase().replace(/[.,:!?]/g,"").replace(/[’']/g,"’");
+  it.ptext.split(/\s+/).forEach((w,i)=>{const b=el("button","ex-word");b.type="button";b.appendChild(nl(w));b.dataset.w=norm2(w);b.onclick=()=>{if(b.disabled)return;b.classList.toggle("on");b.classList.contains("on")?sel.add(i):sel.delete(i)};box.appendChild(b)});
+  const chk=el("button","btn primary",u.check);chk.type="button";
+  chk.onclick=()=>{const T=new Set(it.targets.map(norm2));let ok=true;box.querySelectorAll(".ex-word").forEach(b=>{const on=b.classList.contains("on"),t=T.has(b.dataset.w);if(on&&t)b.classList.add("good");else if(on&&!t){b.classList.add("bad");ok=false}else if(!on&&t){b.classList.add("miss");ok=false}});chk.remove();answer(ok,null,box)};
+  c.append(box,chk);
  }else{
   const line=el("div","ex-line"),pool=el("div","ex-pool"),picked=[];
   const draw=()=>{line.replaceChildren(...picked.map(w=>nl(w)));};
@@ -287,7 +317,9 @@ function answer(ok,btn,box,orderAnswer){
  if(ok)s.right++;else s.miss.push(it);
  s.i++;qzSave();s.i--; // the answer counts even if the learner leaves now
  const fb=el("div","ex-fb "+(ok?"ok":"bad"));fb.appendChild(el("strong","",ok?u.right:u.wrong+" "));
- if(!ok){fb.appendChild(nl(it.kind==="order"?it.a:it.ok))}
+ if(!ok&&it.kind!=="pick"){fb.appendChild(nl(it.kind==="order"?it.a:it.ok))}
+ if(it.kind==="pick")fb.appendChild(el("p","",(L()==="uk"?"Множина в тексті: ":"Plurals: ")+it.ok));
+ if(it.kind==="pick"&&UKON()&&it.textUk){const d2=el("details","ex-trbox");d2.append(el("summary","","🇺🇦 Переклад"),trEl(it.textUk,"p"));fb.appendChild(d2)}
  if(UKON()){
   if(it.full||it.kind==="order"){const sx=el("p","ex-full");sx.appendChild(nl(it.full||it.a));fb.appendChild(sx);if(it.u)fb.appendChild(trEl(it.u,"p"))}
   if(it.pair){const sx=el("p","ex-full");sx.appendChild(nl(it.pair[0]));sx.append(" — "+it.pair[1]);fb.appendChild(sx)}
@@ -298,7 +330,7 @@ function answer(ok,btn,box,orderAnswer){
  if(it.e)fb.appendChild(el("p","",it.e));
  c.appendChild(fb);
  if(it._box&&it._box.hidden){it._box.hidden=false}
- if(it.gap||it.kind==="order")say(it.kind==="order"?it.a:it.full.replace(/^.*→\s*/,""));
+ if(it.gap||it.kind==="order"||it.kind==="type")say(it.kind==="order"?it.a:it.full.replace(/^.*→\s*/,""));
  const nx=el("button","btn primary ex-next",u.next);nx.type="button";nx.id="nx";nx.onclick=()=>{s.i++;if(s.i<s.items.length){qzSave();ask()}else end()};c.appendChild(nx);
  setTimeout(()=>{try{nx.scrollIntoView({block:"nearest",behavior:"smooth"})}catch(e){}},30);
 }
@@ -389,6 +421,7 @@ function texts(){ // every Dutch text this module can speak (for tools/collect-a
  const out=[];Object.values(DLG).forEach(d=>d.forEach(l=>out.push(l[1])));
  GRAM.forEach(g=>out.push(g.w?g.a:g.s.replace("___",g.o[0]).replace(/\s*\(.*\)\s*$/,"").replace(/\s*→.*$/,"")));
  SPREKEN.forEach(t=>t.qa.forEach(([q,a])=>{out.push(q);out.push(a)}));
+ MV.forEach(m=>out.push(m[0].replace("___",m[2].split("|")[0])));OM.forEach(o=>{out.push(o[0]);out.push(o[1])});OM_MC.forEach(o=>out.push(o[0]));
  return out;
 }
 function speakScript(){ // mock speaking exam for the AI: 6 topics in course order, ~22 questions
