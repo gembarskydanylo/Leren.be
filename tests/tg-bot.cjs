@@ -39,6 +39,13 @@ c=await send('/post quiz',42);assert.equal(c[0].body.chat_id,'@lerenbe');assert.
 
 c=await send('/post welcome',42);assert.match(c[0].body.text,/Вітаємо/);assert.equal(c[1].method,'pinChatMessage');assert.equal(c[1].body.chat_id,'@lerenbe');
 
+// Testers' topics: only the admin, only in a forum group; three topics, each with a pinned template
+const group=async(text,from,is_forum)=>{calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:1,chat:{id:-100,type:'supergroup',is_forum},from:{id:from},text}})}),env,ctx);await flush();return calls};
+c=await group('/topics',7,true);assert.equal(c.length,0);
+c=await group('/topics',42,false);assert.match(c[0].body.text,/Теми/);
+c=await group('/topics@lerenbe_bot',42,true);assert.deepEqual(c.map(x=>x.method),['createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','sendMessage']);
+assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Скріншот/);
+
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
 assert.equal(ans.body.text,'Kort: <b>geen</b> перед іменником. &lt;script&gt;x&lt;/script&gt;');

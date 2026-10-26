@@ -2,6 +2,7 @@
 // Channel: word of the day with audio, evening quiz, tips, weekly app promo (schedule below, Brussels time).
 // Private chat: /start, /word, /quiz, /app, /id, and any question about Dutch → Claude answers in Ukrainian.
 // Admin (ADMIN_ID): /post word|quiz|tip|promo|welcome (to the channel now; welcome is also pinned), /preview … (to you only), /report.
+// In a group with Topics turned on, the admin's /topics creates the testers' topics, each with a pinned how-to.
 // Secrets: TG_TOKEN, ANTHROPIC_KEY, WEBHOOK_SECRET. Variables: CHANNEL (@name or -100…), ADMIN_ID, BOT_USERNAME,
 // optional MODEL (default claude-haiku-5-5), AI_OFF = 1 stops all model calls.
 // After the first deploy open https://leren-tg.<account>.workers.dev/setup?secret=WEBHOOK_SECRET once.
@@ -130,10 +131,45 @@ const WELCOME = `Привіт! 👋 Я бот <b>lerenbe.com</b> — допом�
 /quiz — міні-вікторина
 /app — застосунок lerenbe.com`;
 
+// Testers' group: one topic per kind of feedback, each opened with a pinned template.
+const TOPICS = [
+  {name: "🐞 Помилки", icon_color: 16478047, text: `🐞 <b>Сюди — помилки в застосунку</b>
+
+Одна помилка = одне повідомлення. Напишіть:
+1. <b>Пристрій:</b> Android / iPhone / комп'ютер, браузер або встановлений застосунок
+2. <b>Де:</b> розділ і тема (наприклад, Урок → «Wie ben jij?» → Тест)
+3. <b>Що робили:</b> крок за кроком
+4. <b>Що сталося</b> і <b>що мало статися</b>
+5. 📸 <b>Скріншот</b> або запис екрана
+
+Дякуємо, кожен звіт робить Leren кращим 💛`},
+  {name: "❓ Питання", icon_color: 7322096, text: `❓ <b>Сюди — питання</b>
+
+Щось незрозуміло в застосунку, у завданні чи в поясненні граматики? Питайте тут. Додайте скріншот, якщо питання про конкретний екран.`},
+  {name: "💡 Ідеї", icon_color: 16766590, text: `💡 <b>Сюди — ідеї та побажання</b>
+
+Чого не вистачає? Яку тему, гру чи вправу додати? Що зробити зручніше?
+Ставте 👍 ідеям інших, і найпопулярніші підуть у роботу першими.`}
+];
+async function makeTopics(env, msg) {
+  const chat = msg.chat.id;
+  if (!msg.chat.is_forum) return tg(env, "sendMessage", {chat_id: chat, text: "Спершу ввімкніть Теми: група → ✏️ Змінити → Теми (Topics). Потім надішліть /topics ще раз."});
+  const made = [];
+  for (const t of TOPICS) {
+    const topic = await tg(env, "createForumTopic", {chat_id: chat, name: t.name, icon_color: t.icon_color});
+    if (!topic.ok) return tg(env, "sendMessage", {chat_id: chat, text: "Не вдалося створити тему: " + topic.description + "\nДайте боту права адміністратора «Керування темами» та «Закріплення повідомлень»."});
+    const m = await tg(env, "sendMessage", {chat_id: chat, message_thread_id: topic.result.message_thread_id, text: t.text, parse_mode: "HTML"});
+    if (m.ok) await tg(env, "pinChatMessage", {chat_id: chat, message_id: m.result.message_id, disable_notification: true});
+    made.push(t.name);
+  }
+  return tg(env, "sendMessage", {chat_id: chat, text: "✅ Готово: " + made.join(", ")});
+}
+
 async function onMessage(env, msg) {
   const chat = msg.chat.id, text = (msg.text || "").trim();
-  if (msg.chat.type !== "private" || !text) return;
   const isAdmin = String(msg.from?.id) === String(env.ADMIN_ID);
+  if (msg.chat.type === "supergroup" && isAdmin && /^\/topics(@\w+)?$/.test(text)) return makeTopics(env, msg);
+  if (msg.chat.type !== "private" || !text) return;
   const [cmd, arg] = text.split(/\s+/);
   const day = brussels().day;
   const random = Math.floor(Math.random() * 1e6);
