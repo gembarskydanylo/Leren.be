@@ -20,11 +20,13 @@
   function go(next){bridge.stop();feedback=null;screen=next;render();root.scrollIntoView({block:'start',behavior:'smooth'})}
   function begin(l){const s=model.state.session;if(s?.kind==='lesson'&&s.lesson===l.id&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}model.begin(l.id);go('intro')}
   function shell(){
-   root.replaceChildren();root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';
-   const tools=node('div','lp-toolbar'),label=node('label','',t('lang')),select=node('select');
+   root.replaceChildren();root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';root.dataset.screen=screen;
+   const tools=node('div','lp-toolbar'),label=node('label','lp-language'),select=node('select');label.appendChild(node('span','lp-language-label',t('lang')));
    select.setAttribute('aria-label',t('lang'));[['uk','🇺🇦 Українська'],['en','English'],['fr','Français'],['ar','العربية']].forEach(([v,name])=>{const o=node('option','',name);o.value=v;select.appendChild(o)});select.value=lang;select.onchange=()=>{lang=select.value;bridge.setLanguage(lang);render()};label.appendChild(select);
-   tools.append(label,button(t('free'),()=>{bridge.stop();bridge.free()}));root.appendChild(tools);
-   if(screen!=='home')root.appendChild(button('‹ '+t('home'),()=>go('home')));
+   if(screen!=='home')tools.appendChild(button('‹ '+t('home'),()=>go('home')));
+   tools.appendChild(label);
+   if(screen==='home')tools.appendChild(button(t('free'),()=>{bridge.stop();bridge.free()}));
+   else{const menu=node('details','lp-more'),summary=node('summary','','⋯');summary.setAttribute('aria-label',({uk:'Інші дії',en:'More actions',fr:'Autres actions',ar:'إجراءات أخرى'})[lang]);menu.append(summary,button(t('free'),()=>{bridge.stop();bridge.free()}));tools.appendChild(menu)}root.appendChild(tools);
   }
   function note(){root.appendChild(node('p','lp-caption',t(model.persistent?'saved':'memory')))}
   function hero(){
@@ -97,14 +99,15 @@
    root.appendChild(box);note();
   }
   function placement(){
-   const box=node('div','lp-card'),p=model.state.placement;if(!p){go('home');return}
-   box.append(node('h2','',t('place')),node('p','',t('placeHint')));
+   const box=node('div','lp-card lp-placement'),p=model.state.placement;if(!p){go('home');return}
+   box.appendChild(node('h2','',t('place')));
+   const help=node('details','lp-placement-help');help.append(node('summary','',({uk:'Як це працює?',en:'How does it work?',fr:'Comment ça marche ?',ar:'كيف يعمل؟'})[lang]),node('p','',t('placeHint')));box.appendChild(help);
    if(p.answers.length===12){const first=p.answers.indexOf(false),ch=course.chapters[first<0?12:first];box.append(node('h3','',t('placeDone')),node('p','lp-meaning',ch.level+' · '+title(ch)),node('p','',t('placeNote')),button(t('accept'),()=>{model.acceptPlacement();begin(model.recommended())},true));}
    else{
-    const w=model.placementCard();box.append(node('p','lp-caption',(p.answers.length+1)+' / 12'),node('p','lp-word',w.nl));
+    const w=model.placementCard(),progress=node('div','lp-placement-progress'),meter=node('progress');meter.max=12;meter.value=p.answers.length;meter.setAttribute('aria-label',t('place'));progress.append(node('span','lp-caption',(p.answers.length+1)+' / 12'),meter);box.append(progress,node('p','lp-word',w.nl));
     const opts=node('div','lp-options');options(w,true).forEach(o=>opts.appendChild(button(o.text,()=>{if(model.placementAnswer(w.id,o.ok))render()})));box.appendChild(opts);
    }
-   box.appendChild(button(t('skip'),()=>{model.start();begin(course.lessons[0])}));root.appendChild(box);
+   const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
   function render(){bridge.stop();lang=languages.includes(lang)?lang:'uk';shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else exercises()}
   render();return {refresh(){lang=bridge.language();render()},home(){go('home')},open(){go('home')},pauseSpeech(){bridge.stop()},model};
