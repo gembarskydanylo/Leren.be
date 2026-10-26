@@ -61,3 +61,7 @@
 @media(max-width:650px){.lp-exercise h2{font-size:18px;line-height:1.4}.lp-exercise>.lp-word{font-size:32px}}
 [data-theme="dark"] .fh-meter::-webkit-progress-value{background:#ffbe87}[data-theme="dark"] .fh-meter::-moz-progress-bar{background:#ffbe87}
 [data-theme="dark"] .fh-topic.is-done .fh-meter::-webkit-progress-value{background:#8ddab0}[data-theme="dark"] .fh-topic.is-done .fh-meter::-moz-progress-bar{background:#8ddab0}[data-theme="dark"] .fh-lesson-list .is-done .fh-lesson-end{color:#8ddab0}
+/* Keep the complete topic illustration visible at every card width. */
+.fh-topic-picture{padding:4px}.fh-topic-picture img{object-fit:contain}
+@media(min-width:651px){.fh-preview-grid .fh-topic{display:grid;grid-template-columns:140px minmax(0,1fr)}.fh-preview-grid .fh-topic-picture{height:140px;padding:8px}.fh-preview-grid .fh-topic-body{padding:18px}}
+@media(max-width:650px){.fh-preview-grid .fh-topic-picture{height:90px}}

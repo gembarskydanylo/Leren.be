@@ -968,7 +968,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=107">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=107">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=108">
 </head>
 <body>
 <main data-view="path">
@@ -6431,7 +6431,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="107";
+const RELEASE_VERSION="108";
 const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Менше зайвого. Більше навчання.", "items": ["На головній — один наступний урок. Повна карта тем відкривається окремо.", "Теми з ілюстраціями, прогресом і чіткими станами уроків.", "Мова, темна тема та голос учителя — у швидких налаштуваннях.", "Приклади у кроці «Вивчи» можна розгорнути; кнопка звуку підсвічується під час відтворення."], "hint": "Почни або продовжуй урок із головного екрана. «Усі теми» відкриє карту курсу.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Less clutter. More learning.", "items": ["One next lesson on the home screen. Open the complete topic map separately.", "Illustrated topics, progress meters and clear lesson states.", "Quick access to language, dark theme and the teacher’s voice.", "Expand example sentences when needed; the sound button highlights during playback."], "hint": "Start or resume from Home. All topics opens the course map.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Moins de distractions. Plus d’apprentissage.", "items": ["Une seule prochaine leçon à l’accueil. La carte complète s’ouvre séparément.", "Thèmes illustrés, progression et états des leçons.", "Accès rapide à la langue, au thème et à la voix.", "Exemples dépliables ; le bouton audio s’illumine pendant la lecture."], "hint": "Commence ou reprends à l’accueil. Tous les thèmes ouvre la carte.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تشتيت أقل. تعلّم أكثر.", "items": ["درس تالٍ واحد في الرئيسية، وخريطة المواضيع في شاشة منفصلة.", "مواضيع مصوّرة وتقدّم وحالات واضحة للدروس.", "وصول سريع للغة والوضع الداكن والصوت.", "أمثلة قابلة للتوسيع وزر صوت يظهر حالة التشغيل."], "hint": "ابدأ أو تابع من الرئيسية. كل المواضيع تفتح خريطة الدورة.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
