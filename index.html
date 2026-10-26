@@ -21,7 +21,8 @@
 <script src="./modules/companion/ui.js?v=102"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/learning-path/ui.js?v=104"></script>
+<script src="./modules/focused-home/ui.js?v=107"></script>
+<script src="./modules/learning-path/ui.js?v=107"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -964,9 +965,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=104">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=107">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=107">
 </head>
 <body>
 <main data-view="path">
@@ -2600,7 +2602,7 @@ function changeTargetLang(l){if(!LANGS.includes(l))return;targetLang=l;if(target
 function changeUiLang(l){if(!UI_LANGS.includes(l))return;uiLang=l;if(targetLang===uiLang)targetLang=uiLang==="en"?"nl":"en";afterLangChange()}
 
 let autoSpeech=lsGet("leren_auto_speech",true);
-function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>b.classList.remove("is-speaking"));if(active&&button)button.classList.add("is-speaking");const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
+function updateSpeechState(active,button){document.querySelectorAll(".listen.is-speaking").forEach(b=>{b.classList.remove("is-speaking");b.setAttribute("aria-busy","false")});if(active&&button){button.classList.add("is-speaking");button.setAttribute("aria-busy","true")}const status=$("speechStatus");if(status){status.hidden=!active;status.textContent=active?(getUI().speechPlaying||"Speaking now"):""}}
 const SPEECH_STUCK={uk:"Голос пристрою не відповідає. Повністю закрий браузер або застосунок і відкрий знову. Якщо не допоможе, перезавантаж телефон чи комп’ютер.",
  en:"The device voice isn't responding. Close the browser or app completely and open it again. If that doesn't help, restart your phone or computer.",
  fr:"La voix de l’appareil ne répond pas. Ferme complètement le navigateur ou l’application et rouvre-le. Si ça ne suffit pas, redémarre ton téléphone ou ton ordinateur.",
@@ -2726,7 +2728,7 @@ function updateProgress(){
 // Diphthongs widget is a self-contained lesson, not a DATA quiz deck.
 window.LerenLessonWidgets={
  getLanguage:()=>uiLang,
- speak:(text,automatic=false)=>{if(targetLang==="nl"&&(!automatic||autoSpeech))say(text)},
+ speak:(text,automatic=false,button,onDone)=>{if(targetLang==="nl"&&(!automatic||autoSpeech))say(text,button,onDone)},
  completeDiphthongs:(kind,correct,total)=>recordDiphthongsResult(kind,correct,total),
  stop:()=>{++speechToken;++TTS.tok;if(audioEl){audioEl.pause();audioEl=null}if(window.speechSynthesis)window.speechSynthesis.cancel();updateSpeechState(false)}
 };
@@ -2850,7 +2852,7 @@ function renderClockFace(nlText){
 }
 
 // After an answer: scroll just enough that the feedback and "Next" sit above the bottom dock (nothing overlaps).
-function revealNext(){setTimeout(()=>{const nx=$("nx");if(!nx||nx.closest("[hidden]"))return;const dock=$("modeButtons"),limit=(dock?dock.getBoundingClientRect().top:innerHeight)-14,r=nx.getBoundingClientRect();if(r.bottom>limit)window.scrollBy({top:r.bottom-limit,behavior:"smooth"})},120)}
+function revealNext(){setTimeout(()=>{const nx=$("nx");if(!nx||nx.closest("[hidden]"))return;const dock=$("modeButtons"),limit=(dock&&getComputedStyle(dock).position==="fixed"?dock.getBoundingClientRect().top:innerHeight)-14,r=nx.getBoundingClientRect();if(r.bottom>limit)window.scrollBy({top:r.bottom-limit,behavior:"smooth"})},120)}
 function cardToTop(){const c=$("card");if(c&&c.getBoundingClientRect().top<0)c.scrollIntoView({block:"start",behavior:"smooth"})}
 function nextQuestion(){
  cardToTop();
@@ -4449,7 +4451,7 @@ function dictSub(e){
  if(e.p==="adj"&&e.fm&&e.fm.length)return e.fm.slice(0,2).join(" · ");
  return "";
 }
-function dictSayBtn(text){const b=el("button","dx-say");b.type="button";b.setAttribute("aria-label",dU().listen+": "+text);b.appendChild(ico("volume"));b.onclick=ev=>{ev.stopPropagation();say(text,b)};return b}
+function dictSayBtn(text){const b=el("button","dx-say listen");b.type="button";b.setAttribute("aria-label",dU().listen+": "+text);b.appendChild(ico("volume"));b.onclick=ev=>{ev.stopPropagation();say(text,b)};return b}
 function dictStarBtn(e,onChange){
  const u=dU(),k=dictKey(e),on=dictMine().includes(k);const b=el("button","dx-star"+(on?" on":""));b.type="button";
  b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?u.unstar:u.star);b.textContent=on?"★":"☆";
@@ -4592,7 +4594,7 @@ const ICONS={
 function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute("aria-hidden","true");s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||"")+"</svg>";return s}
 function fillIcons(root){(root||document).querySelectorAll("[data-ico]").forEach(e=>{if(!e.firstChild)e.replaceWith(Object.assign(ico(e.dataset.ico,e.className.replace(/\bico\b/,"").trim()),{}))})}
 const NAV_UI={
- uk:{lesson:"Урок",toets:"Toets",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з’являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
+ uk:{lesson:"Урок",toets:"Тести",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з’являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
  en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Search in Dutch or English. The dictionary understands word forms (huizen → huis, ging → gaan) and typos.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
  fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Cherche en néerlandais ou en français. Le dictionnaire reconnaît les formes (huizen → huis, ging → gaan) et les fautes de frappe.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
  ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"ابحث بالهولندية أو العربية أو الإنجليزية. يفهم القاموس صيغ الكلمات والأخطاء الإملائية.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
@@ -6387,7 +6389,8 @@ function initLearningPath(){
   data:DATA,curriculum:LerenCurriculum,language:()=>uiLang,
   lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
-  speak:text=>window.LerenLessonWidgets.speak(text,false),stop:()=>window.LerenLessonWidgets.stop(),
+  dark:()=>document.documentElement.dataset.theme==="dark",theme:()=>{$("themeToggle").click();document.querySelector('.fh-tools [data-action="theme"]')?.focus({preventScroll:true})},voice:()=>{updateHeader();populateVoicePicker();document.querySelector('.fh-tools [data-action="voice"]')?.focus({preventScroll:true});$("voiceDialog").showModal()},
+  speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setView("lesson");newRound()},
   answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
   complete:recordPathResult,rewards:()=>setView("progress"),
@@ -6410,6 +6413,7 @@ function start(){
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
+ const nav=$("modeButtons"),head=document.querySelector("main > header");if(nav&&head){head.after(nav);nav.setAttribute("role","navigation")}
  rewardCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
 }
 
@@ -6427,8 +6431,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="106";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Дрібні виправлення в оформленні й текстах", "items": ["Блок «Акаунт» тепер перекладається разом з усім застосунком.", "Нагадування просять дозвіл лише один раз, а час нагадування видно прямо в реченні.", "Виправили написання кількох слів і підписи в нагородах."], "hint": "Маршрут — у вкладці «Урок». Подарунки — у розділі «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Small design and text fixes", "items": ["The Account block now follows the app language.", "Reminders ask for permission only once, and the time is shown right in the sentence.", "Fixed some wording and the labels of the gifts."], "hint": "Find the route in Lesson and gifts in Progress.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Petites corrections de mise en page et de texte", "items": ["Le bloc « Compte » suit maintenant la langue de l’application.", "Les rappels ne demandent l’autorisation qu’une seule fois, et l’heure est affichée dans la phrase.", "Quelques formulations et les libellés des cadeaux ont été corrigés."], "hint": "Parcours dans Leçon ; cadeaux dans Progrès.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تحسينات صغيرة في التصميم والنصوص", "items": ["قسم «الحساب» يظهر الآن بلغة التطبيق.", "التذكيرات تطلب الإذن مرة واحدة فقط، ووقت التذكير يظهر داخل الجملة.", "صحّحنا بعض العبارات وأسماء الهدايا."], "hint": "المسار في الدرس والهدايا في التقدّم.", "ok": "فهمت"}};
+const RELEASE_VERSION="107";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Менше зайвого. Більше навчання.", "items": ["На головній — один наступний урок. Повна карта тем відкривається окремо.", "Теми з ілюстраціями, прогресом і чіткими станами уроків.", "Мова, темна тема та голос учителя — у швидких налаштуваннях.", "Приклади у кроці «Вивчи» можна розгорнути; кнопка звуку підсвічується під час відтворення."], "hint": "Почни або продовжуй урок із головного екрана. «Усі теми» відкриє карту курсу.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Less clutter. More learning.", "items": ["One next lesson on the home screen. Open the complete topic map separately.", "Illustrated topics, progress meters and clear lesson states.", "Quick access to language, dark theme and the teacher’s voice.", "Expand example sentences when needed; the sound button highlights during playback."], "hint": "Start or resume from Home. All topics opens the course map.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Moins de distractions. Plus d’apprentissage.", "items": ["Une seule prochaine leçon à l’accueil. La carte complète s’ouvre séparément.", "Thèmes illustrés, progression et états des leçons.", "Accès rapide à la langue, au thème et à la voix.", "Exemples dépliables ; le bouton audio s’illumine pendant la lecture."], "hint": "Commence ou reprends à l’accueil. Tous les thèmes ouvre la carte.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "تشتيت أقل. تعلّم أكثر.", "items": ["درس تالٍ واحد في الرئيسية، وخريطة المواضيع في شاشة منفصلة.", "مواضيع مصوّرة وتقدّم وحالات واضحة للدروس.", "وصول سريع للغة والوضع الداكن والصوت.", "أمثلة قابلة للتوسيع وزر صوت يظهر حالة التشغيل."], "hint": "ابدأ أو تابع من الرئيسية. كل المواضيع تفتح خريطة الدورة.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -6441,7 +6445,7 @@ function showReleaseNotes(){
  lsSet("leren_release_seen",RELEASE_VERSION);
 }
 // Someone opening the app for the first time has nothing "new" to compare with: no release notes for them.
-const releaseFirstVisit=!lsGet("leren_release_seen","")&&!Number(localStorage.getItem("poly_score")||0)&&!lsGet("leren_tour_done",false);
+const releaseFirstVisit=!lsGet("leren_release_seen","")&&!Number(lsGet("poly_score",0))&&!lsGet("leren_tour_done",false);
 function announceRelease(){
  if(lsGet("leren_release_seen","")===RELEASE_VERSION)return;
  if(releaseFirstVisit){lsSet("leren_release_seen",RELEASE_VERSION);return}

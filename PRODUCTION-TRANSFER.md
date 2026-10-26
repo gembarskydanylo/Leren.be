@@ -16,3 +16,6 @@ Checks and deployment receipt: TESTING-JOURNAL.md. Rollback: restore the previou
 
 ## UI follow-up - v104
 User-requested compact mobile layout published 26 October 2026 (4ee9505 / 124d23c): single-row navigation, More menu, expandable placement explanation, progress meter, two-column answers and reduced spacing. Main site verified at 390px; local 320px Ukrainian/Arabic layouts fit above the dock. No learning-data migration or score changes. See TESTING-JOURNAL.md for deployment/check details.
+
+## UI-107 - Focused learning home
+Explicitly approved for production by the user on 26 October 2026. Latest production v106 retained as the base; beta untouched. New focused-home module plus route UI, shared speech button integration and responsive navigation. Existing IDs/keys/account and cloud contracts unchanged; no data migration. JS/CSS are in the v107 offline cache. Decisions, checks, limitations and rollout receipt: UX-REVIEW-2026-10-26.md and TESTING-JOURNAL.md.
