@@ -31,3 +31,4 @@ UI-110 published as ae43a72; Pages run40387074746 succeeded. All three changed l
 
 ## UI-111 — Game-card art
 Production follow-up requested26 October2026. Replace Games hub emoji icons with12 distinct orange-student-cat scenes consistent with the Tests artwork. Source styles: modules/game-gallery/style.css; project images and exact prompts: img/games/ASSETS.md and generation-v111.json. Two/three-column responsive gallery; existing game callbacks, records, XP, voices and account data preserved. Cache/release111,85 offline assets. Baseline7b13407 includes the independent Telegram bot commit, preserved unchanged. Validation/publication receipt: TESTING-JOURNAL.md.
+UI-111 published as43f84da; successful Pages run40413762071. All15 live HTML/worker/style/image files match the validated source; all12 game images loaded on the live mobile page. Records, game logic and selected teacher labels retained. Final receipt/screenshots: TESTING-JOURNAL.md.
