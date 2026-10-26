@@ -21,9 +21,16 @@
 <script src="./modules/companion/ui.js?v=102"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=107"></script>
+<script src="./modules/focused-home/ui.js?v=112"></script>
 <script src="./modules/test-library/ui.js?v=109"></script>
-<script src="./modules/learning-path/ui.js?v=107"></script>
+<script src="./modules/lesson-conversation/content.js?v=112"></script>
+<script src="./modules/lesson-conversation/core.js?v=112"></script>
+<script src="./modules/lesson-conversation/ui.js?v=112"></script>
+<script src="./modules/ai-coach/core.js?v=112"></script>
+<script src="./modules/ai-coach/ui.js?v=112"></script>
+<script src="./modules/word-builder/art.js?v=112"></script>
+<script src="./modules/word-builder/game.js?v=112"></script>
+<script src="./modules/learning-path/ui.js?v=112"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -971,7 +978,8 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=107">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=110">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=112">
+<link rel="stylesheet" href="./modules/word-builder/style.css?v=112">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 </head>
@@ -1255,7 +1263,7 @@ const DATA={
  ]),
  dehet:R([
   ["art_les","les","lesson","cours","урок","درس","📚","De les begint om 9 uur.","Урок починається о 9:00.","de","le"],
-  ["art_boek","boek","book","livre","книга","книга","📖","Het boek is open.","Книга відкрита.","het","le"],
+  ["art_boek","boek","book","livre","книга","كتاب","📖","Het boek is open.","Книга відкрита.","het","le"],
   ["art_paspoort","paspoort","passport","passeport","паспорт","جواز سفر","🛂","Het paspoort is geldig.","Паспорт дійсний.","het","le"],
   ["art_afspraak","afspraak","appointment","rendez-vous","зустріч / запис","موعد","📅","Ik heb een afspraak.","У мене є запис.","de","le"],
   ["art_dokter","dokter","doctor","médecin","лікар","طبيب","🩺","De dokter helpt mij.","Лікар допомагає мені.","de","le"],
@@ -1391,7 +1399,7 @@ const DATA={
  ]),
  weather:R([
   ["w_1","de regen","rain","la pluie","дощ","المطر","🌧️","Er komt veel regen vandaag.","Сьогодні буде сильний дощ."],
-  ["w_2","de zon","sun","le soleil","сонце","Шمس","☀️","De zon schijnt.","Сонце світить."],
+  ["w_2","de zon","sun","le soleil","сонце","الشمس","☀️","De zon schijnt.","Сонце світить."],
   ["w_3","koud","cold","froid","холодно","بارد","❄️","Het is heel koud buiten.","Надворі дуже холодно."],
   ["w_4","warm","warm / hot","chaud","тепло / гаряче","دافئ / حار","🔥","Het is warm in de zomer.","Влітку тепло."],
   ["d_1","maandag","Monday","lundi","понеділок","الاثنين","📅"],
@@ -1784,7 +1792,7 @@ Object.assign(DATA,{
  ]),
  city:R([
   ["cit_1", "de winkel", "shop", "le magasin", "магазин", "المتجر", "🏪", "De winkel is open.", "Магазин відчинений."],
-  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرмаркет", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
+  ["cit_2", "de supermarkt", "supermarket", "le supermarché", "супермаркет", "السوبرماركت", "🛒", "Ik ga naar de supermarkt.", "Я йду до супермаркету."],
   ["cit_3", "de bakkerij", "bakery", "la boulangerie", "пекарня", "المخبز", "🥖", "Het brood komt van de bakkerij.", "Хліб з пекарні."],
   ["cit_4", "het restaurant", "restaurant", "le restaurant", "ресторан", "المطعم", "🍽️", "Wij eten in een restaurant.", "Ми їмо в ресторані."],
   ["cit_5", "het ziekenhuis", "hospital", "l'hôpital", "лікарня", "المستشفى", "🏥", "Het ziekenhuis is dichtbij.", "Лікарня поруч."],
@@ -5058,7 +5066,7 @@ const MYDAY=[
 
 // --- shared state & helpers ---
 let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
-const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true]];
+const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true],["wb","🔤",true]];
 const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
 function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
 function gRecords(){return lsGet("leren_games",{})}
@@ -5206,6 +5214,14 @@ const KS_UI={
   pTitle:"الورقة الكورية · Leren.be",pHow:"اطوِ الورقة كالأكورديون على الخطوط المنقطة. املأ الأعمدة 2–4 بخط يدك، ثم اطوها واختبر نفسك. الإجابات في الصفحة الثانية.",pKey:"الإجابات"}
 };
 Object.keys(G_UI).forEach(l=>{const k=KS_UI[l]||KS_UI.en;G_UI[l].ks=k.title;G_UI[l].ksS=k.sub});
+// --- 12. Spell the word: picture → Dutch word from letter tiles (modules/word-builder) ---
+Object.keys(G_UI).forEach(l=>{if(!window.LerenWordBuilder)return;const k=LerenWordBuilder.tr(l);G_UI[l].wb=k.title;G_UI[l].wbS=k.sub});
+function wbStart(){
+ if(!window.LerenWordBuilder){toast(gU().nlOnly);return}
+ gState={wb:1};
+ LerenWordBuilder.start({lang:()=>uiLang,head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),mistake:t=>logMistake(t,"wb"),
+  done:xp=>{if(xp)toast(gU().pts(xp));gameDone("wb",xp)},home:renderGamesHome});
+}
 const ksU=()=>KS_UI[uiLang]||KS_UI.en;
 const KS_SETS={
  top:["zijn","hebben","gaan","komen","doen","maken","eten","drinken","werken","wonen"],
@@ -5345,14 +5361,14 @@ function renderGamesHome(){
  GAMES.filter(([id])=>curLevel==="a11"||!["story","md","om","ks"].includes(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src="./img/games/"+id+"-v111.webp";art.alt="";art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v112.svg":"./img/games/"+id+"-v111.webp";art.alt="";art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
   b.append(art,el("strong","",id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]),el("span","g-s",g[id+"S"]));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story")b.classList.add("wide");
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart})[id]()};
   grid.appendChild(b);
  });
  card.appendChild(grid);
@@ -6068,7 +6084,7 @@ function aiConsent(title,go){
 }
 function aiStart(scene){
  if(!aiConsent(cx(AI_TITLE[targetLang]||AI_TITLE.nl),()=>aiStart(scene)))return;
- gState={chat:true,msgs:[],busy:false,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam)};
+ gState={chat:true,msgs:[],busy:false,draft:"",target:targetLang,lang:uiLang,view,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam)};
  if(gState.scene==="exam11"&&window.EXAM11&&EXAM11.speakScript){
   const saved=!scene.fresh&&lsGet("leren_exam11_ai",null);
   if(saved&&saved.exam&&!saved.exam.done&&Array.isArray(saved.msgs)&&saved.msgs.length){gState.exam=saved.exam;gState.msgs=saved.msgs;aiRender();toast(uiLang==="uk"?"Продовжуємо з того місця, де ти зупинився":"Continuing where you stopped");return}
@@ -6077,13 +6093,13 @@ function aiStart(scene){
  aiRender();aiSend(null);
 }
 function aiRender(){
- const g=aiU(),s=gState,card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);
+ const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);
  if(s.scene&&SCENE_ART[s.scene]){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  if(s.exam){const ex=s.exam,n=ex.list.length,cur=ex.list[Math.min(ex.i,n-1)];const p=el("p","ex-progress",ex.done?(uiLang==="uk"?"✅ Пробний іспит завершено":"✅ Mock exam finished"):(uiLang==="uk"?"Тема ":"Topic ")+cur.ti+"/6 · "+cur.tn+" · "+(uiLang==="uk"?"питання ":"question ")+(ex.i+1)+"/"+n);if(!ex.done&&s.msgs.length>2){const rs=el("button","ex-restart",uiLang==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>aiStart({id:"exam11",fromExam:true,fresh:true});p.appendChild(rs)}card.appendChild(p);$("barfill").style.width=Math.round((ex.done?n:ex.i)/n*100)+"%"}
  const chat=el("div","g-chat ai-chat");
  s.msgs.forEach(m=>{
   if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
-   if(m.fix){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));chat.appendChild(f)}
+   if(m.fix){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));const practise=el("button","btn",LerenAICoach.tr("practise",uiLang));practise.type="button";practise.disabled=!!(s.busy||s.helpBusy||s.failed);practise.onclick=()=>{if(!aiCurrent(s)||s.busy||s.helpBusy)return;s.practice={corrected:m.fix.corrected,draft:"",status:""};s.help=null;aiRender()};f.appendChild(practise);chat.appendChild(f)}
   }else{const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("happy");const col=el("div","ai-col");
    const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));b.onclick=()=>say(m.content); // tap = listen
    col.appendChild(b);
@@ -6096,11 +6112,16 @@ function aiRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  {const mb0=aiMemoryBox(aiRender);if(mb0)card.appendChild(mb0)}card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
+ if(!(s.exam&&s.exam.done))LerenAICoach.tools(card,s,{lang:uiLang,target:targetLang,limit:s.limitText||g.limit,retry:()=>aiSend(null),
+  edit:()=>{if(s.pendingUser&&s.msgs.at(-1)===s.pendingUser){s.msgs.pop();s.draft=s.pendingUser.content;s.pendingUser=null}s.failed=false;s.errorCode="";aiRender()},
+  help:corrected=>aiHelp(corrected),use:text=>{s.draft=text;s.practice=null;s.help=null;aiRender()},close:()=>{s.practice=null;s.help=null;aiRender()}});
  if(s.exam&&s.exam.done){const row=el("div","row");const a=el("button","btn primary",uiLang==="uk"?"🔁 Пройти ще раз":"🔁 Again");a.type="button";a.onclick=()=>aiStart({id:"exam11",fromExam:true,fresh:true});const h=el("button","btn",uiLang==="uk"?"← Іспит":"← Exam");h.type="button";h.onclick=()=>{aiRemember(s);gStop();EXAM11.open()};row.append(a,h);card.appendChild(row);return}
  const mb=micBox(alts=>aiSend(alts[0],alts),{edit:true});const f=mb.querySelector(".g-type");if(f){f.hidden=false;f.classList.add("ai-type");
   const tb=mb.querySelector(".g-mic-row .btn:not(.g-mic-btn)");if(tb)tb.hidden=true;
-  const inp=f.querySelector("input");if(inp)inp.placeholder=({uk:"Напиши повідомлення…",en:"Type a message…",fr:"Écris un message…",ar:"اكتب رسالة…"})[uiLang]||"Type a message…";
+  const inp=f.querySelector("input");if(inp){inp.value=s.draft||"";inp.maxLength=300;inp.addEventListener("input",()=>{s.draft=inp.value})}
+  if(inp)inp.placeholder=({uk:"Напиши повідомлення…",en:"Type a message…",fr:"Écris un message…",ar:"اكتب رسالة…"})[uiLang]||"Type a message…";
   const sb=f.querySelector("button[type=submit]");if(sb){sb.textContent="➤";sb.setAttribute("aria-label",({uk:"Надіслати",en:"Send",fr:"Envoyer",ar:"إرسال"})[uiLang]||"Send")}}
+ for(const c of mb.querySelectorAll("button,input"))c.disabled=!!(s.busy||s.helpBusy||s.failed||s.practice);
  card.appendChild(mb);
  const key=s.msgs.length+(s.busy?"b":"");const last=chat.lastElementChild;if(last&&s.seen!==key){s.seen=key;last.scrollIntoView({block:"nearest"})}
 }
@@ -6115,22 +6136,38 @@ function aiExamStep(s){ // the exact question for this turn of the mock speaking
  if(!cur)return undefined;
  return nxt?{cur:cur.q,next:nxt.q,retry:ex.tries>=1}:{cur:cur.q,end:true};
 }
-async function aiSend(text,alts){
- const s=gState;if(s.busy)return;if(text)s.msgs.push({role:"user",content:String(text).trim().slice(0,300),alts:alts||null});
- s.busy=true;s.err="";aiRender();
+function aiCurrent(s){return !!s&&s.chat&&gState===s&&view===s.view&&s.target===targetLang&&s.lang===uiLang}
+async function aiHelp(corrected){ // "I don't know what to answer": one hint + one editable example, never sent automatically
+ const s=gState;if(!aiCurrent(s)||s.busy||s.helpBusy||s.failed)return;
+ const question=[...s.msgs].reverse().find(m=>m.role==="assistant")?.content;if(!question&&!corrected)return;
+ s.helpBusy=true;s.helpError=false;aiRender();
+ const profile=aiProfile(),target=s.target,lang=s.lang;
  try{
-  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"chat",exam:aiExamStep(s),target:targetLang,lang:uiLang,level:curLevel,scene:s.scene,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)})});
-  const j=await r.json().catch(()=>({}));
-  if(r.status===429){s.busy=false;s.err=j.error==="slow"?aiU().slow:aiU().limit;aiRender();return}
-  const reply=j.reply||j.reply_nl;
-  if(!r.ok||!reply)throw new Error(j.error||("HTTP "+r.status));
-  const lastUser=[...s.msgs].reverse().find(m=>m.role==="user");
-  if(lastUser&&j.correction&&j.correction.corrected&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix=j.correction;if(targetLang==="nl")logMistake(j.correction.corrected,j.correction.explanation||"")}
-  if(s.exam&&text){const ex=s.exam,err=!!(j.correction&&j.correction.has_error);if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
-  s.msgs.push({role:"assistant",content:reply,tr:j.translation||""});s.busy=false;aiExamSave(s);aiRender();say(reply);
+  const data=await LerenAICoach.request(AI_ENDPOINT,{mode:"ask",target,lang,level:profile.level,char:charId(),profile,memory:aiMemory(),messages:[{role:"user",content:LerenAICoach.helpPrompt({target,question,corrected})}]});
+  if(!aiCurrent(s))return;if(typeof data.answer!=="string"||!data.answer.trim())throw Error("format");
+  s.help={answer:data.answer.slice(0,1500),examples:LerenAICoach.examples(data,target)};
+ }catch(e){if(!aiCurrent(s))return;s.helpError=true}
+ finally{s.helpBusy=false;if(aiCurrent(s))aiRender()}
+}
+async function aiSend(text,alts){
+ const s=gState;if(!aiCurrent(s)||s.busy||s.helpBusy||s.practice)return;
+ const typed=typeof text==="string"?text.trim().slice(0,300):"";
+ if(typeof text==="string"&&!typed)return;
+ if(typed){if(s.failed)return;const user={role:"user",content:typed,alts:alts||null};s.msgs.push(user);s.pendingUser=user;s.draft="";s.help=null}
+ s.busy=true;s.failed=false;s.errorCode="";s.err="";aiRender();
+ const target=s.target,lang=s.lang;
+ try{
+  // 30 s timeout; on failure the message stays and can be retried (no duplicate) or edited
+  const j=await LerenAICoach.request(AI_ENDPOINT,{mode:"chat",exam:aiExamStep(s),target,lang,level:curLevel,scene:s.scene,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)});
+  if(!aiCurrent(s))return;
+  const reply=j.reply||j.reply_nl;if(typeof reply!=="string"||!reply.trim())throw Error("format");
+  const lastUser=s.pendingUser;
+  if(lastUser&&j.correction&&typeof j.correction.corrected==="string"&&j.correction.corrected.trim()&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected.slice(0,300),explanation:typeof j.correction.explanation==="string"?j.correction.explanation.slice(0,300):""};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
+  if(s.exam&&lastUser){const ex=s.exam,err=!!(j.correction&&j.correction.has_error);if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
+  s.msgs.push({role:"assistant",content:reply,tr:typeof j.translation==="string"?j.translation:""});s.pendingUser=null;s.busy=false;aiExamSave(s);aiRender();say(reply);
   const uc=s.msgs.filter(m=>m.role==="user").length;if(uc===5)gameDone("ai",30);
   if(uc>=2&&uc%3===2)aiRemember(s);
- }catch(e){s.busy=false;s.err=aiU().err;aiRender()}
+ }catch(e){s.busy=false;if(!aiCurrent(s))return;s.failed=true;s.errorCode=e.code||"network";s.limitText=e.code==="limit"?(e.data&&e.data.error==="slow"?aiU().slow:aiU().limit):"";aiRender()}
 }
 // ========== ASK {N}: questions about Dutch, English or French, answered in the interface language ==========
 function sayIn(text,lang){ // examples may be in another language than the one being studied
@@ -6215,7 +6252,7 @@ const ACCT_UI={
 const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
 // Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
 const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
- "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link"]);
+ "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
 // Three-way merge: base = the copy both sides last agreed on, local = this device, cloud = the account.
@@ -6368,8 +6405,13 @@ function initLearningPath(){
   lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
   dark:()=>document.documentElement.dataset.theme==="dark",theme:()=>{$("themeToggle").click();document.querySelector('.fh-tools [data-action="theme"]')?.focus({preventScroll:true})},voice:()=>{updateHeader();populateVoicePicker();document.querySelector('.fh-tools [data-action="voice"]')?.focus({preventScroll:true});$("voiceDialog").showModal()},
-  speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),stop:()=>window.LerenLessonWidgets.stop(),
+  speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setView("lesson");newRound()},
+  person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
+  canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
+  listen:(ok,fail)=>listenOnce(ok,fail,"nl-BE"),
+  stopListening:()=>{if(gRec)gRec.abort()},
+  ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
   answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
   complete:recordPathResult,rewards:()=>setView("progress"),
   assess:id=>{const test=TOETS.find(t=>t.id==="course_"+id+"_v2");if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
@@ -6409,8 +6451,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="111";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Кіт тепер грає разом із тобою.", "items": ["Усі 12 ігор отримали нові ілюстрації з помаранчевим котом замість емодзі.", "Мікрофон, пазли, картки та інші предмети підказують, що робити у грі.", "Рекорди й позначки пройдених ігор залишилися на картках."], "hint": "Відкрий «Ігри» та обери вправу.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Your cat joins every game.", "items": ["All 12 games now have orange-cat illustrations instead of emoji.", "Microphones, puzzles and cards hint at what each game practises.", "Records and played-game markers remain on the cards."], "hint": "Open Games and choose an activity.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Le chat joue avec toi.", "items": ["Les 12 jeux ont de nouvelles illustrations du chat orange à la place des émojis.", "Micro, puzzles et cartes indiquent le contenu de chaque jeu.", "Les records et les repères des jeux joués restent visibles."], "hint": "Ouvre Jeux et choisis une activité.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "قطك يشاركك كل لعبة.", "items": ["رسومات جديدة للقط البرتقالي بدل الرموز التعبيرية في الألعاب الاثنتي عشرة.", "الميكروفون والألغاز والبطاقات توضح نشاط كل لعبة.", "تبقى الأرقام القياسية وعلامات الألعاب المكتملة ظاهرة."], "hint": "افتح الألعاب واختر نشاطًا.", "ok": "فهمت"}};
+const RELEASE_VERSION="112";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Нова гра й розмова після уроку.", "items": ["Нова гра «Склади слово»: дивишся на малюнок і складаєш нідерландське слово з букв, а потім бачиш артикль і множину.", "Після уроку можна коротко поговорити з учителем на тему уроку — з підказками й виправленням помилок.", "В AI-розмові є кнопка «Не знаю, що відповісти»: підказка й приклад, який можна змінити перед надсиланням.", "У «Вивчи» слово звучить саме, а кнопка 🔊 стоїть поруч зі словом. На головній видно, скільки уроків пройдено."], "hint": "Гра — в «Іграх», розмова — після будь-якого уроку.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A new game and a chat after each lesson.", "items": ["New game “Spell it”: look at the picture, build the Dutch word from letters, then see its article and plural.", "After a lesson you can have a short guided talk on its topic, with hints and corrections.", "The AI chat has a “Help me answer” button: a hint and an example you can edit before sending.", "In Study the word plays by itself and 🔊 sits right next to it. Home shows how many lessons you have finished."], "hint": "Find the game in Games; the talk appears after any lesson.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Un nouveau jeu et un dialogue après chaque leçon.", "items": ["Nouveau jeu « Épelle le mot » : regarde l’image, forme le mot néerlandais avec les lettres, puis vois l’article et le pluriel.", "Après une leçon, un court dialogue guidé sur le thème, avec indices et corrections.", "Le chat IA a un bouton « Aide-moi à répondre » : un indice et un exemple à modifier avant l’envoi.", "Dans « Apprends », le mot se prononce tout seul et 🔊 est juste à côté. L’accueil montre combien de leçons tu as terminées."], "hint": "Le jeu est dans Jeux ; le dialogue apparaît après chaque leçon.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "لعبة جديدة ومحادثة بعد كل درس.", "items": ["لعبة جديدة «كوّن الكلمة»: انظر إلى الصورة وكوّن الكلمة الهولندية من الحروف، ثم شاهد أداة التعريف والجمع.", "بعد الدرس يمكنك إجراء محادثة قصيرة موجّهة عن موضوعه مع تلميحات وتصحيحات.", "في محادثة الذكاء الاصطناعي زر «ساعدني على الرد»: تلميح ومثال يمكنك تعديله قبل الإرسال.", "في «تعلّم» تُنطق الكلمة تلقائياً وزر 🔊 بجانبها. الصفحة الرئيسية تُظهر عدد الدروس المكتملة."], "hint": "اللعبة في «ألعاب»، والمحادثة تظهر بعد أي درس.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

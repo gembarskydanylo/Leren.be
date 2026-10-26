@@ -11,13 +11,21 @@
  };
  function mount(root,bridge){
   const course=LerenLearningPath.catalog(bridge.data,bridge.curriculum),model=LerenLearningPath.create(course,{getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)});
-  const languages=['uk','en','fr','ar'];let lang=bridge.language(),screen='home',feedback=null,mapLevel='A1.1',mapChapter=null;
+  // Guided three-turn conversation after a lesson (offline, no AI); saved only on this device.
+  const talkOk=!!globalThis.LerenLessonConversation?.createView;
+  const conversation=talkOk?LerenLessonConversation.create(course,{getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)}):null;
+  const talkText=key=>talkOk?LerenLessonConversation.tr(key,lang):'';
+  const talkView=talkOk?LerenLessonConversation.createView(conversation,{...bridge,render:()=>render(),lessonWords:id=>(model.lesson(id)?.ids||[]).map(id=>course.cards.get(id).nl),nextLesson(){const s=model.state.session;if(s&&s.kind==='lesson'&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}const l=model.continueRoute();go(l?'intro':'home')}}):{cancel(){},clear(){},render(){}};
+  function beginTalk(id){if(!talkOk||!model.lesson(id))return;if(conversation.state.lesson===id&&conversation.state.index<3)conversation.resume();else conversation.begin(id);talkView.clear();go('talk')}
+  // A started but unfinished conversation (left for another screen or closed the app) is offered on the home screen.
+  const talkOpen=()=>talkOk&&!!model.lesson(conversation.state.lesson)&&conversation.state.index<3&&!conversation.state.completed.includes(conversation.state.lesson);
+  const languages=['uk','en','fr','ar'];let lang=bridge.language(),screen='home',feedback=null,mapLevel='A1.1',mapChapter=null,autoSaid=null;
   const t=k=>copy[lang][k],word=id=>course.cards.get(id),translation=w=>w[lang]||w.uk,title=ch=>(names[ch.id]||['📖',ch.nl,ch.nl,ch.nl,ch.nl])[languages.indexOf(lang)+1],icon=ch=>(names[ch.id]||['📖'])[0];
   const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
   const button=(label,fn,primary=false)=>{const b=node('button',primary?'lp-button lp-primary':'lp-button',label);b.type='button';b.onclick=fn;return b};
   const lessonTitle=l=>(bridge.lessonLabel(l.tab,lang)||l.tab)+(l.parts>1?' · '+t('part')+' '+l.part+'/'+l.parts:'');
   const chapter=l=>course.chapters.find(c=>c.id===l.chapter);
-  function go(next){bridge.stop();feedback=null;screen=next;render();root.ownerDocument?.defaultView?.scrollTo({top:0,behavior:'instant'});const heading=root.querySelector?.('h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
+  function go(next){talkView.cancel();if(screen==='talk'&&next!=='talk')conversation?.pause();bridge.stop();feedback=null;screen=next;render();root.ownerDocument?.defaultView?.scrollTo({top:0,behavior:'instant'});const heading=root.querySelector?.('h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
   function begin(l){const s=model.state.session;if(s?.kind==='lesson'&&s.lesson===l.id&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}model.begin(l.id);go('intro')}
   function shell(){
    root.replaceChildren();root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';root.dataset.screen=screen;
@@ -29,6 +37,7 @@
   function hero(){
    const session=model.state.session,paused=session?.kind==='lesson'&&(session.phase<2||session.index<session.ids.length)?model.lesson(session.lesson):null,next=paused||model.recommended(),placing=!!model.state.placement,started=model.state.started||Object.keys(model.state.completed).length>0||placing,stats=model.stats(),f=LerenFocus.tr(lang),ch=next&&chapter(next);
    root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',level:ch?.level,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,done:stats.done,total:stats.total,onBegin(){if(placing){go('placement');return}if(next){if(!model.state.started)model.start();begin(next)}},onPlacement(){model.place();go('placement')},onMap:()=>openMap()}));
+   if(talkOpen()&&!paused){const card=node('div','fh-talk-resume');card.append(node('span','',talkText('resume')+' · '+(bridge.lessonLabel(model.lesson(conversation.state.lesson).tab,lang)||'')),LerenFocus.button('💬 '+talkText('resume')+' →',()=>beginTalk(conversation.state.lesson),'fh-talk-btn'));root.appendChild(card)}
    const overview=node('section','fh-overview'),heading=node('div','fh-section-heading');heading.append(node('h2','',f.topics),LerenFocus.button(f.all+' →',()=>openMap()));overview.append(heading);
    const tiles=node('div','fh-topic-grid fh-preview-grid'),start=Math.max(0,course.chapters.findIndex(c=>c.id===ch?.id)),preview=course.chapters.slice(start,start+2);for(const c of preview.length?preview:course.chapters.slice(0,2))tiles.appendChild(topicTile(c));overview.appendChild(tiles);root.appendChild(overview);
    const extras=node('div','fh-extras');extras.append(LerenFocus.button('✦ '+f.gifts,()=>bridge.rewards(),'fh-extra-link'),LerenFocus.button(f.about,()=>LerenFocus.about(lang),'fh-extra-link'));root.appendChild(extras);note();
@@ -38,6 +47,7 @@
    if(!mapChapter){const levels=node('div','fh-levels');levels.setAttribute('aria-label',f.levelHint);for(const level of ['A1.1','A1.2']){const b=LerenFocus.button(level,()=>{mapLevel=level;render()},'fh-level');b.setAttribute('aria-pressed',String(mapLevel===level));levels.appendChild(b)}root.appendChild(levels);const grid=node('div','fh-topic-grid');for(const ch of course.chapters.filter(c=>c.level===mapLevel))grid.appendChild(topicTile(ch));root.appendChild(grid);root.appendChild(LerenFocus.button(f.newPlace,()=>{model.place();go('placement')}));return}
    const ch=course.chapters.find(c=>c.id===mapChapter),st=model.stats(ch.id),summary=node('div','fh-chapter-summary');summary.append(LerenFocus.meter(st.done,st.total,title(ch)),node('span','lp-caption',st.done+' / '+st.total+' '+f.lessons));root.appendChild(summary);
    const list=node('ol','fh-lesson-list');for(const l of ch.lessons){const done=Object.hasOwn(model.state.completed,l.id),active=model.recommended()?.id===l.id,state=done?'done':active?'current':'ahead',li=node('li','is-'+state),b=button('',()=>begin(l));b.className='fh-lesson-row';const label=node('span','fh-lesson-copy');label.append(node('strong','',lessonTitle(l)),node('small','',done&&!model.mastered(l.id)?t('review'):f[state]));b.append(node('span','fh-lesson-marker',done?'✓':String(ch.lessons.indexOf(l)+1)),label,node('span','fh-lesson-end',done?'✓':active?'→':f.time));if(active)b.setAttribute('aria-current','step');li.appendChild(b);list.appendChild(li)}root.appendChild(list);
+   if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last)root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
    if(st.done===st.total)root.appendChild(button(t('openTest'),()=>bridge.assess(ch.id),true));
   }
   function intro(){const s=model.state.session,l=model.lesson(s.lesson),ch=chapter(l),box=node('div','lp-card');box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),node('p','',t('goalText')));
@@ -73,15 +83,18 @@
     box.appendChild(node('p','',t('learned')));const list=node('ul');s.ids.forEach(id=>list.appendChild(node('li','',word(id).nl+' — '+translation(word(id)))));box.appendChild(list);
     if(model.state.mistakes.length)box.appendChild(button(t('reviewBtn'),()=>{model.beginReview();go('lesson')}));
     if(result.kind==='lesson'){const ch=chapter(model.lesson(result.id)),stats=model.stats(ch.id);if(stats.done===stats.total){box.append(node('h3','',t('assess')),node('p','',t('assessHint')),button(t('openTest'),()=>bridge.assess(ch.id)))}}
+    if(result.kind==='lesson'&&talkOk)box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
     box.appendChild(button(t('nextLesson'),()=>{const l=model.continueRoute();go(l?'intro':'home')},result.kind!=='lesson'));
     if(result.kind==='lesson')box.appendChild(button(t('repeat'),()=>begin(model.lesson(result.id))));
     root.appendChild(box);note();return;
    }
    const w=model.current(),listen=s.phase===1;
    box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]));
-   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';box.append(text,node('p','lp-meaning',translation(w)));
+   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
+    // Say each new word once by itself; the learner already tapped to get here, and the voice setting decides.
+    const said=(s.lesson||'review')+':'+s.index;if(autoSaid!==said&&bridge.autoSpeak&&typeof setTimeout==='function'){autoSaid=said;setTimeout(()=>{if(say.isConnected)bridge.autoSpeak(w.nl,say)},250)}
     if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}
-    const actions=node('div','fh-study-actions');actions.append(listenButton(w.nl),button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
+    const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
    }else{
     box.appendChild(node('p',listen?'lp-sound':'lp-word',listen?'🎧':translation(w)));
     if(listen)box.appendChild(listenButton(w.nl));
@@ -100,8 +113,8 @@
    }
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
-  function render(){bridge.stop();lang=languages.includes(lang)?lang:'uk';shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else exercises()}
-  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},open(){go('home')},pauseSpeech(){bridge.stop()},model};
+  function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises()}
+  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
  }
  globalThis.LerenLearningPath.mount=mount;
 })();

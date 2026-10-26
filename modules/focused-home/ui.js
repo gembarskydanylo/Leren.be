@@ -24,7 +24,7 @@
   const actions=node('div','fh-main-action');actions.append(button(allDone?t.all:placing?({uk:'Продовжити перевірку старту',en:'Continue my starting check',fr:'Continuer le bilan de départ',ar:'تابع تحديد البداية'})[lang]:started?legacy.resume:legacy.start,allDone?onMap:onBegin,'fh-primary'));
   if(!started&&!placing){const start=button(t.known+' →',onPlacement,'fh-alternative');start.title=t.newPlace;actions.appendChild(start)}
   content.append(actions);box.append(content,art);
-  const footer=node('div','fh-hero-footer');footer.append(node('span','',t.steps));if(total)footer.append(meter(done,total,t.completed));box.append(footer);return box;
+  const footer=node('div','fh-hero-footer');if(started&&total&&!placing){footer.classList.add('fh-has-progress');footer.append(node('span','fh-progress-label',({uk:done+' з '+total+' уроків пройдено',en:done+' of '+total+' lessons done',fr:done+' leçons sur '+total+' terminées',ar:done+' من '+total+' دروس مكتملة'})[lang]||done+' / '+total),meter(done,total,t.completed))}else{footer.append(node('span','',t.steps));if(total&&done)footer.append(meter(done,total,t.completed))}box.append(footer);return box;
  }
  function topic({chapter,title,lang,done,total,current,onOpen}){
   const t=tr(lang),state=done===total&&total?'done':current?'current':done?'started':'ahead',tile=button('',onOpen,'fh-topic is-'+state),picture=node('div','fh-topic-picture'),image=node('img');image.src='./img/topics/'+chapter.id+'.svg';image.alt='';image.loading='lazy';picture.append(image);const body=node('div','fh-topic-body');

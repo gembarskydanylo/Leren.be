@@ -76,3 +76,17 @@
 .fh-topic-body .fh-meter::-webkit-progress-bar{background:color-mix(in srgb,var(--ink-2) 25%,var(--surface))}
 [data-theme="dark"] .fh-topic.is-current{border-color:#ffc58e;box-shadow:0 4px 14px #0003}
 [data-theme="dark"] .fh-topic.is-ahead{background:var(--bg)}
+/* Labelled course progress for returning learners */
+.fh-hero-footer.fh-has-progress{flex-direction:column;align-items:stretch;gap:8px}
+.fh-hero-footer.fh-has-progress>.fh-meter{max-width:none;margin:0;height:8px}
+.fh-progress-label{font-size:13px;font-weight:800;color:var(--ink)}
+/* Speak button beside the study word */
+.fh-word-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.fh-word-row .lp-word{margin:0}
+.fh-say{width:52px;height:52px;min-height:52px;padding:0;border-radius:50%;display:inline-grid;place-items:center;font-size:22px;flex:none}
+.fh-say.is-speaking{animation:fh-voice 1s ease-in-out infinite alternate}
+@media(prefers-reduced-motion:reduce){.fh-say.is-speaking{animation:none}}
+/* Resume an unfinished conversation */
+.fh-talk-resume{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:18px 0 0;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.fh-talk-resume>span{font-size:14px;font-weight:800;color:var(--ink-2)}
+.fh-talk-btn{min-height:44px;padding:8px 14px;border:2px solid var(--line);border-radius:14px;background:var(--surface-2);color:var(--ink);font:800 14px/1.3 var(--font-body);cursor:pointer}
+.fh-talk-resume>span{flex:1 1 180px}
