@@ -10,3 +10,10 @@
 - Existing push test initially failed: its fake runtime lacked pushToken and expected the old separate requestPermission call. Updated the fixture for production's existing subscribe-first implementation; production push logic unchanged. All 12 permission scenarios pass.
 - Limitations: browser viewport checks are not physical Android/iPhone tests; no real account login/two-device cloud or physical microphone/AI-service test performed for this UI transfer. Existing max-based XP merge does not sum independent offline gains. Existing production account lifecycle is preserved rather than replaced by beta's account adapter.
 - Deployment receipt to follow after publication and verification of the actual live site.
+
+### Publication verified
+- Production code commit: d3a757554f717a62e3791f67f5be76d004da3278. GitHub Pages deployment succeeded: https://github.com/gembarskydanylo/Leren.be/actions/runs/40326194163 .
+- Live https://lerenbe.com/ index.html, sw.js, companion UI, route UI, gifts JS and original PNG matched the local release byte-for-byte. All 61 offline files exist locally; offline asset handling is covered by the existing SW tests.
+- Real published site checked at 390×844: Ukrainian cat welcome, release notes, existing score retained, gift collection, opened existing 100-point medal, gave it to the cat, saw thanks and downloaded the actual 900×1000 PNG card. Card visually inspected. This used existing browser progress; no invented XP or account login. Local Arabic RTL had width=scrollWidth=390.
+- All 11 tests/*.cjs suites passed before publication. Proof screenshots: /tmp/leren-production-test007-live.png and /tmp/leren-production-test007-gift.png (local QA files, not deployed).
+- Primary user checkout remains untouched because its pending audio/text-generation edits overlap newer remote audio tooling. Production integration is committed in the isolated /tmp/leren-production-cat checkout and published to origin/main.
