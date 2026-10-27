@@ -59,13 +59,15 @@
    for(const x of pool){const text=x[key]||x.uk;if(!seen.has(text)){seen.add(text);opts.push({text,ok:false});if(opts.length===4)break}}
    return opts.sort(()=>Math.random()-.5);
   }
+  // The card's picture: a drawing (trusted SVG from modules/card-art or the lesson data) or an emoji.
+  function picture(w){const ic=w&&w.icon;if(!ic)return null;const svg=String(ic).startsWith('<svg'),d=node('div','icon-box lp-picture'+(svg?' kt':''));d.setAttribute('aria-hidden','true');if(svg)d.innerHTML=ic;else d.textContent=ic;return d}
   function exercises(){
    const s=model.state.session;if(!s){go('home');return}
    const box=node('div','lp-card lp-exercise');
    if(s.kind==='lesson'){const l=model.lesson(s.lesson),ch=chapter(l);box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)))}else box.appendChild(node('h2','',t('review')));
    const steps=node('ol','lp-steps');['study','listen','check'].forEach((key,i)=>{const li=node('li',i===s.phase?'lp-active':'',(i<s.phase?'✓ ':i+1+'. ')+t(key));if(i===s.phase)li.setAttribute('aria-current','step');steps.appendChild(li)});box.appendChild(steps);
    if(feedback){
-    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));const w=word(feedback.id);fb.append(node('strong','',t(feedback.ok?'right':'wrong')),node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl));
+    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));const w=word(feedback.id);fb.append(node('strong','',t(feedback.ok?'right':'wrong')));const fp=picture(w);if(fp)fb.appendChild(fp);fb.append(node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl));
     if(!feedback.ok){
      if(!feedback.practice)fb.appendChild(button(LerenCompanion.tr(lang).retry,()=>{feedback.practice=true;render()}));
      else{const practice=node('div','comp-practice');practice.appendChild(node('p','',LerenCompanion.tr(lang).practice));
@@ -90,12 +92,13 @@
    }
    const w=model.current(),listen=s.phase===1;
    box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]));
-   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
+   if(s.phase===0){const sp=picture(w);if(sp)box.appendChild(sp);const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
     // Say each new word once by itself; the learner already tapped to get here, and the voice setting decides.
     const said=(s.lesson||'review')+':'+s.index;if(autoSaid!==said&&bridge.autoSpeak&&typeof setTimeout==='function'){autoSaid=said;setTimeout(()=>{if(say.isConnected)bridge.autoSpeak(w.nl,say)},250)}
     if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}
     const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
    }else{
+    const cp=!listen&&picture(w);if(cp)box.appendChild(cp);
     box.appendChild(node('p',listen?'lp-sound':'lp-word',listen?'🎧':translation(w)));
     if(listen)box.appendChild(listenButton(w.nl));
     const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
