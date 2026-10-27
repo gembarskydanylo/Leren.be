@@ -195,3 +195,12 @@
 - Progress bars: 10px with a visible track (ink-2 22%), 8px in topic cards, 12px on the topic page.
 - Study card on phones: picture 110–150px (18vh), tighter spacing; ≤780px tall 96px; ≤680px tall the picture is hidden so word + translation + button fit.
 - Measured "Зрозуміло, далі" bottom vs bottom nav top: 390×844 697<768, 360×740 641<664, 320×640 563<564. All 18 tests pass. Cache leren-be-v141, both stylesheets ?v=141.
+
+## UI-142 · Cut pictures, broken title, cut topic name · 2026-10-28
+- User report from phone (preview of production 11ff8b5): pictures cut on one side or showing a strip of a neighbouring picture (house, spaghetti, egg, mask, phone, check badge); "Знайомств / о" split inside the word; topic name "Perfectum (м…" cut in the card header.
+- Cause of the pictures: the generated pack in img/emoji (release 137/139) was sliced edge-to-edge from sheets; an alpha audit of the 474 pictures the app maps found 191 with the object cut by the image border and 61 with strips of neighbouring pictures.
+- Fix: 211 emoji (206 files) whose picture was cut now use complete Microsoft Fluent Emoji 3D pictures (MIT, img/emoji/FLUENT-LICENSE.txt) as img/emoji/fx-<codepoint>.png, 192px with padding; maps in modules/emoji/cards.js and renderer.js updated. Cat-persona pictures and the 14 without a Fluent equivalent were cleaned: neighbour strips removed, a soft fade where the original edge cut the object, centred with a margin. 🤖 👨 👩 🏃 🏊 (half cats) now use Fluent pictures.
+- Hero title: never breaks inside a word (overflow-wrap normal); fitTitle() shrinks the font until the word fits (checked 412 at normal and enlarged text, 360, 320).
+- Card header topic name (.lh-topic) wraps instead of being cut. Study row in "Вчити": buttons no longer squeeze "Ще раз" onto two lines.
+- Automatic sweep (412×915): home, intro, study, 5 lesson modes, 13 games, Toets, dictionary, progress — no horizontal scroll, no broken images, no clipped text (dictionary filter chips scroll by design). New tests/emoji-pack.cjs; all 19 suites pass. Cache leren-be-v142 so phones drop the old cut pictures.
+- Not done: physical phone check; the remaining cat pictures keep their original style with a softened edge.
