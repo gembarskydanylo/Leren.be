@@ -109,7 +109,7 @@ main{width:100%;max-width:640px;margin:0 auto;padding:12px 14px 24px;display:fle
 header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
  background:radial-gradient(circle at 100% 0,rgba(255,255,255,.14) 0 90px,transparent 91px),var(--oranje);color:var(--on-oranje);border-radius:var(--r-lg);padding:14px 14px 14px 18px;
  box-shadow:0 var(--depth) 0 var(--oranje-deep),var(--lift);overflow:hidden}
-.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 0;overflow:hidden;container-type:inline-size}.hdr-stats{flex:none}.brand h1{white-space:nowrap}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 0;overflow:hidden;container-type:inline-size;cursor:pointer;border-radius:14px}.brand:focus-visible{outline:3px solid #fff;outline-offset:3px}.hdr-stats{flex:none}.brand h1{white-space:nowrap}
 .brand::before{content:"";flex:none;width:38px;height:38px;border-radius:11px; /* cat mascot (app icon) */
  background:#FCC447 url("./icon-192.png") center/cover no-repeat;
  box-shadow:0 0 0 2px rgba(255,255,255,.9)}
@@ -1002,7 +1002,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <body>
 <main data-view="path">
   <header>
-    <div class="brand"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
+    <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="Leren.be — на головну"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
     <button type="button" class="comp-header-route" id="headerRoute"></button>
     <div class="hdr-stats">
       <button type="button" class="hdr-pill streak-pill" id="streakPill"></button>
@@ -4890,6 +4890,10 @@ document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
+// Logo = home: the start screen the learner chose (route, or the lesson page after "Вільна практика").
+function goHome(){setView(homePref==="free"?"lesson":"path");if(homePref!=="free"&&learningPath)learningPath.home();window.scrollTo({top:0})}
+$("brandHome").addEventListener("click",goHome);
+$("brandHome").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();goHome()}});
 $("headerRoute").addEventListener("click",()=>{setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("streakPill").addEventListener("click",()=>setView("progress"));
 $("goalBtn").addEventListener("click",openGoalModal);
