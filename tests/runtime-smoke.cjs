@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-assert(fs.existsSync('img/mascot/fill-gap-cat.svg'),'Gap questions have their own single-cat illustration');
-assert(script.includes('it?.type==="gap"||it?.gap')&&fs.readFileSync('sw.js','utf8').includes('./img/mascot/fill-gap-cat.svg'),'Gap illustration is selected in questions and precached offline');
+assert(fs.existsSync('img/mascot/fill-gap-cat.png'),'Gap questions have their own single-cat illustration');
+assert(script.includes('it?.type==="gap"||it?.gap')&&fs.readFileSync('sw.js','utf8').includes('./img/mascot/fill-gap-cat.png'),'Gap illustration is selected in questions and precached offline');
 function fn(name){const start=script.indexOf('function '+name+'(');return script.slice(start,script.indexOf('\n}',start)+2)}
 const grow=script.slice(script.indexOf('const GROW_UI='),script.indexOf('const growU='));
 for(const lang of ['uk','en','fr','ar'])for(const count of [12,17]){
