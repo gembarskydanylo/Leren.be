@@ -37,18 +37,18 @@ Je moet minder cola drinken.|Тобі треба пити менше коли.|Y
 Je moet minder koffie drinken.|Тобі треба пити менше кави.|You should drink less coffee.|Tu dois boire moins de café.|يجب أن تشرب قهوة أقل.|☕
 Je moet meer groenten eten.|Тобі треба їсти більше овочів.|You should eat more vegetables.|Tu dois manger plus de légumes.|يجب أن تأكل المزيد من الخضار.|🥦
 Je moet meer fruit eten.|Тобі треба їсти більше фруктів.|You should eat more fruit.|Tu dois manger plus de fruits.|يجب أن تأكل المزيد من الفاكهة.|🍎
-Je moet minder chips eten.|Тобі треба їсти менше чіпсів.|You should eat fewer crisps.|Tu dois manger moins de chips.|يجب أن تأكل شيبس أقل.|🥔
+Je moet minder chips eten.|Тобі треба їсти менше чіпсів.|You should eat fewer crisps.|Tu dois manger moins de chips.|يجب أن تأكل شيبس أقل.|🥡
 Ik eet 's middags altijd een zak snoepjes.|Удень я завжди з’їдаю пакет цукерок.|In the afternoon I always eat a bag of sweets.|L’après-midi, je mange toujours un sachet de bonbons.|بعد الظهر آكل دائماً كيس حلويات.|🍬
 Ik drink meestal cola bij het eten.|Я зазвичай п’ю колу під час їжі.|I usually drink cola with my meal.|Je bois généralement du cola pendant le repas.|أشرب الكولا عادة مع الطعام.|🥤
 Ik drink 20 kopjes koffie per dag.|Я п’ю 20 чашок кави на день.|I drink 20 cups of coffee a day.|Je bois 20 tasses de café par jour.|أشرب 20 فنجان قهوة في اليوم.|☕
 Ik eet nooit vis.|Я ніколи не їм рибу.|I never eat fish.|Je ne mange jamais de poisson.|لا آكل السمك أبداً.|🐟
 Ik eet geen fruit.|Я не їм фруктів.|I don’t eat fruit.|Je ne mange pas de fruits.|لا آكل الفاكهة.|🍎
-Ik eet dikwijls chips.|Я часто їм чіпси.|I often eat crisps.|Je mange souvent des chips.|آكل الشيبس كثيراً.|🥔
+Ik eet dikwijls chips.|Я часто їм чіпси.|I often eat crisps.|Je mange souvent des chips.|آكل الشيبس كثيراً.|🥡
 Ik eet niet gezond.|Я харчуюся нездорово.|I don’t eat healthily.|Je ne mange pas sainement.|لا آكل بشكل صحي.|🍟
 het advies|порада|advice|le conseil|النصيحة|💡
 het snoepje – de snoepjes|цукерка – цукерки (солодощі)|sweet – sweets|le bonbon – les bonbons|الحلوى – الحلويات|🍬
 de hamburger – de hamburgers|гамбургер – гамбургери|hamburger|le hamburger|البرغر|🍔
-de chips|чіпси|crisps|les chips|الشيبس|🥔
+de chips|чіпси|crisps|les chips|الشيبس|🥡
 het kopje koffie|чашка кави|cup of coffee|une tasse de café|فنجان قهوة|☕
 de zak snoepjes|пакет цукерок|a bag of sweets|un sachet de bonbons|كيس حلويات|🛍️
 `,
