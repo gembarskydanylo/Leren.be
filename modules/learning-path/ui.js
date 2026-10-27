@@ -58,18 +58,9 @@
    if(w.id==='b_wakker'||w.nl==='wakker worden'){
     const img=node('img');img.src='./img/learning-path/wake-cat-v1.png';img.alt='Кіт прокидається і потягується біля будильника';figure.appendChild(img);
    }else{
-    const key=globalThis.LerenWordArt?.forCard?.(w);
-    if(key){figure.innerHTML=globalThis.LerenWordArt.svg(key,w.nl);figure.setAttribute('aria-label',w.nl)}
-    else{
-     const icon=String(w.icon||'📚');figure.setAttribute('aria-label',w.nl);
-     if(icon.startsWith('<svg'))figure.innerHTML=icon;
-     else {
-      const drawn=globalThis.LerenEmoji?.artFor?.(icon)||globalThis.LerenCardArt?.A?.[icon];
-      if(drawn)figure.innerHTML=drawn;
-      else if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
-      else figure.textContent=icon;
-     }
-    }
+    const icon=String(w.icon||'📚');figure.setAttribute('aria-label',w.nl);
+    if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
+    else figure.textContent=icon;
    }
    return figure;
   }

@@ -36,9 +36,9 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/renderer.js?v=2"></script>
+<script src="./modules/emoji/renderer.js?v=3"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=125"></script>
+<script src="./modules/learning-path/ui.js?v=126"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -2295,7 +2295,8 @@ DATA.objpron=R([
 ]);
 
 LerenCurriculum.apply({DATA,CATEGORIES,UI,R,LEVELS});
-if(typeof LerenCardArt!=="undefined")LerenCardArt.apply(DATA); // drawn pictures for topics whose every emoji has one
+// Keep course icons as emoji triggers so the bundled custom PNG set provides
+// the artwork consistently across browsers and devices.
 
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
 function loadNumber(key,fallback){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}catch(e){return fallback}}
@@ -2325,17 +2326,8 @@ function questionPicture(it,context={}){
  const label=String(it?.nl||it?.sentence||it?.q?.uk||it?.q?.en||"Ілюстрація до питання");
  const picture=(source)=>{
   const ic=typeof source?.icon==="string"?source.icon:"";
-  if(ic.startsWith("<svg")){const box=iconBox(ic);box.classList.add("question-picture");return box}
-  // Prefer the vocabulary drawing over a reused emoji. Many course words
-  // carry the orange cat as their icon, which made every matched test item
-  // look like the same cat even when the answer was about a train or a clock.
-  const key=globalThis.LerenWordArt?.forCard?.(source);
-  if(key){const box=iconBox(globalThis.LerenWordArt.svg(key,source?.nl||label));box.classList.add("question-picture");return box}
-  if(context.test&&/^(🐱|🐈|😺|😸|😹|😻|😼|😽|🙀|😿|😾)$/.test(ic))return null;
-  const drawn=ic&&(globalThis.LerenEmoji?.artFor?.(ic)||globalThis.LerenCardArt?.A?.[ic]);
-  if(drawn){const box=iconBox(drawn);box.classList.add("question-picture");return box}
-  if(ic&&globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
-  return null;
+  if(!ic||ic.startsWith("<svg")||!globalThis.LerenEmoji)return null;
+  const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img;
  };
  const id=String(it?.id||"");
  if(id)for(const topic of Object.values(DATA)){
@@ -2386,8 +2378,6 @@ function questionPicture(it,context={}){
  ];
  const themeText=clean([source,...(context.test?[context.title]:[])].filter(Boolean).join(" "));
  const emoji=themes.find(([pattern])=>pattern.test(themeText))?.[1]||"📝";
- const themeArt=globalThis.LerenEmoji?.artFor?.(emoji)||globalThis.LerenCardArt?.A?.[emoji];
- if(themeArt){const box=iconBox(themeArt);box.classList.add("question-picture");return box}
  if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(emoji,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
  const box=iconBox(emoji);box.classList.add("question-picture");return box;
 }
