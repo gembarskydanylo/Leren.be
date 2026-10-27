@@ -102,3 +102,4 @@
 }
 @media(max-width:360px){.lp-toolbar select{width:126px}.lp-toolbar>.lp-button{padding-inline:7px;font-size:11px}.lp-placement .lp-options .lp-button{font-size:14px;padding:9px 7px}}
 .lp-placement-progress progress{appearance:none;border:0;border-radius:10px;overflow:hidden;background:var(--surface-2)}.lp-placement-progress progress::-webkit-progress-bar{background:var(--surface-2);border-radius:10px}.lp-placement-progress progress::-webkit-progress-value{background:var(--oranje);border-radius:10px}.lp-placement-progress progress::-moz-progress-bar{background:var(--oranje);border-radius:10px}
+.lp-word-art.lp-drawn>svg{width:auto;height:100%;aspect-ratio:1}

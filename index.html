@@ -19,13 +19,13 @@
 <script src="./modules/learning-path/core.js?v=102"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
-<script src="./modules/card-art/art.js?v=123"></script>
-<script src="./modules/card-art/people.js?v=123"></script>
-<script src="./modules/card-art/food.js?v=123"></script>
-<script src="./modules/card-art/things.js?v=123"></script>
-<script src="./modules/card-art/places.js?v=123"></script>
-<script src="./modules/card-art/more-people.js?v=123"></script>
-<script src="./modules/card-art/more-things.js?v=123"></script>
+<script src="./modules/card-art/art.js?v=135"></script>
+<script src="./modules/card-art/people.js?v=135"></script>
+<script src="./modules/card-art/food.js?v=135"></script>
+<script src="./modules/card-art/things.js?v=135"></script>
+<script src="./modules/card-art/places.js?v=135"></script>
+<script src="./modules/card-art/more-people.js?v=135"></script>
+<script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=112"></script>
@@ -36,9 +36,9 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/renderer.js?v=4"></script>
+<script src="./modules/emoji/renderer.js?v=6"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=126"></script>
+<script src="./modules/learning-path/ui.js?v=135"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -989,7 +989,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=109">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=135">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
 <link rel="stylesheet" href="./modules/focused-home/style.css?v=112">
@@ -2295,6 +2295,7 @@ DATA.objpron=R([
 ]);
 
 LerenCurriculum.apply({DATA,CATEGORIES,UI,R,LEVELS});
+if(typeof LerenCardArt!=="undefined")LerenCardArt.apply(DATA); // one matching drawing per card (modules/card-art)
 // Keep course icons as emoji triggers so the bundled custom PNG set provides
 // the artwork consistently across browsers and devices.
 
@@ -2324,11 +2325,15 @@ const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
 const iconBox=ic=>{const d=el("div","icon-box"+(ic.includes("kt-img")?" kt":""));d.setAttribute("aria-hidden","true");if(ic.startsWith("<svg"))d.innerHTML=ic;else d.textContent=ic;return d};
 function questionPicture(it,context={}){
  const label=String(it?.nl||it?.sentence||it?.q?.uk||it?.q?.en||"Ілюстрація до питання");
- const picture=(source)=>{
-  const ic=typeof source?.icon==="string"?source.icon:"";
-  if(!ic||ic.startsWith("<svg")||!globalThis.LerenEmoji)return null;
+ // Our own drawing first (the card's SVG, or the drawing for this emoji), then the bundled emoji pack.
+ const drawn=ic=>{
+  if(typeof ic!=="string"||!ic)return null;
+  const svg=ic.startsWith("<svg")?ic:(globalThis.LerenCardArt?.A?.[ic]||"");
+  if(svg){const box=el("div","question-picture");box.setAttribute("role","img");box.setAttribute("aria-label",label);box.innerHTML=svg;return box}
+  if(!globalThis.LerenEmoji)return null;
   const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img;
  };
+ const picture=source=>drawn(typeof source?.icon==="string"?source.icon:"");
  const id=String(it?.id||"");
  if(id)for(const topic of Object.values(DATA)){
   const byId=(topic.items||[]).find(word=>String(word.id||"")===id);
@@ -2357,11 +2362,7 @@ function questionPicture(it,context={}){
  }
  const match=bestScore>=9?picture(best):null;if(match)return match;
 
- // Keep the writing cat for lesson practice; tests use a topic-specific image.
- if(!context.test&&(it?.type==="gap"||it?.gap||typeof it?.sentence==="string"&&it.sentence.includes("___"))){
-  const img=el("img","question-picture");img.src="./img/mascot/fill-gap-cat.png";img.alt="Помаранчевий кіт із ручкою заповнює пропуск у блокноті";return img;
- }
- const text=normalized;
+  const text=normalized;
  const ordinals=[
   [/(eerste|first|перший)/,"1"],[/(tweede|second|другий)/,"2"],[/(derde|third|третій)/,"3"],
   [/(vierde|fourth|четвертий)/,"4"],[/(vijfde|fifth|п’ятий)/,"5"],[/(zesde|sixth|шостий)/,"6"],
@@ -2385,8 +2386,9 @@ function questionPicture(it,context={}){
   [/(hello|hallo|good morning|goedemorgen|greeting|groet|say|zeg|привіт|вранці|доброго ранку|вітат|знайом|communicat|спілкуван)/,"💬"]
  ];
  const themeText=clean([source,...(context.test?[context.title]:[])].filter(Boolean).join(" "));
- const emoji=ordinal||themes.find(([pattern])=>pattern.test(themeText))?.[1]||"📝";
- if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(emoji,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
+ const isGap=it?.type==="gap"||it?.gap||typeof it?.sentence==="string"&&it.sentence.includes("___");
+ const emoji=ordinal||themes.find(([pattern])=>pattern.test(themeText))?.[1]||(isGap?"✍️":"📝");
+ const art=drawn(emoji);if(art)return art;
  const box=iconBox(emoji);box.classList.add("question-picture");return box;
 }
 

@@ -14,8 +14,16 @@ const bread=context.renderQuestionPicture({type:'gap',sentence:'Ik koop ___ broo
 assert.equal(bread.icon,'🍞','Gap prompts reuse the matching bread illustration');
 assert.equal(bread.className,'question-picture');
 const unmatched=context.renderQuestionPicture({type:'gap',sentence:'Ik ___ Anna.',q:{uk:'Заповни пропуск'}});
-assert.equal(unmatched.src,'./img/mascot/fill-gap-cat.png','Unmatched grammar gaps use the writing-cat picture');
-assert(!unmatched.src.includes('student-cat-v1.png'),'Question art never falls back to the six-pose mascot collage');
+assert(['✍️','📖'].includes(unmatched.icon),'Unmatched grammar gaps show a writing picture, not the same cat on every question');
+assert(!String(unmatched.src||'').includes('cat'),'Question art never falls back to a cat');
 const time=context.renderQuestionPicture({q:{uk:'Котра година?',en:'What time is it?'}});
 assert.equal(time.icon,'⏰','Unmatched time questions use the bundled clock emoji');
-console.log('PASS: question-specific image matching, fill-gap fallback and no mascot collage on quiz cards');
+// With the drawn card art loaded, cards and themes use their own drawing.
+context.LerenCardArt={A:{'🍞':'<svg>bread</svg>','⏰':'<svg>clock</svg>'}};
+const drawnBread=context.renderQuestionPicture({type:'gap',sentence:'Ik koop ___ brood.'});
+assert.equal(drawnBread.innerHTML,'<svg>bread</svg>','Matched questions show the drawing for that word');
+const drawnTime=context.renderQuestionPicture({q:{uk:'Котра година?',en:'What time is it?'}});
+assert.equal(drawnTime.innerHTML,'<svg>clock</svg>','Theme fallback uses the drawing for the theme');
+const svgCard=context.renderQuestionPicture({icon:'<svg>own</svg>'});
+assert.equal(svgCard.innerHTML,'<svg>own</svg>','A card that already has a drawing keeps it');
+console.log('PASS: question-specific drawings, card SVGs kept, theme drawings, no cat fallback');
