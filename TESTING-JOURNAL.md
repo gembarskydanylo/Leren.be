@@ -119,3 +119,8 @@
 - Cache/release **114**, word-builder art.js/game.js URLs114; CSS stays113 to preserve the latest phone layout. All **18 tests/*.cjs suites passed**, including54-word illustration/translation coverage and offline dependencies; git diff --check clean.94 offline assets. Existing picture/word test updated only for the new versioned assets.
 - Browser QA:54-picture review sheet; cover in the390px game gallery; actual10-word round completed by keyboard at320×720, including new lepel. Correct10/10 result, +100 local sample XP, articles/plurals/translations and result thumbnails visible. Every Next bottom was452–477px, above dock top644px, no horizontal overflow. No production answers submitted; local sample score60→160 only. Physical phone and independent audio listening not claimed.
 - Local evidence: /tmp/leren-word114-cover-mobile.png and /tmp/leren-word114-all54.png. Temporary artwork-review HTML removed before commit. Publication receipt follows.
+
+### UI-114 publication receipt
+- Feature **5d91907** deployed successfully: https://github.com/gembarskydanylo/Leren.be/actions/runs/40465124797.
+- All5 changed live HTML/worker/word-art/word-game/cover files match the validated source byte-for-byte. Live release114 notice shows the cat cover,54-word expansion and existing teacher recordings.
+- Live390px Games card loads wb-v114.webp with no overflow. Opened the actual game to question1 (sun picture) and returned without entering letters or submitting an answer. No console errors; sample production score180 unchanged. Screenshot: /tmp/leren-word114-live-cover.png. Browser viewport reset; local HTTP server stopped after verification.

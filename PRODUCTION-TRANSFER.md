@@ -35,3 +35,4 @@ UI-111 published as43f84da; successful Pages run40413762071. All15 live HTML/wor
 
 ## UI-114 — Word builder art and nouns
 27 October2026, based on production7edbbc4. New cat-with-letter-tiles cover and54 total illustrated nouns (12 additions); original42 keys and leren_wb_v1 stats retained. Matching native SVG additions inside the game; pen/pencil distinction fixed. Existing Peter/Dafna audio covers all12 new nouns. v113 compact Next behaviour and newer lesson/AI work preserved. Release/cache114; word-builder JS114, CSS113. Assets/prompts: img/games/wb-v114.json and ASSETS.md. Checks/receipt: TESTING-JOURNAL.md.
+UI-114 published as5d91907, successful Pages run40465124797. All5 changed live source/image files match the validated release. Live new cover and game launch checked without answering or changing the sample production score. Receipt: TESTING-JOURNAL.md.
