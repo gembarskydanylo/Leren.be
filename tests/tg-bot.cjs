@@ -61,6 +61,11 @@ calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{
 assert.deepEqual(calls.map(x=>x.method),['sendMessage','copyMessage','sendMessage']);assert.equal(calls[0].body.chat_id,'8');assert.equal(calls[1].body.message_id,77);assert.match(calls[2].body.text,/надіслано/);
 globalThis.fetch=real;env.PER_USER=ok;
 
+// Cat stickers: the admin creates the pack from lerenbe.com images; /post stickers sends one with an "add" button
+c=await send('/stickers',42);assert.equal(c[0].method,'createNewStickerSet');assert.equal(c[0].body.name,'lerenbe_cat_by_lerenbe_bot');assert.equal(c[0].body.user_id,42);
+assert.equal(c[0].body.stickers.length,6);assert.match(c[0].body.stickers[0].sticker,/^https:\/\/lerenbe\.com\/stickers\/cat-1\.png$/);assert.match(c[1].body.text,/готові/);
+c=await send('/stickers',7);assert.ok(!c.some(x=>x.method==='createNewStickerSet'));
+
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
 assert.equal(ans.body.text,'Kort: <b>geen</b> перед іменником. &lt;script&gt;x&lt;/script&gt;');

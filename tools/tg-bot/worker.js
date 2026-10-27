@@ -4,6 +4,7 @@
 // Bug reports: /bug (or just a screenshot) → everything the tester sends until /done goes to REPORTS_CHAT
 // (optional REPORTS_THREAD for a topic; default: the admin's chat). A reply to a report there goes back to the tester.
 // Admin (ADMIN_ID): /post word|quiz|tip|promo|welcome (to the channel now; welcome is also pinned), /preview … (to you only), /report.
+// /stickers creates the cat sticker pack (images in /stickers on lerenbe.com); /post stickers shows it in the channel.
 // In a group with Topics turned on, the admin's /topics creates the testers' topics, each with a pinned how-to.
 // Secrets: TG_TOKEN, ANTHROPIC_KEY, WEBHOOK_SECRET. Variables: CHANNEL (@name or -100…), ADMIN_ID, BOT_USERNAME,
 // optional MODEL (default claude-haiku-5-5), AI_OFF = 1 stops all model calls.
@@ -80,11 +81,33 @@ async function runJob(env, job, chat, day) {
   if (job === "tip") return postText(env, chat, pick(content.tips, tipNumber(day)));
   if (job === "promo") return postText(env, chat, pick(content.promos, Math.floor(day / 7)));
   if (job === "report") return report(env);
+  if (job === "stickers") return postStickers(env, chat, day);
   if (job === "welcome") {
     const r = await postText(env, chat, content.welcome);
     if (r.ok && chat === env.CHANNEL) await tg(env, "pinChatMessage", {chat_id: chat, message_id: r.result.message_id, disable_notification: true});
     return r;
   }
+}
+
+// --- Cat stickers ------------------------------------------------------------------------------
+// Six poses of the app's student cat with a Dutch phrase each (made by tools/tg-bot/make-stickers.py).
+const STICKERS = [["cat-1", "👋"], ["cat-2", "📚"], ["cat-3", "🤔"], ["cat-4", "🎉"], ["cat-5", "💪"], ["cat-6", "🎁"]];
+const stickerSet = env => "lerenbe_cat_by_" + String(env.BOT_USERNAME || "").replace(/^@/, "");
+const stickerButton = env => ({inline_keyboard: [[{text: "➕ Додати стікери з котиком", url: "https://t.me/addstickers/" + stickerSet(env)}]]});
+
+async function makeStickers(env, chat) {
+  if (!env.BOT_USERNAME) return tg(env, "sendMessage", {chat_id: chat, text: "Спершу додайте в Cloudflare змінну BOT_USERNAME."});
+  const r = await tg(env, "createNewStickerSet", {user_id: +env.ADMIN_ID, name: stickerSet(env), title: "Котик lerenbe.com 🇧🇪",
+    stickers: STICKERS.map(([file, emoji]) => ({sticker: `https://lerenbe.com/stickers/${file}.png`, format: "static", emoji_list: [emoji]}))});
+  const exists = !r.ok && /occupied|already/i.test(r.description || "");
+  return tg(env, "sendMessage", {chat_id: chat, text: r.ok || exists ? (exists ? "Стікери вже створені 🙂" : "✅ Стікери готові!") + " Тепер можна /post stickers" : "❌ " + r.description,
+    ...(r.ok || exists ? {reply_markup: stickerButton(env)} : {})});
+}
+async function postStickers(env, chat, n) {
+  const set = await tg(env, "getStickerSet", {name: stickerSet(env)});
+  if (!set.ok) return set;
+  await tg(env, "sendMessage", {chat_id: chat, text: "🐱 <b>Наш котик тепер у стікерах!</b>\n\nШість стікерів, і кожен вчить нідерландську фразу: <i>Dag! · Ik leer! · Even denken… · Super! · Je kunt het! · Voor jou!</i>\n\nДодавайте й надсилайте друзям 🧡", parse_mode: "HTML"});
+  return tg(env, "sendSticker", {chat_id: chat, sticker: pick(set.result.stickers, n).file_id, reply_markup: stickerButton(env)});
 }
 
 // --- Private chat ------------------------------------------------------------------------------
@@ -236,11 +259,12 @@ async function onMessage(env, msg) {
   }
   if (cmd === "/id") return tg(env, "sendMessage", {chat_id: chat, text: `Ваш id: <code>${msg.from.id}</code>`, parse_mode: "HTML"});
   if (isAdmin && (cmd === "/post" || cmd === "/preview")) {
-    if (!["word", "quiz", "tip", "promo", "welcome"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | promo | welcome`});
+    if (!["word", "quiz", "tip", "promo", "welcome", "stickers"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | promo | welcome | stickers`});
     const r = await runJob(env, arg, cmd === "/post" ? env.CHANNEL : chat, day);
     return cmd === "/post" && tg(env, "sendMessage", {chat_id: chat, text: r?.ok ? "✅ Опубліковано" : "❌ " + (r?.description || "помилка")});
   }
   if (isAdmin && cmd === "/report") return report(env);
+  if (isAdmin && cmd === "/stickers") return makeStickers(env, chat);
   if (text.startsWith("/")) return tg(env, "sendMessage", {chat_id: chat, text: "Не знаю такої команди 🙂 Спробуйте /word, /quiz або просто напишіть питання."});
 
   if (env.AI_OFF === "1" || await limited(env, msg.from.id))
