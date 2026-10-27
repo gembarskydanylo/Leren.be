@@ -36,7 +36,7 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/renderer.js?v=3"></script>
+<script src="./modules/emoji/renderer.js?v=4"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
 <script src="./modules/learning-path/ui.js?v=126"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
@@ -2362,6 +2362,13 @@ function questionPicture(it,context={}){
   const img=el("img","question-picture");img.src="./img/mascot/fill-gap-cat.png";img.alt="Помаранчевий кіт із ручкою заповнює пропуск у блокноті";return img;
  }
  const text=normalized;
+ const ordinals=[
+  [/(eerste|first|перший)/,"1"],[/(tweede|second|другий)/,"2"],[/(derde|third|третій)/,"3"],
+  [/(vierde|fourth|четвертий)/,"4"],[/(vijfde|fifth|п’ятий)/,"5"],[/(zesde|sixth|шостий)/,"6"],
+  [/(zevende|seventh|сьомий)/,"7"],[/(achtste|eighth|восьмий)/,"8"],[/(negende|ninth|дев’ятий)/,"9"],
+  [/(tiende|tenth|десятий)/,"10"],[/(elfde|eleventh|одинадцятий)/,"11"],[/(twaalfde|twelfth|дванадцятий)/,"12"]
+ ];
+ const ordinal=ordinals.find(([pattern])=>pattern.test(normalized))?.[1];
  const themes=[
   [/(time|clock|uur|klok|half|kwart|minute|hour|tijd|годин|час|хвилин)/,"⏰"],
   [/(number|how many|hoeveel|cijfer|vijftien|twintig|euro|price|cost|kost|geld|числ|скільки|ціна|грош)/,"🔢"],
@@ -2371,13 +2378,14 @@ function questionPicture(it,context={}){
   [/(home|house|huis|room|kamer|bedroom|slaapkamer|rent|huur|дім|житл|кімнат|оренд)/,"🏠"],
   [/(weather|weer|rain|regen|sun|zon|wind|snow|sneeuw|погод|дощ|сонц|вітер|сніг)/,"🌤️"],
   [/(doctor|dokter|health|ziek|pijn|body|lichaam|hospital|ziekenhuis|лікар|здоров|аптек|таблет|болить|лікарн)/,"🏥"],
-  [/(day|date|maandag|dinsdag|woensdag|birthday|verjaardag|calendar|week|день|дата|понеділ|вівтор|серед|народжен|тижд)/,"📅"],
+  [/(birthday|verjaardag|dertig jaar|twintig jaar|thirty years|twenty years|тридцять років|двадцять років|день народжен|народжен)/,"🎉"],
+  [/(day|date|maandag|dinsdag|woensdag|calendar|week|день|дата|понеділ|вівтор|серед|тижд)/,"📅"],
   [/(read|reading|lezen|book|boek|letter|write|schrijf|formulier|читан|книг|лист|пиш|анкет|заповн)/,"📖"],
   [/(person|people|naam|name|persoon|особ|люд|ім.?я|звати|хто такий)/,"🧑"],
   [/(hello|hallo|good morning|goedemorgen|greeting|groet|say|zeg|привіт|вранці|доброго ранку|вітат|знайом|communicat|спілкуван)/,"💬"]
  ];
  const themeText=clean([source,...(context.test?[context.title]:[])].filter(Boolean).join(" "));
- const emoji=themes.find(([pattern])=>pattern.test(themeText))?.[1]||"📝";
+ const emoji=ordinal||themes.find(([pattern])=>pattern.test(themeText))?.[1]||"📝";
  if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(emoji,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
  const box=iconBox(emoji);box.classList.add("question-picture");return box;
 }
