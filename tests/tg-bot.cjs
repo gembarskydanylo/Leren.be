@@ -8,7 +8,7 @@ globalThis.fetch=async(url,opt)=>{const body=JSON.parse(opt.body);
  if(url.startsWith('https://api.anthropic.com')){calls.push({method:'AI',body});return {ok:true,json:async()=>({content:[{type:'text',text:aiReply}]})}}
  const method=url.split('/').pop();calls.push({method,body});
  return {json:async()=>method==='getChatMemberCount'?{ok:true,result:150}:{ok:true,result:{}}}};
-const kv=new Map(),RATE={get:async k=>kv.get(k)??null,put:async(k,v)=>{kv.set(k,v)},list:async({prefix})=>({keys:[...kv.keys()].filter(k=>k.startsWith(prefix)).map(name=>({name}))})};
+const kv=new Map(),RATE={delete:async k=>{kv.delete(k)},get:async k=>kv.get(k)??null,put:async(k,v)=>{kv.set(k,v)},list:async({prefix})=>({keys:[...kv.keys()].filter(k=>k.startsWith(prefix)).map(name=>({name}))})};
 const ok={limit:async()=>({success:true})};
 const env={TG_TOKEN:'T',WEBHOOK_SECRET:'s3cret',CHANNEL:'@lerenbe',ADMIN_ID:'42',BOT_USERNAME:'lerenbe_bot',RATE,PER_USER:ok,ALL:ok,ANTHROPIC_KEY:'k'};
 const pending=[];const ctx={waitUntil:p=>pending.push(p)};const flush=async()=>{while(pending.length)await pending.shift()};
@@ -45,6 +45,21 @@ c=await group('/topics',7,true);assert.equal(c.length,0);
 c=await group('/topics',42,false);assert.match(c[0].body.text,/Теми/);
 c=await group('/topics@lerenbe_bot',42,true);assert.deepEqual(c.map(x=>x.method),['createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','sendMessage']);
 assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Скріншот/);
+
+// Bug reports: /bug → text and screenshots go to the admin with one header; /done ends; the admin's reply goes back
+let mid=500;const real=globalThis.fetch;globalThis.fetch=async(url,opt)=>{const res=await real(url,opt);const j=await res.json();if(!url.includes('anthropic')&&!j.result?.message_id&&typeof j.result==='object')j.result={message_id:++mid};return {ok:true,json:async()=>j}};
+const raw=async m=>{calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:9,chat:{id:m.from,type:'private'},...m,from:{id:m.from,first_name:'Olha',username:'olha_ua'}}})}),env,ctx);await flush();return calls};
+c=await send('/bug',8);assert.match(c[0].body.text,/скріншот/);
+c=await raw({from:8,text:'Тест не відкривається'});assert.deepEqual(c.map(x=>x.method),['sendMessage','copyMessage','sendMessage']);
+assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт.*@olha_ua.*8/s);assert.equal(c[1].body.from_chat_id,8);assert.match(c[2].body.text,/Дякуємо/);
+const header=c[0];const headerId=mid-2;
+c=await raw({from:8,photo:[{file_id:'p'}],caption:'ось скрін'});assert.deepEqual(c.map(x=>x.method),['copyMessage','sendMessage']);assert.match(c[1].body.text,/Додано/);
+c=await raw({from:8,photo:[{file_id:'p2'}],media_group_id:'g'});assert.deepEqual(c.map(x=>x.method),['copyMessage']);
+c=await send('/done',8);assert.match(c[0].body.text,/Дякуємо/);assert.equal(kv.has('tg:bug:8'),false);
+c=await raw({from:9,photo:[{file_id:'p'}]});assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт/); // a screenshot alone starts a report
+calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:77,chat:{id:42,type:'private'},from:{id:42},text:'Дякую, виправимо!',reply_to_message:{message_id:headerId}}})}),env,ctx);await flush();
+assert.deepEqual(calls.map(x=>x.method),['sendMessage','copyMessage','sendMessage']);assert.equal(calls[0].body.chat_id,'8');assert.equal(calls[1].body.message_id,77);assert.match(calls[2].body.text,/надіслано/);
+globalThis.fetch=real;env.PER_USER=ok;
 
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
