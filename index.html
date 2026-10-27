@@ -36,9 +36,9 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/renderer.js?v=1"></script>
+<script src="./modules/emoji/renderer.js?v=2"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=124"></script>
+<script src="./modules/learning-path/ui.js?v=125"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -2326,11 +2326,18 @@ function questionPicture(it){
  const picture=(source)=>{
   const ic=typeof source?.icon==="string"?source.icon:"";
   if(ic.startsWith("<svg")){const box=iconBox(ic);box.classList.add("question-picture");return box}
-  if(ic&&globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
+  const drawn=ic&&(globalThis.LerenEmoji?.artFor?.(ic)||globalThis.LerenCardArt?.A?.[ic]);
+  if(drawn){const box=iconBox(drawn);box.classList.add("question-picture");return box}
   const key=globalThis.LerenWordArt?.forCard?.(source);
   if(key){const box=iconBox(globalThis.LerenWordArt.svg(key,source?.nl||label));box.classList.add("question-picture");return box}
+  if(ic&&globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
   return null;
  };
+ const id=String(it?.id||"");
+ if(id)for(const topic of Object.values(DATA)){
+  const byId=(topic.items||[]).find(word=>String(word.id||"")===id);
+  if(byId){const found=picture(byId);if(found)return found}
+ }
  const own=picture(it);if(own)return own;
 
  // Exam questions often contain no icon field. Match their prompt and sentence
@@ -2338,6 +2345,7 @@ function questionPicture(it){
  const textOf=value=>Array.isArray(value)?value.join(" "):value&&typeof value==="object"?Object.values(value).filter(x=>typeof x==="string").join(" "):String(value||"");
  const source=[it?.sentence,it?.text,it?.nl,it?.g?.v,it?.g?.s,it?.sep?.s,it?.s?.q,textOf(it?.q)].filter(Boolean).join(" ").toLocaleLowerCase();
  const clean=s=>String(s||"").toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu," ").trim();
+ const noise=new Set(["de","het","een","van","voor","naar","met","dan","dat","dit","wat","waar","wie","hoe","the","and","from","with","when","what","where","which","that","this","pour","dans","avec","quoi","comment","الذي","التي"]);
  const normalized=clean(source),sourceTokens=new Set(normalized.split(" "));
  let best=null,bestScore=0;
  for(const topic of Object.values(DATA))for(const word of topic.items||[]){
@@ -2346,7 +2354,7 @@ function questionPicture(it){
   for(const value of [word.nl,word.en,word.fr,word.uk,word.ar,word.art_nl,word.art_fr]){
    const phrase=clean(value);if(phrase.length<4)continue;
    if(normalized.includes(phrase))score=Math.max(score,100+phrase.length);
-   else for(const token of phrase.split(" "))if(token.length>=4&&sourceTokens.has(token))score=Math.max(score,5+token.length);
+   else for(const token of phrase.split(" "))if(token.length>=4&&!noise.has(token)&&sourceTokens.has(token))score=Math.max(score,5+token.length);
   }
   if(score>bestScore){best=word;bestScore=score}
  }

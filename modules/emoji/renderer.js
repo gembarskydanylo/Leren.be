@@ -17,6 +17,17 @@
  const emojiStyle=document.createElement('style');emojiStyle.textContent='.lbe-emoji{display:inline-block;width:1.18em;height:1.18em;object-fit:contain;vertical-align:-.22em;flex:none}.icon-box>.lbe-emoji{width:1.15em;height:1.15em}';document.head.appendChild(emojiStyle);
  const strip = value => value.replace(/[\uFE0E\uFE0F\u20E3\u{1F3FB}-\u{1F3FF}]/gu,'').replace(/\u200D/gu,'');
  const emojiPattern = /(?:[0-9#*]\uFE0F?\u20E3|\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:[\uFE0E\uFE0F\p{Emoji_Modifier}])*(?:\u200D\p{Extended_Pictographic}(?:[\uFE0E\uFE0F\p{Emoji_Modifier}])*)*)/gu;
+ const artAliases = {
+  '🐱':'🐈','🐈‍⬛':'🐈','👨‍⚕️':'🧑‍⚕️','👩‍⚕️':'🧑‍⚕️',
+  '👨‍🍳':'🧑‍🍳','👩‍🍳':'🧑‍🍳','👨‍🌾':'🧑‍🌾','👩‍🌾':'🧑‍🌾',
+  '👨‍💼':'🧑‍💼','👩‍💼':'🧑‍💼',
+  '😃':'😀','😄':'😀','😁':'😀','😆':'😀','😅':'😀','😂':'😀','🤣':'😀',
+  '😍':'😊','🥰':'😊','😘':'😊','😎':'🙂','😕':'😔','🙁':'😔','😢':'😞','😭':'😞'
+ };
+ function artFor(value) {
+  const art=globalThis.LerenCardArt?.A||{};
+  return art[value]||art[artAliases[value]]||null;
+ }
  function fileFor(value) {
   const key=strip(value), known=exact[key]||exact[value];
   if(known)return known+'.png';
@@ -50,7 +61,7 @@
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;return p&&p.closest('script,style,textarea,input,select,option,[data-no-local-emoji]')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});
   const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(replaceTextNode);
  }
- globalThis.LerenEmoji={fileFor,make,enhance};
+ globalThis.LerenEmoji={fileFor,make,enhance,artFor};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>enhance(),{once:true});else enhance();
  const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')replaceTextNode(record.target);else record.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE)replaceTextNode(n);else if(n.nodeType===Node.ELEMENT_NODE)enhance(n)})}});
  observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});

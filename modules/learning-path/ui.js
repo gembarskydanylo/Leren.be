@@ -63,8 +63,12 @@
     else{
      const icon=String(w.icon||'📚');figure.setAttribute('aria-label',w.nl);
      if(icon.startsWith('<svg'))figure.innerHTML=icon;
-     else if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
-     else figure.appendChild(node('span','lp-word-art-cue',icon));
+     else {
+      const drawn=globalThis.LerenEmoji?.artFor?.(icon)||globalThis.LerenCardArt?.A?.[icon];
+      if(drawn)figure.innerHTML=drawn;
+      else if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
+      else figure.textContent=icon;
+     }
     }
    }
    return figure;
