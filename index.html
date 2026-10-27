@@ -1121,6 +1121,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     <span id="footText"></span>
     <span>Danylo Hembarskyi • <span id="footRights">All rights reserved</span></span>
     <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit" id="footPrivacy">Privacy</a></span>
+    <a id="tgChannelLink" class="report-bug-btn" href="https://t.me/UkrainiansDutch" target="_blank" rel="noopener" style="text-decoration:none">✈️ Telegram</a>
     <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
     <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
       <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
@@ -2621,6 +2622,8 @@ function updateHeader(){
  $("tagline").textContent=u.tagline;
  $("progressLabel").textContent=u.learned;
  $("footText").textContent=u.footer;$("footRights").textContent=u.rights||"All rights reserved";$("footPrivacy").textContent=u.privacy||"Privacy";
+ // Telegram channel: daily word, quiz, tips and facts about Belgium (tools/tg-bot).
+ const tg=$("tgChannelLink");if(tg)tg.textContent={uk:"✈️ Наш канал у Telegram",en:"✈️ Our Telegram channel",fr:"✈️ Notre chaîne Telegram",ar:"✈️ قناتنا على Telegram"}[uiLang]||"✈️ Telegram";
  const rbtn=$("reportBugBtn");
  if(rbtn){
   rbtn.textContent=u.reportBug||"⚠ Report a bug";
