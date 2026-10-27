@@ -144,3 +144,6 @@
 ## UI-117 — "Ga je mee?" gap cards — 27 October 2026
 
 - User sent the gap sentences of chapters 2–5 (invitations, meeting place, excuses, key phrases). Existing coverage was partial (kt_28–30, ex9, invitation). New lesson **uitnodigen** ("Картки: запрошення й відмови") in chapter plans: 15 illustrated gap cards (course_up_1–15) with hand-picked distractors incl. word-order traps ("ik kan niet komen"), 8 new drawings. Gap-lesson hint now keys on `item.gap` instead of tab name. Release/cache 117; all 18 suites pass; quiz opened at 390 px, no page errors.
+
+## UI-118 — plain cards for chapters 2–5 — 27 October 2026
+- Added 12 plain nl→translation cards (invitations, meeting place, excuses; ids course_pt_invitation_13+) to the `invitation` topic next to the gap lesson. Release/cache 118; all 18 suites pass.

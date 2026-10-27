@@ -109,6 +109,18 @@ Waar spreken we af? Aan de ingang van de cinema.|Де зустрічаємося
 de tijd|час (вільний час, годинник)|time (free time, clock)|le temps|الوقت|⏳
 de keer – drie keer|раз – три рази|time (occasion) – three times|la fois – trois fois|المرة – ثلاث مرات|🔁
 de zin (geen zin hebben)|бажання (не мати бажання)|desire (not to feel like it)|l’envie (ne pas en avoir envie)|الرغبة (ليست لدي رغبة)|🙅
+Ik ga morgenvroeg wandelen. Ga je mee?|Завтра рано-вранці я йду гуляти. Підеш зі мною?|I’m going for a walk early tomorrow. Are you coming?|Je vais me promener tôt demain matin. Tu viens ?|سأتمشى غداً باكراً. هل تأتي معي؟|🚶
+Ik ga in het weekend zwemmen. Ga je mee?|У вихідні я йду плавати. Підеш зі мною?|I’m going swimming at the weekend. Are you coming?|Je vais nager ce week-end. Tu viens ?|سأسبح في عطلة نهاية الأسبوع. هل تأتي معي؟|🏊
+Ga je mee naar de markt?|Підеш зі мною на ринок?|Are you coming to the market?|Tu viens au marché ?|هل تأتي معي إلى السوق؟|🧺
+Ga je mee naar de zee?|Підеш зі мною на море?|Are you coming to the sea?|Tu viens à la mer ?|هل تأتي معي إلى البحر؟|⛵
+Ik ga morgenavond naar een concert. Ga je mee?|Завтра ввечері я йду на концерт. Підеш зі мною?|Tomorrow evening I’m going to a concert. Are you coming?|Demain soir, je vais à un concert. Tu viens ?|غداً مساءً سأذهب إلى حفلة موسيقية. هل تأتي معي؟|🎵
+Bij mij thuis.|У мене вдома.|At my place.|Chez moi.|في بيتي.|🏠
+Aan de ingang van de cinema.|Біля входу в кінотеатр.|At the entrance of the cinema.|À l’entrée du cinéma.|عند مدخل السينما.|🎬
+Nee, ik kan niet. Een andere keer misschien.|Ні, я не можу. Може, іншим разом.|No, I can’t. Another time, maybe.|Non, je ne peux pas. Une autre fois, peut-être.|لا، لا أستطيع. ربما في وقت آخر.|🙅
+Het spijt me, ik heb geen tijd: ik moet werken.|Мені шкода, у мене немає часу: я мушу працювати.|I’m sorry, I have no time: I have to work.|Désolé, je n’ai pas le temps : je dois travailler.|آسف، ليس لدي وقت: يجب أن أعمل.|💼
+Het spijt me, ik ben te moe.|Мені шкода, я надто втомлений.|I’m sorry, I’m too tired.|Désolé, je suis trop fatigué.|آسف، أنا متعب جداً.|😴
+Ik heb geen zin. Een andere keer misschien?|У мене немає бажання. Може, іншим разом?|I don’t feel like it. Another time, maybe?|Je n’ai pas envie. Une autre fois, peut-être ?|ليست لدي رغبة. ربما في وقت آخر؟|🙅
+Ik ben te moe.|Я надто втомлений.|I’m too tired.|Je suis trop fatigué.|أنا متعب جداً.|😴
 `,
   plurals: `
 de neusspray – de neussprays|спрей для носа – спреї для носа|nasal spray|le spray nasal|بخاخ الأنف|👃
