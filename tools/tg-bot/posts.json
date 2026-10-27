@@ -26,5 +26,457 @@
     "📝 <b>Toets: перевірте себе як на іспиті</b>\n\nМіні-іспити A1.1 і A1.2 у стилі CVO / inburgering: вибір відповіді, вставити слово, читання.\n70 % — склали ✅\n\n🏆 Скиньте свій результат у коментарі!",
     "🎮 <b>Вчити граючи</b>\n\n⚡ Бліц за 60 секунд\n🧠 Memory\n✍️ Диктант\n🧩 Діалог-пазл і рольова гра\n📖 «Дієслово в історії» — як аркуш у класі\n\nЯка гра у вас улюблена?",
     "🔥 <b>Виклик тижня</b>\n\nЗаходьте в lerenbe.com щодня цього тижня й тримайте серію 🔥. Увімкніть нагадування в ⚙ Налаштуваннях: застосунок сам нагадає у зручну годину.\n\nУ неділю пишіть у коментарях, скільки днів у вашій серії!"
+  ],
+  "facts": [
+    {
+      "e": "🗣",
+      "nl": "België heeft drie officiële talen: Nederlands, Frans en Duits. In Vlaanderen spreken de mensen Nederlands.",
+      "uk": "У Бельгії три офіційні мови: нідерландська, французька й німецька. У Фландрії люди говорять нідерландською.",
+      "words": [
+        [
+          "de taal",
+          "мова"
+        ],
+        [
+          "spreken",
+          "говорити"
+        ]
+      ]
+    },
+    {
+      "e": "🗿",
+      "nl": "Manneken Pis in Brussel is een heel klein beeld: maar ongeveer 55 centimeter. Hij heeft meer dan duizend kostuums!",
+      "uk": "Манекен Піс у Брюсселі — зовсім маленька статуя: лише близько 55 сантиметрів. А костюмів у нього понад тисячу!",
+      "words": [
+        [
+          "het beeld",
+          "статуя"
+        ],
+        [
+          "klein",
+          "маленький"
+        ]
+      ]
+    },
+    {
+      "e": "🍟",
+      "nl": "Echte Belgische frieten bak je twee keer. Daarom zijn ze buiten krokant en binnen zacht. De Belgen eten ze graag met mayonaise.",
+      "uk": "Справжню бельгійську картоплю фрі смажать двічі. Тому вона хрустка зовні й м'яка всередині. Бельгійці люблять їсти її з майонезом.",
+      "words": [
+        [
+          "bakken",
+          "смажити"
+        ],
+        [
+          "krokant",
+          "хрусткий"
+        ]
+      ]
+    },
+    {
+      "e": "⚛️",
+      "nl": "Het Atomium in Brussel is gebouwd voor de wereldtentoonstelling van 1958. Het is 102 meter hoog.",
+      "uk": "Атоміум у Брюсселі збудували для Всесвітньої виставки 1958 року. Його висота — 102 метри.",
+      "words": [
+        [
+          "hoog",
+          "високий"
+        ],
+        [
+          "bouwen",
+          "будувати"
+        ]
+      ]
+    },
+    {
+      "e": "🎷",
+      "nl": "De saxofoon is een Belgische uitvinding! Adolphe Sax uit Dinant heeft hem uitgevonden.",
+      "uk": "Саксофон — бельгійський винахід! Його придумав Адольф Сакс із міста Дінан.",
+      "words": [
+        [
+          "de uitvinding",
+          "винахід"
+        ],
+        [
+          "uitvinden",
+          "винаходити"
+        ]
+      ]
+    },
+    {
+      "e": "📚",
+      "nl": "Kuifje (Tintin) en de Smurfen komen uit België. België is een land van stripverhalen: in Brussel zie je strips op veel muren.",
+      "uk": "Тінтін і Смурфики — родом з Бельгії. Це країна коміксів: у Брюсселі комікси намальовані на багатьох стінах.",
+      "words": [
+        [
+          "het stripverhaal",
+          "комікс"
+        ],
+        [
+          "de muur",
+          "стіна"
+        ]
+      ]
+    },
+    {
+      "e": "👑",
+      "nl": "België is een koninkrijk. De koning heet Filip. Hij is koning sinds 2013.",
+      "uk": "Бельгія — королівство. Короля звати Філіп. Він король з 2013 року.",
+      "words": [
+        [
+          "de koning",
+          "король"
+        ],
+        [
+          "het koninkrijk",
+          "королівство"
+        ]
+      ]
+    },
+    {
+      "e": "🇧🇪",
+      "nl": "De nationale feestdag van België is op 21 juli. Vlaanderen viert ook zijn eigen feestdag: op 11 juli.",
+      "uk": "Національне свято Бельгії — 21 липня. Фландрія також святкує свій власний день: 11 липня.",
+      "words": [
+        [
+          "de feestdag",
+          "свято"
+        ],
+        [
+          "vieren",
+          "святкувати"
+        ]
+      ]
+    },
+    {
+      "e": "🚂",
+      "nl": "In 1835 reed de eerste trein in België, tussen Brussel en Mechelen. Het was de eerste passagierstrein op het Europese vasteland.",
+      "uk": "У 1835 році в Бельгії поїхав перший потяг — між Брюсселем і Мехеленом. Це був перший пасажирський потяг на континентальній Європі.",
+      "words": [
+        [
+          "de trein",
+          "потяг"
+        ],
+        [
+          "rijden",
+          "їхати"
+        ]
+      ]
+    },
+    {
+      "e": "🚋",
+      "nl": "De kusttram rijdt langs de hele Belgische kust: bijna 70 kilometer, van De Panne tot Knokke. Het is een van de langste tramlijnen ter wereld.",
+      "uk": "Береговий трамвай їде вздовж усього бельгійського узбережжя: майже 70 кілометрів, від Де-Панне до Кнокке. Це одна з найдовших трамвайних ліній у світі.",
+      "words": [
+        [
+          "de kust",
+          "узбережжя"
+        ],
+        [
+          "lang",
+          "довгий"
+        ]
+      ]
+    },
+    {
+      "e": "🍫",
+      "nl": "De praline is uitgevonden in Brussel, in 1912, door Jean Neuhaus. Belgische chocolade is wereldberoemd.",
+      "uk": "Праліне винайшли в Брюсселі 1912 року — це зробив Жан Нойгауз. Бельгійський шоколад відомий на весь світ.",
+      "words": [
+        [
+          "wereldberoemd",
+          "всесвітньо відомий"
+        ],
+        [
+          "de chocolade",
+          "шоколад"
+        ]
+      ]
+    },
+    {
+      "e": "🧇",
+      "nl": "In België heb je twee soorten wafels: de Brusselse wafel is licht en rechthoekig, de Luikse wafel is zoet en heeft stukjes suiker.",
+      "uk": "У Бельгії два види вафель: брюссельська — легка й прямокутна, а льєзька — солодка, зі шматочками цукру.",
+      "words": [
+        [
+          "de wafel",
+          "вафля"
+        ],
+        [
+          "zoet",
+          "солодкий"
+        ]
+      ]
+    },
+    {
+      "e": "🍪",
+      "nl": "Speculoos is een typisch Belgisch koekje met kaneel. De Belgen eten het vaak bij de koffie.",
+      "uk": "Спекулос — типове бельгійське печиво з корицею. Бельгійці часто їдять його до кави.",
+      "words": [
+        [
+          "het koekje",
+          "печиво"
+        ],
+        [
+          "de kaneel",
+          "кориця"
+        ]
+      ]
+    },
+    {
+      "e": "🎅",
+      "nl": "Belgische kinderen krijgen cadeautjes van Sinterklaas op 6 december. Ze zetten hun schoen klaar met een wortel voor zijn paard.",
+      "uk": "Бельгійські діти отримують подарунки від Синтерклааса 6 грудня. Вони заздалегідь ставлять свій черевик і кладуть моркву для його коня.",
+      "words": [
+        [
+          "het cadeautje",
+          "подаруночок"
+        ],
+        [
+          "de schoen",
+          "черевик"
+        ]
+      ]
+    },
+    {
+      "e": "🏫",
+      "nl": "In België hebben kinderen van de lagere school woensdagnamiddag vrij. Dan gaan veel kinderen naar sport of muziekles.",
+      "uk": "У Бельгії діти молодшої школи в середу після обіду не вчаться. У цей час багато дітей ходять на спорт чи музику.",
+      "words": [
+        [
+          "de lagere school",
+          "молодша школа"
+        ],
+        [
+          "vrij",
+          "вільний"
+        ]
+      ]
+    },
+    {
+      "e": "🗳",
+      "nl": "In België moet je gaan stemmen bij de federale verkiezingen. In de meeste andere landen is dat niet verplicht.",
+      "uk": "У Бельгії на федеральних виборах голосувати обов'язково. У більшості інших країн такого обов'язку немає.",
+      "words": [
+        [
+          "stemmen",
+          "голосувати"
+        ],
+        [
+          "verplicht",
+          "обов'язковий"
+        ]
+      ]
+    },
+    {
+      "e": "⏳",
+      "nl": "In 2010–2011 had België 541 dagen geen nieuwe regering. Toch werkte alles gewoon verder!",
+      "uk": "У 2010–2011 роках Бельгія 541 день жила без нового уряду. І все одно все працювало як звичайно!",
+      "words": [
+        [
+          "de regering",
+          "уряд"
+        ],
+        [
+          "gewoon",
+          "звичайно"
+        ]
+      ]
+    },
+    {
+      "e": "🏰",
+      "nl": "Het oude centrum van Brugge staat op de werelderfgoedlijst van UNESCO. Brugge heeft veel kanalen en heet soms het ‘Venetië van het Noorden’.",
+      "uk": "Старе місто Брюгге внесене до Світової спадщини ЮНЕСКО. У Брюгге багато каналів, тому його іноді називають «Північною Венецією».",
+      "words": [
+        [
+          "het kanaal",
+          "канал"
+        ],
+        [
+          "oud",
+          "старий"
+        ]
+      ]
+    },
+    {
+      "e": "💎",
+      "nl": "Antwerpen is de stad van de diamanten. Een groot deel van alle ruwe diamanten in de wereld gaat door Antwerpen.",
+      "uk": "Антверпен — місто діамантів. Велика частина всіх необроблених діамантів світу проходить через Антверпен.",
+      "words": [
+        [
+          "de diamant",
+          "діамант"
+        ],
+        [
+          "de wereld",
+          "світ"
+        ]
+      ]
+    },
+    {
+      "e": "🎉",
+      "nl": "De Gentse Feesten duren tien dagen in juli. Het is een van de grootste stadsfeesten van Europa, met gratis muziek op straat.",
+      "uk": "Гентські свята тривають десять днів у липні. Це одне з найбільших міських свят Європи, з безкоштовною музикою просто на вулицях.",
+      "words": [
+        [
+          "duren",
+          "тривати"
+        ],
+        [
+          "gratis",
+          "безкоштовно"
+        ]
+      ]
+    },
+    {
+      "e": "🎧",
+      "nl": "Tomorrowland in Boom is een van de bekendste muziekfestivals ter wereld. Mensen uit meer dan honderd landen komen ernaartoe.",
+      "uk": "Tomorrowland у місті Бом — один із найвідоміших музичних фестивалів світу. Туди приїжджають люди з понад ста країн.",
+      "words": [
+        [
+          "bekend",
+          "відомий"
+        ],
+        [
+          "het land",
+          "країна"
+        ]
+      ]
+    },
+    {
+      "e": "🚴",
+      "nl": "Fietsen is heel populair in Vlaanderen. Eddy Merckx won vijf keer de Ronde van Frankrijk en is een Belgische held.",
+      "uk": "Велоспорт дуже популярний у Фландрії. Едді Меркс п'ять разів вигравав «Тур де Франс» і вважається бельгійським героєм.",
+      "words": [
+        [
+          "fietsen",
+          "їздити на велосипеді"
+        ],
+        [
+          "winnen",
+          "вигравати"
+        ]
+      ]
+    },
+    {
+      "e": "⛰",
+      "nl": "Het hoogste punt van België is Signal de Botrange in de Ardennen: 694 meter. Dat is niet zo hoog, maar het is er vaak koud en er valt sneeuw.",
+      "uk": "Найвища точка Бельгії — Сіньяль-де-Ботранж в Арденнах: 694 метри. Це не так уже й високо, але там часто холодно й падає сніг.",
+      "words": [
+        [
+          "het hoogste punt",
+          "найвища точка"
+        ],
+        [
+          "de sneeuw",
+          "сніг"
+        ]
+      ]
+    },
+    {
+      "e": "🌊",
+      "nl": "De Belgische kust is maar ongeveer 67 kilometer lang. Je kunt de hele kust op één dag met de fiets doen!",
+      "uk": "Бельгійське узбережжя має лише близько 67 кілометрів. Усе узбережжя можна проїхати на велосипеді за один день!",
+      "words": [
+        [
+          "de fiets",
+          "велосипед"
+        ],
+        [
+          "de dag",
+          "день"
+        ]
+      ]
+    },
+    {
+      "e": "🗺",
+      "nl": "België is een klein land: ongeveer 30.000 vierkante kilometer. Er wonen bijna 12 miljoen mensen. Oekraïne is twintig keer groter!",
+      "uk": "Бельгія — невелика країна: близько 30 000 квадратних кілометрів. Тут живе майже 12 мільйонів людей. Україна у двадцять разів більша!",
+      "words": [
+        [
+          "wonen",
+          "жити"
+        ],
+        [
+          "groter",
+          "більший"
+        ]
+      ]
+    },
+    {
+      "e": "🇩🇪",
+      "nl": "In het oosten van België wonen ongeveer 80.000 mensen die Duits spreken. Ze hebben hun eigen parlement in Eupen.",
+      "uk": "На сході Бельгії живе близько 80 000 людей, які говорять німецькою. У них навіть є власний парламент в Ойпені.",
+      "words": [
+        [
+          "het oosten",
+          "схід"
+        ],
+        [
+          "eigen",
+          "власний"
+        ]
+      ]
+    },
+    {
+      "e": "🏙",
+      "nl": "Brussel is officieel tweetalig: Frans en Nederlands. Daarom staan straatnamen er in twee talen.",
+      "uk": "Брюссель офіційно двомовний: французька й нідерландська. Тому назви вулиць там написані двома мовами.",
+      "words": [
+        [
+          "tweetalig",
+          "двомовний"
+        ],
+        [
+          "de straatnaam",
+          "назва вулиці"
+        ]
+      ]
+    },
+    {
+      "e": "🍺",
+      "nl": "De Belgische biercultuur staat sinds 2016 op de UNESCO-lijst van immaterieel erfgoed. In België zijn er meer dan duizend soorten bier.",
+      "uk": "З 2016 року бельгійська пивна культура в списку нематеріальної спадщини ЮНЕСКО. У Бельгії понад тисячу сортів пива.",
+      "words": [
+        [
+          "de soort",
+          "вид, сорт"
+        ],
+        [
+          "het erfgoed",
+          "спадщина"
+        ]
+      ]
+    },
+    {
+      "e": "🪙",
+      "nl": "Op de Belgische euromunten staat koning Filip. Elk euroland heeft zijn eigen kant op de munten.",
+      "uk": "На бельгійських євромонетах зображений король Філіп. Кожна країна єврозони має свій власний бік монети.",
+      "words": [
+        [
+          "de munt",
+          "монета"
+        ],
+        [
+          "elk",
+          "кожен"
+        ]
+      ]
+    },
+    {
+      "e": "🏛",
+      "nl": "Brussel is de hoofdstad van België, maar ook een belangrijke stad voor Europa: de Europese Commissie en het Europees Parlement zitten er.",
+      "uk": "Брюссель — столиця Бельгії, а ще важливе місто для Європи: там розташовані Європейська комісія та Європейський парламент.",
+      "words": [
+        [
+          "de hoofdstad",
+          "столиця"
+        ],
+        [
+          "belangrijk",
+          "важливий"
+        ]
+      ]
+    }
   ]
 }

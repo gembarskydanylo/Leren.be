@@ -1,5 +1,6 @@
 // Leren.be Telegram bot (Cloudflare Worker "leren-tg"). Deploy: .github/workflows/deploy-tg-bot.yml (tools/tg-bot/wrangler.toml).
-// Channel: word of the day with audio, evening quiz, tips, weekly app promo (schedule below, Brussels time).
+// Channel: word of the day with audio, evening quiz, tips, facts about Belgium (Dutch + Ukrainian), weekly app promo
+// (schedule below, Brussels time).
 // Private chat: /start, /word, /quiz, /app, /id, and any question about Dutch → Claude answers in Ukrainian.
 // Bug reports: /bug (or just a screenshot) → everything the tester sends until /done goes to REPORTS_CHAT
 // (optional REPORTS_THREAD for a topic; default: the admin's chat). A reply to a report there goes back to the tester.
@@ -17,6 +18,7 @@ const START = Date.UTC(2026, 10, 1); // day 0 of the rotation
 // [weekday (0 = Sunday) or "*", Brussels hour, job]
 const SCHEDULE = [
   ["*", 8, "word"],
+  [1, 13, "fact"], [3, 13, "fact"], [5, 13, "fact"],
   [2, 13, "tip"], [4, 13, "tip"], [6, 13, "tip"],
   [0, 13, "promo"],
   ["*", 19, "quiz"],
@@ -60,8 +62,11 @@ function postQuiz(env, chat, n) {
 function postText(env, chat, text) {
   return tg(env, "sendMessage", {chat_id: chat, text, parse_mode: "HTML", reply_markup: appButton(env), link_preview_options: {is_disabled: true}});
 }
-// Tips go out three times a week, so the tip number counts those slots, not days.
+// Tips go out three times a week (Tue, Thu, Sat), so the tip number counts those slots, not days.
 const tipNumber = day => Math.floor(day / 7) * 3 + [0, 0, 0, 1, 1, 2, 2][((day % 7) + 7) % 7];
+// Facts go out Monday, Wednesday, Friday: the same three slots a week, one day earlier, so the same count works.
+const factNumber = tipNumber;
+const factText = f => `${f.e} <b>Цікаво про Бельгію</b>\n\n🇳🇱 <i>${esc(f.nl)}</i>\n\n🇺🇦 ${esc(f.uk)}\n\n📝 ${f.words.map(([nl, uk]) => `<b>${esc(nl)}</b> — ${esc(uk)}`).join("\n📝 ")}\n\n#факти_про_бельгію`;
 
 async function report(env) {
   const now = await tg(env, "getChatMemberCount", {chat_id: env.CHANNEL});
@@ -78,6 +83,7 @@ async function report(env) {
 async function runJob(env, job, chat, day) {
   if (job === "word") return postWord(env, chat, day);
   if (job === "quiz") return postQuiz(env, chat, day);
+  if (job === "fact") return postText(env, chat, factText(pick(content.facts, factNumber(day))));
   if (job === "tip") return postText(env, chat, pick(content.tips, tipNumber(day)));
   if (job === "promo") return postText(env, chat, pick(content.promos, Math.floor(day / 7)));
   if (job === "report") return report(env);
@@ -259,7 +265,7 @@ async function onMessage(env, msg) {
   }
   if (cmd === "/id") return tg(env, "sendMessage", {chat_id: chat, text: `Ваш id: <code>${msg.from.id}</code>`, parse_mode: "HTML"});
   if (isAdmin && (cmd === "/post" || cmd === "/preview")) {
-    if (!["word", "quiz", "tip", "promo", "welcome", "stickers"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | promo | welcome | stickers`});
+    if (!["word", "quiz", "tip", "fact", "promo", "welcome", "stickers"].includes(arg)) return tg(env, "sendMessage", {chat_id: chat, text: `${cmd} word | quiz | tip | fact | promo | welcome | stickers`});
     const r = await runJob(env, arg, cmd === "/post" ? env.CHANNEL : chat, day);
     return cmd === "/post" && tg(env, "sendMessage", {chat_id: chat, text: r?.ok ? "✅ Опубліковано" : "❌ " + (r?.description || "помилка")});
   }
@@ -311,4 +317,4 @@ export default {
   }
 };
 
-export {brussels, tipNumber, safeHtml, SCHEDULE};
+export {brussels, tipNumber, factNumber, safeHtml, SCHEDULE};
