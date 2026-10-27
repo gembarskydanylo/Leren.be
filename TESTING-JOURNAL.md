@@ -180,3 +180,7 @@
 
 ## UI-138 — logo goes home — 27 October 2026
 - The header logo (cat + Leren.be) is a link to the start screen: route home, or the lesson page for learners who chose "Вільна практика". Keyboard Enter/Space, focus ring. Playwright: dict→logo→route, games→logo→lesson (free), Enter works; no errors; all suites pass.
+
+## UI-139 — last 17 3D icons; all topics 3D — 27 October 2026
+- Branch emoji-3d-cards commit 342bbf3: 17 new icons + 236 re-cleaned on the Mac. Review: the 17 are correct and clean (yellow faces 😊😀🤔😴🤧🤕🤒, ❌❗❤️🔵🔢🥤, bird, horse, elephant, tortoise). The Mac re-cleaned 236 were rejected: neighbour slices still present in ~60 (46–55, 86–95…), object size 44–88 % (site: 79–84 %), 512 px / 39 MB vs 2.1 MB on the site.
+- The 17 cleaned with tools/clean-emoji.py (❗ done separately: the script would drop its dot), 148 KB, added to modules/emoji/cards.js (383 verified entries) and the offline list. Result: 67 topics 3D, 3 drawn by design (kaartjes, uitnodigen, colors); faces in UI text are now the yellow faces too. Playwright 390 px: animals/klachten/adjectives/questions show the new pictures; no page errors, no 404s. Release/cache 139; all suites pass.
