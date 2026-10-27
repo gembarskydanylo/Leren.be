@@ -367,6 +367,18 @@ Deze tas is even groot als die tas.|Ця сумка така сама велик
 Ik vind de blauwe mooier.|Мені більше подобається синя.|I think the blue one is prettier.|Je trouve la bleue plus jolie.|أجد الزرقاء أجمل.
 `]
  };
+
+ // One picture per lesson card, in line order (replaces the generic 📖).
+ const lessonIcons = {
+  alphabet:'🔤 🅰️ 🗣️ 🔠 ✍️', identity:'👩 🌍 🏙️ 🧒 📧', prices:'💶 🎫 🌡️ 🌧️ 🧾',
+  birthday:'🎂 🎈 📅 🎉 🥂', opening:'🏪 🕘 🚫 📚 🎬 📅', forms:'📅 📍 📝 📮 ✍️ 🔢',
+  invitation:'🌳 👍 🙅 🏠 👋', ongoing:'🍳 ❓ 📖 🍽️ 🪑', instructions:'🤒 💊 ❓ 📨 😷',
+  healthy:'🍎 💧 🐟 🥄 🥗 🍳', restaurant:'📋 🍲 🥛 🥩 🧾', groceries:'💧 🥛 🍏 🛒 📝 🧀 🍝',
+  plurals:'🍎 🍞 🥚 🧴 🍅', holiday:'🏖️ 👭 💍 🏨 🥐 📸 🌧️ 🧳', journey:'🎫 🔄 ⏱️ 🏃 🚉 ✅ 🚏 🚌',
+  market:'🍏 ⚖️ 🍅 🏷️ 🧾 🧴 🛍️ 🔍', returns:'🧥 📏 👕 👖 🧶 🔁 🧾 🕳️', secondhand:'🚲 ⏳ 🛑 🚴 💸 🗓️ 🚚 💻',
+  messages:'🙏 📎 ✅ 📰 🎓 😞 📬 📍', appointments:'💻 📩 📅 🗓️ 🚆 📂 📝 🔄', notices:'🚧 🚪 📝 🌧️ 🧒 🥪 💬 ℹ️',
+  directions:'📅 🖱️ 📱 📮 📤 🤔 🔁 📧', comparison:'🧥 🚆 🛏️ 🚂 👜 🔵'
+ };
  function apply({DATA,CATEGORIES,UI,R,LEVELS}) {
   const grammar = {...CATEGORIES.find(c=>c.id==='grammar')}; // Includes the untouched diphthongs lesson.
   grammar.tabs=grammar.tabs.filter(t=>t!=='adjectives');
@@ -382,7 +394,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
   for(const [key,[uk,en,fr,ar,text]] of Object.entries(lessons)) {
    DATA[key]=R(text.trim().split('\n').map((line,i)=>{
     const [nl,uk,en,fr,ar]=line.split('|');
-    return [`course_${key}_${i+1}`,nl,en,fr,uk,ar,'📖'];
+    return [`course_${key}_${i+1}`,nl,en,fr,uk,ar,lessonIcons[key]?.split(' ')[i]||'📖'];
    }));
    for(const [lang,label] of Object.entries({uk,en,fr,ar}))UI[lang].tabs[key]=UI[lang].subs[key]=label;
   }

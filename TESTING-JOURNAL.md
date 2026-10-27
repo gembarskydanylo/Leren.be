@@ -147,3 +147,7 @@
 
 ## UI-118 — plain cards for chapters 2–5 — 27 October 2026
 - Added 12 plain nl→translation cards (invitations, meeting place, excuses; ids course_pt_invitation_13+) to the `invitation` topic next to the gap lesson. Release/cache 118; all 18 suites pass.
+
+## UI-119 — one card style — 27 October 2026
+- Contact sheets of every topic touched today (healthy, invitation, plurals, ex8, klachten, body, kaartjes, uitnodigen), new cards outlined. Findings: (1) all 173 curriculum lesson cards (lessons in course-curriculum.js, 23 topics) used the same 📖 placeholder while the rest of the app and the new cards use a picture per card; (2) four new drawings (wandelen, zwemmen, volwassene, vingers) used stick figures / plain shapes instead of the clothed, hair-and-skin people of the existing set.
+- Fix: `lessonIcons` gives every lesson card its own emoji in line order (count checked per topic; 📖 kept only where it means "book/reading"). The four drawings redrawn with the existing PERSON proportions/colours and the existing hand outline. No IDs, texts or progress changed. Cache 119 (release notice unchanged at 118). All 18 suites pass.
