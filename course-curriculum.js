@@ -26,6 +26,106 @@ globalThis.LerenCurriculum = (() => {
   ['reading','📰 Lezen en reageren',['notices','directions']],
   ['grammar2','📘 Verder met grammatica',['objpron','comparison']]
  ];
+
+ // Practice test of 27 Oct 2026: new cards go into the topic they belong to (nl|uk|en|fr|ar|icon).
+ const practice = {
+  healthy: `
+Je moet minder snoepjes eten.|Тобі треба їсти менше солодощів.|You should eat fewer sweets.|Tu dois manger moins de bonbons.|يجب أن تأكل حلويات أقل.|🍬
+Je moet meer vis eten.|Тобі треба їсти більше риби.|You should eat more fish.|Tu dois manger plus de poisson.|يجب أن تأكل المزيد من السمك.|🐟
+Je moet minder hamburgers eten.|Тобі треба їсти менше гамбургерів.|You should eat fewer hamburgers.|Tu dois manger moins de hamburgers.|يجب أن تأكل برغر أقل.|🍔
+Je moet minder cola drinken.|Тобі треба пити менше коли.|You should drink less cola.|Tu dois boire moins de cola.|يجب أن تشرب كولا أقل.|🥤
+Je moet minder koffie drinken.|Тобі треба пити менше кави.|You should drink less coffee.|Tu dois boire moins de café.|يجب أن تشرب قهوة أقل.|☕
+Je moet meer groenten eten.|Тобі треба їсти більше овочів.|You should eat more vegetables.|Tu dois manger plus de légumes.|يجب أن تأكل المزيد من الخضار.|🥦
+Je moet meer fruit eten.|Тобі треба їсти більше фруктів.|You should eat more fruit.|Tu dois manger plus de fruits.|يجب أن تأكل المزيد من الفاكهة.|🍎
+Je moet minder chips eten.|Тобі треба їсти менше чіпсів.|You should eat fewer crisps.|Tu dois manger moins de chips.|يجب أن تأكل شيبس أقل.|🥔
+Ik eet 's middags altijd een zak snoepjes.|Удень я завжди з’їдаю пакет цукерок.|In the afternoon I always eat a bag of sweets.|L’après-midi, je mange toujours un sachet de bonbons.|بعد الظهر آكل دائماً كيس حلويات.|🍬
+Ik drink meestal cola bij het eten.|Я зазвичай п’ю колу під час їжі.|I usually drink cola with my meal.|Je bois généralement du cola pendant le repas.|أشرب الكولا عادة مع الطعام.|🥤
+Ik drink 20 kopjes koffie per dag.|Я п’ю 20 чашок кави на день.|I drink 20 cups of coffee a day.|Je bois 20 tasses de café par jour.|أشرب 20 فنجان قهوة في اليوم.|☕
+Ik eet nooit vis.|Я ніколи не їм рибу.|I never eat fish.|Je ne mange jamais de poisson.|لا آكل السمك أبداً.|🐟
+Ik eet geen fruit.|Я не їм фруктів.|I don’t eat fruit.|Je ne mange pas de fruits.|لا آكل الفاكهة.|🍎
+Ik eet dikwijls chips.|Я часто їм чіпси.|I often eat crisps.|Je mange souvent des chips.|آكل الشيبس كثيراً.|🥔
+Ik eet niet gezond.|Я харчуюся нездорово.|I don’t eat healthily.|Je ne mange pas sainement.|لا آكل بشكل صحي.|🍟
+het advies|порада|advice|le conseil|النصيحة|💡
+het snoepje – de snoepjes|цукерка – цукерки (солодощі)|sweet – sweets|le bonbon – les bonbons|الحلوى – الحلويات|🍬
+de hamburger – de hamburgers|гамбургер – гамбургери|hamburger|le hamburger|البرغر|🍔
+de chips|чіпси|crisps|les chips|الشيبس|🥔
+het kopje koffie|чашка кави|cup of coffee|une tasse de café|فنجان قهوة|☕
+de zak snoepjes|пакет цукерок|a bag of sweets|un sachet de bonbons|كيس حلويات|🛍️
+`,
+  ex8: `
+’s morgens – ’s middags – ’s avonds|вранці – вдень – ввечері|in the morning – in the afternoon – in the evening|le matin – l’après-midi – le soir|صباحاً – ظهراً – مساءً|🕒
+Om 07:00 u neem ik een douche.|О 07:00 я приймаю душ.|At 7:00 I take a shower.|À 7 h, je prends une douche.|في الساعة 07:00 آخذ دشاً.|🚿
+Om 08:15 ontbijt ik.|О 08:15 я снідаю.|At 8:15 I have breakfast.|À 8 h 15, je prends mon petit-déjeuner.|في الساعة 08:15 أتناول الفطور.|🍳
+’s Morgens breng ik de kinderen naar school.|Вранці я відвожу дітей до школи.|In the morning I take the children to school.|Le matin, j’emmène les enfants à l’école.|في الصباح أوصل الأطفال إلى المدرسة.|🎒
+’s Avonds kook ik.|Ввечері я готую.|In the evening I cook.|Le soir, je cuisine.|في المساء أطبخ.|🍲
+Om 18:00 u eet ik een warme maaltijd.|О 18:00 я їм теплу страву (гарячу вечерю).|At 18:00 I eat a hot meal.|À 18 h, je mange un repas chaud.|في الساعة 18:00 آكل وجبة ساخنة.|🍽️
+Na de maaltijd kijk ik naar de tv.|Після їжі я дивлюся телевізор.|After the meal I watch TV.|Après le repas, je regarde la télé.|بعد الوجبة أشاهد التلفاز.|📺
+Ik ga naar de supermarkt en ik doe boodschappen.|Я йду в супермаркет і роблю покупки.|I go to the supermarket and I do the shopping.|Je vais au supermarché et je fais les courses.|أذهب إلى السوبرماركت وأتسوق.|🛒
+Ik lees de krant.|Я читаю газету.|I read the newspaper.|Je lis le journal.|أقرأ الصحيفة.|📰
+Ik kijk naar de televisie.|Я дивлюся телевізор.|I watch television.|Je regarde la télévision.|أشاهد التلفاز.|📺
+de krant|газета|newspaper|le journal|الصحيفة|📰
+de televisie|телевізор|television|la télévision|التلفاز|📺
+de warme maaltijd|тепла страва (гарячий обід, вечеря)|hot meal|le repas chaud|الوجبة الساخنة|🍲
+het middagmaal|обід (основна їжа вдень)|midday meal|le repas de midi|وجبة الظهيرة|🥪
+het avondmaal|вечеря|evening meal|le repas du soir|وجبة المساء|🍽️
+`,
+  klachten: `
+Ik heb pijn aan mijn neus.|У мене болить ніс.|My nose hurts.|J’ai mal au nez.|أشعر بألم في أنفي.|👃
+Hij heeft pijn aan zijn neus.|У нього болить ніс.|His nose hurts.|Il a mal au nez.|أنفه يؤلمه.|👃
+Hij heeft pijn aan zijn vinger.|У нього болить палець.|His finger hurts.|Il a mal au doigt.|إصبعه يؤلمه.|☝️
+Hij heeft pijn aan zijn been.|У нього болить нога.|His leg hurts.|Il a mal à la jambe.|ساقه تؤلمه.|🦵
+Hij heeft pijn aan zijn schouder.|У нього болить плече.|His shoulder hurts.|Il a mal à l’épaule.|كتفه يؤلمه.|💪
+Hij heeft pijn aan zijn voet.|У нього болить стопа.|His foot hurts.|Il a mal au pied.|قدمه تؤلمه.|🦶
+rugpijn, buikpijn, hoofdpijn, tandpijn|в одне слово: біль у спині, животі, голові, зубі|one word: back, stomach, head, tooth pain|en un mot : mal au dos, au ventre, à la tête, aux dents|كلمة واحدة: ألم الظهر والبطن والرأس والأسنان|🤕
+pijn aan mijn neus, vinger, voet, schouder|окремими словами: біль у носі, пальці, стопі, плечі|separate words: nose, finger, foot, shoulder pain|en plusieurs mots : mal au nez, au doigt, au pied, à l’épaule|بكلمات منفصلة: ألم في الأنف والإصبع والقدم والكتف|🤕
+Ik nies de hele dag.|Я чхаю цілий день.|I sneeze all day.|J’éternue toute la journée.|أعطس طوال اليوم.|🤧
+Ik hoest en ik nies dikwijls.|Я кашляю і часто чхаю.|I cough and sneeze often.|Je tousse et j’éternue souvent.|أسعل وأعطس كثيراً.|🤧
+Aaatsjie! Ben je allergisch?|Апчхи! У тебе алергія?|Atchoo! Are you allergic?|Atchoum ! Tu es allergique ?|أتشو! هل لديك حساسية؟|🤧
+Je hebt koorts: 38° C.|У тебе температура: 38° C.|You have a fever: 38° C.|Tu as de la fièvre : 38 °C.|لديك حمى: 38 درجة.|🌡️
+Je moet de siroop 3 keer per dag nemen.|Тобі треба пити сироп 3 рази на день.|You must take the syrup 3 times a day.|Tu dois prendre le sirop 3 fois par jour.|يجب أن تتناول الشراب 3 مرات في اليوم.|🧴
+3 keer per dag: ’s morgens, ’s middags en ’s avonds|3 рази на день: вранці, вдень і ввечері|3 times a day: morning, afternoon and evening|3 fois par jour : le matin, l’après-midi et le soir|3 مرات في اليوم: صباحاً وظهراً ومساءً|🔁
+Ik kan niet naar de les komen. Ik heb griep.|Я не можу прийти на урок. У мене грип.|I can’t come to the lesson. I have the flu.|Je ne peux pas venir au cours. J’ai la grippe.|لا أستطيع الحضور إلى الدرس. عندي إنفلونزا.|🤒
+Dat is spijtig! Wat scheelt er?|Шкода! Що трапилося?|That’s a pity! What’s wrong?|C’est dommage ! Qu’est-ce qui ne va pas ?|هذا مؤسف! ما المشكلة؟|❓
+`,
+  body: `
+de long – de longen|легеня – легені|lung|le poumon|الرئة|🫁
+ademen|дихати|to breathe|respirer|يتنفس|🌬️
+Ik adem met mijn neus en mijn longen.|Я дихаю носом і легенями.|I breathe with my nose and my lungs.|Je respire avec mon nez et mes poumons.|أتنفس بأنفي ورئتيّ.|🫁
+Ik eet, ik spreek en ik drink met mijn mond.|Я їм, говорю і п’ю ротом.|I eat, speak and drink with my mouth.|Je mange, je parle et je bois avec ma bouche.|آكل وأتكلم وأشرب بفمي.|👄
+Ik heb 5 vingers aan elke hand en 5 tenen aan elke voet.|У мене по 5 пальців на кожній руці (vingers) і на кожній нозі (tenen).|I have 5 fingers on each hand and 5 toes on each foot.|J’ai 5 doigts à chaque main et 5 orteils à chaque pied.|لدي 5 أصابع في كل يد و5 أصابع في كل قدم.|🖐️
+Een kind neemt 1 tablet. Een volwassene neemt 2 tabletten.|Дитина приймає 1 таблетку. Дорослий приймає 2 таблетки.|A child takes 1 tablet. An adult takes 2 tablets.|Un enfant prend 1 comprimé. Un adulte en prend 2.|يتناول الطفل قرصاً واحداً. يتناول البالغ قرصين.|💊
+de volwassene – de volwassenen|дорослий – дорослі|adult|l’adulte|البالغ|🧑
+`,
+  invitation: `
+Het spijt me, ik kan niet komen.|Мені шкода, я не можу прийти.|I’m sorry, I can’t come.|Je suis désolé, je ne peux pas venir.|آسف، لا أستطيع الحضور.|😔
+Nee, het spijt me, ik ben te moe.|Ні, мені шкода, я надто втомлений.|No, I’m sorry, I’m too tired.|Non, désolé, je suis trop fatigué.|لا، آسف، أنا متعب جداً.|😴
+Nee, het spijt me, ik moet koken.|Ні, мені шкода, я маю готувати.|No, I’m sorry, I have to cook.|Non, désolé, je dois cuisiner.|لا، آسف، يجب أن أطبخ.|🍲
+Nee, het spijt me, ik heb geen zin.|Ні, мені шкода, я не маю бажання.|No, I’m sorry, I don’t feel like it.|Non, désolé, je n’en ai pas envie.|لا، آسف، ليست لدي رغبة.|🙅
+Nee, het spijt me, ik moet poetsen.|Ні, мені шкода, я маю прибирати.|No, I’m sorry, I have to clean.|Non, désolé, je dois faire le ménage.|لا، آسف، يجب أن أنظف.|🧹
+Nee, het spijt me, ik heb geen tijd.|Ні, мені шкода, я не маю часу.|No, I’m sorry, I have no time.|Non, désolé, je n’ai pas le temps.|لا، آسف، ليس لدي وقت.|⏳
+Nee, het spijt me, ik kan niet: ik moet boodschappen doen.|Ні, мені шкода, я не можу: я маю робити покупки.|No, I’m sorry, I can’t: I have to do the shopping.|Non, désolé, je ne peux pas : je dois faire les courses.|لا، آسف، لا أستطيع: يجب أن أتسوق.|🛒
+Bedankt voor de uitnodiging, maar ik kan niet naar het feest komen.|Дякую за запрошення, але я не можу прийти на свято.|Thanks for the invitation, but I can’t come to the party.|Merci pour l’invitation, mais je ne peux pas venir à la fête.|شكراً على الدعوة، لكنني لا أستطيع الحضور إلى الحفلة.|✉️
+Waar spreken we af? Aan de ingang van de cinema.|Де зустрічаємося? Біля входу в кінотеатр.|Where shall we meet? At the entrance of the cinema.|On se retrouve où ? À l’entrée du cinéma.|أين نلتقي؟ عند مدخل السينما.|🎬
+de tijd|час (вільний час, годинник)|time (free time, clock)|le temps|الوقت|⏳
+de keer – drie keer|раз – три рази|time (occasion) – three times|la fois – trois fois|المرة – ثلاث مرات|🔁
+de zin (geen zin hebben)|бажання (не мати бажання)|desire (not to feel like it)|l’envie (ne pas en avoir envie)|الرغبة (ليست لدي رغبة)|🙅
+`,
+  plurals: `
+de neusspray – de neussprays|спрей для носа – спреї для носа|nasal spray|le spray nasal|بخاخ الأنف|👃
+het kind – de kinderen|дитина – діти|child – children|l’enfant – les enfants|الطفل – الأطفال|🧒
+de dochter – de dochters|дочка – дочки|daughter|la fille|الابنة|👧
+de zoon – de zonen|син – сини|son|le fils|الابن|👦
+de croissant – de croissants|круасан – круасани|croissant|le croissant|الكرواسان|🥐
+de deur – de deuren|двері – двері|door|la porte|الباب|🚪
+de sleutel – de sleutels|ключ – ключі|key|la clé|المفتاح|🔑
+de agenda – de agenda’s|щоденник – щоденники|diary, planner|l’agenda|المفكرة|📒
+de afspraak – de afspraken|домовленість, зустріч – домовленості|appointment|le rendez-vous|الموعد|📅
+de zak – de zakken|пакет, мішок – пакети|bag|le sac|الكيس|🛍️
+de doos – de dozen|коробка – коробки|box|la boîte|العلبة|📦
+de bloemkool – de bloemkolen|цвітна капуста|cauliflower|le chou-fleur|القرنبيط|🥦
+het glas|склянка, скло|glass|le verre|الكوب|🥛
+`
+ };
  // Short, translated names explain the situation before introducing its Dutch title.
  // Each row: Ukrainian, English, French, Arabic; each entry: title, learning goal.
  const topicLabels = {
@@ -277,6 +377,11 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
   // Ordinals are explicit practice, not just mentioned in the chapter heading.
   const ordinals=[['eerste','перший','first','premier','الأول'],['tweede','другий','second','deuxième','الثاني'],['derde','третій','third','troisième','الثالث'],['vierde','четвертий','fourth','quatrième','الرابع'],['vijfde','п’ятий','fifth','cinquième','الخامس'],['zesde','шостий','sixth','sixième','السادس'],['zevende','сьомий','seventh','septième','السابع'],['achtste','восьмий','eighth','huitième','الثامن'],['negende','дев’ятий','ninth','neuvième','التاسع'],['tiende','десятий','tenth','dixième','العاشر'],['elfde','одинадцятий','eleventh','onzième','الحادي عشر'],['twaalfde','дванадцятий','twelfth','douzième','الثاني عشر']];
   DATA.birthday.items.push(...R(ordinals.map(([nl,uk,en,fr,ar],i)=>[`course_ordinal_${i+1}`,nl,en,fr,uk,ar,'📅'])).items);
+  for(const [tab,text] of Object.entries(practice))
+   DATA[tab].items.push(...R(text.trim().split('\n').map((line,i)=>{
+    const [nl,uk,en,fr,ar,icon]=line.split('|');
+    return [`course_pt_${tab}_${i+1}`,nl,en,fr,uk,ar,icon||'📖'];
+   })).items);
   // Move individual cards where an older collection spans several chapters.
   const move=(from,to,ids)=>{const selected=new Set(ids);DATA[to].items.push(...DATA[from].items.filter(x=>selected.has(x.id)));DATA[from].items=DATA[from].items.filter(x=>!selected.has(x.id));};
   move('mail','birthday',['b_proficiat']);move('mail','invitation',['b_spijt']);
@@ -314,6 +419,40 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    ['contact','hebt|u|mijn bericht|ontvangen','VSRR','Ви отримали моє повідомлення?','Have you received my message?','Avez-vous reçu mon message ?','هل استلمتم رسالتي؟']
   ];
   for(const [cat,q,roles,uk,en,fr,ar] of rows)add(cat,[1,q,roles,uk,en,fr,ar]);
+  // Practice test of 27 Oct 2026: word order in statements. T = time/place first, I = infinitive or particle at the end.
+  // Row: cat, level, tiles, roles, uk, en, fr, ar, extra decoy tile.
+  const statements=[
+   ['food',1,'je|moet|meer fruit|eten','SVRI','Тобі треба їсти більше фруктів.','You should eat more fruit.','Tu dois manger plus de fruits.','يجب أن تأكل المزيد من الفاكهة.','minder'],
+   ['food',1,'je|moet|minder chips|eten','SVRI','Тобі треба їсти менше чіпсів.','You should eat fewer crisps.','Tu dois manger moins de chips.','يجب أن تأكل شيبس أقل.','meer'],
+   ['food',1,'je|moet|meer vis|eten','SVRI','Тобі треба їсти більше риби.','You should eat more fish.','Tu dois manger plus de poisson.','يجب أن تأكل المزيد من السمك.','minder'],
+   ['food',1,'je|moet|meer groenten|eten','SVRI','Тобі треба їсти більше овочів.','You should eat more vegetables.','Tu dois manger plus de légumes.','يجب أن تأكل المزيد من الخضار.','minder'],
+   ['food',1,'je|moet|minder cola|drinken','SVRI','Тобі треба пити менше коли.','You should drink less cola.','Tu dois boire moins de cola.','يجب أن تشرب كولا أقل.','eten'],
+   ['food',2,'je|moet|minder koffie|drinken','SVRI','Тобі треба пити менше кави.','You should drink less coffee.','Tu dois boire moins de café.','يجب أن تشرب قهوة أقل.','meer'],
+   ['food',2,'je|moet|minder snoepjes|eten','SVRI','Тобі треба їсти менше солодощів.','You should eat fewer sweets.','Tu dois manger moins de bonbons.','يجب أن تأكل حلويات أقل.','meer'],
+   ['food',2,'je|moet|minder hamburgers|eten','SVRI','Тобі треба їсти менше гамбургерів.','You should eat fewer hamburgers.','Tu dois manger moins de hamburgers.','يجب أن تأكل برغر أقل.','drinken'],
+   ['food',2,'ik|eet|nooit|vis','SVRR','Я ніколи не їм рибу.','I never eat fish.','Je ne mange jamais de poisson.','لا آكل السمك أبداً.','geen'],
+   ['food',2,'ik|drink|meestal|cola|bij het eten','SVRRR','Я зазвичай п’ю колу під час їжі.','I usually drink cola with my meal.','Je bois généralement du cola pendant le repas.','أشرب الكولا عادة مع الطعام.',''],
+   ['food',2,'ik|eet|\'s middags|altijd|een zak snoepjes','SVRRR','Удень я завжди з’їдаю пакет цукерок.','In the afternoon I always eat a bag of sweets.','L’après-midi, je mange toujours un sachet de bonbons.','بعد الظهر آكل دائماً كيس حلويات.',''],
+   ['dag',1,'om zeven uur|sta|ik|op','TVSI','О сьомій годині я встаю.','At seven o’clock I get up.','À sept heures, je me lève.','في الساعة السابعة أستيقظ.','ben'],
+   ['dag',1,'om 07:00 u|neem|ik|een douche','TVSR','О 07:00 я приймаю душ.','At 7:00 I take a shower.','À 7 h, je prends une douche.','في الساعة 07:00 آخذ دشاً.',''],
+   ['dag',1,'om 08:15|ontbijt|ik','TVS','О 08:15 я снідаю.','At 8:15 I have breakfast.','À 8 h 15, je prends mon petit-déjeuner.','في الساعة 08:15 أتناول الفطور.',''],
+   ['dag',1,'\'s morgens|breng|ik|de kinderen|naar school','TVSRR','Вранці я відвожу дітей до школи.','In the morning I take the children to school.','Le matin, j’emmène les enfants à l’école.','في الصباح أوصل الأطفال إلى المدرسة.',''],
+   ['dag',1,'\'s avonds|kook|ik','TVS','Ввечері я готую.','In the evening I cook.','Le soir, je cuisine.','في المساء أطبخ.',''],
+   ['dag',2,'na de maaltijd|kijk|ik|naar de tv','TVSR','Після їжі я дивлюся телевізор.','After the meal I watch TV.','Après le repas, je regarde la télé.','بعد الوجبة أشاهد التلفاز.',''],
+   ['dag',2,'\'s avonds|luister|ik|naar muziek','TVSR','Ввечері я слухаю музику.','In the evening I listen to music.','Le soir, j’écoute de la musique.','في المساء أستمع إلى الموسيقى.',''],
+   ['dag',2,'om 18:00 u|eet|ik|een warme maaltijd','TVSR','О 18:00 я їм теплу страву.','At 18:00 I eat a hot meal.','À 18 h, je mange un repas chaud.','في الساعة 18:00 آكل وجبة ساخنة.',''],
+   ['dag',2,'ik|ga|naar de supermarkt|en|ik|doe|boodschappen','SVRRSVR','Я йду в супермаркет і роблю покупки.','I go to the supermarket and I do the shopping.','Je vais au supermarché et je fais les courses.','أذهب إلى السوبرماركت وأتسوق.',''],
+   ['health',1,'ik|heb|pijn|aan mijn neus','SVRR','У мене болить ніс.','My nose hurts.','J’ai mal au nez.','أشعر بألم في أنفي.','neuspijn'],
+   ['health',1,'hij|heeft|pijn|aan zijn vinger','SVRR','У нього болить палець.','His finger hurts.','Il a mal au doigt.','إصبعه يؤلمه.',''],
+   ['health',1,'wat|scheelt|er','QVS','Що трапилося?','What’s wrong?','Qu’est-ce qui ne va pas ?','ما المشكلة؟',''],
+   ['health',2,'je|moet|de siroop|3 keer per dag|nemen','SVRRI','Тобі треба пити сироп 3 рази на день.','You must take the syrup 3 times a day.','Tu dois prendre le sirop 3 fois par jour.','يجب أن تتناول الشراب 3 مرات في اليوم.','tijd'],
+   ['health',2,'een volwassene|neemt|2 tabletten','SVR','Дорослий приймає 2 таблетки.','An adult takes 2 tablets.','Un adulte prend 2 comprimés.','يتناول البالغ قرصين.','kind'],
+   ['plans',1,'ik|moet|boodschappen|doen','SVRI','Я мушу робити покупки.','I have to do the shopping.','Je dois faire les courses.','يجب أن أتسوق.',''],
+   ['plans',1,'het spijt me,|ik|kan|niet|komen','RSVRI','Мені шкода, я не можу прийти.','I’m sorry, I can’t come.','Je suis désolé, je ne peux pas venir.','آسف، لا أستطيع الحضور.',''],
+   ['plans',2,'nee, het spijt me,|ik|heb|geen tijd','RSVR','Ні, мені шкода, я не маю часу.','No, I’m sorry, I have no time.','Non, désolé, je n’ai pas le temps.','لا، آسف، ليس لدي وقت.','zin'],
+   ['plans',2,'nee, het spijt me,|ik|moet|koken','RSVI','Ні, мені шкода, я маю готувати.','No, I’m sorry, I have to cook.','Non, désolé, je dois cuisiner.','لا، آسف، يجب أن أطبخ.','poetsen']
+  ];
+  for(const [cat,level,q,roles,uk,en,fr,ar,x] of statements)add(cat,[level,q,roles,uk,en,fr,ar,x||'','.']);
  }
  const gaps={
   comm:['Hoe ___ jij?','heet','heten','heeft','heeten'],
@@ -385,6 +524,55 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    [text2,translated('До якого дня треба зареєструватися?','By which day must you register?','Jusqu’à quel jour faut-il s’inscrire ?','بحلول أي يوم يجب التسجيل؟'),['Uiterlijk vrijdag','Zaterdagavond','Zondagochtend','Maandag']]
   ].map(([text,q,opts])=>({type:'read',text,q,opts,ok:0}));
   tests.push({id:'course_reading_texts_v1',lvl:'a12',title:translated('A1.2 · Читання оголошень','A1.2 · Reading notices','A1.2 · Lire des annonces','A1.2 · قراءة الإعلانات'),questions});
+  // Practice test of 27 Oct 2026 → three short revision tests (always shuffled options; the first option is the answer).
+  const T=translated,mc=(q,...opts)=>({type:'mc',q,opts,ok:0}),gap=(sentence,...opts)=>({type:'gap',sentence,q:prompt,opts,ok:0});
+  const advice=nl=>T(`Дай пораду: «${nl}»`,`Give advice: “${nl}”`,`Donne un conseil : « ${nl} »`,`قدّم نصيحة: «${nl}»`);
+  const pick=T('Яке речення правильне?','Which sentence is correct?','Quelle phrase est correcte ?','أي جملة صحيحة؟');
+  const spell=T('Як пишеться правильно?','Which spelling is correct?','Quelle orthographe est correcte ?','ما الكتابة الصحيحة؟');
+  const sayIt=(uk,en,fr,ar)=>T(`Що ти скажеш? ${uk}`,`What do you say? ${en}`,`Que dis-tu ? ${fr}`,`ماذا تقول؟ ${ar}`);
+  const thursday=[
+   ['course_thursday_order_v1',T('Четвер 1 · Порада й порядок слів','Thursday 1 · Advice and word order','Jeudi 1 · Conseils et ordre des mots','الخميس 1 · النصائح وترتيب الكلمات'),[
+    mc(advice('Ik eet nooit vis.'),'Je moet meer vis eten.','Je moet minder vis eten.','Je meer vis moet eten.','Je moet meer vis.'),
+    mc(advice('Ik eet ’s middags altijd een zak snoepjes.'),'Je moet minder snoepjes eten.','Je minder snoepjes moet eten.','Je moet meer snoepjes eten.','Je moet snoepjes minder.'),
+    mc(advice('Ik drink 20 kopjes koffie per dag.'),'Je moet minder koffie drinken.','Je moet minder koffie eten.','Jij minder koffie moet drinken.','Je moet meer koffie drinken.'),
+    gap('Ik eet geen fruit. Je moet ___ fruit eten.','meer','minder','geen','niet'),
+    gap('Ik drink meestal cola bij het eten. Je moet minder cola ___.','drinken','eten','drink','gedronken'),
+    mc(pick,'Om 07:00 u neem ik een douche.','Om 07:00 u ik neem een douche.','Om 07:00 u ik een douche neem.','Om 07:00 u neem een douche ik.'),
+    mc(pick,'’s Morgens breng ik de kinderen naar school.','’s Morgens ik breng de kinderen naar school.','’s Morgens ik moet de kinderen brengen.','’s Morgens brengen ik de kinderen naar school.'),
+    mc(pick,'Ik ga naar de supermarkt en ik doe boodschappen.','Ik ga naar de supermarkt en ik boodschappen doe.','Ik ga naar de supermarkt en boodschappen doen ik.','Ik ga naar de supermarkt en ik doen boodschappen.'),
+    gap('Om 08:15 ___ ik.','ontbijt','ontbijten','ontbijd','ontbeet'),
+    gap('Na de maaltijd ___ ik naar de tv.','kijk','kijken','ik kijk','kijkt')
+   ]],
+  ['course_thursday_health_v1',T('Четвер 2 · Тіло, здоров’я, вибачення','Thursday 2 · Body, health, excuses','Jeudi 2 · Corps, santé, excuses','الخميس 2 · الجسم والصحة والاعتذار'),[
+    gap('Ik eet, ik spreek en ik drink met mijn ___.','mond','neus','maaltijd','longen'),
+    gap('Ik adem met mijn neus en mijn ___.','longen','kinderen','tenen','oren'),
+    gap('Ik heb 5 ___ aan elke voet.','tenen','tanden','vingers','handen'),
+    gap('Een kind neemt 1 tablet. Een ___ neemt 2 tabletten.','volwassene','kind','kinderen','medicijn'),
+    mc(pick,'Hij heeft pijn aan zijn neus.','Hij heeft neuspijn.','Hij heeft pijn neus.','Hij heeft pijn op zijn neus.'),
+    gap('Je moet de siroop 3 ___ per dag nemen.','keer','tijd','zin','dag'),
+    gap('Wat ___ er? — Ik heb hoofdpijn.','scheelt','schelt','scheel','scheelen'),
+    gap('Ik hoest en ik ___ de hele dag.','nies','niest','neus','neis'),
+    gap('38° C? Je hebt ___!','koorts','koords','koors','koerts'),
+    mc(sayIt('Je kan niet naar een feest komen.','You cannot come to a party.','Tu ne peux pas venir à une fête.','لا تستطيع الحضور إلى حفلة.'),'Het spijt me, ik kan niet komen.','Het spijt me.','Veel beterschap!','Gelukkige verjaardag!'),
+    mc(sayIt('Een persoon is ziek.','Someone is ill.','Quelqu’un est malade.','شخص مريض.'),'Veel beterschap!','Gelukkige verjaardag!','Smakelijk!','Goede reis!'),
+    gap('— Ga je mee naar de cinema? — Nee, het spijt me, ik heb geen ___.','tijd','uur','dag','klok')
+   ]],
+  ['course_thursday_spelling_v1',T('Четвер 3 · Правопис і множина','Thursday 3 · Spelling and plurals','Jeudi 3 · Orthographe et pluriel','الخميس 3 · الإملاء والجمع'),[
+    mc(spell,'boodschappen','boodschapen','bodschappen','boedschappen'),
+    mc(spell,'ontbijt','ontbijd','ontbet','ontbeet'),
+    mc(spell,'verkouden','verkoeden','verkeuden','verkowden'),
+    mc(spell,'oren','ooren','oorren','orren'),
+    mc(spell,'’s morgens','smorgens','s morgens','morgens’s'),
+    mc(spell,'wat scheelt er?','wat schelt er?','wat er scheelt?','wat scheelt het?'),
+    gap('Ik moet 2 ___ nemen.','neussprays','neusspray','neussprayen','neusspraaien'),
+    gap('In de bakkerij koop ik 2 ___.','broden','brooden','broods','brode'),
+    gap('Ik heb 2 ___ voor al mijn afspraken.','agenda’s','agendas','agenda','agendaas'),
+    gap('2 dozen koekjes en 3 ___ chips.','zakken','zaken','zakkes','zakkens'),
+    gap('Mijn zoon heeft pijn aan zijn ___.','schouders','schouden','schouder','schoudeers'),
+    gap('Hij eet 3 ___ met eieren.','boterhammen','boterhamen','boterham','boterhammes')
+   ]]
+  ];
+  for(const [id,title,questions] of thursday)tests.push({id,lvl:'a11',title,questions});
  }
  function games(dialogues,speech) {
   const data=[
