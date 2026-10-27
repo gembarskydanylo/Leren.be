@@ -188,3 +188,10 @@
 ## UI-140 — lesson page, variant B — 27 October 2026
 - User chose variant B (mock-ups of A/B/C sent earlier). The lesson page no longer shows the separate topic block with the big cat, the "‹ До навчального маршруту" button or the hint row. The topic is the header of the question card ("Розділ › Тема ▾", tap → topic sheet), with "Питання N / M" and the progress bar inside the same card (#prog and .bar move into #lessonHead on the lesson page and back for Toets/Ігри). Modes stay as one row above. On desktop the lesson is a 760 px centred column. The route is reachable from the logo and from a new "‹ Мій навчальний маршрут" button in the topic sheet (4 languages).
 - Playwright: 390 px and 1280 px screenshots; topic chip opens the sheet, choosing Здоров’я → Тіло updates the chip, focus returns to the chip; Toets still shows its own count/bar; no horizontal overflow; no page errors. All suites pass. Cache 140.
+
+## UI-141 · Softer main buttons, thicker progress bars, study card fits on phones · 2026-10-27
+- User feedback: main button too dark/heavy; topic progress bars too thin; "Зрозуміло, далі" below the fold when the word picture is shown.
+- Main buttons (.fh-primary, study .lp-primary): #D86000 instead of #C84D00/#B74700, light inner highlight + soft warm shadow, label 19px/900 so white text is WCAG "large text" (3.75:1 ≥ 3:1).
+- Progress bars: 10px with a visible track (ink-2 22%), 8px in topic cards, 12px on the topic page.
+- Study card on phones: picture 110–150px (18vh), tighter spacing; ≤780px tall 96px; ≤680px tall the picture is hidden so word + translation + button fit.
+- Measured "Зрозуміло, далі" bottom vs bottom nav top: 390×844 697<768, 360×740 641<664, 320×640 563<564. All 18 tests pass. Cache leren-be-v141, both stylesheets ?v=141.
