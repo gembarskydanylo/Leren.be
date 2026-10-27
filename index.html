@@ -19,11 +19,13 @@
 <script src="./modules/learning-path/core.js?v=102"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
-<script src="./modules/card-art/art.js?v=120"></script>
-<script src="./modules/card-art/people.js?v=120"></script>
-<script src="./modules/card-art/food.js?v=120"></script>
-<script src="./modules/card-art/things.js?v=120"></script>
-<script src="./modules/card-art/places.js?v=120"></script>
+<script src="./modules/card-art/art.js?v=123"></script>
+<script src="./modules/card-art/people.js?v=123"></script>
+<script src="./modules/card-art/food.js?v=123"></script>
+<script src="./modules/card-art/things.js?v=123"></script>
+<script src="./modules/card-art/places.js?v=123"></script>
+<script src="./modules/card-art/more-people.js?v=123"></script>
+<script src="./modules/card-art/more-things.js?v=123"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=112"></script>
@@ -6603,8 +6605,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="120";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Картки тепер з малюнками замість емодзі.", "items": ["Теми розділів 8–12 («Wat doe jij op een dag?», «Ga je mee?», «Wat scheelt er?», «Eet jij gezond?», «Wat eten we vandaag?») отримали 225 власних малюнків у єдиному стилі.", "Малюнки однакові на всіх телефонах і читаються в темній темі.", "Інші теми поки з емодзі — малюнки для них з’являться згодом."], "hint": "Відкрий будь-яку тему розділів 8–12 у «Уроці».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Cards now have drawings instead of emoji.", "items": ["Chapters 8–12 (“Wat doe jij op een dag?”, “Ga je mee?”, “Wat scheelt er?”, “Eet jij gezond?”, “Wat eten we vandaag?”) got 225 drawings in one style.", "The drawings look the same on every phone and work in dark mode.", "Other topics still use emoji for now — their drawings will follow."], "hint": "Open any topic of chapters 8–12 in Lesson.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Les cartes ont maintenant des dessins au lieu des émojis.", "items": ["Les chapitres 8 à 12 (« Wat doe jij op een dag? », « Ga je mee? », « Wat scheelt er? », « Eet jij gezond? », « Wat eten we vandaag? ») ont 225 dessins dans un même style.", "Les dessins sont identiques sur tous les téléphones et lisibles en mode sombre.", "Les autres thèmes gardent les émojis pour l’instant."], "hint": "Ouvre un thème des chapitres 8 à 12 dans Leçon.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "البطاقات الآن برسومات بدلاً من الرموز التعبيرية.", "items": ["حصلت الفصول 8–12 («Wat doe jij op een dag?» و«Ga je mee?» و«Wat scheelt er?» و«Eet jij gezond?» و«Wat eten we vandaag?») على 225 رسماً بأسلوب واحد.", "تبدو الرسومات متطابقة على كل الهواتف وتعمل في الوضع الداكن.", "المواضيع الأخرى ما زالت بالرموز التعبيرية حالياً."], "hint": "افتح أي موضوع من الفصول 8–12 في «الدرس».", "ok": "حسناً"}};
+const RELEASE_VERSION="123";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Усі картки тепер з малюнками замість емодзі.", "items": ["383 власні малюнки в єдиному стилі — у кожній темі A1.1 і A1.2.", "Малюнок видно і в «Навчальному маршруті»: на кроках «Вивчи», «Перевір» і у відповіді.", "Малюнки однакові на всіх телефонах і читаються в темній темі."], "hint": "Натисни «Почати урок» на головному екрані.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "All cards now have drawings instead of emoji.", "items": ["383 drawings in one style, in every A1.1 and A1.2 topic.", "The learning path shows the picture too: on Study, Check and in the answer.", "The drawings look the same on every phone and work in dark mode."], "hint": "Tap “Start lesson” on the home screen.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Toutes les cartes ont maintenant des dessins au lieu des émojis.", "items": ["383 dessins dans un même style, dans chaque thème A1.1 et A1.2.", "Le parcours montre aussi l’image : à l’étape Apprendre, Vérifier et dans la réponse.", "Les dessins sont identiques sur tous les téléphones et lisibles en mode sombre."], "hint": "Touche « Commencer la leçon » sur l’écran d’accueil.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "كل البطاقات الآن برسومات بدلاً من الرموز التعبيرية.", "items": ["383 رسماً بأسلوب واحد في كل مواضيع A1.1 وA1.2.", "يُظهر مسار التعلّم الصورة أيضاً: في «تعلّم» و«تحقّق» وفي الإجابة.", "تبدو الرسومات متطابقة على كل الهواتف وتعمل في الوضع الداكن."], "hint": "اضغط «ابدأ الدرس» في الشاشة الرئيسية.", "ok": "حسناً"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

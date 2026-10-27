@@ -159,3 +159,6 @@
 
 ## UI-122 — pictures in the learning path — 27 October 2026
 - User report after release 121: "no new pictures". Cause: the home screen leads into the learning path (modules/learning-path), whose study/check steps showed only the word and translation — never the card picture — and the route starts in chapter 1, which is not drawn yet. Fix: `picture(w)` in learning-path ui.js shows the card's drawing (or emoji) on Вивчи, Перевір and in the answer feedback (not in Почуй, so listening stays by ear). ui.js → v122, cache 122; learning-path test version pin updated. All 18 suites pass; 390 px route lesson checked.
+
+## UI-123 — drawings for every topic — 27 October 2026
+- Phase 2: more-people.js (people, jobs, animals, clothes, numbers 0–10, letters) and more-things.js (clock faces, weather, transport, places, signs, documents, money, controls) — 157 more drawings, 383 in total. Every one of the 72 topics with icons is now drawn; mixed check 0. The odd data icon 黒板 got a blackboard drawing. Each batch reviewed on a contact sheet (fixed: double frame on ⏮️⏸️⏹️). Route lesson 1 at 390 px shows the drawing. Release/cache 123; all 18 suites pass.
