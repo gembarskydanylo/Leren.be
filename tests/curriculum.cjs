@@ -32,7 +32,7 @@ vm.runInContext(`
   if(card.id.startsWith('course_'))added++;
   for(const lang of ['nl','uk','en','fr','ar'])assert(card[lang]?.trim(),'Missing translation '+card.id+' '+lang);
  }
- assert.equal(ids.size-added,762,'Existing card IDs must be retained');
+ assert.equal(ids.size-added,792,'Existing card IDs must be retained');
  const testIds=new Set();
  for(const t of TOETS){
   assert(!testIds.has(t.id));testIds.add(t.id);
