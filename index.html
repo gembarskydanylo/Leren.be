@@ -19,6 +19,11 @@
 <script src="./modules/learning-path/core.js?v=102"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
+<script src="./modules/card-art/art.js?v=120"></script>
+<script src="./modules/card-art/people.js?v=120"></script>
+<script src="./modules/card-art/food.js?v=120"></script>
+<script src="./modules/card-art/things.js?v=120"></script>
+<script src="./modules/card-art/places.js?v=120"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=112"></script>
@@ -1117,7 +1122,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
-<script src="./course-curriculum.js?v=119"></script>
+<script src="./course-curriculum.js?v=120"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -2284,6 +2289,7 @@ DATA.objpron=R([
 ]);
 
 LerenCurriculum.apply({DATA,CATEGORIES,UI,R,LEVELS});
+if(typeof LerenCardArt!=="undefined")LerenCardArt.apply(DATA); // drawn pictures for topics whose every emoji has one
 
 function validStored(key,allowed,fallback){try{const v=localStorage.getItem(key);return allowed.includes(v)?v:fallback}catch(e){return fallback}}
 function loadNumber(key,fallback){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>=0?n:fallback}catch(e){return fallback}}
@@ -6597,8 +6603,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="118";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Підготовка до тесту: нові картки, речення й міні-тести.", "items": ["Нові картки в темах «Wat doe jij op een dag?», «Ga je mee?», «Wat scheelt er?» та «Eet jij gezond?»: поради «Je moet minder … eten», розпорядок дня, скарги, відмови, множина.", "У «Речення» тепер і розповідні речення: «Om 07:00 u neem ik een douche», «Je moet meer fruit eten». Нові кольори: початок (час) та «в кінці».", "13 нових карток «заповни пропуск» з малюнками та 3 міні-тести «Четвер» у Toets → Додаткові.", "Новий урок у «Ga je mee?»: «Картки: запрошення й відмови» — 15 карток із малюнками (Ga je mee?, Waar spreken we af?, Het spijt me)."], "hint": "Toets → Додаткові тести → «Четвер 1–3». Речення: Урок → режим «Речення».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Test preparation: new cards, sentences and mini-tests.", "items": ["New cards in “Wat doe jij op een dag?”, “Ga je mee?”, “Wat scheelt er?” and “Eet jij gezond?”: advice with “Je moet minder … eten”, daily routine, complaints, excuses and plurals.", "Build now includes statements too: “Om 07:00 u neem ik een douche”, “Je moet meer fruit eten”. New colours: start (time) and at the end.", "13 new illustrated fill-the-gap cards and 3 “Thursday” mini-tests in Toets → More tests.", "New lesson in “Ga je mee?”: “Cards: invitations & excuses” — 15 illustrated cards (Ga je mee?, Waar spreken we af?, Het spijt me)."], "hint": "Toets → More tests → “Thursday 1–3”. Sentences: Lesson → Build mode.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Préparation au test : nouvelles cartes, phrases et mini-tests.", "items": ["Nouvelles cartes dans « Wat doe jij op een dag? », « Ga je mee? », « Wat scheelt er? » et « Eet jij gezond? » : conseils « Je moet minder … eten », journée, plaintes, excuses et pluriels.", "« Construire » propose aussi des phrases affirmatives : « Om 07:00 u neem ik een douche », « Je moet meer fruit eten ». Nouvelles couleurs : début (temps) et à la fin.", "13 nouvelles cartes illustrées à compléter et 3 mini-tests « Jeudi » dans Toets → Autres tests.", "Nouvelle leçon dans « Ga je mee? » : « Cartes : invitations et refus » — 15 cartes illustrées (Ga je mee?, Waar spreken we af?, Het spijt me)."], "hint": "Toets → Autres tests → « Jeudi 1–3 ». Phrases : Leçon → mode Construire.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "التحضير للاختبار: بطاقات وجمل واختبارات قصيرة جديدة.", "items": ["بطاقات جديدة في «Wat doe jij op een dag?» و«Ga je mee?» و«Wat scheelt er?» و«Eet jij gezond?»: نصائح «Je moet minder … eten» واليوم والشكاوى والاعتذار والجمع.", "صار «تركيب» يتضمن جملاً خبرية أيضاً: «Om 07:00 u neem ik een douche» و«Je moet meer fruit eten». ألوان جديدة: البداية (وقت) وفي النهاية.", "13 بطاقة مصوّرة جديدة لإكمال الفراغ و3 اختبارات قصيرة «الخميس» في Toets ← اختبارات إضافية.", "درس جديد في «Ga je mee?»: «بطاقات: الدعوات والاعتذار» — 15 بطاقة مصوّرة (Ga je mee?, Waar spreken we af?, Het spijt me)."], "hint": "Toets ← اختبارات إضافية ← «الخميس 1–3». الجمل: الدرس ← وضع التركيب.", "ok": "حسناً"}};
+const RELEASE_VERSION="120";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Картки тепер з малюнками замість емодзі.", "items": ["Теми розділів 8–12 («Wat doe jij op een dag?», «Ga je mee?», «Wat scheelt er?», «Eet jij gezond?», «Wat eten we vandaag?») отримали 225 власних малюнків у єдиному стилі.", "Малюнки однакові на всіх телефонах і читаються в темній темі.", "Інші теми поки з емодзі — малюнки для них з’являться згодом."], "hint": "Відкрий будь-яку тему розділів 8–12 у «Уроці».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Cards now have drawings instead of emoji.", "items": ["Chapters 8–12 (“Wat doe jij op een dag?”, “Ga je mee?”, “Wat scheelt er?”, “Eet jij gezond?”, “Wat eten we vandaag?”) got 225 drawings in one style.", "The drawings look the same on every phone and work in dark mode.", "Other topics still use emoji for now — their drawings will follow."], "hint": "Open any topic of chapters 8–12 in Lesson.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Les cartes ont maintenant des dessins au lieu des émojis.", "items": ["Les chapitres 8 à 12 (« Wat doe jij op een dag? », « Ga je mee? », « Wat scheelt er? », « Eet jij gezond? », « Wat eten we vandaag? ») ont 225 dessins dans un même style.", "Les dessins sont identiques sur tous les téléphones et lisibles en mode sombre.", "Les autres thèmes gardent les émojis pour l’instant."], "hint": "Ouvre un thème des chapitres 8 à 12 dans Leçon.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "البطاقات الآن برسومات بدلاً من الرموز التعبيرية.", "items": ["حصلت الفصول 8–12 («Wat doe jij op een dag?» و«Ga je mee?» و«Wat scheelt er?» و«Eet jij gezond?» و«Wat eten we vandaag?») على 225 رسماً بأسلوب واحد.", "تبدو الرسومات متطابقة على كل الهواتف وتعمل في الوضع الداكن.", "المواضيع الأخرى ما زالت بالرموز التعبيرية حالياً."], "hint": "افتح أي موضوع من الفصول 8–12 في «الدرس».", "ok": "حسناً"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
