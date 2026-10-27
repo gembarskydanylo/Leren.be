@@ -582,6 +582,18 @@ header{flex-wrap:nowrap}
 .topic-bar{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:8px 10px 8px 8px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);text-align:start;cursor:pointer;font:inherit;box-shadow:0 var(--depth-sm) 0 var(--edge)}
 .topic-bar:active{transform:translateY(var(--depth-sm));box-shadow:none}
 .topic-bar:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
+/* Lesson page (variant B): the topic is the header of the question card; no separate topic block, route button or hint row. */
+main[data-view="lesson"] #topicBar,main[data-view="lesson"] #pathReturn,main[data-view="lesson"] #lessonGuide,main[data-view="lesson"] .meta{display:none!important}
+.lesson-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--surface);border:2px solid var(--line);border-bottom:0;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:12px 14px 4px;margin-bottom:-16px;position:relative;z-index:1}
+.lh-topic{display:inline-flex;align-items:center;gap:6px;min-height:40px;max-width:calc(100% - 64px);padding:6px 14px;border:0;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lh-topic:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}.lh-topic .lh-ch{color:var(--ink-2)}.lh-topic .lh-caret{font-size:11px;opacity:.7}
+.lesson-head #prog{margin-inline-start:auto;font-weight:900;font-size:14px;color:var(--ink-2);white-space:nowrap}
+.lesson-head .bar{flex:1 0 100%;height:8px}
+main[data-view="lesson"] #card{border-top:0;border-top-left-radius:0;border-top-right-radius:0;padding-top:14px}
+main[data-view="lesson"] #lessonModes,main[data-view="lesson"] .lesson-head,main[data-view="lesson"] #card{width:min(100%,760px);margin-inline:auto}
+main[data-view="lesson"] .lesson-head{margin-bottom:-16px}
+.sheet-route{display:flex;align-items:center;gap:8px;width:calc(100% - 32px);min-height:44px;margin:4px 16px 8px;padding:8px 12px;border:2px dashed var(--line);border-radius:var(--r-md);background:transparent;color:var(--ink-2);font:800 14px var(--font-body,inherit);cursor:pointer}
+.sheet-route:focus-visible{outline:3px solid var(--oranje)}
 .tb-level{flex:none;display:grid;place-items:center;min-width:52px;height:40px;padding:0 8px;border-radius:12px;background:var(--oranje);color:#fff;font:800 14px var(--font-display)}
 .tb-text{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .tb-text small{color:var(--ink-2);font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1018,6 +1030,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   <section id="lessonGuide" data-views="lesson" hidden></section>
   <span id="toetsTitle" hidden></span>
 
+  <div class="lesson-head" id="lessonHead" data-views="lesson"><button type="button" class="lh-topic" id="lhTopic" aria-haspopup="dialog"></button></div>
   <div class="meta" data-views="lesson toets games"><span id="prog"></span><span id="rnd"></span></div>
   <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets games"><i id="barfill"></i></div>
   <section class="card" id="card" aria-live="polite" data-views="lesson toets games"></section>
@@ -1052,6 +1065,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div class="sheet" id="topicsSheet" hidden>
   <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="topicsTitle">
     <div class="sheet-head"><h2 id="topicsTitle"></h2><button type="button" class="sheet-x" data-close="topicsSheet" aria-label="Close"></button></div>
+    <button type="button" class="sheet-route" id="sheetRoute" hidden></button>
     <div class="nav-section">
      <div class="topic-catalog" id="topicCatalog">
       <div class="section-label" id="lblLevel"></div>
@@ -4834,6 +4848,9 @@ function applyView(){
  if(view!=="toets"){$("card").classList.remove("test-library");$("card").removeAttribute("dir");}
  const m=document.querySelector("main");if(m)m.dataset.view=view;
  document.querySelectorAll("[data-views]").forEach(e=>{e.hidden=!e.dataset.views.split(" ").includes(view)});
+ // Variant B: on the lesson page the question number and progress bar sit in the card header.
+ const head=$("lessonHead"),prog=$("prog"),bar=document.querySelector("main > .bar")||document.querySelector(".lesson-head .bar"),meta=document.querySelector(".meta");
+ if(head&&prog&&bar&&meta){if(view==="lesson"){head.append(prog,bar)}else if(prog.parentElement!==meta){meta.prepend(prog);meta.after(bar)}}
  syncDiphthongsLesson();
  const guide=$("lessonGuide");if(guide)guide.hidden=view!=="lesson"||tab==="diphthongs";
  $("headerRoute").hidden=targetLang!=="nl";
@@ -4876,6 +4893,11 @@ function renderTopicBar(){
  const b=$("topicBar");if(!b)return;const u=getUI(),cat=CATEGORIES.find(c=>c.id===currentCat);
  const topic=LerenCompanion.topic({lang:uiLang,id:tab,title:tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),category:cat?(u.cats[cat.id]||cat.id):"",level:(levelById(curLevel)||{}).name||"A1.1",onChoose:()=>openSheet("topicsSheet")});
  b.className=topic.className;b.replaceChildren(...topic.childNodes);b.title=LerenCompanion.tr(uiLang).choose;b.setAttribute("aria-label",topic.getAttribute("aria-label"));
+ // Card header chip: "Chapter › Topic ▾" — tap to change the topic.
+ const lh=$("lhTopic");if(lh){const tTitle=tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),cTitle=cat?(u.cats[cat.id]||cat.id):"";
+  lh.replaceChildren(...(cTitle?[el("span","lh-ch",cTitle+" ›")," "]:[]),el("span","",tTitle),el("span","lh-caret","▾"));
+  lh.title=LerenCompanion.tr(uiLang).choose;lh.setAttribute("aria-label",LerenCompanion.tr(uiLang).choose+": "+(cTitle?cTitle+" — ":"")+tTitle)}
+ const sr=$("sheetRoute");if(sr){sr.hidden=targetLang!=="nl";sr.textContent=({uk:"‹ Мій навчальний маршрут",en:"‹ My learning path",fr:"‹ Mon parcours",ar:"‹ مساري التعليمي"})[uiLang]||"‹ Мій навчальний маршрут"}
  const guide=$("lessonGuide");if(guide){guide.setAttribute("aria-label",LerenCompanion.tr(uiLang).help);guide.replaceChildren(LerenCompanion.help(uiLang,DATA[tab]?.items[0]?.gap&&(mode==="quiz"||mode==="review")?"gap":mode));guide.hidden=view!=="lesson"||tab==="diphthongs"}
 }
 
@@ -4884,11 +4906,13 @@ function openSheet(id){
  if(id==="topicsSheet"){buildNav();topicStep(false)}
  const x=s.querySelector(".sheet-x");if(x)setTimeout(()=>{try{x.focus({preventScroll:true})}catch(e){}},30);
 }
-function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?$("topicBar"):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
+function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?(view==="lesson"?$("lhTopic"):$("topicBar")):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
 document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{if(e.target===s)closeSheet(s.id)})});
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeSheet(b.dataset.close)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
+$("lhTopic").addEventListener("click",()=>openSheet("topicsSheet"));
+$("sheetRoute").addEventListener("click",()=>{closeSheet("topicsSheet");setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
 // Logo = home: the start screen the learner chose (route, or the lesson page after "Вільна практика").
 function goHome(){setView(homePref==="free"?"lesson":"path");if(homePref!=="free"&&learningPath)learningPath.home();window.scrollTo({top:0})}
