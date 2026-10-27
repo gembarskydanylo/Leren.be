@@ -1,0 +1,16 @@
+# Test collection illustrations — 26 October 2026, release 109
+
+Created with the built-in image_gen tool (imagegen skill). Original PNGs remain in the user's Codex generated_images directory. Project files are optimised 768×512 WebP, quality 78, with no in-image UI labels; all labels remain selectable/localised HTML. Decorative images have empty alt text because the adjacent buttons fully describe their destination. Original mascot and topic assets remain untouched.
+
+Files: `first-steps-v109.webp`, `everyday-v109.webp`, `practice-v109.webp`. The two block scenes are reused for A1.2 collections; A1.2 is still part of level A1. These are illustrations, not photographs of actual teachers or students.
+
+## Final prompts (built-in generation, no reference image supplied)
+
+### first-steps-v109.webp
+Use case: illustration-story. Create ONE premium landscape 3D storybook illustration for a Dutch-learning app test collection covering chapters 1–6: introductions, people, numbers, time, birthday, shop opening hours. Main character: a charming plush round ORANGE Ukrainian student cat, big glossy dark eyes, short limbs, wearing a BLUE AND YELLOW striped scarf, matching the reference character's warm design (do not make a collage or sprite sheet). Scene: cat at a welcoming Flemish town square with a friendly small shop, a simple round clock above door, birthday parcel and a little notebook in paws. Polished tactile clay/plush render, soft daylight, cream and apricot architecture, a few teal accents, thoughtful calm composition, beautiful professional educational app artwork. Cat and props fully visible, landscape 3:2, no text, no letters, no numerals, no emoji, no UI, no watermarks.
+
+### everyday-v109.webp
+Use case: illustration-story. ONE landscape premium 3D storybook illustration for a Dutch-learning app covering chapters 7–12: forms, daily routines, plans, health, healthy eating and grocery shopping. Main character a charming round ORANGE plush Ukrainian student cat wearing BLUE AND YELLOW striped scarf, glossy dark eyes and little paws, warm polished clay/plush material. Scene: cozy Flemish kitchen, cat happily unpacking a paper grocery bag with carrots and bread at a round table, a blank calendar and a small plant in background. Sophisticated soft sage and warm cream palette, sunny lighting, detailed tactile textures, professional educational game key art, calm readable composition at thumbnail size. One single scene, landscape 3:2, no text, no letters, no numerals, no emojis, no UI, no watermarks.
+
+### practice-v109.webp
+Use case: illustration-story. ONE landscape premium 3D storybook illustration for a Dutch-learning app exam practice area. A charming round ORANGE plush Ukrainian student cat wearing a BLUE AND YELLOW striped scarf, glossy dark eyes, sits at a cozy desk with an open blank notebook, dark teal over-ear headphones, pencil and a small beautiful bronze trophy. Soft blue background with warm cream light from a window, realistic tactile plush/clay surfaces, delightful but calm professional learning app artwork, consistent soft rounded design, clean composition visible at small thumbnail scale. Landscape 3:2. No text, no letters, no numerals, no emojis, no UI, no watermarks. Single scene, not collage.

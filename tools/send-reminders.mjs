@@ -32,6 +32,7 @@ function localNow(tz) {
   return {hour: +p.hour, date: `${p.year}-${p.month}-${p.day}`, yesterday: y.toISOString().slice(0, 10)};
 }
 
+const PUSH_HOST = /^https:\/\/(fcm\.googleapis\.com|updates\.push\.services\.mozilla\.com|web\.push\.apple\.com|[a-z0-9.-]+\.notify\.windows\.com)\//;
 let sent = 0, removed = 0, checked = 0, failed = 0, pageToken = "";
 do {
   const {data} = await api(`${BASE}/subs?pageSize=300${pageToken ? "&pageToken=" + pageToken : ""}`);
@@ -39,7 +40,10 @@ do {
     checked++;
     const f = doc.fields || {}, s = Object.fromEntries(Object.keys(f).map(k => [k, val(f[k])]));
     let now; try { now = localNow(s.tz || "Europe/Brussels"); } catch { now = localNow("Europe/Brussels"); }
-    if (!FORCE && (now.hour !== s.hour || s.lastActive === now.date || s.lastSent === now.date)) continue;
+    // GitHub may skip or delay hourly runs: send in the first run within 3 hours after the chosen hour (once a day).
+    const late = now.hour - s.hour;
+    if (!FORCE && (late < 0 || late > 3 || s.lastActive === now.date || s.lastSent === now.date)) continue;
+    if (!PUSH_HOST.test(String(s.endpoint || ""))) continue; // only real push services (firestore.rules check this too)
     const t = TEXT[s.lang] || TEXT.uk, alive = s.lastActive === now.yesterday && s.streak > 0;
     const [title, body] = alive ? t.alive(s.streak) : t.start;
     try {

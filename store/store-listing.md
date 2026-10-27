@@ -14,7 +14,7 @@
 | Вебсайт | https://lerenbe.com |
 | Значок 512×512 | `store/play-icon-512.png` |
 | Банер 1024×500 | `store/feature-graphic-1024x500.png` |
-| Знімки телефона 1080×2160 | `screenshots/1-chat.png` … `screenshots/6-dict.png` (у цьому порядку) |
+| Знімки телефона 1080×1920 (9:16) | `store/play-screenshots/1-chat-1080x1920.png` … `6-dict-1080x1920.png` (у цьому порядку; 9:16 потрібне для рекомендацій у Play). `screenshots/` (1080×2160) — для маніфесту сайту |
 
 Посилання на політику всередині застосунку: ⚙ Налаштування → внизу «Privacy»; на екрані згоди AI-чату згадано, що дані обробляє AI.
 
@@ -31,7 +31,7 @@ Leren.be — Nederlands A1
 **Повний опис:**
 Leren.be — тренажер нідерландської мови рівнів A1.1 і A1.2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
 
-🤖 AI-ВИКЛАДАЧ РУЛЬ
+🤖 AI-ВИКЛАДАЧ ПІТЕР
 • «Praat met Peter»: розмовляй письмово або голосом — Пітер відповідає простою нідерландською, виправляє помилки й пояснює правило українською.
 • «Запитай Пітера»: питай про граматику, слова, переклад і вимову, проси вправи — з прикладами, які можна прослухати.
 • Під кожною відповіддю — переклад українською.
@@ -74,7 +74,7 @@ Leren.be — незалежний навчальний проєкт і не по
 Leren.be — Nederlands A1
 
 **Korte beschrijving:**
-Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die je fouten uitlegt.
+Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die fouten uitlegt.
 
 **Volledige beschrijving:**
 Leren.be is een oefenapp voor Nederlands op niveau A1.1 en A1.2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
@@ -121,7 +121,7 @@ Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 Leren.be — Nederlands A1
 
 **Short description:**
-Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who explains mistakes.
+Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who fixes mistakes.
 
 **Full description:**
 Leren.be is a Dutch practice app for levels A1.1 and A1.2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
@@ -205,8 +205,10 @@ URL: **https://lerenbe.com/privacy.html**
 | Особисті дані → **Адреса e-mail** | для входу (Google або посилання на e-mail) | Необов’язково | Керування акаунтом |
 | Особисті дані → **Ідентифікатори користувача** | ID акаунта Firebase | Необов’язково | Керування акаунтом; Функціональність |
 | Особисті дані → **Інша інформація** | нотатки AI про учня (місто, робота, захоплення, цілі), синхронізуються з акаунтом | Необов’язково | Персоналізація; Функціональність |
-| Активність у застосунку → **Взаємодія із застосунком** | прогрес, бали, налаштування, слова, журнал помилок (лише з акаунтом) | Необов’язково | Функціональність застосунку |
+| Активність у застосунку → **Взаємодія із застосунком** | прогрес, бали, налаштування, слова, журнал помилок (з акаунтом); **знеособлена статистика відвідувань Cloudflare Web Analytics** (сторінка, джерело переходу, тип пристрою, країна; без cookies та ідентифікаторів) | **Обов’язково** (статистику відвідувань не можна вимкнути) | Функціональність застосунку; **Аналітика** |
+| Активність у застосунку → **Історія пошуку в додатку** | останні пошуки в словнику (синхронізуються з акаунтом) | Необов’язково | Функціональність застосунку |
 | Активність у застосунку → **Інший створений користувачем вміст** | повідомлення в AI-чаті, навчальний профіль, скарги «⚑» | Необов’язково | Функціональність застосунку |
+| Інформація про додаток і його роботу → **Діагностика** | швидкість завантаження сторінок (Core Web Vitals) з Cloudflare Web Analytics, знеособлено | **Обов’язково** | Аналітика |
 | Пристрій або інші ідентифікатори | адреса push-підписки (нагадування); IP-адреса для денного ліміту AI (до 25 год) | Необов’язково | Функціональність (нагадування); Запобігання шахрайству, безпека |
 
 **Не збираються:** місцезнаходження, контакти, фото й відео, фінансова інформація, здоров’я, файли, календар, веб-історія. **Аудіо — Ні**: розпізнавання мовлення виконує служба браузера/системи, застосунок отримує лише текст (згадано в політиці конфіденційності).

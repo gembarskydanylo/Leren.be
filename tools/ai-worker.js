@@ -11,16 +11,17 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-19.1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-25-limits"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
   cafe: "You are a barista in a Flemish café. The learner orders a drink, chooses milk/size and pays.",
   super: "You work in a Belgian supermarket. The learner asks where products are, asks prices, loyalty card.",
   huisarts: "You are the GP's assistant (huisarts). The learner explains symptoms (keelpijn, koorts, hoest); you ask since when and give simple advice.",
-  apotheek: "You are a pharmacist. The learner asks for something against pain/cold; you ask about symptoms and explain dosage simply.",
+  apotheek: "You are a pharmacist in a language lesson. The learner asks for something against pain/cold; you ask about symptoms in simple words and use a made-up practice line like 'Twee keer per dag, na het eten.' Never give real advice about medicines or doses: for that, say they should ask the pharmacist or doctor in real life.",
   gemeente: "You work at the gemeente (town hall). The learner changes address; you ask for ID card and new address; mention the wijkagent visit.",
   station: "You sell train tickets at a Belgian station. The learner buys a ticket (enkel / heen en terug), you give price, time and platform (spoor).",
+  exam11: "You are the learner's CVO teacher taking the SPEAKING exam of course 1.1 (chapters 8-11: daily routine, graag / niet graag, invitations and appointments, at the doctor, meals, advice with meer / minder) as a mock exam. The app gives you an EXAM SCRIPT for every turn with the exact question to ask: follow it strictly. Never make up other questions, never ask why, never repeat a question that was already answered correctly, no small talk. Keep every reply very short.",
   buren: "You are the learner's new Flemish neighbour. Small talk: names, where from, how long here, invite for coffee."
 };
 // Condensed curricula (from the Leren.be knowledge base) used to ground corrections.
@@ -33,7 +34,8 @@ const GRAMMAR_NL = `- Main clause: verb in 2nd position (Ik woon in België). Af
 - Questions: question word + verb + subject (Waar woon jij?); yes/no: verb first (Woon jij in Gent?).
 - Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het.
 - Polite: u (formal), alstublieft / alsjeblieft, graag (Ik wil graag een koffie).
-- A1.2: modal verbs (kunnen, moeten, willen, mogen + infinitive at the end), perfectum (hebben/zijn + voltooid deelwoord: ik heb gewerkt, ik ben gegaan), future gaan + infinitive.`;
+- Course A1.1 (first part of A1): introductions, personal details, prices/weather, time, birthdays, opening hours, forms, daily routine, invitations/plans, health, eating habits, groceries. Include possessives, inversion, niet/geen, separable verbs, modal verbs + infinitive, gaan + infinitive, aan het + infinitive, want/omdat, imperatives, frequency and plurals.
+- Course A1.2 (second part of A1, NOT A2): family/holiday accounts, shopping and exchanges, second-hand ads, travel disruptions, online appointments, messages and short articles/instructions. Practise perfectum (hebben/zijn + participle), common past forms, comparisons and connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
 const GRAMMAR_EN = `- Word order: subject + verb + object (I live in Belgium). Questions with do/does (Do you work? Where does she live?); with be/can: invert (Are you tired? Can you help?).
 - Present simple: he/she/it + -s (she works, he goes, it has); negative don't/doesn't + base verb.
 - be: I am, you are, he/she/it is, we/they are. have got / has got.
@@ -60,25 +62,43 @@ const PERSONA = {
 const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
 - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
 
+// Mock speaking exam: the app sends the exact question for this turn, so the tutor follows the course and never loops.
+function examScript(x, L) {
+  if (!x || typeof x !== "object") return "";
+  const q = v => String(v || "").replace(/[\r\n{}<>«»"]/g, " ").slice(0, 240).trim();
+  const cur = q(x.cur), next = q(x.next);
+  if (x.first && next) return `- EXAM SCRIPT: say hello in one very short sentence and ask exactly this question: «${next}». Ask nothing else.\n`;
+  if (x.end) return `- EXAM SCRIPT: the learner answered the LAST question («${cur}»). React to the answer in one short sentence, say the mock exam is finished, and give a short evaluation in reply: what went well and the 2-3 most important things to practise before the exam. Ask no new question.\n`;
+  if (!cur) return "";
+  return `- EXAM SCRIPT (strict): the learner is answering «${cur}». If the answer is correct and a full sentence: praise in at most three words and then ask exactly: «${next}». If it has a mistake${x.retry ? "" : " or is not a full sentence"}: ${x.retry ? `say the correct sentence, ask the learner to remember it, and then ask exactly: «${next}»` : `say kindly that it is not quite right and ask «${cur}» again (do NOT ask «${next}» yet)`}. Ask no other question.\n`;
+}
 function chatSystem(t, lang, level, scene, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
-  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "A1.2" : "A1.1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
+  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
 Course grammar (follow it when correcting):
 ${T.grammar}
 Rules:
 - reply: very simple ${T.name}, max 2 short sentences, common words; continue the conversation and ask exactly ONE simple question. Always write reply in the target language, even if the learner writes in another language.
-- translation: translation of reply into ${L}.
+- translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
+- learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
+- Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
-${extra}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
+${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
+` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
 LANGUAGE RULE: "reply" and "corrected" are in the target language and use only Latin letters (write names in Latin script, e.g. Danylo, never mixed with Cyrillic); "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
 
+const EXAM11_COACH = L => `- EXAM COACH MODE: the learner is preparing the CVO Dutch exam of course 1.1, chapters 8-11 (8 Wat doe jij op een dag?, 9 Ga je mee?, 10 Wat scheelt er?, 11 Eet jij gezond?). Thursday 29 October: reading (an invitation, an e-mail or chat, information on a medicine package), writing (an e-mail about a normal day and what you like / don't like doing; a reply to an invitation; an e-mail about your meals) and listening (an invitation dialogue; a patient-doctor dialogue). Friday 30 October: speaking (daily activities with times, graag / niet graag, make an appointment or decline an invitation, answer the doctor's questions, talk about meals and what you find lekker, give advice with moeten + meer / minder). Grammar: separable verbs (Ik sta om 7 uur op), niet / geen, inversion after time words, gaan / kunnen / moeten + infinitive at the end, omdat (verb last) vs want, meer / minder, voor / tijdens / na de maaltijd, nooit / soms / vaak / meestal / altijd. Vocabulary: household tasks, sports and free time, places (markt, park, bushalte, ingang), invitations (uitnodiging, afspreken, meegaan, Spijtig!), body and complaints, medicines (hoestsiroop, neusspray, tablet, voorschrift, innemen), meals and food (ontbijt, boterham, beleg, hesp, choco, groenten, frieten).
+- When the learner sends a Dutch e-mail or text: mark it like the teacher. First one line with what is good. Then every mistake as «wrong» → «correct» with a one-line rule in ${L}. For a reply to an invitation, check the checklist: greeting, congratulations, thanks (Bedankt voor de uitnodiging), apology (Het spijt me), that you can't come, the reason, goodbye, your name, capital letters and full stops. End with the full corrected e-mail. For this answer you may write up to about 250 words.
+- When the learner wants to practise: give ONE exam-style task at a time (a short invitation, chat or medicine text with 3 multiple-choice questions, or 5 gap sentences, or one speaking question) and wait for the learner's answers. If some answers are wrong, do NOT give the solutions yet: say which numbers are wrong, give a short hint in ${L} for each (Подумай ще раз: …) and let the learner try again. After the second try give the solutions, explain each mistake briefly in ${L} and give the next task.
+- Be encouraging: the exam is in a few days.
+`;
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
-  return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "A1.2" : "A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
 Grammar notes for ${T.name} (keep explanations consistent with them):
@@ -127,6 +147,12 @@ Write in ${L}: at most 8 short lines, each starting with "• ", at most 500 cha
 }
 
 const STR = {type: "string"};
+const TNAME = {uk: {nl: "нідерландською", en: "англійською", fr: "французькою"}, en: {nl: "in Dutch", en: "in English", fr: "in French"},
+  fr: {nl: "en néerlandais", en: "en anglais", fr: "en français"}, ar: {nl: "بالهولندية", en: "بالإنجليزية", fr: "بالفرنسية"}};
+const SAY_IT = {uk: t => `Ти написав не ${TNAME.uk[t] || TNAME.uk.nl}. Так це звучить ${TNAME.uk[t] || TNAME.uk.nl} — повтори вголос.`,
+  en: t => `That wasn't ${TNAME.en[t] || TNAME.en.nl}. This is how to say it ${TNAME.en[t] || TNAME.en.nl} — repeat it out loud.`,
+  fr: t => `Ce n'était pas ${TNAME.fr[t] || TNAME.fr.nl}. Voilà comment le dire ${TNAME.fr[t] || TNAME.fr.nl} — répète-le à voix haute.`,
+  ar: t => `لم تكتب ${TNAME.ar[t] || TNAME.ar.nl}. هكذا تقولها ${TNAME.ar[t] || TNAME.ar.nl} — كرّرها بصوت عالٍ.`};
 const schemaFor = (mode, L) => mode === "memo"
   ? {type: "object", additionalProperties: false, required: ["memory"], properties: {memory: {type: "string", description: `Notes about the learner in ${L}.`}}}
   : mode === "ask"
@@ -134,8 +160,9 @@ const schemaFor = (mode, L) => mode === "memo"
       answer: {type: "string", description: `Written in ${L}.`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
         properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L}.`}}}}}}
-  : {type: "object", additionalProperties: false, required: ["reply", "translation", "correction"], properties: {
-      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Translation of reply into ${L}.`},
+  : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
+      learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
+      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L}: translate every word, leave no words in the target language.`},
       correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation"],
         properties: {has_error: {type: "boolean"}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
 
@@ -157,11 +184,20 @@ export default {
     const json = (o, status = 200) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION}});
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
 
-    // daily limit per visitor (optional KV binding RATE)
-    // KV on the free plan allows ~1000 writes a day: if KV fails, keep the chat working
-    // (the monthly spend limit in the Anthropic Console is the hard cap).
+    // Emergency switch: set the variable AI_OFF = 1 in Cloudflare to stop all model calls at once.
+    if (env.AI_OFF === "1") return json({error: "off"}, 503);
+    // Spend guard. Rate limiting bindings (wrangler.toml) are counted per Cloudflare location without a daily write
+    // quota, so they keep working when KV doesn't: per visitor per minute, and for everybody together per minute
+    // (a ceiling on what the model can cost per minute). If a binding is missing or fails, refuse rather than spend.
+    const ip = req.headers.get("CF-Connecting-IP") || "x";
+    for (const [b, key] of [[env.PER_IP, ip], [env.ALL, "all"]]) {
+      if (!b) continue;
+      let ok = false; try { ok = (await b.limit({key})).success; } catch (e) { console.log("limiter", String(e)); }
+      if (!ok) return json({error: "slow"}, 429); // the app says "wait a moment", not "come back tomorrow"
+    }
+    // Daily limit per visitor (KV "leren-ai-rate", best effort): the free plan allows ~1000 KV writes a day; when KV
+    // fails the per-minute limits above still apply, and the monthly spend limit in the Anthropic Console is the hard cap.
     if (env.RATE) {
-      const ip = req.headers.get("CF-Connecting-IP") || "x";
       const key = new Date().toISOString().slice(0, 10) + ":" + ip;
       let n = 0;
       try { n = Number(await env.RATE.get(key)) || 0; } catch (e) { console.log("rate get", String(e)); }
@@ -169,7 +205,13 @@ export default {
       try { await env.RATE.put(key, String(n + 1), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
     }
 
-    let body; try { body = await req.json(); } catch { return json({error: "bad json"}, 400); }
+    // Requests from the app are a few KB: refuse big bodies before parsing them.
+    if (Number(req.headers.get("Content-Length") || 0) > 64000) return json({error: "too big"}, 413);
+    let raw; try { raw = await req.text(); } catch { return json({error: "bad body"}, 400); }
+    if (raw.length > 64000) return json({error: "too big"}, 413);
+    let body; try { body = JSON.parse(raw); } catch { return json({error: "bad json"}, 400); }
+    // JSON parsing also accepts null, arrays and primitives; validate before reading fields.
+    if (!body || typeof body !== "object" || Array.isArray(body)) return json({error: "bad request"}, 400);
     if (body.mode === "report") { // Google Play: users can flag AI content inside the app; read them in Cloudflare → leren-ai → Logs
       console.log("AI_REPORT " + JSON.stringify({at: new Date().toISOString(), kind: String(body.kind || "").slice(0, 10), target: String(body.target || "").slice(0, 5), lang: String(body.lang || "").slice(0, 5), text: String(body.text || "").slice(0, 1500)}));
       return json({ok: true});
@@ -177,7 +219,7 @@ export default {
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
-    const maxLen = mode === "chat" ? 400 : 600;
+    const maxLen = mode === "chat" ? 400 : body.focus === "exam11" ? 1600 : 600;
     const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-12)
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));
@@ -187,15 +229,17 @@ export default {
       const transcript = msgs.map(m => (m.role === "user" ? "Learner: " : "Tutor: ") + m.content).join("\n");
       msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
     }
-    const notes = learnerNotes(body.profile, mode, memory);
+    const notes = learnerNotes(body.profile, mode, memory) + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
     const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
+    // Don't wait forever for the model: the app shows "try again" instead of hanging.
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 45000);
     try {
       let text = "";
       if (provider === "anthropic") {
         // Structured outputs guarantee valid JSON; low effort keeps replies fast and cheap.
-        const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
+        const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", signal: ctl.signal, headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
           body: JSON.stringify({model: env.MODEL || "claude-haiku-5-5", max_tokens: 4000, system: sys, messages: msgs,
             output_config: {effort: env.EFFORT || (mode === "ask" ? "medium" : "low"), format: {type: "json_schema", schema}}})});
         const j = await r.json();
@@ -221,8 +265,15 @@ export default {
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
       const k = o.correction;
-      const c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      let c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      const lastUser = String((msgs.filter(m => m.role === "user").pop() || {}).content || "").replace(/\[spoken;[^\]]*\]\s*$/, "").trim();
+      const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
+      if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
+        c = {original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)};
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
-    } catch (e) { return json({error: "ai"}, 502); }
+    } catch (e) {
+      const late = e && e.name === "AbortError";
+      return json({error: late ? "timeout" : "ai"}, late ? 504 : 502);
+    } finally { clearTimeout(timer); }
   }
 };

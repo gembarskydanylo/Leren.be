@@ -3,20 +3,34 @@ rules_version = '2';
 // The app may create/replace/delete its own document; nobody can read the list from the app.
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Reminder subscriptions. Each one belongs to the anonymous Firebase user of the device that made it (field uid).
+    // Only that user can change or delete it; documents made before 25.10.2026 have no uid and can be claimed once
+    // by the device that knows their ID (a hash of the push address). Push addresses must belong to a real push
+    // service, and lastSent is written only by the reminder server (it uses a service account, not these rules).
     match /subs/{id} {
+      function signedIn() { return request.auth != null; }
+      function mine() { return resource.data.get('uid', null) == request.auth.uid; }
+      function unclaimed() { return !('uid' in resource.data); }
+      function valid() {
+        let d = request.resource.data;
+        return id.size() == 64
+          && d.keys().hasOnly(['endpoint','p256dh','auth','hour','tz','lang','streak','lastActive','lastSent','uid'])
+          && d.uid == request.auth.uid
+          && d.endpoint is string && d.endpoint.size() < 700
+          && d.endpoint.matches('https://(fcm[.]googleapis[.]com|updates[.]push[.]services[.]mozilla[.]com|web[.]push[.]apple[.]com|[a-z0-9.-]+[.]notify[.]windows[.]com)/.+')
+          && d.p256dh is string && d.p256dh.size() < 200
+          && d.auth is string && d.auth.size() < 100
+          && d.hour is int && d.hour >= 0 && d.hour <= 23
+          && d.tz is string && d.tz.size() < 60
+          && d.lang in ['uk','en','fr','ar']
+          && d.streak is int && d.streak >= 0 && d.streak < 10000
+          && d.lastActive is string && d.lastActive.size() <= 10;
+      }
       allow read: if false;
-      allow delete: if id.size() == 64;
-      allow create, update: if id.size() == 64
-        && request.resource.data.keys().hasOnly(['endpoint','p256dh','auth','hour','tz','lang','streak','lastActive','lastSent'])
-        && request.resource.data.endpoint is string && request.resource.data.endpoint.size() < 700
-        && request.resource.data.endpoint.matches('https://.*')
-        && request.resource.data.p256dh is string && request.resource.data.p256dh.size() < 200
-        && request.resource.data.auth is string && request.resource.data.auth.size() < 100
-        && request.resource.data.hour is int && request.resource.data.hour >= 0 && request.resource.data.hour <= 23
-        && request.resource.data.tz is string && request.resource.data.tz.size() < 60
-        && request.resource.data.lang in ['uk','en','fr','ar']
-        && request.resource.data.streak is int && request.resource.data.streak >= 0 && request.resource.data.streak < 10000
-        && request.resource.data.lastActive is string && request.resource.data.lastActive.size() <= 10;
+      allow create: if signedIn() && valid() && !('lastSent' in request.resource.data);
+      allow update: if signedIn() && (mine() || unclaimed()) && valid()
+        && request.resource.data.get('lastSent', null) == resource.data.get('lastSent', null);
+      allow delete: if signedIn() && (mine() || unclaimed());
     }
     // Optional accounts: each signed-in user can read and write only their own document.
     match /users/{uid} {

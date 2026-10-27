@@ -12,6 +12,22 @@ keep_vars = true
 binding = "RATE"
 id = "09641fb73afe40d69bf47f75a7c15bf5"
 
+# Spend guard (tools/ai-worker.js): at most 12 AI requests a minute per visitor, and 300 a minute for everybody
+# together in one Cloudflare location. Counted by Cloudflare's rate limiter (no daily write quota, unlike KV).
+[[ratelimits]]
+name = "PER_IP"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 12
+  period = 60
+
+[[ratelimits]]
+name = "ALL"
+namespace_id = "1002"
+  [ratelimits.simple]
+  limit = 300
+  period = 60
+
 # Workers Logs (AI_REPORT complaints are read here)
 [observability]
 enabled = true
