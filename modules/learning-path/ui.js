@@ -81,7 +81,7 @@
    if(s.kind==='lesson'){const l=model.lesson(s.lesson),ch=chapter(l);box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)))}else box.appendChild(node('h2','',t('review')));
    const steps=node('ol','lp-steps');['study','listen','check'].forEach((key,i)=>{const li=node('li',i===s.phase?'lp-active':'',(i<s.phase?'✓ ':i+1+'. ')+t(key));if(i===s.phase)li.setAttribute('aria-current','step');steps.appendChild(li)});box.appendChild(steps);
    if(feedback){
-    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));const w=word(feedback.id);fb.append(node('strong','',t(feedback.ok?'right':'wrong')));const fp=picture(w);if(fp)fb.appendChild(fp);fb.append(node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl));
+    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));const w=word(feedback.id);fb.append(node('strong','',t(feedback.ok?'right':'wrong')),illustration(w));fb.append(node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl));
     if(!feedback.ok){
      if(!feedback.practice)fb.appendChild(button(LerenCompanion.tr(lang).retry,()=>{feedback.practice=true;render()}));
      else{const practice=node('div','comp-practice');practice.appendChild(node('p','',LerenCompanion.tr(lang).practice));
@@ -130,7 +130,7 @@
    }
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
-  function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises()}
+  function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises();globalThis.LerenEmoji?.enhance(root)}
   render();return {refresh(){lang=bridge.language();render()},home(){go('home')},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
  }
  globalThis.LerenLearningPath.mount=mount;

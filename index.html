@@ -38,7 +38,7 @@
 <script src="./modules/word-builder/art.js?v=115"></script>
 <script src="./modules/emoji/renderer.js?v=1"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=122"></script>
+<script src="./modules/learning-path/ui.js?v=123"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -197,6 +197,9 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .icon-box{font-size:52px;line-height:1;margin:6px 0 2px;filter:drop-shadow(0 4px 0 rgba(0,0,0,.08))}
 .icon-box svg{width:64px;height:64px}
 .icon-box.kt svg{width:132px;height:132px}
+.question-picture{width:112px;height:112px;display:grid;place-items:center;margin:8px auto;object-fit:contain}
+.question-picture svg,.question-picture>.lbe-emoji{width:104px;height:104px;object-fit:contain;vertical-align:initial}
+.question-picture img{width:100%;height:100%;object-fit:contain}
 #card .q h2.kt-sent{font-size:1.3rem;line-height:1.5;white-space:pre-line}
 .q h2{font-family:var(--font-display);font-size:clamp(24px,7vw,34px);font-weight:700;line-height:1.15;margin:4px 0 0;letter-spacing:-.01em;overflow-wrap:anywhere}
 .q h2.sm{font-size:clamp(18px,5vw,22px)}
@@ -2318,6 +2321,13 @@ if(catLevel(currentCat)!==curLevel){const c=levelCats(curLevel)[0];currentCat=c.
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
 const iconBox=ic=>{const d=el("div","icon-box"+(ic.includes("kt-img")?" kt":""));d.setAttribute("aria-hidden","true");if(ic.startsWith("<svg"))d.innerHTML=ic;else d.textContent=ic;return d};
+function questionPicture(it){
+ const ic=typeof it?.icon==="string"?it.icon:"";
+ if(ic){const box=iconBox(ic);box.classList.add("question-picture");return box}
+ const key=globalThis.LerenWordArt?.forCard?.(it);
+ if(key){const box=iconBox(globalThis.LerenWordArt.svg(key,it?.nl));box.classList.add("question-picture");return box}
+ const img=el("img","question-picture");img.src="./img/mascot/student-cat-v1.png";img.alt=it?.nl?"Помаранчевий кіт — підказка до слова «"+it.nl+"»":"Помаранчевий кіт — підказка до питання";return img;
+}
 
 function saveStore(){
  try{
@@ -3037,13 +3047,13 @@ function nextQuestion(){
  top.appendChild(el("small","",mode==="audio"?u.audioSub:mode==="study"?u.studySub:subLabel));
  
  if(mode==="audio"){
-  top.appendChild(el("div","icon-box","🔊"));
+  top.appendChild(questionPicture(item));
  }else{
   if(tab==="clock" && mode!=="study"){
    top.appendChild(renderClockFace(item.nl));
    top.appendChild(el("p","",meaningFor(item)));
   } else {
-   if(item.icon)top.appendChild(iconBox(item.icon));
+   top.appendChild(questionPicture(item));
    if(item.gap&&mode!=="study"){
     const [a,b]=item.gap.replace(/(.) — /g,"$1\n— ").split("___"),h=el("h2","vh-sent kt-sent");tgt(h);
     h.append(a,el("span","vh-gap active","…"),b);top.appendChild(h);
@@ -3059,7 +3069,7 @@ function nextQuestion(){
  if(!(item.gap&&mode!=="study"&&mode!=="audio"))top.appendChild(hear); // would give the answer away
  card.appendChild(top);
 
- if(mode==="study"){renderStudyControls(card);return}
+ if(mode==="study"){renderStudyControls(card);if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);return}
 
  const opts=el("div","opts");card.appendChild(opts);
  const fb=el("div","feedback");fb.id="feedback";card.appendChild(fb);
@@ -3073,6 +3083,7 @@ function nextQuestion(){
   const t=el("span","",o.label);if(o.t)tgt(t);b.appendChild(t);
   b.onclick=()=>answer(o.ok,b);opts.appendChild(b);
  });
+ if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
  if(mode==="audio")autoSay(spoken());
 }
 
@@ -3252,9 +3263,10 @@ function klRender(){
  const card=$("card");card.replaceChildren(klLevelBar());
  const top=el("div","q");top.appendChild(el("small","",klLevel===3?k.verbSub:k.sortSub));
  if(klLevel<3){
-  if(mode==="audio"&&!locked)top.appendChild(el("div","icon-box","🔊"));
-  else {const w=el("div","kl-word");w.appendChild(klCard(item.nl,{vowels:locked}));top.appendChild(w)}
+  top.appendChild(questionPicture(item));
+  if(mode!=="audio"||locked){const w=el("div","kl-word");w.appendChild(klCard(item.nl,{vowels:locked}));top.appendChild(w)}
  }else{
+  top.appendChild(questionPicture(item));
   const p=el("h2","kl-verbq",klQ.prompt);tgt(p);top.appendChild(p);
   top.appendChild(el("p","",meaningFor(item)));
  }
@@ -3282,6 +3294,7 @@ function klRender(){
  }
  card.appendChild(fb);
  const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+ if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
 }
 function klAnswer(ok,btn){
  if(locked)return;locked=true;
@@ -3434,7 +3447,7 @@ function vhText(st,cur){
 function vhRenderStudy(){
  const u=getUI(),v=vhU(),st=vhCur();$("prog").textContent=st.title;$("rnd").textContent=u.modes.study;roundTotal=0;q=0;updateProgress();
  const card=$("card");card.replaceChildren(vhBar());
- const top=el("div","q");const h=el("h2","vh-title",st.title);tgt(h);top.append(el("small","",v.read),h);card.appendChild(top);
+ const top=el("div","q");const h=el("h2","vh-title",st.title);tgt(h);top.append(el("small","",v.read),h);top.appendChild(questionPicture(item));card.appendChild(top);
  const box=el("div","vh-text study");tgt(box);
  st.items.forEach(it=>{const sp=el("span","vh-line");sp.setAttribute("role","button");sp.tabIndex=0;sp.title=vhTr(it);sp.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sp.click()}};
   if(it.v){const [a,b]=it.s.split("___");sp.append(a,el("mark","",it.ok),b)}else sp.append(it.t);
@@ -3452,7 +3465,7 @@ function vhRender(){
  const u=getUI(),v=vhU(),st=vhCur(),g=item.g;
  $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=st.title+" · "+u.modes[mode];updateProgress();
  const card=$("card");card.replaceChildren(vhBar());
- const top=el("div","q");const h=el("h2","vh-title",st.title);tgt(h);top.append(el("small","",v.sub),h);
+ const top=el("div","q");const h=el("h2","vh-title",st.title);tgt(h);top.append(el("small","",v.sub),h);top.appendChild(questionPicture(item));
  const text=vhText(st,g.n);top.appendChild(text);
  const now=el("p","vh-ask");now.append(el("span","vh-n big",String(g.n)),el("span","vh-inf2",g.v));tgt(now);top.appendChild(now);
  const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(locked?vhFill(g):g.v,hear);top.appendChild(hear);
@@ -3462,6 +3475,7 @@ function vhRender(){
  card.appendChild(opts);
  const fb=el("div","feedback");fb.id="feedback";card.appendChild(fb);
  const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+ if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
  // keep the active gap visible inside the scrolling text
  requestAnimationFrame(()=>{const a=text.querySelector(".vh-s.now");if(a)text.scrollTop=Math.max(0,a.offsetTop-text.offsetTop-text.clientHeight/2+a.offsetHeight/2)});
 }
@@ -3526,7 +3540,7 @@ function sepRender(){
  $("prog").textContent=u.lessonProgress+" "+q+" / "+roundTotal;$("rnd").textContent=u.round+" "+round+" · "+u.modes[mode];updateProgress();
  const card=$("card");card.replaceChildren();
  const top=el("div","q");top.appendChild(el("small","",sepU().sub));
- if(item.icon)top.appendChild(iconBox(item.icon));
+ top.appendChild(questionPicture(item));
  const [a,b,c]=d.s.split("___");
  const h=el("h2","vh-sent sep-sent");tgt(h);
  h.append(a,el("span","vh-gap"+(locked?" filled":" active"),locked?d.v:"1"),b,el("span","vh-gap"+(locked?" filled":" active"),locked?d.p:"2"),c);
@@ -3541,6 +3555,7 @@ function sepRender(){
  card.appendChild(opts);
  const fb=el("div","feedback");fb.id="feedback";card.appendChild(fb);
  const row=el("div","row"),nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.disabled=!locked;nx.onclick=nextQuestion;row.appendChild(nx);card.appendChild(row);
+ if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
 }
 function sepAnswer(ok,btn){
  if(locked)return;locked=true;
@@ -3821,6 +3836,7 @@ function nextToetsQuestion(){
   const card = $("card");
   card.replaceChildren();
   const top = el("div","q");
+  top.appendChild(questionPicture(item));
 
   if(item.type === "read" && item.text){
     const txt = el("p","toets-text", item.text); tgt(txt);
@@ -3872,6 +3888,7 @@ function nextToetsQuestion(){
     b.onclick = () => answerToets(i === item.ok, b, item);
     opts.appendChild(b);
   });
+  if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
 }
 
 // Dutch text to read aloud after a Toets answer: the full sentence with the gap filled,
@@ -4302,7 +4319,8 @@ function renderBuild(){
  const card=$("card");card.replaceChildren();
  const levelBar=el("div","row build-levels");levelBar.style.justifyContent="center";levelBar.style.marginBottom="10px";levelBar.setAttribute("aria-label",u.buildLevel);[1,2].forEach(lv=>{const lb=el("button","btn"+(buildLevel===lv?" primary":""),u.buildLevel+" "+lv);lb.type="button";lb.setAttribute("aria-pressed",String(buildLevel===lv));lb.onclick=()=>{if(buildLevel!==lv){buildLevel=lv;newRound()}};levelBar.appendChild(lb)});card.replaceChildren(levelBar);
  const top=el("div","q");top.appendChild(el("small","",u.buildSub));
- if(bAudio&&!bs.done)top.appendChild(el("div","icon-box","🔊"));else top.appendChild(el("h2","sm",s[uiLang]||s.en));
+ top.appendChild(questionPicture(s));
+ if(bAudio&&!bs.done)top.appendChild(el("h2","sm","🔊"));else top.appendChild(el("h2","sm",s[uiLang]||s.en));
  const tools=el("div","row");tools.style.justifyContent="center";
  const hear=el("button","listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(sentence(s));
  const ear=el("button","listen",(bAudio?"✓ ":"")+u.byEar);ear.type="button";
@@ -4324,7 +4342,7 @@ function renderBuild(){
  const row=el("div","row");
  if(bs.done){const nx=el("button","btn primary",u.next);nx.type="button";nx.id="nx";nx.onclick=nextQuestion;row.appendChild(nx)}
  else{const h=el("button","btn",u.hint);h.type="button";h.disabled=bs.lock;h.onclick=hintBuild;row.appendChild(h)}
- card.appendChild(row);
+ card.appendChild(row);if(globalThis.LerenEmoji)globalThis.LerenEmoji.enhance(card);
 }
 
 // Short labels for the bottom dock (full name stays in aria-label/title)
