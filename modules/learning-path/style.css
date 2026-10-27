@@ -6,7 +6,7 @@
 .learning-path h2{font-size:clamp(24px,5vw,35px);line-height:1.2;margin:12px 0}
 .learning-path h3{font-size:23px;line-height:1.25;margin:10px 0}
 .lp-hero{position:relative;padding:28px 30px 60px;border-radius:28px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
-.lp-hero:after{content:'✦';position:absolute;font-size:150px;color:var(--oranje);opacity:.1;inset-inline-end:-5px;bottom:-65px;pointer-events:none}
+.lp-hero:after{content:'';position:absolute;width:150px;height:150px;background:url('../../img/emoji/games-10.png') center/contain no-repeat;opacity:.1;inset-inline-end:-5px;bottom:-65px;pointer-events:none}
 .lp-eyebrow{display:block;color:var(--ink-2);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
 .lp-hero p{max-width:560px;color:var(--ink-2);margin-bottom:0}
 .lp-card{background:var(--surface);border:1px solid var(--line);border-bottom:5px solid var(--edge);border-radius:26px;padding:26px;margin:20px 0}
@@ -43,6 +43,11 @@
 .lp-steps li{border-radius:13px;padding:11px 5px;text-align:center;font-size:13px;color:var(--ink-2);background:var(--surface-2)}
 .lp-steps .lp-active{background:var(--oranje);color:var(--on-oranje);font-weight:900}
 .lp-word{font-size:clamp(26px,6vw,40px);font-weight:900;line-height:1.25;overflow-wrap:anywhere;margin:26px 0 12px}
+.lp-word-art{position:relative;display:grid;place-items:center;width:min(100%,340px);height:210px;margin:12px auto 18px;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--surface-2)}
+.lp-word-art>svg{display:block;width:100%;height:100%;object-fit:contain}
+.lp-word-art>img{display:block;width:100%;height:100%;object-fit:contain;padding:8px}
+.lp-word-art-cue{position:absolute;inset-inline-end:18px;top:12px;display:grid;place-items:center;min-width:48px;height:48px;padding:6px;border:2px solid var(--oranje);border-radius:50%;background:var(--surface);font-size:27px;box-shadow:0 3px 0 var(--edge)}
+.lp-word-art-cue>.lbe-emoji{width:100%;height:100%;vertical-align:middle}
 .lp-meaning{font-size:23px;font-weight:800;line-height:1.4}
 .lp-example{border-inline-start:4px solid var(--oranje);padding:12px 16px;background:var(--surface-2);border-radius:8px}
 .lp-sound{text-align:center;font-size:65px;margin:12px}
@@ -93,7 +98,7 @@
  .lp-toolbar>.lp-button{padding:8px 10px;font-size:12px;border-radius:13px}
  .learning-path[data-screen="home"] .lp-language{margin-inline-start:0;margin-inline-end:auto}
  .lp-placement{padding:18px 14px;border-radius:22px}.lp-placement h2{font-size:21px}.lp-placement .lp-word{font-size:24px}
- .lp-exercise{padding:18px 14px}.lp-exercise h2{font-size:22px;margin:8px 0}.lp-exercise .lp-steps{margin:14px 0}.lp-exercise>.lp-caption{margin:8px 0}
+ .lp-exercise{padding:18px 14px}.lp-exercise h2{font-size:22px;margin:8px 0}.lp-exercise .lp-steps{margin:14px 0}.lp-exercise>.lp-caption{margin:8px 0}.lp-word-art{height:180px;margin:8px auto 14px}
 }
 @media(max-width:360px){.lp-toolbar select{width:126px}.lp-toolbar>.lp-button{padding-inline:7px;font-size:11px}.lp-placement .lp-options .lp-button{font-size:14px;padding:9px 7px}}
 .lp-placement-progress progress{appearance:none;border:0;border-radius:10px;overflow:hidden;background:var(--surface-2)}.lp-placement-progress progress::-webkit-progress-bar{background:var(--surface-2);border-radius:10px}.lp-placement-progress progress::-webkit-progress-value{background:var(--oranje);border-radius:10px}.lp-placement-progress progress::-moz-progress-bar{background:var(--oranje);border-radius:10px}

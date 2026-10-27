@@ -53,6 +53,20 @@
   function intro(){const s=model.state.session,l=model.lesson(s.lesson),ch=chapter(l),box=node('div','lp-card');box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),node('p','',t('goalText')));
    const list=node('ul','lp-preview-list');l.ids.forEach(id=>{const w=word(id);list.appendChild(node('li','',w.nl+' — '+translation(w)))});box.append(list,node('p','lp-caption',t('minutes')),button(t('begin'),()=>go('lesson'),true));root.appendChild(box);note()}
   function listenButton(text){const b=button('▶ '+t('sound'),()=>bridge.speak(text,b));b.classList.add('listen','fh-sound');b.setAttribute('aria-label',t('sound')+' · '+text);return b}
+  function illustration(w){
+   const figure=node('figure','lp-word-art');
+   if(w.id==='b_wakker'||w.nl==='wakker worden'){
+    const img=node('img');img.src='./img/learning-path/wake-cat-v1.png';img.alt='Кіт прокидається і потягується біля будильника';figure.appendChild(img);
+   }else{
+    const key=globalThis.LerenWordArt?.forCard?.(w);
+    if(key){figure.innerHTML=globalThis.LerenWordArt.svg(key,w.nl);figure.setAttribute('aria-label',w.nl)}
+    else{
+     const img=node('img');img.src='./img/mascot/student-cat-v1.png';img.alt='Помаранчевий кіт — асоціація до слова '+w.nl;
+     const cue=node('span','lp-word-art-cue',w.icon||'✦');cue.setAttribute('aria-hidden','true');figure.append(img,cue);
+    }
+   }
+   return figure;
+  }
   function options(w,listen){
    const key=listen?lang:'nl',value=w[key]||w.uk,session=screen==='placement'?null:model.state.session,lesson=session?.lesson&&model.lesson(session.lesson),chapterWords=lesson?chapter(lesson).lessons.flatMap(l=>l.ids):[],nearby=[...new Set([...(session?.ids||[]),...chapterWords])].map(word),pool=[...nearby.sort(()=>Math.random()-.5),...[...course.cards.values()].sort(()=>Math.random()-.5)],seen=new Set([value]),opts=[{text:value,ok:true}];
    // Distinct text prevents two visually identical valid answers.
@@ -91,8 +105,8 @@
     root.appendChild(box);note();return;
    }
    const w=model.current(),listen=s.phase===1;
-   box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]));
-   if(s.phase===0){const sp=picture(w);if(sp)box.appendChild(sp);const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
+   box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]),illustration(w));
+   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
     // Say each new word once by itself; the learner already tapped to get here, and the voice setting decides.
     const said=(s.lesson||'review')+':'+s.index;if(autoSaid!==said&&bridge.autoSpeak&&typeof setTimeout==='function'){autoSaid=said;setTimeout(()=>{if(say.isConnected)bridge.autoSpeak(w.nl,say)},250)}
     if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}

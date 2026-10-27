@@ -66,5 +66,9 @@
  // pen means a ballpoint pen; a pointed pencil belongs to potlood instead.
  A.pen=['thing','<path d="M46 91l7-19 50-50 15 15-50 50z" fill="#5E9DC2"/><path d="M103 22l5-5c5-5 20 10 15 15l-5 5" fill="#BCD1DF"/><path d="M46 91l7-19 15 15z" fill="#CBD5DD"/><path d="M46 91l-4 4" stroke-width="3"/><path d="M98 29l-15 15" stroke="#FFFDF7" stroke-width="4"/><path d="M112 22l-5-5" stroke="#584635" stroke-width="3"/>'];
  function svg(key,label){const a=A[key];if(!a)return '';return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img"${label?` aria-label="${String(label).replace(/"/g,'')}"`:' aria-hidden="true"'}><rect width="160" height="120" rx="22" fill="${BG[a[0]]}"/><ellipse cx="80" cy="106" rx="50" ry="5" fill="#554332" opacity=".08"/><g fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${a[1]}</g></svg>`}
- globalThis.LerenWordArt={svg,keys:Object.keys(A),theme:k=>A[k]?.[0]};
+ const normalize=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').trim().replace(/\s+/g,' ').replace(/^(de|het|een) /,'');
+ const aliases={'appels':'appel','bananen':'banaan','broden':'brood','huizen':'huis','deuren':'deur','ramen':'raam','stoelen':'stoel','tafels':'tafel','bedden':'bed','lampen':'lamp','sleutels':'sleutel','auto\'s':'auto','fietsen':'fiets','bussen':'bus','treinen':'trein','honden':'hond','katten':'kat','vogels':'vogel','jassen':'jas','schoenen':'schoen','brillen':'bril','tassen':'tas','klokken':'klok','boeken':'boek','pennen':'pen','potloden':'potlood','broeken':'broek','truien':'trui'};
+ const keyByName=new Map(Object.keys(A).map(k=>[normalize(k),k]));
+ function forCard(item){const candidates=[item?.art_nl,item?.nl,item?.id].filter(Boolean);for(const candidate of candidates){let name=normalize(candidate);name=aliases[name]||name;if(keyByName.has(name))return keyByName.get(name)}return null}
+ globalThis.LerenWordArt={svg,keys:Object.keys(A),theme:k=>A[k]?.[0],forCard};
 })();
