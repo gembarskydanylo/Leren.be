@@ -4740,7 +4740,10 @@ const NAV_UI={
 const navU=()=>NAV_UI[uiLang]||NAV_UI.uk;
 const LESSON_MODES=()=>["study","quiz","audio"].concat(targetLang==="nl"?["build"]:[],["review"]);
 let learningPath=null;
-let view=targetLang==="nl"?"path":"lesson",lessonMode=validStored("leren_lesson_mode",["study","quiz","audio","build","review"],"quiz");
+// "Вільна практика" is remembered: the app then opens on the lesson page with the bottom dock instead of the route home.
+let homePref=validStored("leren_home_v1",["path","free"],"path");
+const setHomePref=v=>{homePref=v;try{localStorage.setItem("leren_home_v1",v)}catch(e){}};
+let view=targetLang==="nl"&&homePref!=="free"?"path":"lesson",lessonMode=validStored("leren_lesson_mode",["study","quiz","audio","build","review"],"quiz");
 if(lessonMode==="build"&&targetLang!=="nl")lessonMode="quiz";
 mode=lessonMode;
 function applyView(){
@@ -4770,7 +4773,7 @@ function renderDock(){
   const b=el("button",v===view||(v==="lesson"&&view==="path")?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
   if(v===view||(v==="lesson"&&view==="path"))b.setAttribute("aria-current","page");
   b.append(ico(v,"dock-ic"),el("span","dock-tx",label));
-  b.onclick=()=>setView(v==="lesson"&&targetLang==="nl"?"path":v);wrap.appendChild(b);
+  b.onclick=()=>setView(v==="lesson"&&targetLang==="nl"&&homePref!=="free"?"path":v);wrap.appendChild(b);
  });
 }
 function renderLessonModes(){
@@ -4803,7 +4806,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
-$("headerRoute").addEventListener("click",()=>{setView("path");if(learningPath)learningPath.home()});
+$("headerRoute").addEventListener("click",()=>{setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("streakPill").addEventListener("click",()=>setView("progress"));
 $("goalBtn").addEventListener("click",openGoalModal);
 function renderShellText(){
@@ -6560,7 +6563,7 @@ function initLearningPath(){
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
   dark:()=>document.documentElement.dataset.theme==="dark",theme:()=>{$("themeToggle").click();document.querySelector('.fh-tools [data-action="theme"]')?.focus({preventScroll:true})},voice:()=>{updateHeader();populateVoicePicker();document.querySelector('.fh-tools [data-action="voice"]')?.focus({preventScroll:true});$("voiceDialog").showModal()},
   speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
-  free:()=>{setView("lesson");newRound()},
+  free:()=>{setHomePref("free");setView("lesson");newRound()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
   listen:(ok,fail)=>listenOnce(ok,fail,"nl-BE"),
@@ -6570,7 +6573,7 @@ function initLearningPath(){
   complete:recordPathResult,rewards:()=>setView("progress"),
   assess:id=>{const test=TOETS.find(t=>t.id==="course_"+id+"_v2");if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
  });
- $("pathReturn").onclick=()=>setView("path");
+ $("pathReturn").onclick=()=>{setHomePref("path");setView("path")};
 }
 const pathSessionRewards={};
 function recordPathResult(id,correct,total){

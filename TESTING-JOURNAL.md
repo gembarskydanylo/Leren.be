@@ -162,3 +162,6 @@
 
 ## UI-123 — drawings for every topic — 27 October 2026
 - Phase 2: more-people.js (people, jobs, animals, clothes, numbers 0–10, letters) and more-things.js (clock faces, weather, transport, places, signs, documents, money, controls) — 157 more drawings, 383 in total. Every one of the 72 topics with icons is now drawn; mixed check 0. The odd data icon 黒板 got a blackboard drawing. Each batch reviewed on a contact sheet (fixed: double frame on ⏮️⏸️⏹️). Route lesson 1 at 390 px shows the drawing. Release/cache 123; all 18 suites pass.
+
+## UI-124 — "Вільна практика" is remembered — 27 October 2026
+- User: after choosing "Вільна практика" the app kept reopening on the route home (cat, "start learning"). Cause: `view` always started as "path" and the dock's Урок button also led to "path". Fix: `leren_home_v1` = path|free. "Вільна практика" (⋯ menu of the route) sets free → the app opens on the lesson page with the dock, and Урок stays there; "‹ До навчального маршруту" / the header route button set path again. Playwright 390 px: free → reload stays on lesson → dock Урок stays → route button → path → reload stays path; no page errors. All 18 suites pass. Cache 124 (index.html is network-first).
