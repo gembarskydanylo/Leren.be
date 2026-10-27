@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Кіт заповнює пропуск</title>
+  <desc id="desc">Помаранчевий кіт тримає олівець і заповнює рядок у блокноті.</desc>
+  <ellipse cx="128" cy="232" rx="88" ry="12" fill="#F6E2CF"/>
+  <!-- notebook -->
+  <g transform="rotate(-7 165 161)">
+    <rect x="119" y="101" width="92" height="119" rx="12" fill="#FFF" stroke="#B86627" stroke-width="5"/>
+    <rect x="145" y="96" width="39" height="14" rx="6" fill="#F6C64A" stroke="#B86627" stroke-width="4"/>
+    <path d="M137 134h55M137 157h55M137 180h55M137 203h43" fill="none" stroke="#E7BDA0" stroke-width="4" stroke-linecap="round"/>
+    <path d="m153 153 9 9 19-20" fill="none" stroke="#53A878" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- tail -->
+  <path d="M84 205c-31 7-44-9-34-24 6-10 20-5 22 5 2 7-4 12-10 10" fill="none" stroke="#D96A18" stroke-width="13" stroke-linecap="round"/>
+  <!-- body and paws -->
+  <path d="M74 164c0-31 20-52 50-52s51 21 51 52v48H74z" fill="#F47B20" stroke="#9B481A" stroke-width="5"/>
+  <path d="M94 190c8 4 15 4 23 0M133 190c8 4 15 4 23 0" fill="none" stroke="#9B481A" stroke-width="4" stroke-linecap="round"/>
+  <!-- head, ears, cheeks -->
+  <path d="m76 69 5-42 35 23c9-3 19-3 28 0l35-23 5 42c10 10 15 22 15 36 0 32-26 56-69 56s-69-24-69-56c0-14 5-26 15-36z" fill="#F47B20" stroke="#9B481A" stroke-width="5" stroke-linejoin="round"/>
+  <path d="m90 64-3-20 20 13M166 57l20-13-3 20" fill="#F7B27A" stroke="#9B481A" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M108 94c7-8 17-8 23 0M144 94c7-8 17-8 23 0" fill="none" stroke="#713A24" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="128" cy="111" rx="5" ry="4" fill="#713A24"/>
+  <path d="M128 115c-1 8-10 10-15 5m15-5c1 8 10 10 15 5" fill="none" stroke="#713A24" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M111 106c-19-2-28 6-34 11m35-5-31 13m64-19c19-2 28 6 34 11m-35-5 31 13" fill="none" stroke="#9B481A" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- pencil in paw -->
+  <path d="m102 133 42-28 8 12-42 28z" fill="#FFD34F" stroke="#81411E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="m102 133-9 17 17-5" fill="#F2C49D" stroke="#81411E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="m144 105 7-5 8 12-7 5" fill="#E84D43" stroke="#81411E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M100 174c0-9 7-16 16-16" fill="none" stroke="#9B481A" stroke-width="10" stroke-linecap="round"/>
+  <path d="M110 177c8 4 14 3 19-2" fill="none" stroke="#F7B27A" stroke-width="12" stroke-linecap="round"/>
+</svg>

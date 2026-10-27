@@ -2324,6 +2324,9 @@ const iconBox=ic=>{const d=el("div","icon-box"+(ic.includes("kt-img")?" kt":""))
 function questionPicture(it){
  const ic=typeof it?.icon==="string"?it.icon:"";
  if(ic){const box=iconBox(ic);box.classList.add("question-picture");return box}
+ if(it?.type==="gap"||it?.gap||typeof it?.sentence==="string"&&it.sentence.includes("___")){
+  const img=el("img","question-picture");img.src="./img/mascot/fill-gap-cat.svg";img.alt="Помаранчевий кіт із ручкою заповнює пропуск у блокноті";return img;
+ }
  const key=globalThis.LerenWordArt?.forCard?.(it);
  if(key){const box=iconBox(globalThis.LerenWordArt.svg(key,it?.nl));box.classList.add("question-picture");return box}
  const img=el("img","question-picture");img.src="./img/mascot/student-cat-v1.png";img.alt=it?.nl?"Помаранчевий кіт — підказка до слова «"+it.nl+"»":"Помаранчевий кіт — підказка до питання";return img;
