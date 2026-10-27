@@ -9,6 +9,8 @@
  const assetBase=new URL('../../img/emoji/',document.currentScript.src).href;
  const emojiStyle=document.createElement('style');emojiStyle.textContent='.lbe-emoji{display:inline-block;width:1.18em;height:1.18em;object-fit:contain;vertical-align:-.22em;flex:none}.icon-box>.lbe-emoji{width:1.15em;height:1.15em}';document.head.appendChild(emojiStyle);
  const strip = value => value.replace(/[\uFE0E\uFE0F\u20E3\u{1F3FB}-\u{1F3FF}]/gu,'').replace(/\u200D/gu,'');
+ // Verified pictures win over the first guessed map (its file names do not match what the pictures show).
+ if(globalThis.LerenCard3D)for(const [k,f] of Object.entries(globalThis.LerenCard3D))exact[strip(k)]=f;
  const emojiPattern = /(?:[0-9#*]\uFE0F?\u20E3|\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:[\uFE0E\uFE0F\p{Emoji_Modifier}])*(?:\u200D\p{Extended_Pictographic}(?:[\uFE0E\uFE0F\p{Emoji_Modifier}])*)*)/gu;
  function fileFor(value) {
   const key=strip(value),f=exact[key]||exact[value];return f?f+".png":null;

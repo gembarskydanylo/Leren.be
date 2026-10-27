@@ -30,5 +30,11 @@ const plate=(cx=32,cy=46,rx=24,ry=8)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}"
 const hand=(c=SK)=>`<path d="M22 58V38l-6-9q-2-4 2-5t6 4l3 4V16q0-3 3-3t3 3v14-17q0-3 3-3t3 3v17-14q0-3 3-3t3 3v16-11q0-3 3-3t3 3v20q0 12-9 19z" fill="${c}"/>`;
 const A={};
 root.LerenCardArt={A,K,T,face,person,head,star,ouch,clock,arrow,plate,hand,C:{SK,HR,RD,BL,YE,GR,BR,GY,DK,LB,PK,OR,INK,W,DB},
- apply(DATA){let topics=0;for(const d of Object.values(DATA)){const items=(d&&d.items)||[];const emo=items.filter(i=>i.icon&&!String(i.icon).startsWith('<svg'));if(!emo.length||!emo.every(i=>A[i.icon]))continue;emo.forEach(i=>{i.icon=A[i.icon]});topics++}return topics}};
+ apply(DATA){
+  // Per topic: the verified 3D pictures when every emoji in the topic has one, else the drawings — never both in one topic.
+  const P=root.LerenCard3D||{},img=f=>`<img class="card-3d" src="./img/emoji/${f}.png" alt="" loading="lazy" decoding="async">`;let topics=0;
+  for(const d of Object.values(DATA)){const items=(d&&d.items)||[];const emo=items.filter(i=>i.icon&&!String(i.icon).startsWith('<'));if(!emo.length)continue;
+   if(emo.every(i=>P[i.icon])){emo.forEach(i=>{i.icon=img(P[i.icon])});topics++}
+   else if(emo.every(i=>A[i.icon])){emo.forEach(i=>{i.icon=A[i.icon]});topics++}}
+  return topics}};
 })(typeof window!=='undefined'?window:globalThis);

@@ -58,7 +58,7 @@
    if(w.id==='b_wakker'||w.nl==='wakker worden'){
     const img=node('img');img.src='./img/learning-path/wake-cat-v1.png';img.alt='Кіт прокидається і потягується біля будильника';figure.appendChild(img);
    }else{
-    const icon=String(w.icon||'📚'),svg=icon.startsWith('<svg')?icon:(globalThis.LerenCardArt?.A?.[icon]||'');figure.setAttribute('aria-label',w.nl);
+    const icon=String(w.icon||'📚'),svg=icon.startsWith('<')?icon:(globalThis.LerenCardArt?.A?.[icon]||'');figure.setAttribute('aria-label',w.nl);
     if(svg){figure.classList.add('lp-drawn');figure.innerHTML=svg}
     else if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
     else figure.textContent=icon;
@@ -72,7 +72,7 @@
    return opts.sort(()=>Math.random()-.5);
   }
   // The card's picture: a drawing (trusted SVG from modules/card-art or the lesson data) or an emoji.
-  function picture(w){const ic=w&&w.icon;if(!ic)return null;const svg=String(ic).startsWith('<svg'),d=node('div','icon-box lp-picture'+(svg?' kt':''));d.setAttribute('aria-hidden','true');if(svg)d.innerHTML=ic;else d.textContent=ic;return d}
+  function picture(w){const ic=w&&w.icon;if(!ic)return null;const svg=String(ic).startsWith('<'),d=node('div','icon-box lp-picture'+(svg?' kt':''));d.setAttribute('aria-hidden','true');if(svg)d.innerHTML=ic;else d.textContent=ic;return d}
   function exercises(){
    const s=model.state.session;if(!s){go('home');return}
    const box=node('div','lp-card lp-exercise');
