@@ -22,3 +22,9 @@ Optimised project files are 600×400 WebP, quality80, approximately31–49KB eac
 Exact final prompts, source PNG identifiers and the shared reference are in **generation-v111.json** beside this file. Each scene used a separate built-in generation call. These are game-card illustrations, not screenshots or photographs.
 
 Decorative images use empty alt text: localised game names and descriptions are real HTML in each button. Both A1.1 and A1.2 use the same game-ID→image mapping. All twelve images and the gallery stylesheet are in the offline cache. Reference-image proportions are preserved in ordinary cards; the wide story card uses a responsive crop. No game rules, teacher voice, AI endpoint, microphone handling, records, XP or progress storage changed.
+
+## Spell it cover — release114, 27 October2026
+
+`wb-v114.webp`: the same orange student cat arranging **K A T** wooden letter tiles. Built-in image_gen with inspected `img/games/mm-v111.webp` as the character/style reference. Exact final prompt and source PNG identifier: `wb-v114.json`. Optimised600×400 WebP, quality80. The previous wb-v112.svg remains in Git for history, but the live game card/offline cache now uses the new WebP. The other12 covers remain unchanged.
+
+Inside the game, the42 existing SVG object cues were reviewed together. Their clean object-first style remains appropriate for guessing nouns. Twelve matching native SVG drawings were added and the pen cue was corrected to distinguish a ballpoint pen from potlood (pencil). Native SVG extension was used for this existing vector collection, preserving sharpness and small offline size. The game now has54 illustrated words; no Dutch answer text is embedded in these question pictures.

@@ -20,6 +20,21 @@
   ['boek','het','boeken','книга','book','livre','كتاب'],['pen','de','pennen','ручка','pen','stylo','قلم'],['klok','de','klokken','годинник','clock','horloge','ساعة'],
   ['telefoon','de','telefoons','телефон','phone','téléphone','هاتف'],['brief','de','brieven','лист','letter','lettre','رسالة']
  ];
+ // More everyday A1 nouns. Existing word keys and per-word progress are retained.
+ WORDS.push(
+  ['peer','de','peren','груша','pear','poire','كمثرى'],
+  ['wortel','de','wortels','морква','carrot','carotte','جزرة'],
+  ['aardappel','de','aardappelen','картоплина','potato','pomme de terre','حبة بطاطس'],
+  ['soep','de','soepen','суп','soup','soupe','حساء'],
+  ['bord','het','borden','тарілка','plate','assiette','طبق'],
+  ['kom','de','kommen','миска','bowl','bol','وعاء'],
+  ['lepel','de','lepels','ложка','spoon','cuillère','ملعقة'],
+  ['vork','de','vorken','виделка','fork','fourchette','شوكة'],
+  ['mes','het','messen','ніж','knife','couteau','سكين'],
+  ['potlood','het','potloden','олівець','pencil','crayon','قلم رصاص'],
+  ['broek','de','broeken','штани','trousers','pantalon','بنطال'],
+  ['trui','de','truien','светр','sweater','pull','سترة صوفية']
+ );
  const LANGS=['uk','en','fr','ar'];
  const T={
   uk:{title:'Склади слово',sub:'Подивись на малюнок і склади нідерландське слово з букв',ask:'Як це нідерландською?',hint:'💡 Підказка',hintWord:'Переклад',hintLetter:'💡 Ще одна буква',erase:'Стерти букву',clear:'Очистити',wrong:'Майже! Червоні букви стоять не на місці — стери їх і спробуй ще раз.',show:'Показати відповідь',right:'Правильно!',shown:'Запам’ятай це слово',plural:'Множина',next:'Далі →',listen:'🔊 Послухати',done:'Готово!',score:'з першої спроби',again:'Ще раз',other:'Інші ігри',words:'Слова цього раунду',slots:'Твоє слово',letters:'Букви',of:'з',keys:'Можна набирати букви на клавіатурі.'},

@@ -48,6 +48,23 @@
   telefoon:['thing','<rect x="58" y="20" width="44" height="80" rx="9" fill="#584635"/><rect x="62" y="28" width="36" height="60" rx="3" fill="#BFE0F2"/><circle cx="80" cy="94" r="2.5" fill="#E9DDC8" stroke="none"/><path d="M72 50c0 10 6 16 16 16l3-5-6-4-3 3c-3-1-5-3-6-6l3-3-4-6z" fill="#7FAE5F"/>'],
   brief:['thing','<rect x="36" y="36" width="88" height="58" rx="4" fill="#FFFDF7"/><path d="M36 92l32-28M124 92L92 64"/><path d="M36 40l44 32 44-32" fill="#F3E7D6"/><rect x="104" y="44" width="13" height="15" rx="1" fill="#E2553F"/>']
  };
+ // Matching object-first illustrations: keep the vocabulary cue unambiguous.
+ Object.assign(A,{
+  peer:['food','<path d="M77 24c-14 0-10 20-22 34-19 24-5 42 25 42s44-18 25-42C93 44 97 24 83 24z" fill="#B5CA65"/><path d="M80 26c-2-9 0-14 5-18"/><path d="M83 17c7-9 16-8 20-3-7 5-14 6-20 3z" fill="#7FAE5F"/><path d="M60 71c-6 13 0 19 7 21" stroke="#E8EFB7" stroke-width="4"/>'],
+  wortel:['food','<path d="M91 38c-10-6-22-2-26 7L39 99c-2 5 1 7 5 4l58-44c8-7 1-17-11-21z" fill="#EE963F"/><path d="M79 43l-7-22M88 40l4-22M96 46l18-16" stroke="#7FAE5F" stroke-width="6"/><path d="M65 52l9 6M56 70l8 5M48 86l6 4" stroke="#C66D28"/>'],
+  aardappel:['food','<path d="M46 39c18-19 51-17 65 5 17 27 9 48-17 53-28 6-56-1-59-23-2-14 0-23 11-35z" fill="#CFA675"/><path d="M53 45c8-7 16-10 22-9" stroke="#E6CBA1" stroke-width="4"/><path d="M54 63l3 3M84 47l3 2M102 69l-3 3M72 86l3-2" stroke="#9C744E" stroke-width="3"/>'],
+  soep:['food','<path d="M63 35c-5-8 5-12 0-20M81 35c-5-8 5-12 0-20M99 35c-5-8 5-12 0-20" opacity=".5"/><path d="M35 57c2 28 18 42 45 42s43-14 45-42z" fill="#FFFDF7"/><ellipse cx="80" cy="57" rx="45" ry="13" fill="#ECA85C"/><path d="M48 88h64" stroke="#7FB0DE" stroke-width="4"/><circle cx="63" cy="55" r="3" fill="#7FAE5F"/><circle cx="88" cy="61" r="3" fill="#7FAE5F"/><circle cx="102" cy="53" r="3" fill="#7FAE5F"/>'],
+  bord:['thing','<ellipse cx="80" cy="65" rx="51" ry="36" fill="#FFFDF7"/><ellipse cx="80" cy="65" rx="43" ry="28" stroke="#7FB0DE" stroke-width="4"/><ellipse cx="80" cy="65" rx="30" ry="18" stroke="#C8DCEB" stroke-width="2"/>'],
+  kom:['thing','<path d="M34 49c1 33 16 49 46 49s45-16 46-49z" fill="#7FB0DE"/><ellipse cx="80" cy="49" rx="46" ry="15" fill="#FFFDF7"/><ellipse cx="80" cy="49" rx="35" ry="8" fill="#E8E3D9"/><path d="M64 98h32M45 70c4 11 10 16 17 19" stroke="#DCE9F5" stroke-width="3"/>'],
+  lepel:['thing','<ellipse cx="80" cy="39" rx="17" ry="25" fill="#CBD5DD"/><ellipse cx="80" cy="37" rx="10" ry="16" fill="#ECF1F4" stroke="none"/><path d="M75 62h10l2 37c0 9-14 9-14 0z" fill="#A9BAC7"/>'],
+  vork:['thing','<path d="M64 18v26q0 16 16 16t16-16V18M75 18v27M85 18v27" stroke="#8EA4B5" stroke-width="5"/><path d="M76 59h8l3 40c0 9-14 9-14 0z" fill="#BCCBD5"/>'],
+  mes:['thing','<path d="M73 64V20c18-3 25 14 25 44z" fill="#CBD5DD"/><path d="M81 64h13l-2 36c0 7-13 7-13 0z" fill="#6B5A4B"/><path d="M80 26v29" stroke="#FFFDF7" stroke-width="3"/>'],
+  potlood:['thing','<path d="M40 94l10-25 52-52 17 17-52 52z" fill="#F5C842"/><path d="M40 94l10-25 17 17z" fill="#E8C59F"/><path d="M40 94l5-12 7 7z" fill="#584635"/><path d="M96 23l17 17" stroke="#ECA0A0" stroke-width="9"/><path d="M58 69l42-42" stroke="#FCEAAC" stroke-width="3"/>'],
+  broek:['wear','<path d="M52 23h56l7 77H88L80 58l-8 42H45z" fill="#6A94BC"/><path d="M52 35h56M80 26v27M56 43l12 6M104 43l-12 6M48 92h25M87 92h25" stroke="#456889"/><circle cx="80" cy="30" r="2" fill="#F5C842"/>'],
+  trui:['wear','<path d="M66 25l-23 9-16 34 16 8 11-20v44h52V56l11 20 16-8-16-34-23-9c-1 13-27 13-28 0z" fill="#CF7062"/><path d="M66 25c1 13 27 13 28 0M56 91h48M33 60l15 8M112 68l15-8" stroke="#AE5148" stroke-width="4"/>']
+ });
+ // pen means a ballpoint pen; a pointed pencil belongs to potlood instead.
+ A.pen=['thing','<path d="M46 91l7-19 50-50 15 15-50 50z" fill="#5E9DC2"/><path d="M103 22l5-5c5-5 20 10 15 15l-5 5" fill="#BCD1DF"/><path d="M46 91l7-19 15 15z" fill="#CBD5DD"/><path d="M46 91l-4 4" stroke-width="3"/><path d="M98 29l-15 15" stroke="#FFFDF7" stroke-width="4"/><path d="M112 22l-5-5" stroke="#584635" stroke-width="3"/>'];
  function svg(key,label){const a=A[key];if(!a)return '';return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img"${label?` aria-label="${String(label).replace(/"/g,'')}"`:' aria-hidden="true"'}><rect width="160" height="120" rx="22" fill="${BG[a[0]]}"/><ellipse cx="80" cy="106" rx="50" ry="5" fill="#554332" opacity=".08"/><g fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${a[1]}</g></svg>`}
  globalThis.LerenWordArt={svg,keys:Object.keys(A),theme:k=>A[k]?.[0]};
 })();
