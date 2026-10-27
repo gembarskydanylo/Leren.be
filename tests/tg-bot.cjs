@@ -1,7 +1,7 @@
 // Telegram bot worker with Telegram and Anthropic mocked: schedule, posts, commands, AI answers, webhook secret.
 const assert=require('node:assert/strict');
 (async()=>{
-const {default:bot,brussels,tipNumber,safeHtml}=await import('../tools/tg-bot/worker.js');
+const {default:bot,brussels,tipNumber,factNumber,safeHtml}=await import('../tools/tg-bot/worker.js');
 const {default:content}=await import('../tools/tg-bot/content.js');
 let calls=[],aiReply='Kort: <b>geen</b> перед іменником. <script>x</script>';
 globalThis.fetch=async(url,opt)=>{const body=JSON.parse(opt.body);
@@ -22,7 +22,8 @@ for(const t of[...content.tips,...content.promos]){assert(t.length<4096);assert.
 // Brussels time: winter UTC+1, summer UTC+2; 1 Nov 2026 is day 0 and a Sunday
 assert.deepEqual(brussels(new Date('2026-11-01T07:00:00Z')),{hour:8,weekday:0,day:0});
 assert.equal(brussels(new Date('2027-07-01T06:00:00Z')).hour,8);
-assert.deepEqual([2,4,6,9,11,13].map(tipNumber),[0,1,2,3,4,5]);
+assert.deepEqual([2,4,6,9,11,13].map(tipNumber),[0,1,2,3,4,5]);assert.deepEqual([1,3,5,8,10,12].map(factNumber),[0,1,2,3,4,5]);
+content.facts.forEach(f=>{assert(f.e&&f.nl&&f.uk&&f.words.length>=2);assert(!/[<>]/.test(f.nl+f.uk))});
 
 // Schedule: which posts go out on a Tuesday, hour by hour
 const jobs={};for(let h=0;h<24;h++){calls=[];await bot.scheduled({scheduledTime:Date.parse('2026-11-03T00:00:00Z')+h*36e5},env,ctx);await flush();if(calls.length)jobs[h+1]=calls.map(c=>c.method).join()}
@@ -65,6 +66,8 @@ globalThis.fetch=real;env.PER_USER=ok;
 c=await send('/stickers',42);assert.equal(c[0].method,'createNewStickerSet');assert.equal(c[0].body.name,'lerenbe_cat_by_lerenbe_bot');assert.equal(c[0].body.user_id,42);
 assert.equal(c[0].body.stickers.length,6);assert.match(c[0].body.stickers[0].sticker,/^https:\/\/lerenbe\.com\/stickers\/cat-1\.png$/);assert.match(c[1].body.text,/готові/);
 c=await send('/stickers',7);assert.ok(!c.some(x=>x.method==='createNewStickerSet'));
+
+c=await send('/preview fact',42);assert.match(c[0].body.text,/Цікаво про Бельгію[\s\S]*🇳🇱[\s\S]*🇺🇦[\s\S]*📝/);
 
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
