@@ -2321,15 +2321,19 @@ if(catLevel(currentCat)!==curLevel){const c=levelCats(curLevel)[0];currentCat=c.
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 const tgt=e=>{e.lang=targetLang;e.dir="ltr";return e};
 const iconBox=ic=>{const d=el("div","icon-box"+(ic.includes("kt-img")?" kt":""));d.setAttribute("aria-hidden","true");if(ic.startsWith("<svg"))d.innerHTML=ic;else d.textContent=ic;return d};
-function questionPicture(it){
+function questionPicture(it,context={}){
  const label=String(it?.nl||it?.sentence||it?.q?.uk||it?.q?.en||"Ілюстрація до питання");
  const picture=(source)=>{
   const ic=typeof source?.icon==="string"?source.icon:"";
   if(ic.startsWith("<svg")){const box=iconBox(ic);box.classList.add("question-picture");return box}
-  const drawn=ic&&(globalThis.LerenEmoji?.artFor?.(ic)||globalThis.LerenCardArt?.A?.[ic]);
-  if(drawn){const box=iconBox(drawn);box.classList.add("question-picture");return box}
+  // Prefer the vocabulary drawing over a reused emoji. Many course words
+  // carry the orange cat as their icon, which made every matched test item
+  // look like the same cat even when the answer was about a train or a clock.
   const key=globalThis.LerenWordArt?.forCard?.(source);
   if(key){const box=iconBox(globalThis.LerenWordArt.svg(key,source?.nl||label));box.classList.add("question-picture");return box}
+  if(context.test&&/^(🐱|🐈|😺|😸|😹|😻|😼|😽|🙀|😿|😾)$/.test(ic))return null;
+  const drawn=ic&&(globalThis.LerenEmoji?.artFor?.(ic)||globalThis.LerenCardArt?.A?.[ic]);
+  if(drawn){const box=iconBox(drawn);box.classList.add("question-picture");return box}
   if(ic&&globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(ic,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
   return null;
  };
@@ -2343,7 +2347,8 @@ function questionPicture(it){
  // Exam questions often contain no icon field. Match their prompt and sentence
  // against the course vocabulary so they reuse the closest existing artwork.
  const textOf=value=>Array.isArray(value)?value.join(" "):value&&typeof value==="object"?Object.values(value).filter(x=>typeof x==="string").join(" "):String(value||"");
- const source=[it?.sentence,it?.text,it?.nl,it?.g?.v,it?.g?.s,it?.sep?.s,it?.s?.q,textOf(it?.q)].filter(Boolean).join(" ").toLocaleLowerCase();
+ const correct=Array.isArray(it?.opts)?it.opts[Number.isInteger(it?.ok)?it.ok:0]:null;
+ const source=[it?.sentence,it?.text,it?.nl,it?.g?.v,it?.g?.s,it?.sep?.s,it?.s?.q,textOf(it?.q),textOf(correct)].filter(Boolean).join(" ").toLocaleLowerCase();
  const clean=s=>String(s||"").toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu," ").trim();
  const noise=new Set(["de","het","een","van","voor","naar","met","dan","dat","dit","wat","waar","wie","hoe","the","and","from","with","when","what","where","which","that","this","pour","dans","avec","quoi","comment","الذي","التي"]);
  const normalized=clean(source),sourceTokens=new Set(normalized.split(" "));
@@ -2360,26 +2365,29 @@ function questionPicture(it){
  }
  const match=bestScore>=9?picture(best):null;if(match)return match;
 
- // Gaps without a vocabulary match still get one clear study-related drawing.
- if(it?.type==="gap"||it?.gap||typeof it?.sentence==="string"&&it.sentence.includes("___")){
+ // Keep the writing cat for lesson practice; tests use a topic-specific image.
+ if(!context.test&&(it?.type==="gap"||it?.gap||typeof it?.sentence==="string"&&it.sentence.includes("___"))){
   const img=el("img","question-picture");img.src="./img/mascot/fill-gap-cat.png";img.alt="Помаранчевий кіт із ручкою заповнює пропуск у блокноті";return img;
  }
  const text=normalized;
  const themes=[
-  [/\b(time|clock|uur|klok|half|kwart|minute|hour|tijd)\b/,"⏰"],
-  [/\b(number|how many|hoeveel|cijfer|vijftien|twintig|euro|price|cost|kost|geld)\b/,"🔢"],
-  [/\b(train|trein|station|bus|tram|ticket|reis|travel)\b/,"🚆"],
-  [/\b(shop|winkel|supermarket|supermarkt|buy|koop|kassa|brood|melk|food)\b/,"🛒"],
-  [/\b(bank|office|kantoor|work|werk|job|vergadering|geld)\b/,"🏦"],
-  [/\b(home|house|huis|room|kamer|bedroom|slaapkamer|rent|huur)\b/,"🏠"],
-  [/\b(weather|weer|rain|regen|sun|zon|wind|snow|sneeuw)\b/,"🌤️"],
-  [/\b(doctor|dokter|health|ziek|pijn|body|lichaam|hospital|ziekenhuis)\b/,"🏥"],
-  [/\b(day|date|maandag|dinsdag|woensdag|birthday|verjaardag|calendar|week)\b/,"📅"],
-  [/\b(read|reading|lezen|book|boek|letter|write|schrijf|formulier|fill|complete|complète)\b/,"📚"],
-  [/\b(question|vraag|what|waar|wie|when|wanneer|waarom|how|hoe)\b/,"❓"],
-  [/\b(hello|hallo|good morning|goedemorgen|greeting|groet|say|zeg)\b/,"👋"]
+  [/(time|clock|uur|klok|half|kwart|minute|hour|tijd|годин|час|хвилин)/,"⏰"],
+  [/(number|how many|hoeveel|cijfer|vijftien|twintig|euro|price|cost|kost|geld|числ|скільки|ціна|грош)/,"🔢"],
+  [/(train|trein|station|bus|tram|ticket|reis|travel|поїзд|станці|подорож|транспорт)/,"🚆"],
+  [/(shop|winkel|supermarket|supermarkt|buy|koop|kassa|brood|melk|food|магазин|куп|хліб|молок|продукт)/,"🛒"],
+  [/(bank|office|kantoor|work|werk|job|vergadering|geld|банк|офіс|робот|нарад|зарплат)/,"🏦"],
+  [/(home|house|huis|room|kamer|bedroom|slaapkamer|rent|huur|дім|житл|кімнат|оренд)/,"🏠"],
+  [/(weather|weer|rain|regen|sun|zon|wind|snow|sneeuw|погод|дощ|сонц|вітер|сніг)/,"🌤️"],
+  [/(doctor|dokter|health|ziek|pijn|body|lichaam|hospital|ziekenhuis|лікар|здоров|аптек|таблет|болить|лікарн)/,"🏥"],
+  [/(day|date|maandag|dinsdag|woensdag|birthday|verjaardag|calendar|week|день|дата|понеділ|вівтор|серед|народжен|тижд)/,"📅"],
+  [/(read|reading|lezen|book|boek|letter|write|schrijf|formulier|читан|книг|лист|пиш|анкет|заповн)/,"📖"],
+  [/(person|people|naam|name|persoon|особ|люд|ім.?я|звати|хто такий)/,"🧑"],
+  [/(hello|hallo|good morning|goedemorgen|greeting|groet|say|zeg|привіт|вранці|доброго ранку|вітат|знайом|communicat|спілкуван)/,"💬"]
  ];
- const emoji=themes.find(([pattern])=>pattern.test(text))?.[1]||"📚";
+ const themeText=clean([source,...(context.test?[context.title]:[])].filter(Boolean).join(" "));
+ const emoji=themes.find(([pattern])=>pattern.test(themeText))?.[1]||"📝";
+ const themeArt=globalThis.LerenEmoji?.artFor?.(emoji)||globalThis.LerenCardArt?.A?.[emoji];
+ if(themeArt){const box=iconBox(themeArt);box.classList.add("question-picture");return box}
  if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(emoji,"question-picture");img.alt=label;img.removeAttribute("aria-hidden");return img}
  const box=iconBox(emoji);box.classList.add("question-picture");return box;
 }
@@ -3891,7 +3899,7 @@ function nextToetsQuestion(){
   const card = $("card");
   card.replaceChildren();
   const top = el("div","q");
-  top.appendChild(questionPicture(item));
+  top.appendChild(questionPicture(item,{test:true,title:Object.values(test.title||{}).join(" ")}));
 
   if(item.type === "read" && item.text){
     const txt = el("p","toets-text", item.text); tgt(txt);
