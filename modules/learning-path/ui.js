@@ -61,8 +61,10 @@
     const key=globalThis.LerenWordArt?.forCard?.(w);
     if(key){figure.innerHTML=globalThis.LerenWordArt.svg(key,w.nl);figure.setAttribute('aria-label',w.nl)}
     else{
-     const img=node('img');img.src='./img/mascot/student-cat-v1.png';img.alt='Помаранчевий кіт — асоціація до слова '+w.nl;
-     const cue=node('span','lp-word-art-cue',w.icon||'✦');cue.setAttribute('aria-hidden','true');figure.append(img,cue);
+     const icon=String(w.icon||'📚');figure.setAttribute('aria-label',w.nl);
+     if(icon.startsWith('<svg'))figure.innerHTML=icon;
+     else if(globalThis.LerenEmoji){const img=globalThis.LerenEmoji.make(icon,'lp-emoji-art');img.alt=w.nl;img.removeAttribute('aria-hidden');figure.appendChild(img)}
+     else figure.appendChild(node('span','lp-word-art-cue',icon));
     }
    }
    return figure;
