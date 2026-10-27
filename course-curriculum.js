@@ -11,7 +11,7 @@ globalThis.LerenCurriculum = (() => {
   ['opening','Wanneer is de winkel open?',['opening']],
   ['forms','Kunt u dit formulier invullen?',['forms','telefoon','gemeente','cvo','werk']],
   ['dag','Wat doe jij op een dag?',['routine','separable','niet','graag','ex8']],
-  ['plans','Ga je mee?',['modal','toekomst','invitation','ongoing','ex9']],
+  ['plans','Ga je mee?',['modal','toekomst','invitation','uitnodigen','ongoing','ex9']],
   ['health','Wat scheelt er?',['body','lichaammv','klachten','doctor','kaartjes','afspraak','instructions','ex10']],
   ['food','Eet jij gezond?',['adjectives','healthy','restaurant','ex11']],
   ['shopping','Wat eten we vandaag?',['shop','groceries','plurals']]

@@ -140,3 +140,7 @@
 - **13 new "заповни пропуск" cards** (course_kt_31–43) with 10 new drawings (mond, vingers, tenen, volwassene, geen zin, ontbijt, uitnodiging, boodschappen cart, syrup 3×, 38°).
 - **3 revision tests** in Toets → Додаткові: course_thursday_order_v1 (10), _health_v1 (12), _spelling_v1 (12). Dictionary: hamburger, middagmaal, avondmaal, ademen. Release/cache 116.
 - Verification: all 18 tests/*.cjs pass; Playwright (390×844): contact sheet of the new drawings, builder decks for four topics, a full statement solved with the real tiles ("'s Morgens breng ik de kinderen naar school."), all three tests answered 100 % with no page errors. New sentences use device TTS (no recordings made). Physical phone not checked.
+
+## UI-117 — "Ga je mee?" gap cards — 27 October 2026
+
+- User sent the gap sentences of chapters 2–5 (invitations, meeting place, excuses, key phrases). Existing coverage was partial (kt_28–30, ex9, invitation). New lesson **uitnodigen** ("Картки: запрошення й відмови") in chapter plans: 15 illustrated gap cards (course_up_1–15) with hand-picked distractors incl. word-order traps ("ik kan niet komen"), 8 new drawings. Gap-lesson hint now keys on `item.gap` instead of tab name. Release/cache 117; all 18 suites pass; quiz opened at 390 px, no page errors.
