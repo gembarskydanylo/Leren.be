@@ -28,7 +28,7 @@
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=142"></script>
+<script src="./modules/focused-home/ui.js?v=144"></script>
 <script src="./modules/test-library/ui.js?v=109"></script>
 <script src="./modules/lesson-conversation/content.js?v=112"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
@@ -39,7 +39,7 @@
 <script src="./modules/emoji/cards.js?v=142"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=137"></script>
+<script src="./modules/learning-path/ui.js?v=144"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -576,6 +576,9 @@ footer a{color:inherit}
 .score-pill{background:var(--be-black);color:var(--be-yellow);box-shadow:0 var(--depth-sm) 0 rgba(0,0,0,.35)}
 .hdr-btn{display:inline-grid;place-items:center;width:42px;height:40px;border-radius:var(--r-sm);border:0;background:rgba(255,255,255,.95);color:#2A1D12;cursor:pointer;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
 .hdr-btn .ico{width:22px;height:22px}
+.hdr-tools{display:flex;align-items:center;gap:6px}.hdr-lang select{appearance:none;-webkit-appearance:none;height:40px;min-width:48px;padding:0 10px;border:0;border-radius:var(--r-sm);background:rgba(255,255,255,.95);color:#2A1D12;font:800 13px var(--font-body,inherit);text-align:center;cursor:pointer;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
+.hdr-lang select:focus-visible{outline:3px solid #fff;outline-offset:2px}.hdr-tools .hdr-btn{font-size:17px;line-height:1}
+@media (max-width:520px){.hdr-stats{gap:5px}.hdr-tools{gap:4px}.hdr-lang select{height:38px;min-width:42px;padding:0 6px}.hdr-tools .hdr-btn{width:36px;height:38px}.brand p{display:none}}
 .hdr-btn:active{transform:translateY(var(--depth-sm));box-shadow:none}
 .hdr-btn:focus-visible,.streak-pill:focus-visible{outline:3px solid #fff;outline-offset:2px}
 header{flex-wrap:nowrap}
@@ -1012,7 +1015,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=142">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=144">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
@@ -1023,6 +1026,11 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="Leren.be — на головну"><h1 id="appTitle">Leren.be</h1><p id="tagline"></p></div>
     <button type="button" class="comp-header-route" id="headerRoute"></button>
     <div class="hdr-stats">
+      <div class="hdr-tools" id="hdrTools">
+        <label class="hdr-lang"><select id="hdrLang" aria-label="Мова пояснень"><option value="uk">UK</option><option value="en">EN</option><option value="fr">FR</option><option value="ar">AR</option></select></label>
+        <button type="button" class="hdr-btn" id="hdrTheme" aria-label="Тема"></button>
+        <button type="button" class="hdr-btn" id="hdrVoice" aria-label="Голос">🔊</button>
+      </div>
       <button type="button" class="hdr-pill streak-pill" id="streakPill"></button>
       <span id="score" class="hdr-pill score-pill" aria-live="polite"></span>
       <button class="hdr-btn" id="settingsBtn" type="button" aria-haspopup="dialog"></button>
@@ -2615,6 +2623,7 @@ const FLAG_OF={nl:"be",uk:"ua",en:"gb",fr:"fr",ar:"sa"};
 function syncFlagFaces(){[["targetLangPicker","targetFace"],["uiLangPicker","uiFace"]].forEach(([s,f])=>{const sel=$(s),face=$(f);if(!sel||!face)return;const o=sel.options[sel.selectedIndex];face.dataset.flag=FLAG_OF[sel.value]||"";face.textContent=o?o.textContent.replace(/^\S+\s*/,""):"";face.parentNode.title=sel.getAttribute("aria-label")||""})}
 function updateHeader(){
  const u=getUI();
+ const hl=$("hdrLang");if(hl)hl.value=uiLang;const ht=$("hdrTheme");if(ht){const dk=document.documentElement.dataset.theme==="dark";ht.textContent=dk?"☀":"☾";ht.setAttribute("aria-label",dk?"Light theme":"Dark theme");ht.setAttribute("aria-pressed",String(dk))}
  const autoBtn=$("autoSpeechToggle");if(autoBtn){autoBtn.setAttribute("aria-checked",String(autoSpeech));autoBtn.title=autoSpeech?(u.autoOn||"Auto: on"):(u.autoOff||"Auto: off")}
  const voiceTitle=$("voiceDialogTitle"),voiceLabel=$("voiceSelectLabel"),voiceHint=$("voiceHint"),voicePreview=$("voicePreviewBtn"),voiceClose=$("voiceCloseBtn");
  if(voiceTitle)voiceTitle.textContent=u.voiceTitle||"Voice settings";
@@ -4800,6 +4809,9 @@ if($("searchInput")){let dxT=0;const si=$("searchInput");
  $("dictClear").addEventListener("click",()=>{si.value="";DICT.open=-1;runSearch();try{si.focus()}catch(x){}});}
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSearch(); const gm=$("goalModal"); if(gm) gm.hidden=true; } });
 
+$("hdrLang").addEventListener("change",e=>{changeUiLang(e.target.value);if(learningPath&&view==="path")learningPath.render?.()});
+$("hdrTheme").addEventListener("click",()=>$("themeToggle").click());
+$("hdrVoice").addEventListener("click",()=>{updateHeader();populateVoicePicker();$("voiceDialog").showModal()});
 $("themeToggle").addEventListener("click",()=>{
  const cur=document.documentElement.dataset.theme==="dark"?"dark":"light";
  const n=cur==="dark"?"light":"dark";
@@ -6683,7 +6695,7 @@ function initLearningPath(){
   data:DATA,curriculum:LerenCurriculum,language:()=>uiLang,
   lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
-  dark:()=>document.documentElement.dataset.theme==="dark",theme:()=>{$("themeToggle").click();document.querySelector('.fh-tools [data-action="theme"]')?.focus({preventScroll:true})},voice:()=>{updateHeader();populateVoicePicker();document.querySelector('.fh-tools [data-action="voice"]')?.focus({preventScroll:true});$("voiceDialog").showModal()},
+  dark:()=>document.documentElement.dataset.theme==="dark",
   speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setHomePref("free");setView("lesson");newRound()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},

@@ -6,18 +6,15 @@
  function voiceIcon(){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');for(const [k,v] of Object.entries({viewBox:'0 0 24 24',width:'20',height:'20',fill:'none',stroke:'currentColor','stroke-width':'1.8','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))s.setAttribute(k,v);for(const d of ['M4 10h3l5-4v12l-5-4H4z','M16 9a5 5 0 0 1 0 6','M19 6a9 9 0 0 1 0 12']){const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d);s.appendChild(p)}return s}
  const button=(text,fn,cls='fh-link')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b};
  function meter(done,total,label){const p=node('progress','fh-meter');p.max=Math.max(1,total);p.value=Math.min(done,total);p.setAttribute('aria-label',label+' '+done+' / '+total);return p}
- function tools({lang,setLanguage,dark,toggleTheme,voice,back,backLabel,free}){
+ // Language, theme and voice live in the app header now; this row only carries the back button on inner screens.
+ function tools({lang,back,backLabel}){
   const t=tr(lang),bar=node('nav','fh-tools');bar.setAttribute('aria-label',t.more);
-  if(back)bar.appendChild(button('‹ '+(backLabel||t.back),back,'fh-back'));
-  const label=node('label','fh-language'),select=node('select');select.setAttribute('aria-label',({uk:'Мова пояснень',en:'Explanation language',fr:'Langue des explications',ar:'لغة الشرح'})[lang]);[['uk','Українська'],['en','English'],['fr','Français'],['ar','العربية']].forEach(([v,text])=>{const o=node('option','',text);o.value=v;select.appendChild(o)});select.value=lang;select.onchange=()=>setLanguage(select.value);label.append(select);bar.append(label);
-  const theme=button(dark?'☀':'☾',toggleTheme,'fh-icon-button');theme.dataset.action='theme';theme.title=dark?t.light:t.dark;theme.setAttribute('aria-label',theme.title);theme.setAttribute('aria-pressed',String(dark));
-  const teacher=button('',voice,'fh-icon-button');teacher.appendChild(voiceIcon());teacher.dataset.action='voice';teacher.title=t.voice;teacher.setAttribute('aria-label',t.voice);bar.append(theme);if(!back)bar.append(teacher);
-  if(free){const more=node('details','fh-more'),summary=node('summary','','⋯');summary.setAttribute('aria-label',t.more);const panel=node('div','fh-menu');panel.appendChild(button(free.label,free.act,'fh-menu-action'));if(back)panel.appendChild(button(t.voice,voice,'fh-menu-action'));more.append(summary,panel);bar.append(more)}
+  if(back)bar.appendChild(button('‹ '+(backLabel||t.back),back,'fh-back'));else bar.hidden=true;
   return bar;
  }
  // Long topic names must never break inside a word (e.g. "Знайомств-о" with large phone text): shrink the title until it fits.
  function fitTitle(box){const run=()=>{const h=box.querySelector('h2');if(!h||!h.isConnected)return;h.style.fontSize='';let fs=parseFloat(getComputedStyle(h).fontSize)||27;let guard=0;while(guard++<20&&fs>16&&h.scrollWidth>h.clientWidth+1){fs-=1;h.style.fontSize=fs+'px'}};if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);if(!fitTitle.bound&&typeof addEventListener==='function'){fitTitle.bound=true;addEventListener('resize',()=>document.querySelectorAll('.fh-hero').forEach(b=>fitTitle(b)))}}
- function hero({lang,started,lesson,chapter,level,part,totalParts,placing,allDone,onBegin,onPlacement,onMap,done,total}){
+ function hero({lang,started,lesson,chapter,level,part,totalParts,placing,allDone,onBegin,onPlacement,onMap,onFree,freeLabel,done,total}){
   const t=tr(lang),legacy=LerenCompanion.tr(lang),box=node('section','fh-hero'),content=node('div','fh-hero-content'),art=node('div','fh-hero-art'),cat=LerenCompanion.cat('welcome',true,lang);
   const greeting=node('span','fh-cat-caption',({uk:'Вчимося разом',en:'Learning together',fr:'On apprend ensemble',ar:'نتعلّم معاً'})[lang]);
   cat.onclick=()=>{cat.dataset.pose=cat.dataset.pose==='welcome'?'happy':'welcome';greeting.textContent=legacy.wave};art.append(cat,greeting);
@@ -25,6 +22,7 @@
   if(lesson&&!placing){const detail=node('div','fh-lesson-detail');detail.append(node('strong','',lesson),node('span','',t.time+(totalParts>1?' · '+t.part+' '+part+'/'+totalParts:'')));content.append(detail)}
   const actions=node('div','fh-main-action');actions.append(button(allDone?t.all:placing?({uk:'Продовжити перевірку старту',en:'Continue my starting check',fr:'Continuer le bilan de départ',ar:'تابع تحديد البداية'})[lang]:started?legacy.resume:legacy.start,allDone?onMap:onBegin,'fh-primary'));
   if(!started&&!placing){const start=button(t.known+' →',onPlacement,'fh-alternative');start.title=t.newPlace;actions.appendChild(start)}
+  if(onFree&&!placing)actions.appendChild(button(freeLabel||'Самостійно вивчати',onFree,'fh-alternative fh-free'));
   content.append(actions);box.append(content,art);fitTitle(box);
   const footer=node('div','fh-hero-footer');if(started&&total&&!placing){footer.classList.add('fh-has-progress');footer.append(node('span','fh-progress-label',({uk:done+' з '+total+' уроків пройдено',en:done+' of '+total+' lessons done',fr:done+' leçons sur '+total+' terminées',ar:done+' من '+total+' دروس مكتملة'})[lang]||done+' / '+total),meter(done,total,t.completed))}else{footer.append(node('span','',t.steps));if(total&&done)footer.append(meter(done,total,t.completed))}box.append(footer);return box;
  }

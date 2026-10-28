@@ -103,3 +103,7 @@
 .fh-chapter-summary .fh-meter{height:12px}
 /* Words are never split; the title shrinks instead (fitTitle in ui.js) */
 .learning-path .fh-hero h2{overflow-wrap:normal;word-break:normal;hyphens:manual;min-width:0}
+/* "Study on my own": a real secondary button under the main one */
+.fh-main-action{flex-wrap:wrap}.fh-alternative.fh-free{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 20px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:800 16px var(--font-body,inherit);text-decoration:none;box-shadow:0 3px 0 var(--edge,#E8D3BE);cursor:pointer}
+.fh-alternative.fh-free:hover{border-color:var(--oranje,#EB6A00)}.fh-alternative.fh-free:active{transform:translateY(2px);box-shadow:none}
+@media(max-width:650px){.fh-main-action .fh-free{width:100%}}
