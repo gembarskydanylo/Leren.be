@@ -5912,9 +5912,11 @@ function rpRender(){
   const opts=shuffle([target,...shuffle(others).slice(0,2)]);
   const box=el("div","g-list");opts.forEach(t=>{const b=el("button","opt");b.type="button";b.appendChild(tgt(el("span","",t)));b.onclick=()=>{if(t===target){b.classList.add("correct");done()}else{b.classList.add("incorrect");b.disabled=true}};box.appendChild(b)});card.appendChild(box);
  }else if(s.lvl===2){
+  // No capital letters or full stop on the tiles: the first and last word must not give the order away.
+  const flat=w=>w.replace(/[.,!?]+$/,"").toLowerCase();
   if(!s.tiles)s.tiles=shuffle(target.split(" ").map((w,k)=>({w,k})));
-  const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);rpRender()};slot.appendChild(b)});card.appendChild(slot);
-  const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);if(s.placed.length===s.tiles.length){if(s.placed.map(x=>x.w).join(" ")===target)done();else{toast(g.tryAgain);s.placed=[];rpRender()}}else rpRender()};bank.appendChild(b)});card.appendChild(bank);
+  const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",flat(t.w));b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);rpRender()};slot.appendChild(b)});card.appendChild(slot);
+  const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",flat(t.w));b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);if(s.placed.length===s.tiles.length){if(s.placed.map(x=>flat(x.w)).join(" ")===target.split(" ").map(flat).join(" "))done();else{toast(g.tryAgain);s.placed=[];rpRender()}}else rpRender()};bank.appendChild(b)});card.appendChild(bank);
  }else{
   card.appendChild(micBox(alts=>{const want=gNorm(target).split(" ");let best=0;alts.forEach(a=>{const got=new Set(gNorm(a).split(" "));best=Math.max(best,want.filter(w=>got.has(w)).length/want.length)});
    if(best>=.7)done();else{toast(g.tryAgain);const h=card.querySelector(".g-heard");if(h)h.append(" → ",tgt(el("b","",target)))}}));
@@ -6934,7 +6936,7 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam11.js?v=101" defer></script>
+<script src="./modules/exam/exam11.js?v=148" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
