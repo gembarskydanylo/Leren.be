@@ -19,7 +19,7 @@
 <script src="./modules/learning-path/core.js?v=102"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
-<script src="./modules/card-art/art.js?v=137"></script>
+<script src="./modules/card-art/art.js?v=147"></script>
 <script src="./modules/card-art/people.js?v=135"></script>
 <script src="./modules/card-art/food.js?v=135"></script>
 <script src="./modules/card-art/things.js?v=135"></script>
@@ -28,8 +28,8 @@
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=143"></script>
-<script src="./modules/desktop-home/ui.js?v=143"></script>
+<script src="./modules/focused-home/ui.js?v=149"></script>
+<script src="./modules/desktop-home/ui.js?v=149"></script>
 <script src="./modules/test-library/ui.js?v=109"></script>
 <script src="./modules/lesson-conversation/content.js?v=112"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
@@ -37,10 +37,11 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/cards.js?v=142"></script>
+<script src="./modules/emoji/cards.js?v=146"></script>
+<script src="./modules/emoji/variants.js?v=147"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
-<script src="./modules/learning-path/ui.js?v=143"></script>
+<script src="./modules/learning-path/ui.js?v=149"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -579,6 +580,7 @@ footer a{color:inherit}
 .score-pill{background:var(--be-black);color:var(--be-yellow);box-shadow:0 var(--depth-sm) 0 rgba(0,0,0,.35)}
 .hdr-btn{display:inline-grid;place-items:center;width:42px;height:40px;border-radius:var(--r-sm);border:0;background:rgba(255,255,255,.95);color:#2A1D12;cursor:pointer;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35)}
 .hdr-btn .ico{width:22px;height:22px}
+
 .hdr-btn:active{transform:translateY(var(--depth-sm));box-shadow:none}
 .hdr-btn:focus-visible,.streak-pill:focus-visible{outline:3px solid #fff;outline-offset:2px}
 header{flex-wrap:nowrap}
@@ -597,6 +599,10 @@ main[data-view="lesson"] #topicBar,main[data-view="lesson"] #pathReturn,main[dat
 main[data-view="lesson"] #card{border-top:0;border-top-left-radius:0;border-top-right-radius:0;padding-top:14px}
 main[data-view="lesson"] #lessonModes,main[data-view="lesson"] .lesson-head,main[data-view="lesson"] #card{width:min(100%,760px);margin-inline:auto}
 main[data-view="lesson"] .lesson-head{margin-bottom:-16px}
+main[data-view="lesson"][data-diph="1"] .lesson-head{border-bottom:2px solid var(--line);border-radius:var(--r-lg);margin-bottom:0;padding-bottom:12px}
+main[data-diph="1"] .lesson-head #prog,main[data-diph="1"] .lesson-head .bar{display:none}
+main[data-view="lesson"] #lerenbe-diphthongs-section{width:min(100%,760px);margin-inline:auto}
+#lerenbe-diphthongs-section .lbe-diph{max-width:none;margin:0 auto}
 .sheet-route{display:flex;align-items:center;gap:8px;width:calc(100% - 32px);min-height:44px;margin:4px 16px 8px;padding:8px 12px;border:2px dashed var(--line);border-radius:var(--r-md);background:transparent;color:var(--ink-2);font:800 14px var(--font-body,inherit);cursor:pointer}
 .sheet-route:focus-visible{outline:3px solid var(--oranje)}
 .tb-level{flex:none;display:grid;place-items:center;min-width:52px;height:40px;padding:0 8px;border-radius:12px;background:var(--oranje);color:#fff;font:800 14px var(--font-display)}
@@ -1011,8 +1017,8 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=142">
-<link rel="stylesheet" href="./modules/desktop-home/style.css?v=143">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=144">
+<link rel="stylesheet" href="./modules/desktop-home/style.css?v=149">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
@@ -1125,6 +1131,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     <span id="footText"></span>
     <span>Danylo Hembarskyi • <span id="footRights">All rights reserved</span></span>
     <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit" id="footPrivacy">Privacy</a></span>
+    <a id="tgChannelLink" class="report-bug-btn" href="https://t.me/UkrainiansDutch" target="_blank" rel="noopener" style="text-decoration:none">✈️ Telegram</a>
     <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
     <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
       <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
@@ -1186,7 +1193,7 @@ const UI={
 };
 
 // Diphthongs lesson labels for every explanation language.
-const DIPH_TAB_LABELS={uk:"🛹 Дифтонги",en:"🛹 Diphthongs",fr:"🛹 Diphtongues",ar:"🛹 الأصوات المزدوجة"};
+const DIPH_TAB_LABELS={uk:"Дифтонги",en:"Diphthongs",fr:"Diphtongues",ar:"الأصوات المزدوجة"};
 for(const [lang,label] of Object.entries(DIPH_TAB_LABELS)){
  if(UI[lang]){UI[lang].tabs.diphthongs=label;UI[lang].subs.diphthongs=label;}
 }
@@ -2651,6 +2658,8 @@ function updateHeader(){
  $("tagline").textContent=u.tagline;
  $("progressLabel").textContent=u.learned;
  $("footText").textContent=u.footer;$("footRights").textContent=u.rights||"All rights reserved";$("footPrivacy").textContent=u.privacy||"Privacy";
+ // Telegram channel: daily word, quiz, tips and facts about Belgium (tools/tg-bot).
+ const tg=$("tgChannelLink");if(tg)tg.textContent={uk:"✈️ Наш канал у Telegram",en:"✈️ Our Telegram channel",fr:"✈️ Notre chaîne Telegram",ar:"✈️ قناتنا على Telegram"}[uiLang]||"✈️ Telegram";
  const rbtn=$("reportBugBtn");
  if(rbtn){
   rbtn.textContent=u.reportBug||"⚠ Report a bug";
@@ -3033,6 +3042,7 @@ function renderDiphthongsProgress(container){
 }
 function syncDiphthongsLesson(){
  const active=view==="lesson"&&tab==="diphthongs"&&targetLang==="nl";
+ const mainEl=document.querySelector("main");if(mainEl)mainEl.dataset.diph=active?"1":""; // own widget: the card header stands alone
  if(window.LerenbeDiphthongs)window.LerenbeDiphthongs.setLanguage(uiLang);
  const section=$("lerenbe-diphthongs-section"),card=$("card");
  if(section)section.hidden=!active;
@@ -3687,10 +3697,10 @@ function sepAnswer(ok,btn){
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
 // Dutch pronunciation: integrated with Toets, its best scores and XP.
 const DIPH_UI = {
- uk: ["🛹 Дифтонги: Звукова гірка", "Дифтонг — плавний перехід між голосними в одному складі. Послухай приклади, а потім обери, чи є у слові дифтонг.", "Так, дифтонг", "Ні, не дифтонг", "Почати тест · 10 слів", "Послухати", "Це дифтонг: звук змінюється в межах одного складу.", "Це один голосний звук, а не дифтонг. Вимова може залежати від регіону.", "Trema позначає окремий склад: сусідні голосні не утворюють дифтонга.", "ooi та eeuw також вивчаємо як ковзні сполучення; у eeuw звук w можна розглядати як окремий приголосний."],
- en: ["🛹 Diphthongs: Sound slide", "A diphthong glides between vowels within one syllable. Listen to the examples, then decide whether each word contains a diphthong.", "Yes, a diphthong", "No diphthong", "Start quiz · 10 words", "Listen", "This is a diphthong: the sound changes within one syllable.", "This represents one vowel, not a diphthong. Pronunciation may vary by region.", "The diaeresis marks a separate syllable: these adjacent vowels do not form a diphthong.", "We also practise ooi and eeuw as gliding combinations; the w in eeuw can be treated as a separate consonant."],
- fr: ["🛹 Diphtongues : la glissade sonore", "Une diphtongue glisse entre deux voyelles dans une seule syllabe. Écoutez les exemples, puis indiquez si le mot contient une diphtongue.", "Oui, une diphtongue", "Pas de diphtongue", "Commencer · 10 mots", "Écouter", "C’est une diphtongue : le son change dans une seule syllabe.", "Ces lettres représentent une seule voyelle, pas une diphtongue. La prononciation peut varier selon la région.", "Le tréma marque une syllabe séparée : ces voyelles ne forment pas de diphtongue.", "Nous étudions aussi ooi et eeuw comme combinaisons glissantes ; le w de eeuw peut être considéré comme une consonne séparée."],
- ar: ["🛹 الأصوات المزدوجة: الانزلاق الصوتي", "الصوت المزدوج انتقال بين صوتين متحركين في مقطع واحد. استمع إلى الأمثلة ثم حدد هل تحتوي الكلمة على صوت مزدوج.", "نعم، صوت مزدوج", "ليس صوتًا مزدوجًا", "ابدأ الاختبار · 10 كلمات", "استمع", "هذا صوت مزدوج: يتغير الصوت داخل مقطع واحد.", "تمثل هذه الحروف صوتًا متحركًا واحدًا وليس صوتًا مزدوجًا. قد يختلف النطق حسب المنطقة.", "تشير النقطتان إلى مقطع منفصل: لا يشكل هذان الحرفان صوتًا مزدوجًا.", "نتدرب أيضًا على ooi و eeuw كتراكيب انزلاقية؛ ويمكن اعتبار w في eeuw حرفًا ساكنًا منفصلًا."]
+ uk: ["Дифтонги: Звукова гірка", "Дифтонг — плавний перехід між голосними в одному складі. Послухай приклади, а потім обери, чи є у слові дифтонг.", "Так, дифтонг", "Ні, не дифтонг", "Почати тест · 10 слів", "Послухати", "Це дифтонг: звук змінюється в межах одного складу.", "Це один голосний звук, а не дифтонг. Вимова може залежати від регіону.", "Trema позначає окремий склад: сусідні голосні не утворюють дифтонга.", "ooi та eeuw також вивчаємо як ковзні сполучення; у eeuw звук w можна розглядати як окремий приголосний."],
+ en: ["Diphthongs: Sound slide", "A diphthong glides between vowels within one syllable. Listen to the examples, then decide whether each word contains a diphthong.", "Yes, a diphthong", "No diphthong", "Start quiz · 10 words", "Listen", "This is a diphthong: the sound changes within one syllable.", "This represents one vowel, not a diphthong. Pronunciation may vary by region.", "The diaeresis marks a separate syllable: these adjacent vowels do not form a diphthong.", "We also practise ooi and eeuw as gliding combinations; the w in eeuw can be treated as a separate consonant."],
+ fr: ["Diphtongues : la glissade sonore", "Une diphtongue glisse entre deux voyelles dans une seule syllabe. Écoutez les exemples, puis indiquez si le mot contient une diphtongue.", "Oui, une diphtongue", "Pas de diphtongue", "Commencer · 10 mots", "Écouter", "C’est une diphtongue : le son change dans une seule syllabe.", "Ces lettres représentent une seule voyelle, pas une diphtongue. La prononciation peut varier selon la région.", "Le tréma marque une syllabe séparée : ces voyelles ne forment pas de diphtongue.", "Nous étudions aussi ooi et eeuw comme combinaisons glissantes ; le w de eeuw peut être considéré comme une consonne séparée."],
+ ar: ["الأصوات المزدوجة: الانزلاق الصوتي", "الصوت المزدوج انتقال بين صوتين متحركين في مقطع واحد. استمع إلى الأمثلة ثم حدد هل تحتوي الكلمة على صوت مزدوج.", "نعم، صوت مزدوج", "ليس صوتًا مزدوجًا", "ابدأ الاختبار · 10 كلمات", "استمع", "هذا صوت مزدوج: يتغير الصوت داخل مقطع واحد.", "تمثل هذه الحروف صوتًا متحركًا واحدًا وليس صوتًا مزدوجًا. قد يختلف النطق حسب المنطقة.", "تشير النقطتان إلى مقطع منفصل: لا يشكل هذان الحرفان صوتًا مزدوجًا.", "نتدرب أيضًا على ooi و eeuw كتراكيب انزلاقية؛ ويمكن اعتبار w في eeuw حرفًا ساكنًا منفصلًا."]
 };
 const DIPH_WORDS = [
  ["huis","ui",1,"будинок","house","maison","منزل"],
@@ -4926,16 +4936,16 @@ function renderTopicBar(){
  const topic=LerenCompanion.topic({lang:uiLang,id:tab,title:tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),category:cat?(u.cats[cat.id]||cat.id):"",level:(levelById(curLevel)||{}).name||"A1.1",onChoose:()=>openSheet("topicsSheet")});
  b.className=topic.className;b.replaceChildren(...topic.childNodes);b.title=LerenCompanion.tr(uiLang).choose;b.setAttribute("aria-label",topic.getAttribute("aria-label"));
  // Card header chip: "Chapter › Topic ▾" — tap to change the topic.
- const lh=$("lhTopic");if(lh){const tTitle=tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),cTitle=cat?(u.cats[cat.id]||cat.id):"";
+ const lh=$("lhTopic");if(lh){const tTitle=(tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,"")).replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u,""),cTitle=cat?(u.cats[cat.id]||cat.id):"";
   lh.replaceChildren(...(cTitle?[el("span","lh-ch",cTitle+" ›")," "]:[]),el("span","",tTitle),el("span","lh-caret","▾"));
   lh.title=LerenCompanion.tr(uiLang).choose;lh.setAttribute("aria-label",LerenCompanion.tr(uiLang).choose+": "+(cTitle?cTitle+" — ":"")+tTitle)}
  const sr=$("sheetRoute");if(sr){sr.hidden=targetLang!=="nl";sr.textContent=({uk:"‹ Мій навчальний маршрут",en:"‹ My learning path",fr:"‹ Mon parcours",ar:"‹ مساري التعليمي"})[uiLang]||"‹ Мій навчальний маршрут"}
  const guide=$("lessonGuide");if(guide){guide.setAttribute("aria-label",LerenCompanion.tr(uiLang).help);guide.replaceChildren(LerenCompanion.help(uiLang,DATA[tab]?.items[0]?.gap&&(mode==="quiz"||mode==="review")?"gap":mode));guide.hidden=view!=="lesson"||tab==="diphthongs"}
 }
 
-function openSheet(id){
+function openSheet(id,detail=false){
  const s=$(id);if(!s)return;s.hidden=false;document.body.classList.add("sheet-open");
- if(id==="topicsSheet"){buildNav();topicStep(false)}
+ if(id==="topicsSheet"){buildNav();topicStep(detail&&!!currentCat)} // detail: open on the current chapter's lessons
  const x=s.querySelector(".sheet-x");if(x)setTimeout(()=>{try{x.focus({preventScroll:true})}catch(e){}},30);
 }
 function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?(view==="lesson"?$("lhTopic"):$("topicBar")):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
@@ -4943,7 +4953,7 @@ document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{i
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeSheet(b.dataset.close)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
-$("lhTopic").addEventListener("click",()=>openSheet("topicsSheet"));
+$("lhTopic").addEventListener("click",()=>openSheet("topicsSheet",true)); // straight to this chapter's lessons; "Усі теми курсу" goes back
 $("sheetRoute").addEventListener("click",()=>{closeSheet("topicsSheet");setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
 // Logo = home: the start screen the learner chose (route, or the lesson page after "Вільна практика").
@@ -5932,9 +5942,11 @@ function rpRender(){
   const opts=shuffle([target,...shuffle(others).slice(0,2)]);
   const box=el("div","g-list");opts.forEach(t=>{const b=el("button","opt");b.type="button";b.appendChild(tgt(el("span","",t)));b.onclick=()=>{if(t===target){b.classList.add("correct");done()}else{b.classList.add("incorrect");b.disabled=true}};box.appendChild(b)});card.appendChild(box);
  }else if(s.lvl===2){
+  // No capital letters or full stop on the tiles: the first and last word must not give the order away.
+  const flat=w=>w.replace(/[.,!?]+$/,"").toLowerCase();
   if(!s.tiles)s.tiles=shuffle(target.split(" ").map((w,k)=>({w,k})));
-  const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);rpRender()};slot.appendChild(b)});card.appendChild(slot);
-  const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",t.w);b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);if(s.placed.length===s.tiles.length){if(s.placed.map(x=>x.w).join(" ")===target)done();else{toast(g.tryAgain);s.placed=[];rpRender()}}else rpRender()};bank.appendChild(b)});card.appendChild(bank);
+  const slot=el("div","g-built");s.placed.forEach((t,p)=>{const b=el("button","slot filled",flat(t.w));b.type="button";tgt(b);b.onclick=()=>{s.placed.splice(p,1);rpRender()};slot.appendChild(b)});card.appendChild(slot);
+  const bank=el("div","bank");s.tiles.filter(t=>!s.placed.includes(t)).forEach(t=>{const b=el("button","opt tile",flat(t.w));b.type="button";tgt(b);b.onclick=()=>{s.placed.push(t);if(s.placed.length===s.tiles.length){if(s.placed.map(x=>flat(x.w)).join(" ")===target.split(" ").map(flat).join(" "))done();else{toast(g.tryAgain);s.placed=[];rpRender()}}else rpRender()};bank.appendChild(b)});card.appendChild(bank);
  }else{
   card.appendChild(micBox(alts=>{const want=gNorm(target).split(" ");let best=0;alts.forEach(a=>{const got=new Set(gNorm(a).split(" "));best=Math.max(best,want.filter(w=>got.has(w)).length/want.length)});
    if(best>=.7)done();else{toast(g.tryAgain);const h=card.querySelector(".g-heard");if(h)h.append(" → ",tgt(el("b","",target)))}}));
@@ -6706,7 +6718,7 @@ function initLearningPath(){
   data:DATA,curriculum:LerenCurriculum,language:()=>uiLang,
   lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
-  dark:()=>document.documentElement.dataset.theme==="dark",theme:()=>{$("themeToggle").click();document.querySelector('.fh-tools [data-action="theme"]')?.focus({preventScroll:true})},voice:()=>{updateHeader();populateVoicePicker();document.querySelector('.fh-tools [data-action="voice"]')?.focus({preventScroll:true});$("voiceDialog").showModal()},
+  dark:()=>document.documentElement.dataset.theme==="dark",
   speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setHomePref("free");setView("lesson");newRound()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
@@ -6758,7 +6770,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="143";
+const RELEASE_VERSION="149";
 const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Новий вигляд головної.", "items": ["Мова пояснень — круглий прапорець у шапці.", "Теми курсу — великі картки з описом, відсотком і кнопкою «Продовжити».", "Картинки в уроках тепер цілі, без обрізаних країв.", "«Повторити» тепер просить обрати переклад, а малюнки болю показують, де саме болить.", "На комп’ютері: шапка на всю ширину, меню з іконками, нагадування й акаунт поруч."], "hint": "Почни з картки «Твій наступний урок».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A new home screen.", "items": ["Explanation language is now a round flag in the header.", "Course topics are big cards with a description, % done and a Continue button.", "Lesson pictures are complete — no more cut edges.", "Review now asks for the translation, and pain pictures mark exactly where it hurts.", "On a computer: full-width header, menu with icons, reminders and account at hand."], "hint": "Start with “Your next lesson”.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Un nouvel accueil.", "items": ["La langue des explications est un drapeau rond dans l’en-tête.", "Les thèmes sont de grandes cartes avec description, % terminé et bouton Continuer.", "Les images des leçons sont complètes, sans bords coupés.", "La révision demande la traduction et les images de douleur montrent l’endroit exact.", "Sur ordinateur : en-tête pleine largeur, menu avec icônes, rappels et compte à portée."], "hint": "Commence par « Ta prochaine leçon ».", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "صفحة رئيسية جديدة.", "items": ["لغة الشرح أصبحت علماً دائرياً في الأعلى.", "مواضيع الدورة بطاقات كبيرة مع وصف ونسبة الإنجاز وزر «تابع».", "صور الدروس كاملة الآن دون حواف مقطوعة.", "المراجعة تطلب الآن الترجمة، وصور الألم تُظهر مكان الألم بدقة.", "على الحاسوب: شريط علوي بعرض الصفحة وقائمة بأيقونات والتذكيرات والحساب في متناولك."], "hint": "ابدأ ببطاقة «درسك التالي».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
@@ -6960,7 +6972,7 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam11.js?v=101" defer></script>
+<script src="./modules/exam/exam11.js?v=148" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->

@@ -33,6 +33,8 @@ root.LerenCardArt={A,K,T,face,person,head,star,ouch,clock,arrow,plate,hand,C:{SK
  apply(DATA){
   // Per topic: the verified 3D pictures when every emoji in the topic has one, else the drawings — never both in one topic.
   const P=root.LerenCard3D||{},img=f=>`<img class="card-3d" src="./img/emoji/${f}.png" alt="" loading="lazy" decoding="async">`;let topics=0;
+  // Cards whose picture must differ from a sibling's (knee vs leg, aunt vs mother, ...): their own picture wins.
+  const VAR=root.LerenCardVariants||{};for(const d of Object.values(DATA))for(const i of (d&&d.items)||[])if(VAR[i.id])i.icon=img(VAR[i.id]);
   for(const d of Object.values(DATA)){const items=(d&&d.items)||[];const emo=items.filter(i=>i.icon&&!String(i.icon).startsWith('<'));if(!emo.length)continue;
    if(emo.every(i=>P[i.icon])){emo.forEach(i=>{i.icon=img(P[i.icon])});topics++}
    else if(emo.every(i=>A[i.icon])){emo.forEach(i=>{i.icon=A[i.icon]});topics++}}

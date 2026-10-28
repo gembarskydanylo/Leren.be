@@ -303,9 +303,10 @@ function ask(){
   chk.onclick=()=>{const T=new Set(it.targets.map(norm2));let ok=true;box.querySelectorAll(".ex-word").forEach(b=>{const on=b.classList.contains("on"),t=T.has(b.dataset.w);if(on&&t)b.classList.add("good");else if(on&&!t){b.classList.add("bad");ok=false}else if(!on&&t){b.classList.add("miss");ok=false}});chk.remove();answer(ok,null,box)};
   c.append(box,chk);
  }else{
-  const line=el("div","ex-line"),pool=el("div","ex-pool"),picked=[];
-  const draw=()=>{line.replaceChildren(...picked.map(w=>nl(w)));};
-  shuffle(it.w).forEach(w=>{const b=el("button","opt ex-chip");b.type="button";b.appendChild(nl(w));b.onclick=()=>{if(b.disabled)return;picked.push(w);b.disabled=true;draw();if(picked.length===it.w.length){const ok=picked.join(" ")===it.a;answer(ok,null,pool,it.a)}};pool.appendChild(b)});
+  // Tiles carry no capital letter or full stop: otherwise the first and last word give the order away.
+  const flat=w=>w.replace(/[.,!?]+$/,"").toLowerCase(),line=el("div","ex-line"),pool=el("div","ex-pool"),picked=[];
+  const draw=()=>{line.replaceChildren(...picked.map(w=>nl(flat(w))));};
+  shuffle(it.w).forEach(w=>{const b=el("button","opt ex-chip");b.type="button";b.appendChild(nl(flat(w)));b.onclick=()=>{if(b.disabled)return;picked.push(w);b.disabled=true;draw();if(picked.length===it.w.length){const ok=picked.map(flat).join(" ")===it.a.split(" ").map(flat).join(" ");answer(ok,null,pool,it.a)}};pool.appendChild(b)});
   const clr=el("button","btn",u.clear);clr.type="button";clr.onclick=()=>{picked.length=0;pool.querySelectorAll("button").forEach(b=>b.disabled=false);draw()};
   c.append(line,pool,clr);
  }
