@@ -1428,7 +1428,7 @@ const DATA={
   ["cvo_3","het huiswerk","homework","les devoirs","домашнє завдання","الواجب المنزلي","📝","Ik maak mijn huiswerk.","Я роблю домашнє завдання."],
   ["cvo_4","de pauze","break","la pause","перерва","الاستراحة","☕","Het is tijd voor pauze.","Час для перерви."],
   ["cvo_5","het potlood","pencil","le crayon","олівець","قلم رصاص","✏️","Heb je een potlood?","У тебе є олівець?"],
-  ["cvo_6","de gom","eraser","la gomme","гумка","ممحاة","🧽","Mag ik de gom gebruiken?","Можна скористатися гумкою?"],
+  ["cvo_6","de gom","eraser","la gomme","гумка","ممحاة",'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="kt-img"><g transform="rotate(-35 50 50)"><rect x="14" y="34" width="72" height="34" rx="7" fill="#f9a8d4" stroke="#be185d" stroke-width="4"/><rect x="14" y="34" width="28" height="34" rx="7" fill="#93c5fd" stroke="#1d4ed8" stroke-width="4"/></g></svg>',"Mag ik de gom gebruiken?","Можна скористатися гумкою?"],
   ["cvo_7","het schrift","notebook","le cahier","зошит","الدفتر","📓","Schrijf in je schrift.","Пиши в зошиті."],
   ["cvo_8","de les","lesson","le cours","урок","الدرس","📚","De les begint om negen uur.","Урок починається о дев’ятій."],
   ["cvo_9","het examen","exam","l'examen","іспит","الامتحان","📋","Volgende week heb ik een examen.","Наступного тижня в мене іспит."],
@@ -1532,8 +1532,8 @@ const DATA={
   ["doc_14","de keel","throat","la gorge","горло","الحلق",KT_IMG.keelpijn,"Mijn keel doet pijn.","У мене болить горло."],
   ["doc_16","Wat scheelt er?","What's wrong?","Qu'est-ce qui ne va pas ?","Що з вами? Що болить?","ما المشكلة؟","🩺","Dag mevrouw, wat scheelt er?","Добрий день, пані, що з вами?"],
   ["doc_17","verkouden","having a cold","enrhumé","застуджений","مصاب بالزكام","🤧","Ik ben verkouden.","Я застудився."],
-  ["doc_18","de keelpijn","sore throat","le mal de gorge","біль у горлі","ألم الحلق","😖","Zij heeft keelpijn.","У неї болить горло."],
-  ["doc_15","de buik","belly / stomach","le ventre","живіт","البطن","🤢","Ik heb pijn in mijn buik.","У мене болить живіт."]
+  ["doc_18","de keelpijn","sore throat","le mal de gorge","біль у горлі","ألم الحلق",KT_IMG.keelpijn,"Zij heeft keelpijn.","У неї болить горло."],
+  ["doc_15","de buik","belly / stomach","le ventre","живіт","البطن",KT_IMG.buikpijn,"Ik heb pijn in mijn buik.","У мене болить живіт."]
  ]),
  shop:R([
   ["sh_1","de winkelkar","shopping cart","le Caddie","візок для покупок","عربة التسوق","🛒","Neem een winkelkar.","Візьміть візок."],
@@ -1863,7 +1863,7 @@ Object.assign(DATA,{
   ["course_ex10_13","het voorschrift","prescription","l'ordonnance","рецепт","الوصفة الطبية","📝","Dit medicijn is zonder voorschrift.","Ці ліки продаються без рецепта."],
   ["course_ex10_14","met voorschrift – zonder voorschrift","with / without prescription","avec / sans ordonnance","за рецептом / без рецепта","بوصفة / بدون وصفة","📋","Paracetamol is zonder voorschrift.","Парацетамол продається без рецепта."],
   ["course_ex10_15","de griep","flu","la grippe","грип","الإنفلونزا","🤒","Ik heb griep en ik blijf thuis.","У мене грип, і я лишаюся вдома."],
-  ["course_ex10_16","de keelontsteking","throat infection","l'angine","ангіна, запалення горла","التهاب الحلق","🗣️","Hij heeft een keelontsteking.","У нього запалення горла."],
+  ["course_ex10_16","de keelontsteking","throat infection","l'angine","ангіна, запалення горла","التهاب الحلق",KT_IMG.keelpijn,"Hij heeft een keelontsteking.","У нього запалення горла."],
   ["course_ex10_17","de bronchitis","bronchitis","la bronchite","бронхіт","التهاب الشعب الهوائية","🫁","Meneer Janssens heeft een bronchitis.","У пана Янссенса бронхіт."],
   ["course_ex10_18","de zuigtablet – de zuigtabletten","lozenge","la pastille","льодяник для смоктання","قرص المص","🍬","Zuigtabletten helpen tegen keelpijn.","Льодяники допомагають від болю в горлі."],
   ["course_ex10_19","de eetlepel","tablespoon","la cuillère à soupe","столова ложка","ملعقة كبيرة","🥄","Neem drie keer per dag een eetlepel.","Приймай по столовій ложці тричі на день."],
@@ -2039,6 +2039,22 @@ werk:R([
 
 });
 
+// exact analog clocks, number tiles and calendar tiles (emoji clocks only show whole/half hours and were wrong for quarters)
+(function(){
+ const tile=b=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="kt-img">'+b+'</svg>';
+ const CLK={clk_1:[12,0],clk_2:[1,0],clk_3:[1,30],clk_4:[2,15],clk_5:[2,45],clk_6:[3,0],clk_7:[3,30],clk_8:[5,0],clk_9:[5,30],clk_10:[7,0],clk_11:[7,30],clk_12:[9,0],clk_13:[10,0],clk_14:[8,15],clk_15:[9,45]};
+ const clock=(h,m)=>{const ha=((h%12)+m/60)*Math.PI/6,ma=m*Math.PI/30,c=50,P=(a,r)=>(c+Math.sin(a)*r).toFixed(1)+" "+(c-Math.cos(a)*r).toFixed(1);
+  let t="";for(let i=0;i<12;i++){const a=i*Math.PI/6,r1=i%3?37:34;t+='<path d="M'+P(a,r1)+'L'+P(a,41)+'" stroke="#475569" stroke-width="'+(i%3?2:3.5)+'" stroke-linecap="round"/>'}
+  return tile('<circle cx="50" cy="50" r="46" fill="#fff" stroke="#f97316" stroke-width="6"/>'+t+'<path d="M50 50L'+P(ha,24)+'" stroke="#0f172a" stroke-width="6" stroke-linecap="round"/><path d="M50 50L'+P(ma,35)+'" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="50" r="4.5" fill="#f97316"/>')};
+ const num=(t,fs)=>tile('<rect x="6" y="6" width="88" height="88" rx="22" fill="#fff7ed" stroke="#fb923c" stroke-width="5"/><text x="50" y="'+(50+fs*.35)+'" text-anchor="middle" font-family="system-ui,Arial,sans-serif" font-weight="800" font-size="'+fs+'" fill="#c2410c">'+t+'</text>');
+ const cal=(top,t,fs)=>tile('<rect x="8" y="14" width="84" height="78" rx="14" fill="#fff" stroke="#94a3b8" stroke-width="4"/><path d="M8 28a14 14 0 0 1 14-14h56a14 14 0 0 1 14 14v10H8z" fill="#f97316"/><rect x="28" y="6" width="7" height="16" rx="3" fill="#475569"/><rect x="65" y="6" width="7" height="16" rx="3" fill="#475569"/><text x="50" y="33" text-anchor="middle" font-family="system-ui,Arial,sans-serif" font-weight="700" font-size="11" fill="#fff">'+top+'</text><text x="50" y="'+(62+fs*.35)+'" text-anchor="middle" font-family="system-ui,Arial,sans-serif" font-weight="800" font-size="'+fs+'" fill="#334155">'+t+'</text>');
+ const NUM={num_12:"11",num_13:"12",num_14:"15",num_15:"20",num_16:"30",num_17:"50",num_18:"100",num_11:"10"};
+ for(const it of DATA.clock.items)if(CLK[it.id])it.icon=clock(...CLK[it.id]);
+ for(const it of DATA.numbers.items)if(NUM[it.id])it.icon=num(NUM[it.id],NUM[it.id].length>2?34:NUM[it.id].length>1?44:52);
+ for(const it of DATA.weather.items){const m=/^d_(\d)$/.exec(it.id);if(m)it.icon=cal("DAG",["MA","DI","WO","DO","VR","ZA","ZO"][m[1]-1],30)}
+ const MON=["JAN","FEB","MRT","APR","MEI","JUN","JUL","AUG","SEP","OKT","NOV","DEC"];
+ for(const it of DATA.months.items){const m=/^mon_(\d+)$/.exec(it.id);if(m)it.icon=cal(MON[m[1]-1],String(+m[1]),30)}
+})();
 DATA.verbs.items.push(...R([
   ["vx_1", "komen", "to come", "venir", "приходити", "يأتي", "👋", "Ik kom uit Oekraïne.", "Я з України."],
   ["vx_2", "gaan", "to go", "aller", "іти / їхати", "يذهب", "🚶", "Ik ga naar school.", "Я йду до школи."],
@@ -2069,7 +2085,7 @@ DATA.verbs.items.push(...R([
   ["vx_27", "heten", "to be called", "s'appeler", "називатися", "اسمه / يُدعى", "🏷️", "Ik heet Anna.", "Мене звати Анна."]
 
   ["vx_28", "beginnen", "to begin / start", "commencer", "починати", "يبدأ", "▶️", "De les begint om negen uur.", "Урок починається о дев’ятій."],
-  ["vx_29", "eindigen", "to end / finish", "finir", "закінчувати", "ينتهي", "⏹️", "De film eindigt om tien uur.", "Фільм закінчується о десятій."],
+  ["vx_29", "eindigen", "to end / finish", "finir", "закінчувати", "ينتهي", "🏁", "De film eindigt om tien uur.", "Фільм закінчується о десятій."],
   ["vx_30", "openen", "to open", "ouvrir", "відчиняти", "يفتح", "🔓", "Ik open de deur.", "Я відчиняю двері."],
   ["vx_31", "sluiten", "to close", "fermer", "зачиняти", "يغلق", "🔒", "Sluit het raam, alstublieft.", "Зачини вікно, будь ласка."],
   ["vx_32", "staan", "to stand", "être debout / se trouver", "стояти", "يقف", "🧍", "Ik sta bij de halte.", "Я стою на зупинці."],
@@ -3110,9 +3126,13 @@ function makeOptions(cur){
  }
  const rev=mode==="audio"||mode==="review",f=rev?meaningFor:labelFor,g=rev?labelFor:meaningFor,t=!rev,correct=f(cur),seen=new Set([correct]),out=[];
  // Skip distractors that would also be a correct answer (same prompt text)
- for(const x of shuffle(itemsFor().filter(x=>x.id!==cur.id&&!x.gap&&g(x)!==g(cur)))){
+ // and ones sharing a meaning part with it ("добрий / хороший" vs "добрий / привітний", "рука (кисть)" vs "рука (від плеча)")
+ const parts=v=>String(v).toLowerCase().replace(/\([^)]*\)/g,"").split(/[\/,;]|\s[–-]\s/).map(z=>z.trim()).filter(Boolean);
+ const cp=new Set(parts(correct)),clash=v=>parts(v).some(z=>cp.has(z)),pool=shuffle(itemsFor().filter(x=>x.id!==cur.id&&!x.gap&&g(x)!==g(cur)));
+ for(const pass of [0,1])for(const x of pool){
+  if(out.length>=3)break;
   const v=f(x);
-  if(!seen.has(v)){seen.add(v);out.push({label:v,ok:false,c:x.c,t});if(out.length>=3)break}
+  if(!seen.has(v)&&(pass||!clash(v))){seen.add(v);out.push({label:v,ok:false,c:x.c,t})}
  }
  out.push({label:correct,ok:true,c:cur.c,t});
  return shuffle(out);
@@ -6770,7 +6790,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="149";
+const RELEASE_VERSION="150";
 const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Новий вигляд головної.", "items": ["Мова пояснень — круглий прапорець у шапці.", "Теми курсу — великі картки з описом, відсотком і кнопкою «Продовжити».", "Картинки в уроках тепер цілі, без обрізаних країв.", "«Повторити» тепер просить обрати переклад, а малюнки болю показують, де саме болить.", "На комп’ютері: шапка на всю ширину, меню з іконками, нагадування й акаунт поруч."], "hint": "Почни з картки «Твій наступний урок».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A new home screen.", "items": ["Explanation language is now a round flag in the header.", "Course topics are big cards with a description, % done and a Continue button.", "Lesson pictures are complete — no more cut edges.", "Review now asks for the translation, and pain pictures mark exactly where it hurts.", "On a computer: full-width header, menu with icons, reminders and account at hand."], "hint": "Start with “Your next lesson”.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Un nouvel accueil.", "items": ["La langue des explications est un drapeau rond dans l’en-tête.", "Les thèmes sont de grandes cartes avec description, % terminé et bouton Continuer.", "Les images des leçons sont complètes, sans bords coupés.", "La révision demande la traduction et les images de douleur montrent l’endroit exact.", "Sur ordinateur : en-tête pleine largeur, menu avec icônes, rappels et compte à portée."], "hint": "Commence par « Ta prochaine leçon ».", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "صفحة رئيسية جديدة.", "items": ["لغة الشرح أصبحت علماً دائرياً في الأعلى.", "مواضيع الدورة بطاقات كبيرة مع وصف ونسبة الإنجاز وزر «تابع».", "صور الدروس كاملة الآن دون حواف مقطوعة.", "المراجعة تطلب الآن الترجمة، وصور الألم تُظهر مكان الألم بدقة.", "على الحاسوب: شريط علوي بعرض الصفحة وقائمة بأيقونات والتذكيرات والحساب في متناولك."], "hint": "ابدأ ببطاقة «درسك التالي».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;

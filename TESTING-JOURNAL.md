@@ -237,3 +237,9 @@
 - Fix 1: Review mode now shows the Dutch word and offers translations (same direction as Audio); label "Обери переклад" (reviewSub in 4 languages). Fill-the-gap cards are unchanged.
 - Fix 2: new body-map pictures (red glow on the aching part) for buikpijn, oorpijn, keelpijn, hoofdpijn, rug, schouder, knie, been, voet, neus, tandpijn, hand; used by the cards and by the "Скарги" words (replacing 🤢🧍🗣️🤷🦵🦶) and "de keel". SVG pictures are larger (150px; 100px on short phones).
 - tests/pain-art.cjs added; all 20 suites pass. Full sweep (412, 320, 1366, dark, Arabic): no errors.
+
+## UI-150 — full picture and Q&A audit
+- Reviewed all 41 contact sheets (1204 items) and every question/answer row: no translation or Dutch errors found; structural checks (unique ids, gap distractors, answers) clean.
+- Fixed: exact SVG clocks (clk_1–15; quarters were wrong), number tiles (10/11/12/15/20/30/50/100), calendar tiles for months and weekdays, body-map pictures for de buik / de keelpijn / de keelontsteking, eraser picture for de gom, 🏁 for eindigen.
+- `makeOptions` no longer offers distractors that share a meaning part with the right answer ("добрий / хороший" vs "добрий / привітний").
+- New test tests/q-audit.cjs; all suites pass.
