@@ -592,6 +592,10 @@ main[data-view="lesson"] #topicBar,main[data-view="lesson"] #pathReturn,main[dat
 main[data-view="lesson"] #card{border-top:0;border-top-left-radius:0;border-top-right-radius:0;padding-top:14px}
 main[data-view="lesson"] #lessonModes,main[data-view="lesson"] .lesson-head,main[data-view="lesson"] #card{width:min(100%,760px);margin-inline:auto}
 main[data-view="lesson"] .lesson-head{margin-bottom:-16px}
+main[data-view="lesson"][data-diph="1"] .lesson-head{border-bottom:2px solid var(--line);border-radius:var(--r-lg);margin-bottom:0;padding-bottom:12px}
+main[data-diph="1"] .lesson-head #prog,main[data-diph="1"] .lesson-head .bar{display:none}
+main[data-view="lesson"] #lerenbe-diphthongs-section{width:min(100%,760px);margin-inline:auto}
+#lerenbe-diphthongs-section .lbe-diph{max-width:none;margin:0 auto}
 .sheet-route{display:flex;align-items:center;gap:8px;width:calc(100% - 32px);min-height:44px;margin:4px 16px 8px;padding:8px 12px;border:2px dashed var(--line);border-radius:var(--r-md);background:transparent;color:var(--ink-2);font:800 14px var(--font-body,inherit);cursor:pointer}
 .sheet-route:focus-visible{outline:3px solid var(--oranje)}
 .tb-level{flex:none;display:grid;place-items:center;min-width:52px;height:40px;padding:0 8px;border-radius:12px;background:var(--oranje);color:#fff;font:800 14px var(--font-display)}
@@ -1180,7 +1184,7 @@ const UI={
 };
 
 // Diphthongs lesson labels for every explanation language.
-const DIPH_TAB_LABELS={uk:"🛹 Дифтонги",en:"🛹 Diphthongs",fr:"🛹 Diphtongues",ar:"🛹 الأصوات المزدوجة"};
+const DIPH_TAB_LABELS={uk:"Дифтонги",en:"Diphthongs",fr:"Diphtongues",ar:"الأصوات المزدوجة"};
 for(const [lang,label] of Object.entries(DIPH_TAB_LABELS)){
  if(UI[lang]){UI[lang].tabs.diphthongs=label;UI[lang].subs.diphthongs=label;}
 }
@@ -3001,6 +3005,7 @@ function renderDiphthongsProgress(container){
 }
 function syncDiphthongsLesson(){
  const active=view==="lesson"&&tab==="diphthongs"&&targetLang==="nl";
+ const mainEl=document.querySelector("main");if(mainEl)mainEl.dataset.diph=active?"1":""; // own widget: the card header stands alone
  if(window.LerenbeDiphthongs)window.LerenbeDiphthongs.setLanguage(uiLang);
  const section=$("lerenbe-diphthongs-section"),card=$("card");
  if(section)section.hidden=!active;
@@ -3655,10 +3660,10 @@ function sepAnswer(ok,btn){
 // ========== TOETS A1 (mini exams in CVO / inburgering style) ==========
 // Dutch pronunciation: integrated with Toets, its best scores and XP.
 const DIPH_UI = {
- uk: ["🛹 Дифтонги: Звукова гірка", "Дифтонг — плавний перехід між голосними в одному складі. Послухай приклади, а потім обери, чи є у слові дифтонг.", "Так, дифтонг", "Ні, не дифтонг", "Почати тест · 10 слів", "Послухати", "Це дифтонг: звук змінюється в межах одного складу.", "Це один голосний звук, а не дифтонг. Вимова може залежати від регіону.", "Trema позначає окремий склад: сусідні голосні не утворюють дифтонга.", "ooi та eeuw також вивчаємо як ковзні сполучення; у eeuw звук w можна розглядати як окремий приголосний."],
- en: ["🛹 Diphthongs: Sound slide", "A diphthong glides between vowels within one syllable. Listen to the examples, then decide whether each word contains a diphthong.", "Yes, a diphthong", "No diphthong", "Start quiz · 10 words", "Listen", "This is a diphthong: the sound changes within one syllable.", "This represents one vowel, not a diphthong. Pronunciation may vary by region.", "The diaeresis marks a separate syllable: these adjacent vowels do not form a diphthong.", "We also practise ooi and eeuw as gliding combinations; the w in eeuw can be treated as a separate consonant."],
- fr: ["🛹 Diphtongues : la glissade sonore", "Une diphtongue glisse entre deux voyelles dans une seule syllabe. Écoutez les exemples, puis indiquez si le mot contient une diphtongue.", "Oui, une diphtongue", "Pas de diphtongue", "Commencer · 10 mots", "Écouter", "C’est une diphtongue : le son change dans une seule syllabe.", "Ces lettres représentent une seule voyelle, pas une diphtongue. La prononciation peut varier selon la région.", "Le tréma marque une syllabe séparée : ces voyelles ne forment pas de diphtongue.", "Nous étudions aussi ooi et eeuw comme combinaisons glissantes ; le w de eeuw peut être considéré comme une consonne séparée."],
- ar: ["🛹 الأصوات المزدوجة: الانزلاق الصوتي", "الصوت المزدوج انتقال بين صوتين متحركين في مقطع واحد. استمع إلى الأمثلة ثم حدد هل تحتوي الكلمة على صوت مزدوج.", "نعم، صوت مزدوج", "ليس صوتًا مزدوجًا", "ابدأ الاختبار · 10 كلمات", "استمع", "هذا صوت مزدوج: يتغير الصوت داخل مقطع واحد.", "تمثل هذه الحروف صوتًا متحركًا واحدًا وليس صوتًا مزدوجًا. قد يختلف النطق حسب المنطقة.", "تشير النقطتان إلى مقطع منفصل: لا يشكل هذان الحرفان صوتًا مزدوجًا.", "نتدرب أيضًا على ooi و eeuw كتراكيب انزلاقية؛ ويمكن اعتبار w في eeuw حرفًا ساكنًا منفصلًا."]
+ uk: ["Дифтонги: Звукова гірка", "Дифтонг — плавний перехід між голосними в одному складі. Послухай приклади, а потім обери, чи є у слові дифтонг.", "Так, дифтонг", "Ні, не дифтонг", "Почати тест · 10 слів", "Послухати", "Це дифтонг: звук змінюється в межах одного складу.", "Це один голосний звук, а не дифтонг. Вимова може залежати від регіону.", "Trema позначає окремий склад: сусідні голосні не утворюють дифтонга.", "ooi та eeuw також вивчаємо як ковзні сполучення; у eeuw звук w можна розглядати як окремий приголосний."],
+ en: ["Diphthongs: Sound slide", "A diphthong glides between vowels within one syllable. Listen to the examples, then decide whether each word contains a diphthong.", "Yes, a diphthong", "No diphthong", "Start quiz · 10 words", "Listen", "This is a diphthong: the sound changes within one syllable.", "This represents one vowel, not a diphthong. Pronunciation may vary by region.", "The diaeresis marks a separate syllable: these adjacent vowels do not form a diphthong.", "We also practise ooi and eeuw as gliding combinations; the w in eeuw can be treated as a separate consonant."],
+ fr: ["Diphtongues : la glissade sonore", "Une diphtongue glisse entre deux voyelles dans une seule syllabe. Écoutez les exemples, puis indiquez si le mot contient une diphtongue.", "Oui, une diphtongue", "Pas de diphtongue", "Commencer · 10 mots", "Écouter", "C’est une diphtongue : le son change dans une seule syllabe.", "Ces lettres représentent une seule voyelle, pas une diphtongue. La prononciation peut varier selon la région.", "Le tréma marque une syllabe séparée : ces voyelles ne forment pas de diphtongue.", "Nous étudions aussi ooi et eeuw comme combinaisons glissantes ; le w de eeuw peut être considéré comme une consonne séparée."],
+ ar: ["الأصوات المزدوجة: الانزلاق الصوتي", "الصوت المزدوج انتقال بين صوتين متحركين في مقطع واحد. استمع إلى الأمثلة ثم حدد هل تحتوي الكلمة على صوت مزدوج.", "نعم، صوت مزدوج", "ليس صوتًا مزدوجًا", "ابدأ الاختبار · 10 كلمات", "استمع", "هذا صوت مزدوج: يتغير الصوت داخل مقطع واحد.", "تمثل هذه الحروف صوتًا متحركًا واحدًا وليس صوتًا مزدوجًا. قد يختلف النطق حسب المنطقة.", "تشير النقطتان إلى مقطع منفصل: لا يشكل هذان الحرفان صوتًا مزدوجًا.", "نتدرب أيضًا على ooi و eeuw كتراكيب انزلاقية؛ ويمكن اعتبار w في eeuw حرفًا ساكنًا منفصلًا."]
 };
 const DIPH_WORDS = [
  ["huis","ui",1,"будинок","house","maison","منزل"],
@@ -4894,16 +4899,16 @@ function renderTopicBar(){
  const topic=LerenCompanion.topic({lang:uiLang,id:tab,title:tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),category:cat?(u.cats[cat.id]||cat.id):"",level:(levelById(curLevel)||{}).name||"A1.1",onChoose:()=>openSheet("topicsSheet")});
  b.className=topic.className;b.replaceChildren(...topic.childNodes);b.title=LerenCompanion.tr(uiLang).choose;b.setAttribute("aria-label",topic.getAttribute("aria-label"));
  // Card header chip: "Chapter › Topic ▾" — tap to change the topic.
- const lh=$("lhTopic");if(lh){const tTitle=tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,""),cTitle=cat?(u.cats[cat.id]||cat.id):"";
+ const lh=$("lhTopic");if(lh){const tTitle=(tab==="all"?u.all:(u.tabs[tab]||tab).replace(/^\d+\.\s*/,"")).replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u,""),cTitle=cat?(u.cats[cat.id]||cat.id):"";
   lh.replaceChildren(...(cTitle?[el("span","lh-ch",cTitle+" ›")," "]:[]),el("span","",tTitle),el("span","lh-caret","▾"));
   lh.title=LerenCompanion.tr(uiLang).choose;lh.setAttribute("aria-label",LerenCompanion.tr(uiLang).choose+": "+(cTitle?cTitle+" — ":"")+tTitle)}
  const sr=$("sheetRoute");if(sr){sr.hidden=targetLang!=="nl";sr.textContent=({uk:"‹ Мій навчальний маршрут",en:"‹ My learning path",fr:"‹ Mon parcours",ar:"‹ مساري التعليمي"})[uiLang]||"‹ Мій навчальний маршрут"}
  const guide=$("lessonGuide");if(guide){guide.setAttribute("aria-label",LerenCompanion.tr(uiLang).help);guide.replaceChildren(LerenCompanion.help(uiLang,DATA[tab]?.items[0]?.gap&&(mode==="quiz"||mode==="review")?"gap":mode));guide.hidden=view!=="lesson"||tab==="diphthongs"}
 }
 
-function openSheet(id){
+function openSheet(id,detail=false){
  const s=$(id);if(!s)return;s.hidden=false;document.body.classList.add("sheet-open");
- if(id==="topicsSheet"){buildNav();topicStep(false)}
+ if(id==="topicsSheet"){buildNav();topicStep(detail&&!!currentCat)} // detail: open on the current chapter's lessons
  const x=s.querySelector(".sheet-x");if(x)setTimeout(()=>{try{x.focus({preventScroll:true})}catch(e){}},30);
 }
 function closeSheet(id){const s=$(id);if(!s||s.hidden)return;s.hidden=true;if(!document.querySelector(".sheet:not([hidden])"))document.body.classList.remove("sheet-open");const opener=id==="topicsSheet"?(view==="lesson"?$("lhTopic"):$("topicBar")):$("settingsBtn");if(opener&&!opener.closest("[hidden]"))try{opener.focus({preventScroll:true})}catch(e){}}
@@ -4911,7 +4916,7 @@ document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{i
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeSheet(b.dataset.close)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("voiceDialog")?.open){const open=[...document.querySelectorAll(".sheet:not([hidden])")].pop();if(open)closeSheet(open.id)}});
 $("topicBar").addEventListener("click",()=>openSheet("topicsSheet"));
-$("lhTopic").addEventListener("click",()=>openSheet("topicsSheet"));
+$("lhTopic").addEventListener("click",()=>openSheet("topicsSheet",true)); // straight to this chapter's lessons; "Усі теми курсу" goes back
 $("sheetRoute").addEventListener("click",()=>{closeSheet("topicsSheet");setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
 // Logo = home: the start screen the learner chose (route, or the lesson page after "Вільна практика").
