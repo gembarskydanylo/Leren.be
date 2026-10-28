@@ -213,3 +213,6 @@
 - Header (`#hdrTools`): compact language select (UK/EN/FR/AR), theme toggle ☾/☀ and voice button before the flame pill; wired to changeUiLang / the theme switch / the voice dialog; state kept in updateHeader(). On ≤520 px the tagline is hidden (the logo stays the home link). The row under the header (language, theme, voice, "⋯") is gone from the route; the back button stays on inner screens.
 - Hero banner: new secondary button "Самостійно вивчати" (uk/en "Study on my own"/fr "Étudier seul(e)"/ar) under the main button, for new and returning learners; it sets the remembered start screen to the lesson page (leren_home_v1=free).
 - Playwright 390/360/1280 px: theme toggles, language switch re-renders the banner, voice dialog opens, free button → lesson page; no overflow, no page errors. All suites pass. Cache 144.
+
+## UI-145 — header controls removed again — 28 October 2026
+- User (phone screenshot): language / theme / voice buttons in the header are not needed, they are in Settings, and the logo got squeezed. Removed #hdrTools and its JS/CSS (the whole UI-144 header row). Header is again logo + Leren.be + flame + score + settings. Kept: no "⋯" menu, no tools row on the route, "Самостійно вивчати" button on the banner. 412 px check, no errors, all suites pass. Cache 145.
