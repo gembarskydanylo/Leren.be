@@ -28,7 +28,7 @@
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=112"></script>
+<script src="./modules/focused-home/ui.js?v=142"></script>
 <script src="./modules/test-library/ui.js?v=109"></script>
 <script src="./modules/lesson-conversation/content.js?v=112"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
@@ -36,8 +36,8 @@
 <script src="./modules/ai-coach/core.js?v=112"></script>
 <script src="./modules/ai-coach/ui.js?v=112"></script>
 <script src="./modules/word-builder/art.js?v=115"></script>
-<script src="./modules/emoji/cards.js?v=139"></script>
-<script src="./modules/emoji/renderer.js?v=7"></script>
+<script src="./modules/emoji/cards.js?v=142"></script>
+<script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=114"></script>
 <script src="./modules/learning-path/ui.js?v=137"></script>
 <title>Leren.be — Nederlands A1.1 &amp; A1.2</title>
@@ -586,6 +586,8 @@ header{flex-wrap:nowrap}
 main[data-view="lesson"] #topicBar,main[data-view="lesson"] #pathReturn,main[data-view="lesson"] #lessonGuide,main[data-view="lesson"] .meta{display:none!important}
 .lesson-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--surface);border:2px solid var(--line);border-bottom:0;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:12px 14px 4px;margin-bottom:-16px;position:relative;z-index:1}
 .lh-topic{display:inline-flex;align-items:center;gap:6px;min-height:40px;max-width:calc(100% - 64px);padding:6px 14px;border:0;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lh-topic{white-space:normal;overflow:visible;max-width:100%;flex-wrap:wrap;line-height:1.35}
+.study-row{flex-wrap:wrap}.study-row>.btn{white-space:nowrap;min-width:0;flex:1 1 auto}.study-row>.btn.primary{flex:2 1 auto} /* long topic names wrap instead of being cut */
 .lh-topic:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}.lh-topic .lh-ch{color:var(--ink-2)}.lh-topic .lh-caret{font-size:11px;opacity:.7}
 .lesson-head #prog{margin-inline-start:auto;font-weight:900;font-size:14px;color:var(--ink-2);white-space:nowrap}
 .lesson-head .bar{flex:1 0 100%;height:8px}
@@ -1007,10 +1009,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=135">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=112">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=142">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
@@ -1123,6 +1125,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
     <span id="footText"></span>
     <span>Danylo Hembarskyi • <span id="footRights">All rights reserved</span></span>
     <span><a href="mailto:gembarsky.d@gmail.com" style="color:inherit;text-decoration:none">gembarsky.d@gmail.com</a> · <a href="./privacy.html" style="color:inherit" id="footPrivacy">Privacy</a></span>
+    <a id="tgChannelLink" class="report-bug-btn" href="https://t.me/UkrainiansDutch" target="_blank" rel="noopener" style="text-decoration:none">✈️ Telegram</a>
     <button type="button" id="reportBugBtn" class="report-bug-btn"></button>
     <div class="prog-tools" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px">
       <button type="button" id="exportProgBtn" class="report-bug-btn"></button>
@@ -2623,6 +2626,8 @@ function updateHeader(){
  $("tagline").textContent=u.tagline;
  $("progressLabel").textContent=u.learned;
  $("footText").textContent=u.footer;$("footRights").textContent=u.rights||"All rights reserved";$("footPrivacy").textContent=u.privacy||"Privacy";
+ // Telegram channel: daily word, quiz, tips and facts about Belgium (tools/tg-bot).
+ const tg=$("tgChannelLink");if(tg)tg.textContent={uk:"✈️ Наш канал у Telegram",en:"✈️ Our Telegram channel",fr:"✈️ Notre chaîne Telegram",ar:"✈️ قناتنا على Telegram"}[uiLang]||"✈️ Telegram";
  const rbtn=$("reportBugBtn");
  if(rbtn){
   rbtn.textContent=u.reportBug||"⚠ Report a bug";
@@ -3183,7 +3188,7 @@ function renderStudyControls(card){
  if(item["ex_"+targetLang])fb.appendChild(tgt(el("p","example",item["ex_"+targetLang])));
  if(item["ex_"+uiLang])fb.appendChild(el("p","",item["ex_"+uiLang]));
  card.appendChild(fb);
- const row=el("div","row");
+ const row=el("div","row study-row");
  const hear=el("button","btn listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(spoken(),hear);row.appendChild(hear);
  const known=el("button","btn primary",u.markKnown);known.type="button";known.onclick=()=>{
   const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;

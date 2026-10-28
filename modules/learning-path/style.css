@@ -103,3 +103,20 @@
 @media(max-width:360px){.lp-toolbar select{width:126px}.lp-toolbar>.lp-button{padding-inline:7px;font-size:11px}.lp-placement .lp-options .lp-button{font-size:14px;padding:9px 7px}}
 .lp-placement-progress progress{appearance:none;border:0;border-radius:10px;overflow:hidden;background:var(--surface-2)}.lp-placement-progress progress::-webkit-progress-bar{background:var(--surface-2);border-radius:10px}.lp-placement-progress progress::-webkit-progress-value{background:var(--oranje);border-radius:10px}.lp-placement-progress progress::-moz-progress-bar{background:var(--oranje);border-radius:10px}
 .lp-word-art.lp-drawn>svg{width:auto;height:100%;aspect-ratio:1}
+/* Phones: the study card fits with "Got it, next" above the bottom navigation */
+@media(max-width:620px){
+ .lp-exercise .lp-word-art{height:clamp(110px,18vh,150px);margin:6px auto 10px}
+ .lp-exercise>p:not([class]){font-size:14px;margin:4px 0}
+ .lp-exercise .fh-word-row .lp-word{font-size:30px}
+ .lp-exercise .fh-example{margin:10px 0 4px;padding-top:10px}
+ .lp-exercise .fh-study-actions{margin-top:12px}
+}
+@media(max-width:620px) and (max-height:780px){
+ .lp-exercise .lp-word-art{height:96px;margin:4px auto 8px}
+ .lp-exercise .lp-steps{margin:8px 0}
+ .lp-exercise h2{margin:4px 0}
+}
+/* Very short phones (≈320×640): the word and translation matter more than the picture, so the picture steps aside */
+@media(max-width:620px) and (max-height:680px){
+ .lp-exercise .lp-word-art{display:none}
+}
