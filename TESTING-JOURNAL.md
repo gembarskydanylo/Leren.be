@@ -243,3 +243,6 @@
 - Fixed: exact SVG clocks (clk_1–15; quarters were wrong), number tiles (10/11/12/15/20/30/50/100), calendar tiles for months and weekdays, body-map pictures for de buik / de keelpijn / de keelontsteking, eraser picture for de gom, 🏁 for eindigen.
 - `makeOptions` no longer offers distractors that share a meaning part with the right answer ("добрий / хороший" vs "добрий / привітний").
 - New test tests/q-audit.cjs; all suites pass.
+
+## UI-151 — "Склади слово": 53 → 94 words
+- Added 41 everyday nouns with original SVG illustrations (food, home, transport, animals, clothes, nature, people, objects), 4-language translations, articles and plurals; plural aliases for card pictures. All suites pass; game checked at 390×800.

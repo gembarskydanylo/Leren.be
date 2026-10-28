@@ -17,6 +17,6 @@ for(const w of wb.WORDS){
 for(const l of ['uk','en','fr','ar']){const t=wb.tr(l);for(const k of ['title','sub','ask','hint','hintLetter','erase','wrong','show','right','plural','next','done','again','other'])assert(t[k],l+'.'+k)}
 assert(html.includes('["wb","🔤",true]')&&html.includes('wb:wbStart'),'Game must be registered in Games');
 const files=JSON.parse(sw.match(/const APP_FILES = (\[[^;]+\]);/)[1]);
-for(const [f,v] of [['art.js',115],['game.js',114],['style.css',113]])assert(files.includes('./modules/word-builder/'+f+'?v='+v)&&html.includes('./modules/word-builder/'+f+'?v='+v),'Offline asset '+f);
+for(const [f,v] of [['art.js',150],['game.js',150],['style.css',113]])assert(files.includes('./modules/word-builder/'+f+'?v='+v)&&html.includes('./modules/word-builder/'+f+'?v='+v),'Offline asset '+f);
 assert(files.includes('./img/games/wb-v114.webp')&&fs.existsSync('img/games/wb-v114.webp'));
 console.log('PASS: '+words.length+' illustrated words with articles, plurals and 4 languages; registered game, offline assets');

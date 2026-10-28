@@ -33,7 +33,18 @@
   ['mes','het','messen','ніж','knife','couteau','سكين'],
   ['potlood','het','potloden','олівець','pencil','crayon','قلم رصاص'],
   ['broek','de','broeken','штани','trousers','pantalon','بنطال'],
-  ['trui','de','truien','светр','sweater','pull','سترة صوفية']
+  ['trui','de','truien','светр','sweater','pull','سترة صوفية'],
+  ['sinaasappel','de','sinaasappels','апельсин','orange','orange','برتقالة'],['citroen','de','citroenen','лимон','lemon','citron','ليمونة'],['aardbei','de','aardbeien','полуниця','strawberry','fraise','فراولة'],
+  ['koekje','het','koekjes','печиво','cookie','biscuit','بسكويت'],['pizza','de',"pizza's",'піца','pizza','pizza','بيتزا'],
+  ['kast','de','kasten','шафа','wardrobe','armoire','خزانة'],['spiegel','de','spiegels','дзеркало','mirror','miroir','مرآة'],['sofa','de',"sofa's",'диван','sofa','canapé','أريكة'],
+  ['kopje','het','kopjes','чашка','cup','tasse','فنجان'],['glas','het','glazen','склянка','glass','verre','كأس'],['fles','de','flessen','пляшка','bottle','bouteille','زجاجة'],['pan','de','pannen','каструля','pot','casserole','قدر'],
+  ['vliegtuig','het','vliegtuigen','літак','plane','avion','طائرة'],['boot','de','boten','човен','boat','bateau','قارب'],['tram','de','trams','трамвай','tram','tramway','ترام'],['brug','de','bruggen','міст','bridge','pont','جسر'],
+  ['paard','het','paarden','кінь','horse','cheval','حصان'],['koe','de','koeien','корова','cow','vache','بقرة'],['varken','het','varkens','свиня','pig','cochon','خنزير'],['konijn','het','konijnen','кролик','rabbit','lapin','أرنب'],['eend','de','eenden','качка','duck','canard','بطة'],
+  ['sok','de','sokken','шкарпетка','sock','chaussette','جورب'],['pet','de','petten','кепка','cap','casquette','قبعة'],['handschoen','de','handschoenen','рукавичка','glove','gant','قفاز'],['jurk','de','jurken','сукня','dress','robe','فستان'],['sjaal','de','sjalen','шарф','scarf','écharpe','وشاح'],
+  ['maan','de','manen','місяць','moon','lune','قمر'],['ster','de','sterren','зірка','star','étoile','نجمة'],['wolk','de','wolken','хмара','cloud','nuage','سحابة'],['berg','de','bergen','гора','mountain','montagne','جبل'],['vuur','het','','вогонь','fire','feu','نار'],
+  ['man','de','mannen','чоловік','man','homme','رجل'],['vrouw','de','vrouwen','жінка','woman','femme','امرأة'],['kind','het','kinderen','дитина','child','enfant','طفل'],
+  ['computer','de','computers','комп’ютер','computer','ordinateur','حاسوب'],['bal','de','ballen','м’яч','ball','ballon','كرة'],['schaar','de','scharen','ножиці','scissors','ciseaux','مقص'],['hamer','de','hamers','молоток','hammer','marteau','مطرقة'],
+  ['ballon','de','ballonnen','повітряна кулька','balloon','ballon','بالون'],['cadeau','het','cadeaus','подарунок','gift','cadeau','هدية'],['kaars','de','kaarsen','свічка','candle','bougie','شمعة']
  );
  const LANGS=['uk','en','fr','ar'];
  const T={
