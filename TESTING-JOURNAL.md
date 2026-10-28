@@ -204,3 +204,10 @@
 - Card header topic name (.lh-topic) wraps instead of being cut. Study row in "Вчити": buttons no longer squeeze "Ще раз" onto two lines.
 - Automatic sweep (412×915): home, intro, study, 5 lesson modes, 13 games, Toets, dictionary, progress — no horizontal scroll, no broken images, no clipped text (dictionary filter chips scroll by design). New tests/emoji-pack.cjs; all 19 suites pass. Cache leren-be-v142 so phones drop the old cut pictures.
 - Not done: physical phone check; the remaining cat pictures keep their original style with a softened edge.
+
+## UI-143 · Desktop/phone home layout; Review mode and pain pictures · 2026-10-28
+- Transferred TEST-009/009b from the test repo (desktop/): header with round language flag, bell and account; two-column hero; topic cards with description, % and button; desktop-home module. Cache leren-be-v143, RELEASE_VERSION 143.
+- User report (phone): "Повтор" showed the Dutch phrase with the same Dutch phrase as answers; pain pictures (stomach, ear...) did not show where it hurts; some emoji did not fit the text.
+- Fix 1: Review mode now shows the Dutch word and offers translations (same direction as Audio); label "Обери переклад" (reviewSub in 4 languages). Fill-the-gap cards are unchanged.
+- Fix 2: new body-map pictures (red glow on the aching part) for buikpijn, oorpijn, keelpijn, hoofdpijn, rug, schouder, knie, been, voet, neus, tandpijn, hand; used by the cards and by the "Скарги" words (replacing 🤢🧍🗣️🤷🦵🦶) and "de keel". SVG pictures are larger (150px; 100px on short phones).
+- tests/pain-art.cjs added; all 20 suites pass. Full sweep (412, 320, 1366, dark, Arabic): no errors.
