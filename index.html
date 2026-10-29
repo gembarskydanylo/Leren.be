@@ -112,15 +112,15 @@ main{width:100%;max-width:640px;margin:0 auto;padding:12px 14px 24px;display:fle
 header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
  background:radial-gradient(circle at 100% 0,rgba(255,255,255,.14) 0 90px,transparent 91px),var(--oranje);color:var(--on-oranje);border-radius:var(--r-lg);padding:14px 14px 14px 18px;
  box-shadow:0 var(--depth) 0 var(--oranje-deep),var(--lift);overflow:hidden}
-.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 0;overflow:hidden;container-type:inline-size;cursor:pointer;border-radius:14px}.brand:focus-visible{outline:3px solid #fff;outline-offset:3px}.hdr-stats{flex:none}.brand h1{white-space:nowrap}
-.brand::before{content:"";flex:none;width:38px;height:38px;border-radius:11px; /* cat mascot (app icon) */
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 0;overflow:hidden;container-type:inline-size;cursor:pointer;border-radius:14px;background:#FFF6EC;padding:5px 10px;box-shadow:0 3px 0 rgba(36,31,28,.24)}.brand:focus-visible{outline:3px solid #17365A;outline-offset:3px}.hdr-stats{flex:none}.brand h1{white-space:nowrap}
+.brand::before{content:"";flex:none;width:52px;height:52px;border-radius:12px; /* cat mascot (app icon) */
  background:#FCC447 url("./icon-192.png") center/cover no-repeat;
  box-shadow:0 0 0 2px rgba(255,255,255,.9)}
 .brand h1{font-family:var(--font-display);font-size:22px;line-height:1;margin:0;font-weight:800;letter-spacing:-.01em}
-.brand h1{background:#FFF6EC;border-radius:7px;padding:4px 8px 6px;border-bottom:3px solid #E87818;box-shadow:0 3px 0 rgba(36,31,28,.24)}
+.brand h1{background:none;border-radius:0;padding:1px 0 4px;border-bottom:3px solid #E87818;box-shadow:none}
 .brand h1 .brand-leren,.brand h1 .brand-com{color:#17365A;text-shadow:0 1px 0 #ccd6df,0 2px 0 #9baebe,0 3px 0 rgba(23,54,90,.55)}
 .brand h1 .brand-be-b,.brand h1 .brand-be-e{color:#E87818;text-shadow:0 1px 0 #ca6615,0 2px 0 #a24a10,0 3px 0 rgba(115,51,10,.55)}
-.brand p{margin:0;padding:3px 8px;border-radius:var(--r-pill);background:rgba(0,0,0,.16);font-size:12px;font-weight:800;line-height:1.2}
+.brand p{display:none}
 .select-group{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9)}
 .lang-select,.theme-btn,.score-pill{min-height:38px;border-radius:var(--r-sm);border:0;font-weight:800;font-size:13px}
 .lang-select option{background:#fff;color:#2A1D12}
