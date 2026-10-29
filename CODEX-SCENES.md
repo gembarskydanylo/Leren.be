@@ -30,3 +30,12 @@ git add -A && git commit -m "Add 3D scene pictures" && git pull --no-rebase orig
 ```
 If the pull conflicts in sw.js, index.html or modules/scenes/map.js, take both sides and re-run `python3 tools/add-scenes.py`. Then check `gh run list -R gembarskydanylo/Leren.be -L 1` shows success.
 Publish ALL pictures you have generated so far, in one go; later batches use the same steps.
+
+---
+# Part 2: unify all card pictures (see CARDS-MANIFEST.csv)
+CARDS-MANIFEST.csv lists every card (topic, id, Dutch, Ukrainian, English, current_picture). `current_picture` is:
+- `emoji-3d` (980): already a Fluent 3D emoji — keep, unless the picture does not match the word (check them on contact sheets; a wrong one goes into your list for regeneration);
+- `flat-svg` (68): a flat drawing — regenerate as a 3D picture in the same style as the scene pictures;
+- `emoji` (98): a plain system emoji (inconsistent look) — regenerate as 3D.
+Priority: first the 166 `flat-svg` and `emoji` cards, then the mismatching `emoji-3d` ones. For each card the scene is the meaning of the Dutch word/sentence (use the Ukrainian and English columns to disambiguate). When a word is ambiguous or abstract (verbs of thought, grammar words), do NOT invent a picture: list it in the report instead.
+Never touch big illustrations (mascot, banners, topic covers, learning path, game cards).
