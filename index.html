@@ -19,6 +19,7 @@
 <script src="./modules/learning-path/core.js?v=102"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
+<script src="./modules/scenes/map.js?v=153"></script>
 <script src="./modules/card-art/art.js?v=147"></script>
 <script src="./modules/card-art/people.js?v=135"></script>
 <script src="./modules/card-art/food.js?v=135"></script>
@@ -6790,7 +6791,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="152";
+const RELEASE_VERSION="153";
 const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Новий вигляд головної.", "items": ["Мова пояснень — круглий прапорець у шапці.", "Теми курсу — великі картки з описом, відсотком і кнопкою «Продовжити».", "Картинки в уроках тепер цілі, без обрізаних країв.", "«Повторити» тепер просить обрати переклад, а малюнки болю показують, де саме болить.", "На комп’ютері: шапка на всю ширину, меню з іконками, нагадування й акаунт поруч."], "hint": "Почни з картки «Твій наступний урок».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A new home screen.", "items": ["Explanation language is now a round flag in the header.", "Course topics are big cards with a description, % done and a Continue button.", "Lesson pictures are complete — no more cut edges.", "Review now asks for the translation, and pain pictures mark exactly where it hurts.", "On a computer: full-width header, menu with icons, reminders and account at hand."], "hint": "Start with “Your next lesson”.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "Un nouvel accueil.", "items": ["La langue des explications est un drapeau rond dans l’en-tête.", "Les thèmes sont de grandes cartes avec description, % terminé et bouton Continuer.", "Les images des leçons sont complètes, sans bords coupés.", "La révision demande la traduction et les images de douleur montrent l’endroit exact.", "Sur ordinateur : en-tête pleine largeur, menu avec icônes, rappels et compte à portée."], "hint": "Commence par « Ta prochaine leçon ».", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "صفحة رئيسية جديدة.", "items": ["لغة الشرح أصبحت علماً دائرياً في الأعلى.", "مواضيع الدورة بطاقات كبيرة مع وصف ونسبة الإنجاز وزر «تابع».", "صور الدروس كاملة الآن دون حواف مقطوعة.", "المراجعة تطلب الآن الترجمة، وصور الألم تُظهر مكان الألم بدقة.", "على الحاسوب: شريط علوي بعرض الصفحة وقائمة بأيقونات والتذكيرات والحساب في متناولك."], "hint": "ابدأ ببطاقة «درسك التالي».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
