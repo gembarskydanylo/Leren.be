@@ -47,6 +47,8 @@ c=await group('/topics',7,true);assert.equal(c.length,0);
 c=await group('/topics',42,false);assert.match(c[0].body.text,/Теми/);
 c=await group('/topics@lerenbe_bot',42,true);assert.deepEqual(c.map(x=>x.method),['createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','sendMessage']);
 assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Опишіть екран словами/);
+calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:2,chat:{id:-100,type:'supergroup'},from:{id:42},new_chat_members:[{id:7,first_name:'Оля & друзі'},{id:999,is_bot:true}]}})}),env,ctx);await flush();
+assert.equal(calls.length,1);assert.equal(calls[0].method,'sendMessage');assert.match(calls[0].body.text,/раді вас бачити/i);assert.match(calls[0].body.text,/Оля &amp; друзі/);assert.match(calls[0].body.text,/lerenbe\.com/);assert.equal(calls[0].body.reply_markup.inline_keyboard[0][0].url,'https://lerenbe.com/?utm_source=telegram');
 
 // Bug reports: /bug → text and screenshots go to the admin with one header; /done ends; the admin's reply goes back
 let mid=500;const real=globalThis.fetch;globalThis.fetch=async(url,opt)=>{const res=await real(url,opt);const j=await res.json();if(!url.includes('anthropic')&&!j.result?.message_id&&typeof j.result==='object')j.result={message_id:++mid};return {ok:true,json:async()=>j}};

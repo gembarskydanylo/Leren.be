@@ -205,6 +205,14 @@ async function makeTopics(env, msg) {
   return tg(env, "sendMessage", {chat_id: chat, text: "✅ Готово: " + made.join(", ")});
 }
 
+function welcomeGroupMembers(env, msg) {
+  const members = (msg.new_chat_members || []).filter(user => !user.is_bot);
+  if (!members.length) return;
+  const names = members.map(user => `<a href="tg://user?id=${user.id}">${esc(user.first_name || "друзі")}</a>`).join(", ");
+  const text = `👋 <b>Вітаємо в нашій групі!</b>\nДо нас приєдналися: ${names}. Дуже раді вас бачити!\n\nТут ми разом вивчаємо нідерландську, практикуємо фрази для життя в Бельгії та підтримуємо одне одного 🇧🇪💛\n\nСміливо ставте запитання й діліться власним досвідом. Будьмо доброзичливими та допомагаймо одне одному!\n\n📲 Безкоштовний застосунок: lerenbe.com`;
+  return tg(env, "sendMessage", {chat_id: msg.chat.id, text, parse_mode: "HTML", reply_markup: appButton(env), link_preview_options: {is_disabled: true}});
+}
+
 // --- Bug reports ---------------------------------------------------------------------------------
 const BUG_HELP = `🐞 <b>Повідомлення про помилку</b>
 
@@ -246,6 +254,7 @@ async function relayAnswer(env, msg) {
 async function onMessage(env, msg) {
   const chat = msg.chat.id, text = (msg.text || "").trim();
   const isAdmin = String(msg.from?.id) === String(env.ADMIN_ID);
+  if (msg.chat.type !== "private" && msg.new_chat_members?.length) return welcomeGroupMembers(env, msg);
   if (msg.chat.type === "supergroup" && isAdmin && /^\/topics(@\w+)?$/.test(text)) return makeTopics(env, msg);
   if (isAdmin && msg.reply_to_message && await relayAnswer(env, msg)) return;
   if (msg.chat.type !== "private") return;
