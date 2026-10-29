@@ -406,6 +406,8 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
     const [nl,uk,en,fr,ar,icon]=line.split('|');
     return [`course_pt_${tab}_${i+1}`,nl,en,fr,uk,ar,icon||'📖'];
    })).items);
+  // body-part sentences get the body-map pictures (a flexed biceps is not a shoulder)
+  if(typeof KT_IMG!=='undefined'){const P={1:'neus',2:'neus',3:'hand',4:'been',5:'schouder',6:'voet'};for(const it of DATA.klachten.items){const m=/^course_pt_klachten_(\d)$/.exec(it.id);if(m&&P[m[1]]&&KT_IMG[P[m[1]]])it.icon=KT_IMG[P[m[1]]]}}
   // Move individual cards where an older collection spans several chapters.
   const move=(from,to,ids)=>{const selected=new Set(ids);DATA[to].items.push(...DATA[from].items.filter(x=>selected.has(x.id)));DATA[from].items=DATA[from].items.filter(x=>!selected.has(x.id));};
   move('mail','birthday',['b_proficiat']);move('mail','invitation',['b_spijt']);

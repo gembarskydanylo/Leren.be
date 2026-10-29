@@ -17,5 +17,5 @@ const disk=new Map(),storage={getItem:k=>disk.get(k),setItem:(k,v)=>disk.set(k,v
 assert.equal(model.observe({xp:250,lessons:1}).length,3);assert.equal(model.observe({xp:250,lessons:1}).length,0);
 model=r.LerenRewards.create(storage);assert.equal(Object.keys(model.state.earned).length,3);
 const blocked=r.LerenRewards.create({getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}});blocked.observe({xp:100});assert.equal(blocked.persistent,false);
-assert(html.includes('const RELEASE_VERSION="151"'));assert(!html.includes('leren_beta_progress_v1'));assert(html.includes('currentDocument.updateTime='));assert(!html.includes('modules/personal-coach/'));
+assert(html.includes('const RELEASE_VERSION="152"'));assert(!html.includes('leren_beta_progress_v1'));assert(html.includes('currentDocument.updateTime='));assert(!html.includes('modules/personal-coach/'));
 console.log('PASS: production route session preserved across cloud conflicts; results, gifts and XP merge; existing CAS retained; durable awards; production release and beta scope');

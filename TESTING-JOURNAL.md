@@ -246,3 +246,6 @@
 
 ## UI-151 — "Склади слово": 53 → 94 words
 - Added 41 everyday nouns with original SVG illustrations (food, home, transport, animals, clothes, nature, people, objects), 4-language translations, articles and plurals; plural aliases for card pictures. All suites pass; game checked at 390×800.
+
+## UI-152 — shoulder sentence picture
+- course_pt_klachten_5 ("Hij heeft pijn aan zijn schouder") showed a flexed biceps; course_pt_klachten_1–3,5 now use the body-map pictures (nose, hand, shoulder). Legs/feet keep the 3D leg/foot.
