@@ -27,14 +27,14 @@ content.facts.forEach(f=>{assert(f.e&&f.nl&&f.uk&&f.words.length>=2);assert(!/[<
 
 // Schedule: which posts go out on a Tuesday, hour by hour
 const jobs={};for(let h=0;h<24;h++){calls=[];await bot.scheduled({scheduledTime:Date.parse('2026-11-03T00:00:00Z')+h*36e5},env,ctx);await flush();if(calls.length)jobs[h+1]=calls.map(c=>c.method).join()}
-assert.deepEqual(Object.keys(jobs),['8','13','19']);assert.match(jobs[8],/^send(Voice|Message)$/);assert.equal(jobs[13],'sendMessage');assert.equal(jobs[19],'sendPoll');
+assert.deepEqual(Object.keys(jobs),['8','13','19']);assert.equal(jobs[8],'sendMessage');assert.equal(jobs[13],'sendMessage');assert.equal(jobs[19],'sendPoll');
 calls=[];await bot.scheduled({scheduledTime:Date.parse('2026-11-02T08:00:00Z')},env,ctx);await flush();
 assert.equal(calls.at(-1).body.chat_id,'42');assert.match(calls.at(-1).body.text,/150/);
 
 // Commands
 let c=await send('/start channel');assert.match(c[0].body.text,/lerenbe\.com/);assert.equal(kv.get('tg:u:7'),'channel');
 c=await send('/quiz');assert.equal(c[0].method,'sendPoll');assert.equal(c[0].body.is_anonymous,false);
-c=await send('/word');assert(['sendVoice','sendMessage'].includes(c[0].method));
+c=await send('/word');assert.equal(c[0].method,'sendMessage');assert.equal(typeof c[0].body.text,'string');assert.equal(c[0].body.voice,undefined);
 c=await send('/post tip');assert.equal(c[0].method,'sendMessage');assert.notEqual(c[0].body.chat_id,'@lerenbe'); // not admin: treated as unknown command
 c=await send('/post quiz',42);assert.equal(c[0].body.chat_id,'@lerenbe');assert.equal(c[0].body.is_anonymous,true);assert.match(c[1].body.text,/Опубліковано/);
 
@@ -51,15 +51,15 @@ assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Ск�
 let mid=500;const real=globalThis.fetch;globalThis.fetch=async(url,opt)=>{const res=await real(url,opt);const j=await res.json();if(!url.includes('anthropic')&&!j.result?.message_id&&typeof j.result==='object')j.result={message_id:++mid};return {ok:true,json:async()=>j}};
 const raw=async m=>{calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:9,chat:{id:m.from,type:'private'},...m,from:{id:m.from,first_name:'Olha',username:'olha_ua'}}})}),env,ctx);await flush();return calls};
 c=await send('/bug',8);assert.match(c[0].body.text,/скріншот/);
-c=await raw({from:8,text:'Тест не відкривається'});assert.deepEqual(c.map(x=>x.method),['sendMessage','copyMessage','sendMessage']);
-assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт.*@olha_ua.*8/s);assert.equal(c[1].body.from_chat_id,8);assert.match(c[2].body.text,/Дякуємо/);
+c=await raw({from:8,text:'Тест не відкривається'});assert.deepEqual(c.map(x=>x.method),['sendMessage','sendMessage','sendMessage']);
+assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт.*@olha_ua.*8/s);assert.equal(c[1].body.text,'Тест не відкривається');assert.match(c[2].body.text,/Дякуємо/);
 const header=c[0];const headerId=mid-2;
-c=await raw({from:8,photo:[{file_id:'p'}],caption:'ось скрін'});assert.deepEqual(c.map(x=>x.method),['copyMessage','sendMessage']);assert.match(c[1].body.text,/Додано/);
-c=await raw({from:8,photo:[{file_id:'p2'}],media_group_id:'g'});assert.deepEqual(c.map(x=>x.method),['copyMessage']);
+c=await raw({from:8,photo:[{file_id:'p'}],caption:'ось скрін'});assert.deepEqual(c.map(x=>x.method),['sendMessage','sendMessage']);assert.equal(c[0].body.text,'ось скрін');assert.match(c[1].body.text,/Додано/);
+c=await raw({from:8,photo:[{file_id:'p2'}],media_group_id:'g'});assert.deepEqual(c.map(x=>x.method),['sendMessage']);assert.match(c[0].body.text,/Вкладення.*не переслано/);
 c=await send('/done',8);assert.match(c[0].body.text,/Дякуємо/);assert.equal(kv.has('tg:bug:8'),false);
-c=await raw({from:9,photo:[{file_id:'p'}]});assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт/); // a screenshot alone starts a report
+c=await raw({from:9,photo:[{file_id:'p'}]});assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт/);assert.match(c[1].body.text,/Вкладення.*не переслано/); // a screenshot starts a report; only text is relayed
 calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:77,chat:{id:42,type:'private'},from:{id:42},text:'Дякую, виправимо!',reply_to_message:{message_id:headerId}}})}),env,ctx);await flush();
-assert.deepEqual(calls.map(x=>x.method),['sendMessage','copyMessage','sendMessage']);assert.equal(calls[0].body.chat_id,'8');assert.equal(calls[1].body.message_id,77);assert.match(calls[2].body.text,/надіслано/);
+assert.deepEqual(calls.map(x=>x.method),['sendMessage','sendMessage','sendMessage']);assert.equal(calls[0].body.chat_id,'8');assert.equal(calls[1].body.text,'Дякую, виправимо!');assert.match(calls[2].body.text,/надіслано/);
 globalThis.fetch=real;env.PER_USER=ok;
 
 // Cat stickers: the admin creates the pack from lerenbe.com images; /post stickers sends one with an "add" button

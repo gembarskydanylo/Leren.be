@@ -1,9 +1,9 @@
 // Leren.be Telegram bot (Cloudflare Worker "leren-tg"). Deploy: .github/workflows/deploy-tg-bot.yml (tools/tg-bot/wrangler.toml).
-// Channel: word of the day with audio, evening quiz, tips, facts about Belgium (Dutch + Ukrainian), weekly app promo
+// Channel: text word of the day, evening quiz, tips, facts about Belgium (Dutch + Ukrainian), weekly app promo
 // (schedule below, Brussels time).
 // Private chat: /start, /word, /quiz, /app, /id, and any question about Dutch → Claude answers in Ukrainian.
-// Bug reports: /bug (or just a screenshot) → everything the tester sends until /done goes to REPORTS_CHAT
-// (optional REPORTS_THREAD for a topic; default: the admin's chat). A reply to a report there goes back to the tester.
+// Bug reports: /bug (or just a screenshot) → text and captions go to REPORTS_CHAT; media stays out
+// (optional REPORTS_THREAD for a topic; default: the admin's chat). A text reply to a report goes back to the tester.
 // Admin (ADMIN_ID): /post word|quiz|tip|promo|welcome (to the channel now; welcome is also pinned), /preview … (to you only), /report.
 // /stickers creates the cat sticker pack (images in /stickers on lerenbe.com); /post stickers shows it in the channel.
 // In a group with Topics turned on, the admin's /topics creates the testers' topics, each with a pinned how-to.
@@ -13,7 +13,6 @@
 import content from "./content.js";
 
 const SITE = "https://lerenbe.com/?utm_source=telegram";
-const AUDIO = "https://lerenbe.com/audio/nl/";
 const START = Date.UTC(2026, 10, 1); // day 0 of the rotation
 // [weekday (0 = Sunday) or "*", Brussels hour, job]
 const SCHEDULE = [
@@ -48,10 +47,6 @@ const appButton = env => ({inline_keyboard: [[{text: "📲 Відкрити lere
 async function postWord(env, chat, n) {
   const w = pick(content.words, n);
   const text = `🇧🇪 <b>Слово дня</b>\n\n<b>${esc(w.w)}</b> — ${esc(w.uk)}${w.pl ? `\n<i>мн.: ${esc(w.pl)}</i>` : ""}\n\n💬 <i>${esc(w.x)}</i>\n${esc(w.xu)}\n\n#слово_дня`;
-  if (w.a) {
-    const r = await tg(env, "sendVoice", {chat_id: chat, voice: AUDIO + w.a + ".m4a", caption: text, parse_mode: "HTML", reply_markup: appButton(env)});
-    if (r.ok) return r;
-  }
   return tg(env, "sendMessage", {chat_id: chat, text, parse_mode: "HTML", reply_markup: appButton(env), link_preview_options: {is_disabled: true}});
 }
 function postQuiz(env, chat, n) {
@@ -217,7 +212,8 @@ async function relayReport(env, msg, first) {
     const who = esc([u.first_name, u.last_name].filter(Boolean).join(" ")) + (u.username ? " @" + esc(u.username) : "");
     await remember(env, await tg(env, "sendMessage", {...to, text: `🐞 <b>Новий звіт</b> від ${who} (<code>${u.id}</code>)\n<i>Відповідайте реплаєм, і бот передасть відповідь.</i>`, parse_mode: "HTML"}), u.id);
   }
-  await remember(env, await tg(env, "copyMessage", {...to, from_chat_id: msg.chat.id, message_id: msg.message_id}), u.id);
+  const reportText = msg.text || msg.caption || (msg.photo || msg.video || msg.document || msg.animation ? "📎 Вкладення отримано від тестувальника (не переслано)." : "");
+  if (reportText) await remember(env, await tg(env, "sendMessage", {...to, text: reportText}), u.id);
   await env.RATE?.put("tg:bug:" + u.id, "1", {expirationTtl: BUG_TTL}).catch(() => {});
   // One confirmation per message; for an album only the photo with the caption answers, not every photo.
   if (first) return tg(env, "sendMessage", {chat_id: msg.chat.id, text: "✅ Дякуємо! Звіт передано команді. Можете додати ще скріншоти чи опис, а коли все — /done."});
@@ -229,7 +225,8 @@ async function relayAnswer(env, msg) {
   const user = await env.RATE?.get("tg:rep:" + msg.reply_to_message.message_id);
   if (!user) return false;
   await tg(env, "sendMessage", {chat_id: user, text: "💬 <b>Відповідь від команди lerenbe.com:</b>", parse_mode: "HTML"});
-  const r = await tg(env, "copyMessage", {chat_id: user, from_chat_id: msg.chat.id, message_id: msg.message_id});
+  const replyText = msg.text || msg.caption || "Відповідайте текстом, будь ласка — вкладення бот не пересилає.";
+  const r = await tg(env, "sendMessage", {chat_id: user, text: replyText});
   await tg(env, "sendMessage", {chat_id: msg.chat.id, ...(msg.message_thread_id ? {message_thread_id: msg.message_thread_id} : {}), text: r.ok ? "✅ Відповідь надіслано" : "❌ Не вдалося надіслати: " + r.description, reply_parameters: {message_id: msg.message_id}});
   return true;
 }
@@ -287,7 +284,7 @@ async function setup(env, origin) {
   const results = {
     webhook: await tg(env, "setWebhook", {url: origin + "/tg", secret_token: env.WEBHOOK_SECRET, allowed_updates: ["message"], drop_pending_updates: true}),
     commands: await tg(env, "setMyCommands", {commands: [
-      {command: "word", description: "Випадкове слово з озвученням"},
+      {command: "word", description: "Випадкове слово дня"},
       {command: "quiz", description: "Міні-вікторина"},
       {command: "app", description: "Застосунок lerenbe.com"},
       {command: "bug", description: "Повідомити про помилку (можна зі скріншотом)"}]}),
