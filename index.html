@@ -113,9 +113,8 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
  background:radial-gradient(circle at 100% 0,rgba(255,255,255,.14) 0 90px,transparent 91px),var(--oranje);color:var(--on-oranje);border-radius:var(--r-lg);padding:14px 14px 14px 18px;
  box-shadow:0 var(--depth) 0 var(--oranje-deep),var(--lift);overflow:hidden}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 0;overflow:hidden;container-type:inline-size;cursor:pointer;border-radius:14px;background:#FFF6EC;padding:5px 10px;box-shadow:0 3px 0 rgba(36,31,28,.24)}.brand:focus-visible{outline:3px solid #17365A;outline-offset:3px}.hdr-stats{flex:none}.brand h1{white-space:nowrap}
-.brand::before{content:"";flex:none;width:52px;height:52px;border-radius:12px; /* cat mascot (app icon) */
- background:#FCC447 url("./icon-192.png") center/cover no-repeat;
- box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.brand::before{content:"";flex:none;width:52px;height:52px;border-radius:0; /* transparent cat mascot */
+ background:transparent url("./img/mascot/lerenbe-cutout.png") center/contain no-repeat;box-shadow:none}
 .brand h1{font-family:var(--font-display);font-size:22px;line-height:1;margin:0;font-weight:800;letter-spacing:-.01em}
 .brand h1{background:none;border-radius:0;padding:1px 0 4px;border-bottom:3px solid #E87818;box-shadow:none}
 .brand h1 .brand-leren,.brand h1 .brand-com{color:#17365A;text-shadow:0 1px 0 #ccd6df,0 2px 0 #9baebe,0 3px 0 rgba(23,54,90,.55)}
@@ -1031,6 +1030,16 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
+<style>
+@media (max-width:760px){
+ body>main>header{flex-wrap:wrap!important;align-items:center}
+ body>main>header>.brand{order:0;flex:1 1 100%;width:100%;box-sizing:border-box;overflow:visible;gap:10px;padding:5px 10px}
+ body>main>header>.brand::before{width:48px;height:48px;border-radius:0;background:transparent url("./img/mascot/lerenbe-cutout.png") center/contain no-repeat;box-shadow:none}
+ body>main>header>.brand h1{font-size:clamp(20px,5vw,24px);max-width:none;overflow:visible}
+ body>main>header>.comp-header-route{display:none!important}
+ body>main>header>.hdr-stats{order:1;flex:1 1 100%;width:100%;box-sizing:border-box;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-inline-start:0}
+}
+</style>
 </head>
 <body>
 <main data-view="path">
