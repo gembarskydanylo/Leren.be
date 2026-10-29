@@ -112,20 +112,32 @@ async function postStickers(env, chat, n) {
 }
 
 // --- Private chat ------------------------------------------------------------------------------
-const SYSTEM = `You are the Leren.be Telegram assistant. You help Ukrainians who live in Belgium learn Dutch as spoken in Flanders (nl-BE), levels A1-A2.
-- Answer in Ukrainian. Give Dutch examples in italics. Keep it short: at most about 120 words, simple language, like a kind teacher.
-- When the learner writes in Dutch, correct mistakes and explain the rule briefly.
-- Prefer Flemish usage when it differs from the Netherlands, and say so.
-- Only help with the Dutch language and the language of daily life in Belgium (gemeente, huisarts, school, work, shopping). For other requests, say kindly that you only help with Dutch.
-- Do not give medical, legal or financial decisions; teach the words and suggest a professional. Never ask for passwords, national register, bank or card numbers.
-- When you mention the app, write its address as lerenbe.com (never "Leren.be": Telegram would link that to a different site).
-- Formatting: plain text with Telegram HTML, ONLY <b> and <i> tags. No markdown, no headings, no tables.`;
+const SYSTEM = `You are the Dutch-language coach for Leren.be. Your learners are mostly Ukrainians in Belgium studying A1–A2 Dutch as spoken in Flanders (nl-BE).
+
+Teaching:
+- Reply in Ukrainian by default. If the learner asks for another language, use it. Keep explanations warm, simple, and usually under 120 words.
+- First identify what they need: translation, sentence correction, grammar explanation, a practical phrase, or speaking practice. Answer that request directly.
+- When correcting Dutch, show the corrected sentence first, then explain the most useful one or two corrections. Preserve the learner's intended meaning; mention a more natural Flemish version when helpful.
+- For translations, give a natural nl-BE phrase and a brief note about politeness or word choice when it matters.
+- Use short Dutch examples in italics. If a question is ambiguous, ask one clear follow-up instead of guessing. In practice mode, ask one question at a time and let the learner try before showing the answer.
+- Prefer Flemish usage over Netherlands Dutch. Label regional alternatives clearly; do not call a valid Flemish form incorrect.
+
+Scope and accuracy:
+- Help with Dutch and everyday communication in Belgium. For unrelated topics, briefly steer back to Dutch.
+- Do not invent app features, course content, or current Belgian rules, prices, opening hours, deadlines, or service availability. For current or consequential details, explain the language and direct the learner to an official source or qualified professional.
+- Do not make medical, legal, or financial decisions. Never ask for passwords, national-register numbers, bank details, or card numbers.
+- When mentioning the app, write lerenbe.com (never "Leren.be", which Telegram can link to a different site).
+
+Formatting: plain text with Telegram HTML only. Use only <b> and <i> tags; no Markdown, headings, or tables.`;
 
 // Escape everything, then allow back only <b> and <i> so a stray "<" from the model can't break Telegram HTML.
 const safeHtml = s => esc(s).replace(/&lt;(\/?)(b|i)&gt;/g, "<$1$2>");
 
-async function askClaude(env, question, previous) {
-  const messages = [...(previous ? [{role: "user", content: "(earlier)"}, {role: "assistant", content: previous}] : []), {role: "user", content: question}];
+async function askClaude(env, question, previousQuestion, previousAnswer) {
+  const messages = [
+    ...(previousQuestion && previousAnswer ? [{role: "user", content: previousQuestion}, {role: "assistant", content: previousAnswer}] : []),
+    {role: "user", content: question}
+  ];
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 25000);
   try {
@@ -153,10 +165,11 @@ const WELCOME = `Привіт! 👋 Я бот <b>lerenbe.com</b> — допом�
 • або речення нідерландською — я перевірю помилки.
 
 Команди:
+/help — підказка, як поставити питання
 /word — випадкове слово
 /quiz — міні-вікторина
 /app — застосунок lerenbe.com
-/bug — повідомити про помилку в застосунку (можна зі скріншотом)`;
+/bug — повідомити про помилку (опишіть екран словами)`;
 
 // Testers' group: one topic per kind of feedback, each opened with a pinned template.
 const TOPICS = [
@@ -167,12 +180,12 @@ const TOPICS = [
 2. <b>Де:</b> розділ і тема (наприклад, Урок → «Wie ben jij?» → Тест)
 3. <b>Що робили:</b> крок за кроком
 4. <b>Що сталося</b> і <b>що мало статися</b>
-5. 📸 <b>Скріншот</b> або запис екрана
+5. Опишіть екран словами; файли бот не передає
 
 Дякуємо, кожен звіт робить Leren кращим 💛`},
   {name: "❓ Питання", icon_color: 7322096, text: `❓ <b>Сюди — питання</b>
 
-Щось незрозуміло в застосунку, у завданні чи в поясненні граматики? Питайте тут. Додайте скріншот, якщо питання про конкретний екран.`},
+Щось незрозуміло в застосунку, у завданні чи в поясненні граматики? Питайте тут. Якщо питання про екран, опишіть його словами — бот не передає файли.`},
   {name: "💡 Ідеї", icon_color: 16766590, text: `💡 <b>Сюди — ідеї та побажання</b>
 
 Чого не вистачає? Яку тему, гру чи вправу додати? Що зробити зручніше?
@@ -196,11 +209,10 @@ async function makeTopics(env, msg) {
 const BUG_HELP = `🐞 <b>Повідомлення про помилку</b>
 
 Надішліть сюди одним або кількома повідомленнями:
-📸 скріншот або запис екрана
-📝 що ви робили і що сталося (а що мало статися)
+📝 що ви робили, що сталося і що мало статися
 📱 пристрій: Android / iPhone / комп'ютер, браузер чи застосунок
 
-Коли все надішлете, натисніть /done.`;
+Файли бот не пересилає, тож опишіть екран словами. Коли все надішлете, натисніть /done.`;
 const BUG_TTL = 3600; // report mode ends by itself after an hour of silence; "new" until the first message, then "1"
 const reportsTo = env => ({chat_id: env.REPORTS_CHAT || env.ADMIN_ID, ...(env.REPORTS_THREAD ? {message_thread_id: +env.REPORTS_THREAD} : {})});
 // Remember which tester each forwarded message came from, so a reply to it can be sent back (30 days).
@@ -216,7 +228,7 @@ async function relayReport(env, msg, first) {
   if (reportText) await remember(env, await tg(env, "sendMessage", {...to, text: reportText}), u.id);
   await env.RATE?.put("tg:bug:" + u.id, "1", {expirationTtl: BUG_TTL}).catch(() => {});
   // One confirmation per message; for an album only the photo with the caption answers, not every photo.
-  if (first) return tg(env, "sendMessage", {chat_id: msg.chat.id, text: "✅ Дякуємо! Звіт передано команді. Можете додати ще скріншоти чи опис, а коли все — /done."});
+  if (first) return tg(env, "sendMessage", {chat_id: msg.chat.id, text: "✅ Дякуємо! Текст звіту передано команді. Можете додати ще опис, а коли все — /done."});
   if (!msg.media_group_id || msg.caption) return tg(env, "sendMessage", {chat_id: msg.chat.id, text: "✅ Додано до звіту. Ще щось? Коли все — /done."});
 }
 
@@ -249,6 +261,7 @@ async function onMessage(env, msg) {
     if (env.RATE) await env.RATE.put("tg:u:" + msg.from.id, arg || "direct").catch(() => {});
     return tg(env, "sendMessage", {chat_id: chat, text: WELCOME, parse_mode: "HTML", reply_markup: appButton({})});
   }
+  if (cmd === "/help") return tg(env, "sendMessage", {chat_id: chat, text: WELCOME, parse_mode: "HTML", reply_markup: appButton({})});
   if (cmd === "/word") return postWord(env, chat, random);
   if (cmd === "/quiz") return postQuiz(env, chat, random);
   if (cmd === "/app") return postText(env, chat, pick(content.promos, random));
@@ -273,8 +286,10 @@ async function onMessage(env, msg) {
   if (env.AI_OFF === "1" || await limited(env, msg.from.id))
     return tg(env, "sendMessage", {chat_id: chat, text: "Забагато питань за хвилину 🙂 Спробуйте трохи пізніше, а поки потренуйтеся в застосунку.", reply_markup: appButton({})});
   await tg(env, "sendChatAction", {chat_id: chat, action: "typing"});
-  const previous = msg.reply_to_message?.from?.is_bot ? msg.reply_to_message.text : "";
-  const answer = await askClaude(env, text.slice(0, 1500), previous?.slice(0, 1500));
+  const botReply = msg.reply_to_message?.from?.is_bot ? msg.reply_to_message : null;
+  const previousQuestion = botReply?.reply_to_message?.from?.is_bot ? "" : (botReply?.reply_to_message?.text || "");
+  const previousAnswer = botReply?.text || "";
+  const answer = await askClaude(env, text.slice(0, 1500), previousQuestion.slice(0, 1500), previousAnswer.slice(0, 1500));
   if (!answer) return tg(env, "sendMessage", {chat_id: chat, text: "Не вдалося відповісти 😔 Спробуйте ще раз за хвилину."});
   const r = await tg(env, "sendMessage", {chat_id: chat, text: safeHtml(answer), parse_mode: "HTML", reply_parameters: {message_id: msg.message_id}});
   if (!r.ok) return tg(env, "sendMessage", {chat_id: chat, text: answer.replace(/<\/?[bi]>/g, "")});
@@ -284,10 +299,11 @@ async function setup(env, origin) {
   const results = {
     webhook: await tg(env, "setWebhook", {url: origin + "/tg", secret_token: env.WEBHOOK_SECRET, allowed_updates: ["message"], drop_pending_updates: true}),
     commands: await tg(env, "setMyCommands", {commands: [
+      {command: "help", description: "Як спілкуватися з викладачем"},
       {command: "word", description: "Випадкове слово дня"},
       {command: "quiz", description: "Міні-вікторина"},
       {command: "app", description: "Застосунок lerenbe.com"},
-      {command: "bug", description: "Повідомити про помилку (можна зі скріншотом)"}]}),
+      {command: "bug", description: "Повідомити про помилку"}]}),
     description: await tg(env, "setMyDescription", {description: "Нідерландська для українців у Бельгії. Питайте про слова й граматику, перевіряйте речення, тренуйтеся щодня з lerenbe.com 🇧🇪"}),
     short: await tg(env, "setMyShortDescription", {short_description: "Помічник з нідерландської від lerenbe.com 🇧🇪"})
   };

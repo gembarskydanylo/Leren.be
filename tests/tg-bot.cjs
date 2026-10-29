@@ -33,6 +33,7 @@ assert.equal(calls.at(-1).body.chat_id,'42');assert.match(calls.at(-1).body.text
 
 // Commands
 let c=await send('/start channel');assert.match(c[0].body.text,/lerenbe\.com/);assert.equal(kv.get('tg:u:7'),'channel');
+c=await send('/help');assert.match(c[0].body.text,/Команди:[\s\S]*\/quiz/);
 c=await send('/quiz');assert.equal(c[0].method,'sendPoll');assert.equal(c[0].body.is_anonymous,false);
 c=await send('/word');assert.equal(c[0].method,'sendMessage');assert.equal(typeof c[0].body.text,'string');assert.equal(c[0].body.voice,undefined);
 c=await send('/post tip');assert.equal(c[0].method,'sendMessage');assert.notEqual(c[0].body.chat_id,'@lerenbe'); // not admin: treated as unknown command
@@ -45,12 +46,12 @@ const group=async(text,from,is_forum)=>{calls=[];await bot.fetch(new Request('ht
 c=await group('/topics',7,true);assert.equal(c.length,0);
 c=await group('/topics',42,false);assert.match(c[0].body.text,/Теми/);
 c=await group('/topics@lerenbe_bot',42,true);assert.deepEqual(c.map(x=>x.method),['createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','createForumTopic','sendMessage','pinChatMessage','sendMessage']);
-assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Скріншот/);
+assert.match(c[0].body.name,/Помилки/);assert.match(c[1].body.text,/Опишіть екран словами/);
 
 // Bug reports: /bug → text and screenshots go to the admin with one header; /done ends; the admin's reply goes back
 let mid=500;const real=globalThis.fetch;globalThis.fetch=async(url,opt)=>{const res=await real(url,opt);const j=await res.json();if(!url.includes('anthropic')&&!j.result?.message_id&&typeof j.result==='object')j.result={message_id:++mid};return {ok:true,json:async()=>j}};
 const raw=async m=>{calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:9,chat:{id:m.from,type:'private'},...m,from:{id:m.from,first_name:'Olha',username:'olha_ua'}}})}),env,ctx);await flush();return calls};
-c=await send('/bug',8);assert.match(c[0].body.text,/скріншот/);
+c=await send('/bug',8);assert.match(c[0].body.text,/Файли бот не пересилає/);
 c=await raw({from:8,text:'Тест не відкривається'});assert.deepEqual(c.map(x=>x.method),['sendMessage','sendMessage','sendMessage']);
 assert.equal(c[0].body.chat_id,'42');assert.match(c[0].body.text,/Новий звіт.*@olha_ua.*8/s);assert.equal(c[1].body.text,'Тест не відкривається');assert.match(c[2].body.text,/Дякуємо/);
 const header=c[0];const headerId=mid-2;
@@ -72,6 +73,9 @@ c=await send('/preview fact',42);assert.match(c[0].body.text,/Цікаво пр�
 // AI answer: only <b>/<i> survive
 c=await send('niet of geen?');const ans=c.find(x=>x.method==='sendMessage');assert.equal(c.find(x=>x.method==='AI').body.model,'claude-haiku-5-5');
 assert.equal(ans.body.text,'Kort: <b>geen</b> перед іменником. &lt;script&gt;x&lt;/script&gt;');
+// A reply to a bot answer includes the original user question and the answer as valid context.
+calls=[];await bot.fetch(new Request('https://x.dev/tg',{method:'POST',headers:{'x-telegram-bot-api-secret-token':'s3cret'},body:JSON.stringify({message:{message_id:2,chat:{id:7,type:'private'},from:{id:7},text:'А як заперечити це?',reply_to_message:{message_id:1,from:{id:999,is_bot:true},text:'<b>Ik heb een auto.</b>',reply_to_message:{message_id:0,from:{id:7},text:'Переклади: I have a car.'}}}})}),env,ctx);await flush();
+const history=calls.find(x=>x.method==='AI').body.messages;assert.deepEqual(history.map(m=>m.role),['user','assistant','user']);assert.equal(history[0].content,'Переклади: I have a car.');assert.equal(history[1].content,'<b>Ik heb een auto.</b>');assert.equal(history[2].content,'А як заперечити це?');
 env.PER_USER={limit:async()=>({success:false})};c=await send('ще питання');assert(!c.some(x=>x.method==='AI'));assert.match(c[0].body.text,/Забагато/);
 assert.equal(safeHtml('a<b'),'a&lt;b');
 
