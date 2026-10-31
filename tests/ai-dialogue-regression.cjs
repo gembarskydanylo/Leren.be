@@ -28,7 +28,7 @@ const tests = [
   ["slow style", () => assert.match(prompt("slow"), /SLOW PRACTICE/)],
   ["exam script remains authoritative", () => assert.match(prompt("exam", "exam11"), /EXAM RETRY RULE/)],
   ["profile review data", () => assert.match(learnerNotes({review:["huis","morgen"], goal:"A1.1 test"}, "chat", ""), /vocabulary due for review: huis; morgen/)],
-  ["no invented mastery", () => assert.match(prompt(), /Do not invent progress metrics/i)]
+  ["no invented mastery", () => assert.match(learnerNotes({goal:"A1.1 test"}, "chat", ""), /Do not invent progress metrics/i)]
 ];
 let failed = 0;
 for (const [name, run] of tests) {
