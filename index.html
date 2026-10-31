@@ -1030,7 +1030,12 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 
 <style>
-.modes-wrapper~*{scroll-margin-bottom:110px}#card{scroll-margin-bottom:120px;padding-bottom:110px!important}.ai-chat .g-bub{overflow-wrap:anywhere}.ai-chat .ai-row{min-width:0}.ai-chat .ai-col{min-width:0}\n.ai-style-notice{margin:0;font-size:.82rem;color:var(--ink-2);line-height:1.4}.ai-chat-card .g-mic{margin-top:0}.ai-chat-card .g-chat{margin-bottom:0}\n.ai-chat-card{display:flex;flex-direction:column;gap:12px;padding-bottom:110px!important}.ai-chat-card .ai-chat{margin-bottom:0;gap:10px}.ai-chat-card .ai-style-row{margin:2px 0 0}.ai-chat-card .ai-style-row label{gap:6px}.ai-chat-card .ai-style-select{padding:6px 9px}.ai-chat-card .g-mic-row{margin-top:0}.ai-chat-card .g-type{margin-top:0}.ai-chat-card .ai-fix{margin-top:4px}\n.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
+.modes-wrapper~*{scroll-margin-bottom:110px}#card{scroll-margin-bottom:120px;padding-bottom:110px!important}.ai-chat .g-bub{overflow-wrap:anywhere}.ai-chat .ai-row{min-width:0}.ai-chat .ai-col{min-width:0}\n/* Keep AI composer above the fixed app navigation while scrolling the conversation. */
+.ai-chat-card .ai-compose-dock{position:sticky;bottom:calc(102px + env(safe-area-inset-bottom,0px));z-index:12;background:var(--surface,#fff);border-radius:16px;padding:10px 0 6px;margin:0;box-shadow:0 -8px 18px -14px rgba(0,0,0,.2)}
+.ai-chat-card .ai-compose-dock .g-type{width:100%}
+.ai-chat-card .ai-compose-dock .g-mic-row{margin:0}
+@media(max-width:600px){.ai-chat-card{padding-bottom:125px!important}.ai-chat-card .ai-compose-dock{bottom:calc(106px + env(safe-area-inset-bottom,0px))}}
+.ai-style-notice{margin:0;font-size:.82rem;color:var(--ink-2);line-height:1.4}.ai-chat-card .g-mic{margin-top:0}.ai-chat-card .g-chat{margin-bottom:0}\n.ai-chat-card{display:flex;flex-direction:column;gap:12px;padding-bottom:110px!important}.ai-chat-card .ai-chat{margin-bottom:0;gap:10px}.ai-chat-card .ai-style-row{margin:2px 0 0}.ai-chat-card .ai-style-row label{gap:6px}.ai-chat-card .ai-style-select{padding:6px 9px}.ai-chat-card .g-mic-row{margin-top:0}.ai-chat-card .g-type{margin-top:0}.ai-chat-card .ai-fix{margin-top:4px}\n.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
 </style>
 </head>
 <body>
@@ -6480,7 +6485,7 @@ function aiRender(){
   if(inp)inp.placeholder=({uk:"Напиши повідомлення…",en:"Type a message…",fr:"Écris un message…",ar:"اكتب رسالة…"})[uiLang]||"Type a message…";
   const sb=f.querySelector("button[type=submit]");if(sb){sb.textContent="➤";sb.setAttribute("aria-label",({uk:"Надіслати",en:"Send",fr:"Envoyer",ar:"إرسال"})[uiLang]||"Send")}}
  for(const c of mb.querySelectorAll("button,input"))c.disabled=!!(s.busy||s.helpBusy||s.failed||s.practice);
- card.appendChild(mb);
+ mb.classList.add("ai-compose-dock");card.appendChild(mb);
  const key=s.msgs.length+(s.busy?"b":"");if(s.seen!==key){s.seen=key;requestAnimationFrame(()=>{if(!aiCurrent(s)||!mb.isConnected)return;const dock=document.querySelector(".modes-wrapper");const dockTop=dock?dock.getBoundingClientRect().top:innerHeight;const bottom=Math.min(dockTop,innerHeight)-16;const rect=mb.getBoundingClientRect();if(rect.bottom>bottom)window.scrollBy({top:rect.bottom-bottom,behavior:"smooth"})})}
 }
 function aiExamSave(s){ // keep the mock exam on this device so the learner can leave and continue later
