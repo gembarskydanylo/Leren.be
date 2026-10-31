@@ -6393,7 +6393,9 @@ function aiProfile(){
  const weak=allItems().filter(x=>store[x.id]&&store[x.id].wrong>0&&x[targetLang]).sort((a,b)=>k(b)-k(a)).slice(0,8).map(x=>x[targetLang]);
  const mistakes=targetLang==="nl"?lsGet("leren_mistakes",[]).slice(0,5).map(m=>m.nl):[];
  const topic=tab==="all"?((u.cats||{})[currentCat]||""):String((u.tabs||{})[tab]||tab).replace(/^\d+\.\s*/,"");
- return {level:curLevel,topic,learned:learnedCount(),weak,mistakes};
+ const review=dueItems().filter(x=>x[targetLang]).slice(0,8).map(x=>x[targetLang]);
+ const mastered=allItems().filter(x=>stateFor(x.id).known&&x[targetLang]).slice(0,8).map(x=>x[targetLang]);
+ return {level:curLevel,topic,learned:learnedCount(),weak,mistakes,review,mastered};
 }
 // Report an AI answer (Google Play AI-generated content policy): the text goes to the worker log.
 async function aiReport(text,mode){
