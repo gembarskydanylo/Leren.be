@@ -6445,8 +6445,11 @@ function aiRender(){
    const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));b.onclick=()=>say(m.content); // tap = listen
    col.appendChild(b);
    const acts=el("div","ai-acts");
-   if(m.tr){const tr=el("em","",m.tr);tr.hidden=!m.showTr;b.appendChild(tr);
-    const t=el("button","ai-tr",m.showTr?g.trHide:g.trShow);t.type="button";t.setAttribute("aria-expanded",m.showTr?"true":"false");t.onclick=()=>{m.showTr=!m.showTr;aiRender()};acts.appendChild(t)}
+   if(m.tr){const tr=el("em","",m.tr);tr.hidden=!m.showTr;b.appendChild(tr)}
+   const translate=el("button","ai-tr",m.tr?(m.showTr?g.trHide:g.trShow):(uiLang==="uk"?"🇺🇦 Перекласти українською":"Translate"));
+   translate.type="button";translate.disabled=!!m.translating;translate.setAttribute("aria-expanded",m.showTr?"true":"false");
+   translate.onclick=()=>{if(m.tr){m.showTr=!m.showTr;aiRender()}else aiTranslate(m)};acts.appendChild(translate);
+   if(m.translateError)acts.appendChild(el("small","st-fb bad",uiLang==="uk"?"Переклад недоступний. Спробуй ще раз.":"Translation unavailable. Try again."))
    const fl=el("button","ai-tr ai-flag",g.report);fl.type="button";fl.onclick=()=>aiReport(m.content+(m.tr?"\n("+m.tr+")":""),"chat");acts.appendChild(fl);col.appendChild(acts)
    row.append(av,col);chat.appendChild(row)}
  });
@@ -6490,6 +6493,17 @@ async function aiHelp(corrected){ // "I don't know what to answer": one hint + o
  }catch(e){if(!aiCurrent(s))return;s.helpError=true}
  finally{s.helpBusy=false;if(aiCurrent(s))aiRender()}
 }
+async function aiTranslate(m){
+ const s=gState;if(!aiCurrent(s)||m.translating)return;
+ m.translating=true;m.translateError=false;aiRender();
+ try{
+  const data=await LerenAICoach.request(AI_ENDPOINT,{mode:"ask",target:s.target,lang:"uk",level:curLevel,char:charId(),messages:[{role:"user",content:"Translate the following "+({nl:"Dutch",en:"English",fr:"French"}[s.target]||"Dutch")+" text completely into Ukrainian. Output only the Ukrainian translation in the answer field, with no explanation: "+String(m.content).slice(0,400)}]});
+  if(!aiCurrent(s))return;
+  if(typeof data.answer!=="string"||!data.answer.trim())throw Error("empty translation");
+  m.tr=data.answer.trim().slice(0,1500);m.showTr=true;
+ }catch(e){if(aiCurrent(s))m.translateError=true}
+ finally{m.translating=false;if(aiCurrent(s))aiRender()}
+}
 async function aiSend(text,alts){
  const s=gState;if(!aiCurrent(s)||s.busy||s.helpBusy||s.practice)return;
  const typed=typeof text==="string"?text.trim().slice(0,300):"";
@@ -6505,7 +6519,7 @@ async function aiSend(text,alts){
   const lastUser=s.pendingUser;
   if(lastUser&&j.correction&&typeof j.correction.corrected==="string"&&j.correction.corrected.trim()&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected.slice(0,300),explanation:typeof j.correction.explanation==="string"?j.correction.explanation.slice(0,300):""};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
   if(s.exam&&lastUser){const ex=s.exam,err=!!(j.correction&&j.correction.has_error);if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
-  s.msgs.push({role:"assistant",content:reply,tr:typeof j.translation==="string"?j.translation:""});s.pendingUser=null;s.busy=false;aiExamSave(s);aiRender();say(reply);
+  s.msgs.push({role:"assistant",content:reply,tr:typeof j.translation==="string"?j.translation.trim():""});s.pendingUser=null;s.busy=false;aiExamSave(s);aiRender();say(reply);
   const uc=s.msgs.filter(m=>m.role==="user").length;if(uc===5)gameDone("ai",30);
   if(uc>=2&&uc%3===2)aiRemember(s);
  }catch(e){s.busy=false;if(!aiCurrent(s))return;s.failed=true;s.errorCode=e.code||"network";s.limitText=e.code==="limit"?(e.data&&e.data.error==="slow"?aiU().slow:aiU().limit):"";aiRender()}
