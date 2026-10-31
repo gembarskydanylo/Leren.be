@@ -1030,7 +1030,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 
 <style>
-.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
+.modes-wrapper~*{scroll-margin-bottom:110px}#card{scroll-margin-bottom:120px;padding-bottom:110px!important}.ai-chat .g-bub{overflow-wrap:anywhere}.ai-chat .ai-row{min-width:0}.ai-chat .ai-col{min-width:0}\n.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
 </style>
 </head>
 <body>
@@ -6479,7 +6479,7 @@ function aiRender(){
   const sb=f.querySelector("button[type=submit]");if(sb){sb.textContent="➤";sb.setAttribute("aria-label",({uk:"Надіслати",en:"Send",fr:"Envoyer",ar:"إرسال"})[uiLang]||"Send")}}
  for(const c of mb.querySelectorAll("button,input"))c.disabled=!!(s.busy||s.helpBusy||s.failed||s.practice);
  card.appendChild(mb);
- const key=s.msgs.length+(s.busy?"b":"");const last=chat.lastElementChild;if(last&&s.seen!==key){s.seen=key;last.scrollIntoView({block:"nearest"})}
+ const key=s.msgs.length+(s.busy?"b":"");const last=chat.lastElementChild;if(last&&s.seen!==key){s.seen=key;requestAnimationFrame(()=>{if(!aiCurrent(s)||!last.isConnected)return;const dock=document.querySelector(".modes-wrapper");const dockTop=dock?dock.getBoundingClientRect().top:innerHeight;const bottom=Math.min(dockTop,innerHeight)-14;const rect=last.getBoundingClientRect();if(rect.bottom>bottom)window.scrollBy({top:rect.bottom-bottom,behavior:"smooth"})})}
 }
 function aiExamSave(s){ // keep the mock exam on this device so the learner can leave and continue later
  if(!s||!s.exam)return;try{if(s.exam.done){localStorage.removeItem("leren_exam11_ai");return}
