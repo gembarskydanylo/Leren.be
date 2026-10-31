@@ -1028,6 +1028,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
+
+<style>
+.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
+</style>
 </head>
 <body>
 <main data-view="path">
@@ -6425,7 +6429,7 @@ function aiConsent(title,go){
 }
 function aiStart(scene){
  if(!aiConsent(cx(AI_TITLE[targetLang]||AI_TITLE.nl),()=>aiStart(scene)))return;
- gState={chat:true,msgs:[],busy:false,draft:"",target:targetLang,lang:uiLang,view,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam)};
+ gState={chat:true,msgs:[],busy:false,draft:"",target:targetLang,lang:uiLang,view,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam),style:["talk","teacher","slow"].includes(lsGet("leren_ai_style","teacher"))?lsGet("leren_ai_style","teacher"):"teacher"};
  if(gState.scene==="exam11"&&window.EXAM11&&EXAM11.speakScript){
   const saved=!scene.fresh&&lsGet("leren_exam11_ai",null);
   if(saved&&saved.exam&&!saved.exam.done&&Array.isArray(saved.msgs)&&saved.msgs.length){gState.exam=saved.exam;gState.msgs=saved.msgs;aiRender();toast(uiLang==="uk"?"Продовжуємо з того місця, де ти зупинився":"Continuing where you stopped");return}
@@ -6437,6 +6441,14 @@ function aiRender(){
  const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);
  if(s.scene&&SCENE_ART[s.scene]){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  if(s.exam){const ex=s.exam,n=ex.list.length,cur=ex.list[Math.min(ex.i,n-1)];const p=el("p","ex-progress",ex.done?(uiLang==="uk"?"✅ Пробний іспит завершено":"✅ Mock exam finished"):(uiLang==="uk"?"Тема ":"Topic ")+cur.ti+"/6 · "+cur.tn+" · "+(uiLang==="uk"?"питання ":"question ")+(ex.i+1)+"/"+n);if(!ex.done&&s.msgs.length>2){const rs=el("button","ex-restart",uiLang==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>aiStart({id:"exam11",fromExam:true,fresh:true});p.appendChild(rs)}card.appendChild(p);$("barfill").style.width=Math.round((ex.done?n:ex.i)/n*100)+"%"}
+ if(!s.exam){
+  const labels={uk:["Стиль спілкування","💬 Вільна розмова","👨‍🏫 Викладач","🐢 Повільна практика"],en:["Conversation style","💬 Free talk","👨‍🏫 Teacher","🐢 Slow practice"],fr:["Style de conversation","💬 Conversation libre","👨‍🏫 Professeur","🐢 Pratique lente"],ar:["أسلوب المحادثة","💬 محادثة حرة","👨‍🏫 المعلم","🐢 تدريب بطيء"]};
+  const words=labels[uiLang]||labels.en,wrap=el("div","row ai-style-row"),lab=el("label","",words[0]+" "),sel=el("select","ai-style-select");
+  [["talk",words[1]],["teacher",words[2]],["slow",words[3]]].forEach(([value,title])=>{const opt=el("option","",title);opt.value=value;sel.appendChild(opt)});
+  sel.value=["talk","teacher","slow"].includes(s.style)?s.style:"teacher";sel.disabled=!!(s.busy||s.helpBusy);
+  sel.setAttribute("aria-label",words[0]);sel.onchange=()=>{s.style=sel.value;lsSet("leren_ai_style",s.style);aiRender()};
+  lab.appendChild(sel);wrap.appendChild(lab);card.appendChild(wrap);
+ }
  const chat=el("div","g-chat ai-chat");
  s.msgs.forEach(m=>{
   if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
@@ -6513,7 +6525,7 @@ async function aiSend(text,alts){
  const target=s.target,lang=s.lang;
  try{
   // 30 s timeout; on failure the message stays and can be retried (no duplicate) or edited
-  const j=await LerenAICoach.request(AI_ENDPOINT,{mode:"chat",exam:aiExamStep(s),target,lang,level:curLevel,scene:s.scene,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)});
+  const j=await LerenAICoach.request(AI_ENDPOINT,{mode:"chat",style:s.exam?"exam":s.style,exam:aiExamStep(s),target,lang,level:curLevel,scene:s.scene,char:charId(),profile:aiProfile(),memory:aiMemory(),messages:aiMsgs(s.msgs)});
   if(!aiCurrent(s))return;
   const reply=j.reply||j.reply_nl;if(typeof reply!=="string"||!reply.trim())throw Error("format");
   const lastUser=s.pendingUser;
