@@ -23,7 +23,7 @@ DICT_UI.fr=Object.assign({},DICT_UI.en,{ph:"Un mot en néerlandais ou en frança
 DICT_UI.ar=Object.assign({},DICT_UI.en,{ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
  filters:[["","الكل"],["n","أسماء"],["v","أفعال"],["adj","صفات"],["phr","عبارات"]],wod:"كلمة اليوم",recent:"عمليات البحث الأخيرة",mine:"كلماتي",mineEmpty:"اضغط ☆ بجانب الكلمة لحفظها هنا.",tryT:"جرّب:",listen:"استمع",ex:"مثال",fromLessons:"من الدروس"});
 const dU=()=>DICT_UI[uiLang]||DICT_UI.en;
-const DICT={ix:null,loading:null,offline:false,pos:"",open:-1,corpus:null};
+const DICT={ix:null,loading:null,offline:false,retryAt:0,pos:"",open:-1,corpus:null};
 function dictTr(e){return uiLang==="uk"?e.uk:uiLang==="fr"?(e.fr||e.en):uiLang==="ar"?(e.ar||e.en):e.en}
 function dictMerge(list){
  const key=(w,p)=>w.toLowerCase()+"|"+p,byKey=new Map(),byW=new Map();
@@ -40,13 +40,18 @@ function dictMerge(list){
  return list;
 }
 function dictLoad(){
- if(DICT.ix)return Promise.resolve(DICT.ix);
  if(DICT.loading)return DICT.loading;
+ if(DICT.ix&&!DICT.offline)return Promise.resolve(DICT.ix);
+ if(DICT.offline&&Date.now()<DICT.retryAt)return Promise.resolve(DICT.ix);
+ // Keep the lesson-word fallback while retrying; never cache a failed download as a complete dictionary.
  DICT.loading=fetch("dict/nl.json").then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
-  .catch(()=>{DICT.offline=true;return[]})
-  .then(list=>{DICT.ix=DX.build(dictMerge(list));DICT.loading=null;return DICT.ix});
+  .then(list=>{if(!Array.isArray(list))throw new Error("Invalid dictionary");DICT.ix=DX.build(dictMerge(list));DICT.offline=false;DICT.retryAt=0;return DICT.ix})
+  .catch(()=>{DICT.offline=true;DICT.retryAt=Date.now()+30000;if(!DICT.ix)DICT.ix=DX.build(dictMerge([]));return DICT.ix})
+  .finally(()=>{DICT.loading=null});
  return DICT.loading;
 }
+// Retry immediately when connectivity returns, without requiring an app restart.
+window.addEventListener("online",()=>{if(!DICT.offline)return;DICT.retryAt=0;dictLoad().then(()=>{if(typeof runSearch==="function")runSearch()})});
 function dictCorpus(){
  if(DICT.corpus)return DICT.corpus;const c=[],seen=new Set();
  const add=(nl,uk,en)=>{if(!nl||seen.has(nl))return;seen.add(nl);c.push({nl,uk:uk||"",en:en||"",t:new Set(DX.norm(nl).split(" "))})};
@@ -155,6 +160,8 @@ function runSearch(){
  inp.placeholder=u.ph;const clr=$("dictClear");if(clr)clr.hidden=!inp.value;
  dictFilters();
  if(!DICT.ix){box.replaceChildren(el("div","search-empty",u.loading));dictLoad().then(()=>runSearch());return}
+ // A temporary network error must not leave the dictionary in lesson-only mode forever.
+ if(DICT.offline&&!DICT.loading&&navigator.onLine!==false&&Date.now()>=DICT.retryAt)dictLoad().then(()=>runSearch());
  box.replaceChildren();
  if(DICT.offline)box.appendChild(el("p","dx-offline",u.offline));
  const raw=inp.value||"";
