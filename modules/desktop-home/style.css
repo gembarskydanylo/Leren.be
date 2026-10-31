@@ -8,12 +8,7 @@
  main>header #tagline{display:none}
  .dh-tools{display:flex;align-items:center;gap:14px;margin-inline-start:auto;color:#fff}
  .dh-sep{width:1px;height:30px;background:#ffffff59}
- .dh-lang{position:relative;display:flex;align-items:center;gap:8px;cursor:pointer}
- .dh-flag{display:grid;width:26px;height:26px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #ffffff73}.dh-flag svg{width:100%;height:100%}
- .dh-lang select{appearance:none;border:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 2px center/12px 8px;color:#fff;font:800 16px/1.2 var(--font-body);padding:8px 22px 8px 2px;cursor:pointer;field-sizing:content}
- [dir="rtl"] .dh-lang select{background-position:left 2px center;padding:8px 2px 8px 22px}
- .dh-lang select option{color:#2A1D12}
- .dh-lang:focus-within,.dh-icon:focus-visible,.dh-account:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:12px}
+ .dh-icon:focus-visible,.dh-account:focus-visible{outline:3px solid #fff;outline-offset:3px;border-radius:12px}
  .dh-icon{display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:#fff;cursor:pointer}.dh-icon svg{width:26px;height:26px}
  .dh-icon:hover,.dh-account:hover{background:#ffffff26}
  .dh-account{display:flex;align-items:center;gap:10px;border:0;border-radius:999px;background:transparent;color:#fff;font:800 16px/1.2 var(--font-body);padding:4px 12px 4px 4px;cursor:pointer;max-width:200px}
@@ -87,13 +82,8 @@
 
 /* ---------- TEST-009 · phones and tablets (<1024px) ---------- */
 @media(max-width:1023.98px){
- /* language as a round flag in the header; the native list opens on tap */
- .dh-tools{display:flex;align-items:center;flex:none}
- .dh-tools .dh-sep,.dh-tools .dh-icon,.dh-tools .dh-account{display:none}
- .dh-lang{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 var(--depth-sm,3px) 0 rgba(120,50,0,.35);cursor:pointer}
- .dh-flag{display:grid;width:26px;height:26px;border-radius:50%;overflow:hidden}.dh-flag svg{width:100%;height:100%}
- .dh-lang select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
- .dh-lang:focus-within{outline:3px solid #fff;outline-offset:2px}
+ /* Language is selected in Settings, not duplicated in the compact header. */
+ .dh-tools{display:none}
  main>header .hdr-stats{gap:6px}
  .learning-path .fh-tools .fh-language{display:none}
 
