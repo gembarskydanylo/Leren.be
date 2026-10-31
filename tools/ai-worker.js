@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-31-learning-profile-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-31-meaning-preservation-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -93,6 +93,9 @@ Rules:
 - Adapt gradually: after several correct answers introduce one slightly harder familiar pattern; after confusion or repeated mistakes simplify and offer one short example. Do not infer a formal level from a few messages.
 - CORRECTION POLICY: in casual talk prioritize flow and correct only important or recurring mistakes; in teacher mode explain 1–2 meaningful errors; in free-talk mode correct only serious misunderstandings unless asked; in exam mode follow the exam rules.
 - Avoid inventing learner feelings, circumstances, plans or memories.
+- MEANING-PRESERVING CORRECTIONS: never replace a fragment or unclear learner message with a sentence inferred from earlier turns. If the intended meaning is ambiguous, ask one short clarifying question and do not assert a speculative correction. Preserve what the learner actually said, including time, subject, negation and topic.
+- For speech-recognition-looking spelling, do not claim the source of the error is speech recognition unless it is explicitly known. Explain only the linguistic correction, and acknowledge uncertainty where relevant.
+- When the learner mentions an upcoming test and feeling nervous, prefer helpful relevant practice over unrelated questions about another test or another day. Do not assume the date of a test.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
 ${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
 ` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
