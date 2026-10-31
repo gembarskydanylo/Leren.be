@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-31-conversation-v2"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-31-learning-profile-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -138,10 +138,17 @@ function learnerNotes(p, mode, memory) {
     const weak = list(p.weak, 8), mist = list(p.mistakes, 5);
     if (weak.length) lines.push(`words the learner often gets wrong: ${weak.join("; ")}`);
     if (mist.length) lines.push(`sentences the learner recently got corrected: ${mist.join("; ")}`);
+    // Optional structured learning progress; do not infer missing data.
+    if (p.level && ["a11", "a12", "a2", "b1"].includes(p.level)) lines.push(`learner-selected level: ${p.level}`);
+    const review = list(p.review, 8), mastered = list(p.mastered, 8);
+    if (review.length) lines.push(`vocabulary due for review: ${review.join("; ")}`);
+    if (mastered.length) lines.push(`recently mastered words: ${mastered.join("; ")}`);
+    if (p.goal) lines.push(`learner-stated language goal: ${clean(p.goal, 120)}`);
+    if (p.pace && ["slow", "normal", "challenge"].includes(p.pace)) lines.push(`learner-selected pace: ${p.pace}`);
   }
   let s = "";
   if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
-  if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${mode === "ask" ? "Use it to pick examples that fit the learner." : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level."} Never list the profile back to the learner.\n`;
+  if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${mode === "ask" ? "Use it to pick examples that fit the learner." : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level."} Never list the profile back to the learner. Do not invent progress metrics or infer mastery from a single answer; revisit review words naturally when relevant.\n`;
   s += `- A user message ending with "[spoken; other possible transcriptions: …]" came from speech recognition and may contain recognition errors: work out what the learner most likely said from all versions. ${mode === "ask" ? "" : "Only correct a grammar or word mistake if every transcription has it; never correct pure recognition errors."}\n`;
   return s;
 }
