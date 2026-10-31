@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-31-context-replies"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-31-conversation-v2"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -72,21 +72,27 @@ function examScript(x, L) {
   if (!cur) return "";
   return `- EXAM SCRIPT (strict): the learner is answering «${cur}». If the answer is correct and a full sentence: praise in at most three words and then ask exactly: «${next}». If it has a mistake${x.retry ? "" : " or is not a full sentence"}: ${x.retry ? `say the correct sentence, ask the learner to remember it, and then ask exactly: «${next}»` : `say kindly that it is not quite right and ask «${cur}» again (do NOT ask «${next}» yet)`}. Ask no other question.\n`;
 }
-function chatSystem(t, lang, level, scene, char, extra = "") {
+function chatSystem(t, lang, level, scene, char, extra = "", style = "teacher") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
   return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
+Teaching style: ${style === "talk" ? "FREE TALK: prioritize natural conversation and skip minor corrections." : style === "slow" ? "SLOW PRACTICE: use short sentences and familiar vocabulary; rephrase and translate when needed." : style === "exam" || scene === "exam11" ? "EXAM: follow the exam script strictly." : "TEACHER: balance conversation and gentle corrections."}
 Course grammar (follow it when correcting):
 ${T.grammar}
 Rules:
-- reply: very simple ${T.name}, max 2 short sentences, common words; continue the conversation and ask exactly ONE simple question. Always write reply in the target language, even if the learner writes in another language.
+- reply: natural simple ${T.name}, usually 1–3 short sentences. Understand intent first. Ask at most ONE relevant question when useful, not every turn. Answer the learner\'s questions first; if they want to stop, acknowledge and do not ask another question. In exam mode strictly follow the exam script. Always reply in the target language.
 - translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
 - learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
 - Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
 - Before replying, interpret the MEANING of the learner's latest message, not just its grammar. If it contains a mistake, use the intended meaning of the corrected sentence to choose your reaction and next question.
 - Match emotional tone to the situation. A busy, stressful, tiring, painful or difficult day is NOT automatically good news: do not respond with "Oh, dat is leuk!", "Wat leuk!", "That's great!" or other cheerful praise unless the learner clearly expresses happiness about it. Prefer a short, natural acknowledgement (e.g. Dutch "Oei, dat klinkt druk!" or "Dat klinkt vermoeiend.") and ONE relevant A1 question. For happy news, a positive reaction is fine. For neutral news, use a neutral reaction. Never assume the learner's feelings.
-- Keep the conversation coherent: the follow-up question must relate to the learner's actual answer or current topic. Do not switch topics merely to ask a generic question. Correct language gently without praising a negative situation.
+- Keep the conversation coherent: ask relevant questions only; avoid generic follow-ups and repetitive praise. Correct language without praising negative situations.
+- INTENT FIRST: distinguish answers, questions, translation requests, confusion, jokes, topic changes and requests to stop. Respect the learner's intent and topic, except in strict exam mode.
+- If the learner does not understand, rephrase in simpler A1 language and offer translation rather than repeating the same question.
+- Adapt gradually: after several correct answers introduce one slightly harder familiar pattern; after confusion or repeated mistakes simplify and offer one short example. Do not infer a formal level from a few messages.
+- CORRECTION POLICY: in casual talk prioritize flow and correct only important or recurring mistakes; in teacher mode explain 1–2 meaningful errors; in free-talk mode correct only serious misunderstandings unless asked; in exam mode follow the exam rules.
+- Avoid inventing learner feelings, circumstances, plans or memories.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
 ${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
 ` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
@@ -233,7 +239,7 @@ export default {
       msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
     }
     const notes = learnerNotes(body.profile, mode, memory) + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
-    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes);
+    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes, ["talk", "teacher", "slow", "exam"].includes(body.style) ? body.style : "teacher");
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     // Don't wait forever for the model: the app shows "try again" instead of hanging.
