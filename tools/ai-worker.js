@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-10-31-exam-date"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-10-31-context-replies"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -84,6 +84,9 @@ Rules:
 - translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
 - learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
 - Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
+- Before replying, interpret the MEANING of the learner's latest message, not just its grammar. If it contains a mistake, use the intended meaning of the corrected sentence to choose your reaction and next question.
+- Match emotional tone to the situation. A busy, stressful, tiring, painful or difficult day is NOT automatically good news: do not respond with "Oh, dat is leuk!", "Wat leuk!", "That's great!" or other cheerful praise unless the learner clearly expresses happiness about it. Prefer a short, natural acknowledgement (e.g. Dutch "Oei, dat klinkt druk!" or "Dat klinkt vermoeiend.") and ONE relevant A1 question. For happy news, a positive reaction is fine. For neutral news, use a neutral reaction. Never assume the learner's feelings.
+- Keep the conversation coherent: the follow-up question must relate to the learner's actual answer or current topic. Do not switch topics merely to ask a generic question. Correct language gently without praising a negative situation.
 - correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
 ${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
 ` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
