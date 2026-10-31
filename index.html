@@ -1030,7 +1030,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 
 <style>
-.modes-wrapper~*{scroll-margin-bottom:110px}#card{scroll-margin-bottom:120px;padding-bottom:110px!important}.ai-chat .g-bub{overflow-wrap:anywhere}.ai-chat .ai-row{min-width:0}.ai-chat .ai-col{min-width:0}\n.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
+.modes-wrapper~*{scroll-margin-bottom:110px}#card{scroll-margin-bottom:120px;padding-bottom:110px!important}.ai-chat .g-bub{overflow-wrap:anywhere}.ai-chat .ai-row{min-width:0}.ai-chat .ai-col{min-width:0}\n.ai-chat-card{display:flex;flex-direction:column;gap:12px;padding-bottom:110px!important}.ai-chat-card .ai-chat{margin-bottom:0;gap:10px}.ai-chat-card .ai-style-row{margin:2px 0 0}.ai-chat-card .ai-style-row label{gap:6px}.ai-chat-card .ai-style-select{padding:6px 9px}.ai-chat-card .g-mic-row{margin-top:0}.ai-chat-card .g-type{margin-top:0}.ai-chat-card .ai-fix{margin-top:4px}\n.ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
 </style>
 </head>
 <body>
@@ -6438,7 +6438,7 @@ function aiStart(scene){
  aiRender();aiSend(null);
 }
 function aiRender(){
- const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);
+ const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);card.classList.add("ai-chat-card");
  if(s.scene&&SCENE_ART[s.scene]){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  if(s.exam){const ex=s.exam,n=ex.list.length,cur=ex.list[Math.min(ex.i,n-1)];const p=el("p","ex-progress",ex.done?(uiLang==="uk"?"✅ Пробний іспит завершено":"✅ Mock exam finished"):(uiLang==="uk"?"Тема ":"Topic ")+cur.ti+"/6 · "+cur.tn+" · "+(uiLang==="uk"?"питання ":"question ")+(ex.i+1)+"/"+n);if(!ex.done&&s.msgs.length>2){const rs=el("button","ex-restart",uiLang==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>aiStart({id:"exam11",fromExam:true,fresh:true});p.appendChild(rs)}card.appendChild(p);$("barfill").style.width=Math.round((ex.done?n:ex.i)/n*100)+"%"}
  if(!s.exam){
