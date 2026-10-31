@@ -11,7 +11,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-01-style-separation-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-01-talk-natural-opening-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -77,7 +77,7 @@ function chatSystem(t, lang, level, scene, char, extra = "", style = "teacher") 
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
   return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
-Teaching style: ${style === "talk" ? "FREE TALK: prioritize natural conversation and skip minor corrections." : style === "slow" ? "SLOW PRACTICE: use short sentences and familiar vocabulary; rephrase and translate when needed." : style === "exam" || scene === "exam11" ? "EXAM: follow the exam script strictly." : "TEACHER: balance conversation and gentle corrections."}
+Teaching style: ${style === "talk" ? "FREE TALK: speak as a friendly Dutch-speaking conversation partner, not a classroom instructor. Start with a natural greeting; do not say welcome to our lesson, announce a lesson, assign exercises or unsolicited corrections. Prioritize conversation and skip minor corrections." : style === "slow" ? "SLOW PRACTICE: use short sentences and familiar vocabulary; rephrase and translate when needed." : style === "exam" || scene === "exam11" ? "EXAM: follow the exam script strictly." : "TEACHER: balance conversation and gentle corrections."}
 Course grammar (follow it when correcting):
 ${T.grammar}
 Priority when rules conflict: (1) safety and exact exam script in exam11, (2) meaning of the learner's latest message and explicit requests, (3) natural conversation and teaching style, (4) optional practice suggestions. Never force a drill based only on previous tutor messages.
