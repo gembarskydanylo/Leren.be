@@ -36,20 +36,20 @@ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');new vm.Script(sw);
 // Event handlers are registered but never invoked in this isolated VM.
 function swManifest(source){
  const context=vm.createContext({self:{addEventListener(){}},console});
- vm.runInContext(source+'\\n;globalThis.__files=APP_FILES;',context,{timeout:2000});
+ vm.runInContext(source+'\n;globalThis.__files=APP_FILES;',context,{timeout:2000});
  return Array.from(context.__files);
 }
 const appFiles=swManifest(sw);
 assert(appFiles.length>100,'Unexpectedly small precache manifest');
 assert.equal(new Set(appFiles).size,appFiles.length,'Duplicate offline assets in APP_FILES');
 for(const file of appFiles){
- const local=file.split("?")[0].replace(/^\\.\\//,'');
+ const local=file.split("?")[0].replace(/^\.\//,'');
  assert(fs.existsSync(path.join(root,local)),`Missing offline asset: ${file}`);
 }
 assert(appFiles.some(f=>f.split('?')[0]==='./dict/nl.json'),'Dictionary missing from offline cache');
 // Negative regression: an asset appended after event registration must also be checked.
 const ghost='./__missing_precache_regression__.js';
-assert(swManifest(sw+'\\nAPP_FILES.push("'+ghost+'");').includes(ghost));
+assert(swManifest(sw+'\nAPP_FILES.push("'+ghost+'");').includes(ghost));
 assert(!fs.existsSync(path.join(root,ghost)),'Regression sentinel unexpectedly exists');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
 for(const item of [...manifest.icons,...manifest.screenshots])assert(fs.existsSync(path.join(root,item.src)),`Missing manifest asset: ${item.src}`);
