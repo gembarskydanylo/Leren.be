@@ -6529,7 +6529,7 @@ async function aiSend(text,alts){
   if(!aiCurrent(s))return;
   const reply=j.reply||j.reply_nl;if(typeof reply!=="string"||!reply.trim())throw Error("format");
   const lastUser=s.pendingUser;
-  if(lastUser&&j.correction&&typeof j.correction.corrected==="string"&&j.correction.corrected.trim()&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected.slice(0,300),explanation:typeof j.correction.explanation==="string"?j.correction.explanation.slice(0,300):""};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
+  if(lastUser&&(s.exam||s.style!=="talk")&&j.correction&&j.correction.has_error===true&&typeof j.correction.corrected==="string"&&j.correction.corrected.trim()&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected.slice(0,300),explanation:typeof j.correction.explanation==="string"?j.correction.explanation.slice(0,300):""};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
   if(s.exam&&lastUser){const ex=s.exam,err=!!(j.correction&&j.correction.has_error);if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
   s.msgs.push({role:"assistant",content:reply,tr:typeof j.translation==="string"?j.translation.trim():""});s.pendingUser=null;s.busy=false;aiExamSave(s);aiRender();say(reply);
   const uc=s.msgs.filter(m=>m.role==="user").length;if(uc===5)gameDone("ai",30);
