@@ -6446,13 +6446,13 @@ function aiRender(){
   const words=labels[uiLang]||labels.en,wrap=el("div","row ai-style-row"),lab=el("label","",words[0]+" "),sel=el("select","ai-style-select");
   [["talk",words[1]],["teacher",words[2]],["slow",words[3]]].forEach(([value,title])=>{const opt=el("option","",title);opt.value=value;sel.appendChild(opt)});
   sel.value=["talk","teacher","slow"].includes(s.style)?s.style:"teacher";sel.disabled=!!(s.busy||s.helpBusy);
-  sel.setAttribute("aria-label",words[0]);sel.onchange=()=>{s.style=sel.value;lsSet("leren_ai_style",s.style);aiRender()};
+  sel.setAttribute("aria-label",words[0]);sel.onchange=()=>{if(s.busy||s.helpBusy)return;s.style=sel.value;lsSet("leren_ai_style",s.style);aiRender()};
   lab.appendChild(sel);wrap.appendChild(lab);card.appendChild(wrap);
  }
  const chat=el("div","g-chat ai-chat");
  s.msgs.forEach(m=>{
   if(m.role==="user"){const b=el("div","g-bub me");b.appendChild(tgt(el("span","",m.content)));chat.appendChild(b);
-   if(m.fix){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));const practise=el("button","btn",LerenAICoach.tr("practise",uiLang));practise.type="button";practise.disabled=!!(s.busy||s.helpBusy||s.failed);practise.onclick=()=>{if(!aiCurrent(s)||s.busy||s.helpBusy)return;s.practice={corrected:m.fix.corrected,draft:"",status:""};s.help=null;aiRender()};f.appendChild(practise);chat.appendChild(f)}
+   if(m.fix&&(s.exam||s.style!=="talk")){const f=el("div","ai-fix");f.append(el("small","",g.fix));const c=tgt(el("b","",m.fix.corrected));c.onclick=()=>say(m.fix.corrected);f.append(c);if(m.fix.explanation)f.append(el("span","",m.fix.explanation));const practise=el("button","btn",LerenAICoach.tr("practise",uiLang));practise.type="button";practise.disabled=!!(s.busy||s.helpBusy||s.failed);practise.onclick=()=>{if(!aiCurrent(s)||s.busy||s.helpBusy)return;s.practice={corrected:m.fix.corrected,draft:"",status:""};s.help=null;aiRender()};f.appendChild(practise);chat.appendChild(f)}
   }else{const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("happy");const col=el("div","ai-col");
    const b=el("button","g-bub them");b.type="button";b.appendChild(tgt(el("span","",m.content)));b.onclick=()=>say(m.content); // tap = listen
    col.appendChild(b);
