@@ -379,6 +379,398 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
   messages:'🙏 📎 ✅ 📰 🎓 😞 📬 📍', appointments:'💻 📩 📅 🗓️ 🚆 📂 📝 🔄', notices:'🚧 🚪 📝 🌧️ 🧒 🥪 💬 ℹ️',
   directions:'📅 🖱️ 📱 📮 📤 🤔 🔁 📧', comparison:'🧥 🚆 🛏️ 🚂 👜 🔵'
  };
+ // ---- Course A1.2, part 2 (Nov 2026): everyday life in Flanders. ----
+ // Original Leren.be material written against the CEFR A1→A2 "Waystage" goals used for NT2 richtgraad 1.2
+ // (short sentences about immediate needs: home, work, health, local services, school, free time, people, plans).
+ // Lesson line: nl|uk|en|fr|ar|icon|example nl|example uk. Icons come from the verified 3D set (modules/emoji/cards.js).
+ const a12 = {
+  // New chapters 9–16 follow the eight existing A1.2 chapters; existing chapters only gain tabs (wonen, travel, grammar2).
+  chapters: [
+   ['daily','🧺 Thuis en dagelijks leven',['chores','weekplan']],
+   ['work','💼 Werk en beroep',['werkplek','solliciteren']],
+   ['zorg','🩺 Zorg en apotheek',['apotheek','huisarts']],
+   ['stad','🗺️ De weg in de stad',['orientatie','diensten']],
+   ['school','🎒 School en opleiding',['schoolwoorden','oudercontact']],
+   ['vrijetijd','⚽ Vrije tijd',['clubs','weekend']],
+   ['sociaal','🤝 Contact met mensen',['gevoelens','buren']],
+   ['future','🔜 Plannen voor later',['tijdwoorden','plannen']]
+  ],
+  extraTabs: {wonen:['woning','huisbaas'],travel:['openbaar'],grammar2:['omdat','scheidbaar']},
+  labels: {
+   daily: [['Побут і повсякденне життя','Розповідай про хатні справи, розподіляй обов’язки й плануй тиждень.'],['Home life & daily tasks','Talk about chores, share tasks and plan your week.'],['Vie quotidienne et tâches ménagères','Parle des tâches ménagères, partage-les et organise ta semaine.'],['الحياة اليومية والأعمال المنزلية','تحدث عن الأعمال المنزلية ووزّع المهام وخطط لأسبوعك.']],
+   work: [['Робота й професії','Шукай роботу, розповідай про досвід і домовляйся про графік.'],['Work & jobs','Look for work, talk about your experience and agree on a schedule.'],['Travail et métiers','Cherche du travail, parle de ton expérience et organise ton horaire.'],['العمل والمهن','ابحث عن عمل وتحدث عن خبرتك واتفق على جدول العمل.']],
+   zorg: [['Здоров’я: аптека й лікар','Купуй ліки, розумій рецепт і знай, куди звертатися в Бельгії.'],['Health: pharmacy & GP','Buy medicine, understand a prescription and know where to go in Belgium.'],['Santé : pharmacie et généraliste','Achète des médicaments, comprends une ordonnance et sache où aller en Belgique.'],['الصحة: الصيدلية والطبيب','اشترِ الأدوية وافهم الوصفة واعرف أين تذهب في بلجيكا.']],
+   stad: [['Місто й орієнтування','Питай дорогу, пояснюй маршрут і знаходь міські служби.'],['Finding your way in town','Ask the way, explain a route and find local services.'],['S’orienter en ville','Demande ton chemin, explique un itinéraire et trouve les services de la ville.'],['التنقل في المدينة','اسأل عن الطريق واشرح المسار واعثر على خدمات المدينة.']],
+   school: [['Школа й навчання','Розумій шкільні листи, говори з учителем і записуйся на курси.'],['School & learning','Understand school letters, talk to the teacher and sign up for courses.'],['École et formation','Comprends les lettres de l’école, parle avec l’enseignant et inscris-toi à un cours.'],['المدرسة والتعلم','افهم رسائل المدرسة وتحدث مع المعلم وسجّل في الدورات.']],
+   vrijetijd: [['Дозвілля','Розповідай про хобі, записуйся в клуб і плануй вихідні.'],['Free time','Talk about hobbies, join a club and plan your weekend.'],['Loisirs','Parle de tes loisirs, inscris-toi dans un club et organise ton week-end.'],['أوقات الفراغ','تحدث عن هواياتك وانضم إلى نادٍ وخطط لعطلة نهاية الأسبوع.']],
+   sociaal: [['Спілкування з людьми','Знайомся із сусідами, говори про почуття, проси й пропонуй допомогу.'],['Getting along with people','Meet neighbours, talk about feelings, ask for and offer help.'],['Les contacts avec les gens','Rencontre tes voisins, parle de tes sentiments, demande et propose de l’aide.'],['التواصل مع الناس','تعرّف على جيرانك وتحدث عن مشاعرك واطلب المساعدة وقدّمها.']],
+   future: [['Плани на майбутнє','Розповідай про плани, мрії й наступні кроки в Бельгії.'],['Plans for the future','Talk about plans, wishes and next steps in Belgium.'],['Projets d’avenir','Parle de tes projets, de tes souhaits et de tes prochaines étapes en Belgique.'],['خطط للمستقبل','تحدث عن خططك وأمنياتك وخطواتك القادمة في بلجيكا.']]
+  },
+  lessons: {
+   chores: ['Хатні справи','Household chores','Tâches ménagères','الأعمال المنزلية', `
+de was ophangen|розвішувати білизну|to hang out the washing|étendre le linge|نشر الغسيل|🧺|Bij mooi weer hang ik de was buiten op.|У гарну погоду я розвішую білизну надворі.
+de afwas doen|мити посуд|to do the dishes|faire la vaisselle|غسل الأطباق|🍽️|Wie doet vandaag de afwas?|Хто сьогодні миє посуд?
+de vaatwasmachine leegmaken|розвантажувати посудомийку|to empty the dishwasher|vider le lave-vaisselle|تفريغ غسالة الصحون|🧹|Wie maakt de vaatwasmachine leeg?|Хто розвантажить посудомийку?
+kuisen|прибирати, чистити (у Фландрії)|to clean (Flemish)|nettoyer (en Flandre)|ينظّف (في فلاندرز)|🧽|Ik kuis de badkamer elke week.|Я прибираю ванну щотижня.
+het bed opmaken|застеляти ліжко|to make the bed|faire le lit|ترتيب السرير|🛏️|De kinderen maken zelf hun bed op.|Діти самі застеляють ліжка.
+de vuilniszak buitenzetten|виставляти пакет зі сміттям|to put the rubbish bag out|sortir le sac poubelle|إخراج كيس القمامة|🚪|Op dinsdagavond zet ik de vuilniszak buiten.|У вівторок увечері я виставляю пакет зі сміттям.
+de planten water geven|поливати рослини|to water the plants|arroser les plantes|سقي النباتات|🌱|Kun jij de planten water geven?|Можеш полити рослини?
+de was opplooien|складати білизну|to fold the laundry|plier le linge|طيّ الملابس|👕|Na het drogen plooi ik de was op.|Після сушіння я складаю білизну.
+`],
+   weekplan: ['Мій тиждень і обов’язки','My week and tasks','Ma semaine et mes tâches','أسبوعي ومهامي', `
+Wie doet deze week de boodschappen?|Хто цього тижня робить покупки?|Who is doing the shopping this week?|Qui fait les courses cette semaine ?|من سيتسوق هذا الأسبوع؟|🛒
+Ik kook vandaag en jij doet de afwas.|Сьогодні я готую, а ти миєш посуд.|I’m cooking today and you’re doing the dishes.|Aujourd’hui je cuisine et toi, tu fais la vaisselle.|أنا أطبخ اليوم وأنت تغسل الأطباق.|🍳
+Ik heb de hele ochtend gepoetst.|Я прибирав увесь ранок.|I cleaned all morning.|J’ai fait le ménage toute la matinée.|نظّفت طوال الصباح.|🧽
+Op woensdagmiddag hebben de kinderen geen school.|У середу після обіду в дітей немає уроків.|On Wednesday afternoons the children have no school.|Le mercredi après-midi, les enfants n’ont pas école.|بعد ظهر الأربعاء لا يذهب الأطفال إلى المدرسة.|🏫
+Ik heb weinig tijd, want ik werk tot zes uur.|У мене мало часу, бо я працюю до шостої.|I have little time because I work until six.|J’ai peu de temps, car je travaille jusqu’à six heures.|لدي وقت قليل لأنني أعمل حتى السادسة.|⏳
+Morgen moet ik de vuilniszak buitenzetten.|Завтра мені треба виставити пакет зі сміттям.|Tomorrow I have to put the rubbish bag out.|Demain, je dois sortir le sac poubelle.|غداً يجب أن أُخرج كيس القمامة.|🚪
+Na het werk haal ik de kinderen op.|Після роботи я забираю дітей.|After work I pick up the children.|Après le travail, je vais chercher les enfants.|بعد العمل أُحضر الأطفال.|🧒
+In het weekend rust ik uit.|На вихідних я відпочиваю.|At the weekend I rest.|Le week-end, je me repose.|في عطلة نهاية الأسبوع أرتاح.|😌
+`],
+   werkplek: ['На роботі','At work','Au travail','في العمل', `
+de werkgever|роботодавець|employer|l’employeur|صاحب العمل|🧑‍💼|Mijn werkgever is tevreden over mij.|Мій роботодавець задоволений мною.
+de werkkledij|робочий одяг|work clothes|les vêtements de travail|ملابس العمل|👔|Op het werk draag ik werkkledij.|На роботі я ношу робочий одяг.
+het loon|зарплата|wage|le salaire|الأجر|💶|Het loon komt aan het einde van de maand.|Зарплата приходить у кінці місяця.
+het uurrooster|графік роботи|work schedule|l’horaire|جدول الدوام|🗓️|Ik krijg mijn uurrooster op vrijdag.|Я отримую графік роботи в п’ятницю.
+de vroege ploeg|рання зміна|early shift|l’équipe du matin|الوردية الصباحية|⏰|Deze week werk ik in de vroege ploeg.|Цього тижня я працюю в ранню зміну.
+het interimkantoor|кадрове агентство|temp agency|l’agence d’intérim|وكالة التوظيف المؤقت|🏢|Ik heb werk gevonden via een interimkantoor.|Я знайшов роботу через кадрове агентство.
+de VDAB|VDAB, служба зайнятості Фландрії|VDAB, the Flemish employment service|le VDAB, le service flamand de l’emploi|VDAB، مكتب التشغيل الفلمنكي|💼|Ik heb een afspraak bij de VDAB.|У мене зустріч у VDAB.
+het sollicitatiegesprek|співбесіда|job interview|l’entretien d’embauche|مقابلة العمل|🤝|Mijn sollicitatiegesprek is morgen om tien uur.|Моя співбесіда завтра о десятій.
+`],
+   solliciteren: ['Пошук роботи й співбесіда','Job search and interviews','Recherche d’emploi et entretien','البحث عن عمل والمقابلة', `
+Ik zoek werk in een winkel.|Я шукаю роботу в магазині.|I’m looking for work in a shop.|Je cherche du travail dans un magasin.|أبحث عن عمل في متجر.|🔍
+Ik heb drie jaar in een winkel gewerkt.|Я три роки працював у магазині.|I worked in a shop for three years.|J’ai travaillé trois ans dans un magasin.|عملت ثلاث سنوات في متجر.|🏪
+In Oekraïne was ik verpleegster.|В Україні я була медсестрою.|In Ukraine I was a nurse.|En Ukraine, j’étais infirmière.|في أوكرانيا كنت ممرضة.|🧑‍⚕️
+Ik kan ook in het weekend werken.|Я можу працювати й на вихідних.|I can also work at the weekend.|Je peux aussi travailler le week-end.|أستطيع العمل في عطلة نهاية الأسبوع أيضاً.|🗓️
+Hoeveel uur per week is het?|Скільки це годин на тиждень?|How many hours a week is it?|C’est combien d’heures par semaine ?|كم ساعة في الأسبوع؟|⏱️
+Ik spreek Oekraïens, Engels en een beetje Nederlands.|Я говорю українською, англійською й трохи нідерландською.|I speak Ukrainian, English and a little Dutch.|Je parle ukrainien, anglais et un peu néerlandais.|أتكلم الأوكرانية والإنجليزية وقليلاً من الهولندية.|🗣️
+Ik ben ziek. Ik bel mijn werkgever voor negen uur.|Я захворів. Я дзвоню роботодавцю до дев’ятої.|I’m ill. I call my employer before nine.|Je suis malade. J’appelle mon employeur avant neuf heures.|أنا مريض. أتصل بصاحب العمل قبل التاسعة.|📞
+Wanneer kan ik beginnen?|Коли я можу почати?|When can I start?|Quand est-ce que je peux commencer ?|متى يمكنني أن أبدأ؟|🏁
+`],
+   apotheek: ['В аптеці','At the pharmacy','À la pharmacie','في الصيدلية', `
+de apotheker|фармацевт|pharmacist|le pharmacien|الصيدلي|💊|De apotheker legt alles goed uit.|Фармацевт усе добре пояснює.
+de hoestsiroop|сироп від кашлю|cough syrup|le sirop contre la toux|شراب السعال|🥄|Neem twee keer per dag een lepel hoestsiroop.|Приймай ложку сиропу від кашлю двічі на день.
+de wachtapotheek|чергова аптека|on-duty pharmacy|la pharmacie de garde|الصيدلية المناوبة|🌃|Op zondag ga ik naar de wachtapotheek.|У неділю я йду в чергову аптеку.
+het ziekenfonds|лікарняна каса|health insurance fund|la mutuelle|صندوق التأمين الصحي|🪪|Het ziekenfonds betaalt een deel terug.|Лікарняна каса повертає частину грошей.
+de spoed|відділення невідкладної допомоги|emergency department|les urgences|قسم الطوارئ|🏥|Na een ongeval ga je naar de spoed.|Після нещасного випадку їдуть у відділення невідкладної допомоги.
+de bijsluiter|інструкція до ліків|package leaflet|la notice|نشرة الدواء|📑|Lees eerst de bijsluiter.|Спочатку прочитай інструкцію.
+de zalf|мазь|ointment|la pommade|المرهم|🧴|Smeer de zalf twee keer per dag.|Намащуй мазь двічі на день.
+het ziektebriefje|лікарняна довідка|sick note|le certificat médical|الشهادة المرضية|📄|De dokter schrijft een ziektebriefje voor drie dagen.|Лікар виписує лікарняну довідку на три дні.
+`],
+   huisarts: ['У лікаря й у терміновій ситуації','At the GP and in an emergency','Chez le médecin et en urgence','عند الطبيب وفي الطوارئ', `
+Ik heb sinds gisteren keelpijn.|У мене з учора болить горло.|I’ve had a sore throat since yesterday.|J’ai mal à la gorge depuis hier.|أعاني من ألم في الحلق منذ أمس.|😷
+Ik ben drie dagen ziek geweest.|Я хворів три дні.|I was ill for three days.|J’ai été malade pendant trois jours.|كنت مريضاً ثلاثة أيام.|🤒
+Hebt u iets tegen hoest?|У вас є щось від кашлю?|Do you have something for a cough?|Avez-vous quelque chose contre la toux ?|هل لديك شيء للسعال؟|💊
+Moet ik dit voor of na het eten nemen?|Мені це приймати до чи після їжі?|Should I take this before or after eating?|Dois-je le prendre avant ou après le repas ?|هل أتناوله قبل الأكل أم بعده؟|🍽️
+Ik heb een ziektebriefje nodig voor mijn werk.|Мені потрібна лікарняна довідка для роботи.|I need a sick note for my work.|J’ai besoin d’un certificat médical pour mon travail.|أحتاج شهادة مرضية لعملي.|📝
+Bel 112 bij een ongeval of brand.|Телефонуй 112 у разі нещасного випадку чи пожежі.|Call 112 in case of an accident or fire.|Appelle le 112 en cas d’accident ou d’incendie.|اتصل بالرقم 112 عند وقوع حادث أو حريق.|📞
+De dokter heeft mij een voorschrift gegeven.|Лікар дав мені рецепт.|The doctor gave me a prescription.|Le médecin m’a donné une ordonnance.|أعطاني الطبيب وصفة طبية.|🩺
+Wanneer heeft de dokter raadpleging?|Коли в лікаря прийом?|When does the doctor see patients?|Quand le médecin a-t-il ses consultations ?|متى يستقبل الطبيب المرضى؟|🕘
+`],
+   orientatie: ['Дорога й напрямки','Directions','Les directions','الاتجاهات', `
+de verkeerslichten|світлофор|traffic lights|les feux|إشارات المرور|🚦|Aan de verkeerslichten ga je rechtdoor.|Біля світлофора йдеш прямо.
+linksaf|ліворуч (повернути)|(turn) left|(tourner) à gauche|(انعطف) يساراً|⬅️|Sla daar linksaf.|Поверніть там ліворуч.
+rechtsaf|праворуч (повернути)|(turn) right|(tourner) à droite|(انعطف) يميناً|➡️|Aan de bakker sla je rechtsaf.|Біля пекарні повертаєш праворуч.
+het kruispunt|перехрестя|crossroads|le carrefour|التقاطع|🛣️|Aan het kruispunt ga je links.|На перехресті йдеш ліворуч.
+de hoek|ріг вулиці|corner|le coin|الزاوية|📍|De apotheek is op de hoek.|Аптека на розі.
+tegenover|навпроти|opposite|en face de|مقابل|🏛️|Het gemeentehuis is tegenover de kerk.|Будинок громади навпроти церкви.
+de rotonde|кругова розв’язка|roundabout|le rond-point|الدوّار|🔄|Neem de tweede afslag op de rotonde.|На круговій розв’язці з’їжджай на другому з’їзді.
+voorbij|за (проминувши)|past|après, plus loin que|بعد (تجاوز)|🚶|Het station is net voorbij de brug.|Вокзал одразу за мостом.
+`],
+   diensten: ['Міські служби','Local services','Les services de la ville','خدمات المدينة', `
+Waar is het gemeentehuis?|Де будинок громади?|Where is the town hall?|Où est la maison communale ?|أين مبنى البلدية؟|🏛️
+Is het ver te voet?|Це далеко пішки?|Is it far on foot?|C’est loin à pied ?|هل هو بعيد سيراً على الأقدام؟|🚶
+Het is ongeveer tien minuten wandelen.|Це приблизно десять хвилин пішки.|It’s about a ten-minute walk.|C’est à environ dix minutes à pied.|إنه حوالي عشر دقائق سيراً.|⏱️
+Ik moet een nieuwe identiteitskaart aanvragen.|Мені треба подати заяву на нову ID-картку.|I need to apply for a new identity card.|Je dois demander une nouvelle carte d’identité.|يجب أن أطلب بطاقة هوية جديدة.|🪪
+Het containerpark is op zondag gesloten.|Контейнерний парк у неділю зачинений.|The recycling centre is closed on Sundays.|Le parc à conteneurs est fermé le dimanche.|مركز إعادة التدوير مغلق يوم الأحد.|🚫
+In de bibliotheek kun je boeken lenen.|У бібліотеці можна позичати книжки.|At the library you can borrow books.|À la bibliothèque, on peut emprunter des livres.|في المكتبة يمكنك استعارة الكتب.|📚
+Neem een nummertje en wacht even.|Візьміть номерок і трохи зачекайте.|Take a number and wait a moment.|Prenez un ticket et attendez un peu.|خذ رقماً وانتظر قليلاً.|🎫
+Ik ben verkeerd gelopen. Kunt u mij helpen?|Я заблукав. Можете мені допомогти?|I’ve gone the wrong way. Can you help me?|Je me suis trompé de chemin. Pouvez-vous m’aider ?|أخطأت الطريق. هل يمكنك مساعدتي؟|🗺️
+`],
+   schoolwoorden: ['Школа дітей','Children’s school','L’école des enfants','مدرسة الأطفال', `
+de juf|учителька (у початковій школі)|teacher (woman, primary school)|la maîtresse|المعلّمة|👩|De juf van mijn dochter heet Els.|Учительку моєї доньки звати Елс.
+de meester|учитель (у початковій школі)|teacher (man, primary school)|le maître|المعلّم|👨‍🏫|De meester geeft veel huiswerk.|Учитель задає багато домашніх завдань.
+het rapport|табель з оцінками|school report|le bulletin|بطاقة العلامات|📊|Voor Kerstmis krijgen de kinderen hun rapport.|Перед Різдвом діти отримують табель.
+het oudercontact|зустріч батьків з учителем|parent-teacher meeting|la réunion parents-professeurs|اجتماع أولياء الأمور|👪|Het oudercontact is op dinsdagavond.|Зустріч батьків з учителем у вівторок увечері.
+de refter|шкільна їдальня|school dining hall|le réfectoire|مقصف المدرسة|🍴|Mijn zoon eet 's middags in de refter.|Мій син обідає в шкільній їдальні.
+de opvang|група продовженого дня|after-school care|la garderie|الرعاية بعد المدرسة|🧒|Na school gaat mijn dochter naar de opvang.|Після школи донька йде в групу продовженого дня.
+de boekentas|шкільний рюкзак|school bag|le cartable|الحقيبة المدرسية|🎒|Vergeet je boekentas niet!|Не забудь свій рюкзак!
+de schoolreis|шкільна екскурсія|school trip|l’excursion scolaire|الرحلة المدرسية|🚌|De schoolreis kost twaalf euro.|Шкільна екскурсія коштує дванадцять євро.
+`],
+   oudercontact: ['Розмова з учителем і курси','Talking to the teacher and courses','Parler à l’enseignant et cours','التحدث مع المعلم والدورات', `
+Mijn zoon is vandaag ziek. Hij komt niet naar school.|Мій син сьогодні хворий. Він не прийде до школи.|My son is ill today. He isn’t coming to school.|Mon fils est malade aujourd’hui. Il ne vient pas à l’école.|ابني مريض اليوم. لن يأتي إلى المدرسة.|🤒
+Hoe gaat het met mijn dochter in de klas?|Як справи в моєї доньки в класі?|How is my daughter doing in class?|Comment va ma fille en classe ?|كيف حال ابنتي في الصف؟|🏫
+Hij werkt goed mee, maar hij praat te veel.|Він добре працює на уроці, але забагато розмовляє.|He works well, but he talks too much.|Il participe bien, mais il parle trop.|يشارك جيداً، لكنه يتكلم كثيراً.|💬
+Moet ik dit briefje ondertekenen?|Мені треба підписати цей лист?|Do I have to sign this note?|Dois-je signer ce mot ?|هل يجب أن أوقّع هذه الورقة؟|✍️
+De kinderen moeten om half negen op school zijn.|Діти мають бути в школі о пів на дев’яту.|The children have to be at school at half past eight.|Les enfants doivent être à l’école à huit heures et demie.|يجب أن يكون الأطفال في المدرسة في الثامنة والنصف.|🕣
+Ik wil me inschrijven voor een cursus Nederlands.|Я хочу записатися на курс нідерландської.|I want to sign up for a Dutch course.|Je veux m’inscrire à un cours de néerlandais.|أريد التسجيل في دورة لغة هولندية.|📝
+De les begint om zeven uur 's avonds.|Заняття починається о сьомій вечора.|The lesson starts at seven in the evening.|Le cours commence à sept heures du soir.|يبدأ الدرس في السابعة مساءً.|🕖
+Ik heb mijn huiswerk niet gemaakt, want ik was ziek.|Я не зробив домашнє завдання, бо хворів.|I didn’t do my homework because I was ill.|Je n’ai pas fait mes devoirs, car j’étais malade.|لم أنجز واجبي لأنني كنت مريضاً.|📓
+`],
+   clubs: ['Хобі та клуби','Hobbies and clubs','Loisirs et clubs','الهوايات والأندية', `
+de sportclub|спортивний клуб|sports club|le club de sport|النادي الرياضي|⚽|Mijn zoon voetbalt bij een sportclub.|Мій син грає у футбол у спортивному клубі.
+het lidgeld|членський внесок|membership fee|la cotisation|رسوم العضوية|💶|Het lidgeld is honderd euro per jaar.|Членський внесок — сто євро на рік.
+het zwembad|басейн|swimming pool|la piscine|المسبح|🏊|Op zaterdag gaan we naar het zwembad.|У суботу ми йдемо в басейн.
+de vereniging|товариство, об’єднання|association|l’association|الجمعية|🧑‍🤝‍🧑|Ik ben lid van een Oekraïense vereniging.|Я член українського товариства.
+het concert|концерт|concert|le concert|الحفل الموسيقي|🎵|Het concert begint om acht uur.|Концерт починається о восьмій.
+de fietstocht|велопрогулянка|bike ride|la balade à vélo|جولة بالدراجة|🚴|Zondag maken we een fietstocht.|У неділю ми їдемо на велопрогулянку.
+de tentoonstelling|виставка|exhibition|l’exposition|المعرض|🏛️|De tentoonstelling is tot eind mei open.|Виставка відкрита до кінця травня.
+de dansles|урок танців|dance class|le cours de danse|درس الرقص|💃|Mijn dochter volgt dansles op woensdag.|Моя донька ходить на танці в середу.
+`],
+   weekend: ['Вихідні й вільний час','Weekends and free time','Week-end et temps libre','عطلة نهاية الأسبوع ووقت الفراغ', `
+Wat doe je graag in je vrije tijd?|Що ти любиш робити у вільний час?|What do you like doing in your free time?|Qu’aimes-tu faire pendant ton temps libre ?|ماذا تحب أن تفعل في وقت فراغك؟|❓
+Ik sport twee keer per week.|Я займаюся спортом двічі на тиждень.|I do sport twice a week.|Je fais du sport deux fois par semaine.|أمارس الرياضة مرتين في الأسبوع.|🏋️
+Vorig weekend hebben we een fietstocht gemaakt.|Минулих вихідних ми їздили на велопрогулянку.|Last weekend we went on a bike ride.|Le week-end dernier, nous avons fait une balade à vélo.|في عطلة نهاية الأسبوع الماضية قمنا بجولة بالدراجة.|🚴
+Hoe kan ik me inschrijven bij de club?|Як мені записатися в клуб?|How can I join the club?|Comment puis-je m’inscrire au club ?|كيف يمكنني التسجيل في النادي؟|📝
+Ik vind zwemmen leuker dan lopen.|Мені плавати подобається більше, ніж бігати.|I like swimming more than running.|J’aime mieux nager que courir.|أحب السباحة أكثر من الجري.|🏊
+Ga je zaterdag mee naar het concert?|Підеш зі мною в суботу на концерт?|Are you coming to the concert with me on Saturday?|Tu viens au concert avec moi samedi ?|هل تأتي معي إلى الحفل يوم السبت؟|🎵
+De tickets zijn uitverkocht.|Квитки розпродані.|The tickets are sold out.|Les billets sont épuisés.|نفدت التذاكر.|🎟️
+Ik blijf liever thuis met een goed boek.|Я краще залишуся вдома з гарною книжкою.|I’d rather stay at home with a good book.|Je préfère rester à la maison avec un bon livre.|أفضّل البقاء في البيت مع كتاب جيد.|📖
+`],
+   gevoelens: ['Почуття й настрій','Feelings and mood','Sentiments et humeur','المشاعر والمزاج', `
+opgelucht|відчуває полегшення|relieved|soulagé|مرتاح البال|😌|Ik ben opgelucht, want mijn zoon is weer gezond.|Мені полегшало, бо мій син знову здоровий.
+boos|сердитий|angry|fâché|غاضب|👎|Mijn buurman is boos, want de muziek is te luid.|Мій сусід сердиться, бо музика надто гучна.
+ongerust|стурбований|worried|inquiet|قلق|😔|Ik ben ongerust over mijn familie in Oekraïne.|Я хвилююся за свою родину в Україні.
+zenuwachtig|знервований|nervous|nerveux|متوتر|🤞|Voor het examen ben ik zenuwachtig.|Перед іспитом я нервую.
+tevreden|задоволений|satisfied|satisfait|راضٍ|👍|Ik ben tevreden over mijn cursus.|Я задоволений своїм курсом.
+teleurgesteld|розчарований|disappointed|déçu|خائب الأمل|😞|Hij is teleurgesteld, want hij heeft de job niet gekregen.|Він розчарований, бо не отримав роботу.
+verrast|здивований|surprised|surpris|متفاجئ|🎁|Ik ben verrast, want mijn buren hebben een taart gebracht.|Я здивований, бо сусіди принесли торт.
+eenzaam|самотній|lonely|seul, isolé|وحيد|👤|In het begin was ik soms eenzaam.|Спочатку мені іноді було самотньо.
+`],
+   buren: ['Сусіди й допомога','Neighbours and help','Voisins et entraide','الجيران والمساعدة', `
+Dag, ik ben uw nieuwe buurvrouw. Ik heet Olena.|Добрий день, я ваша нова сусідка. Мене звати Олена.|Hello, I’m your new neighbour. My name is Olena.|Bonjour, je suis votre nouvelle voisine. Je m’appelle Olena.|مرحباً، أنا جارتكم الجديدة. اسمي أولينا.|👋
+Kunt u dit pakje voor mij aannemen?|Можете прийняти цю посилку за мене?|Could you take in this parcel for me?|Pourriez-vous réceptionner ce colis pour moi ?|هل يمكنك استلام هذا الطرد نيابة عني؟|📦
+Zal ik je helpen met de boodschappen?|Допомогти тобі з покупками?|Shall I help you with the shopping?|Je t’aide à porter les courses ?|هل أساعدك في حمل المشتريات؟|🤝
+Dat is heel vriendelijk van u.|Це дуже люб’язно з вашого боку.|That’s very kind of you.|C’est très gentil de votre part.|هذا لطف كبير منك.|🙏
+Sorry voor het lawaai gisteren.|Вибачте за шум учора.|Sorry about the noise yesterday.|Désolé pour le bruit d’hier.|آسف على الضجيج أمس.|🔇
+Hoe gaat het met je moeder?|Як справи у твоєї мами?|How is your mother?|Comment va ta mère ?|كيف حال والدتك؟|👵
+Proficiat met je nieuwe job!|Вітаю з новою роботою!|Congratulations on your new job!|Félicitations pour ton nouveau travail !|مبروك على عملك الجديد!|🎉
+Kom je eens een koffie drinken?|Зайдеш якось на каву?|Will you come round for a coffee sometime?|Tu viens prendre un café un de ces jours ?|هل تأتي لشرب القهوة يوماً ما؟|☕
+`],
+   tijdwoorden: ['Коли? Слова про майбутнє','When? Future time words','Quand ? Les mots du futur','متى؟ كلمات المستقبل', `
+volgend jaar|наступного року|next year|l’année prochaine|السنة القادمة|📅|Volgend jaar wil ik een opleiding volgen.|Наступного року я хочу піти на навчання.
+binnenkort|незабаром|soon|bientôt|قريباً|🔜|Binnenkort verhuizen we.|Незабаром ми переїжджаємо.
+over twee weken|через два тижні|in two weeks|dans deux semaines|بعد أسبوعين|🗓️|Over twee weken begint mijn nieuwe job.|Через два тижні починається моя нова робота.
+later|пізніше, згодом|later|plus tard|لاحقاً|⏳|Later wil ik verpleegster worden.|Згодом я хочу стати медсестрою.
+eerst|спочатку|first|d’abord|أولاً|1️⃣|Eerst leer ik Nederlands.|Спочатку я вчу нідерландську.
+daarna|після цього|after that|ensuite|بعد ذلك|2️⃣|Daarna zoek ik werk.|Після цього я шукаю роботу.
+de droom|мрія|dream|le rêve|الحلم|✨|Mijn droom is een eigen bakkerij.|Моя мрія — власна пекарня.
+het doel|мета|goal|l’objectif|الهدف|🎯|Mijn doel is werk vinden in Gent.|Моя мета — знайти роботу в Генті.
+`],
+   plannen: ['Мої плани','My plans','Mes projets','خططي', `
+Volgend jaar ga ik een opleiding tot kok volgen.|Наступного року я піду вчитися на кухаря.|Next year I’m going to train as a cook.|L’année prochaine, je vais suivre une formation de cuisinier.|في السنة القادمة سأتابع تدريباً لأصبح طباخاً.|🧑‍🍳
+Ik wil mijn rijbewijs halen.|Я хочу отримати водійські права.|I want to get my driving licence.|Je veux passer mon permis de conduire.|أريد الحصول على رخصة القيادة.|🚗
+Na de cursus zoek ik werk in de zorg.|Після курсу я шукатиму роботу в догляді за людьми.|After the course I’ll look for work in care.|Après le cours, je chercherai du travail dans les soins.|بعد الدورة سأبحث عن عمل في مجال الرعاية.|🧑‍⚕️
+We gaan in de zomer naar een groter appartement verhuizen.|Улітку ми переїдемо у більшу квартиру.|In summer we’re going to move to a bigger flat.|En été, nous allons déménager dans un appartement plus grand.|في الصيف سننتقل إلى شقة أكبر.|🏘️
+Ik hoop dat mijn familie op bezoek komt.|Я сподіваюся, що моя родина приїде в гості.|I hope my family will come to visit.|J’espère que ma famille viendra nous voir.|أتمنى أن تأتي عائلتي للزيارة.|👪
+Wat zijn jouw plannen voor volgend jaar?|Які твої плани на наступний рік?|What are your plans for next year?|Quels sont tes projets pour l’année prochaine ?|ما خططك للسنة القادمة؟|❓
+Ik weet het nog niet.|Я ще не знаю.|I don’t know yet.|Je ne sais pas encore.|لا أعرف بعد.|🤷
+Eerst wil ik beter Nederlands spreken.|Спочатку я хочу краще говорити нідерландською.|First I want to speak Dutch better.|D’abord, je veux mieux parler néerlandais.|أولاً أريد أن أتحدث الهولندية بشكل أفضل.|🗣️
+`],
+   woning: ['Житло й ремонт','Your home and repairs','Le logement et les réparations','السكن والإصلاحات', `
+de huisbaas|власник житла, орендодавець|landlord|le propriétaire|المالك|🔑|De huisbaas komt morgen de verwarming bekijken.|Власник житла завтра прийде подивитися опалення.
+de waarborg|застава за оренду|rental deposit|la garantie locative|تأمين الإيجار|💰|De waarborg is twee maanden huur.|Застава дорівнює оплаті за два місяці.
+de verwarming|опалення|heating|le chauffage|التدفئة|🌡️|De verwarming werkt niet.|Опалення не працює.
+het lek|протікання|leak|la fuite|التسرّب|💧|Er is een lek in de badkamer.|У ванній протікає.
+de herstelling|ремонт|repair|la réparation|الإصلاح|🛠️|Wie betaalt de herstelling?|Хто платить за ремонт?
+de loodgieter|сантехнік|plumber|le plombier|السبّاك|🔧|De loodgieter komt donderdag.|Сантехнік прийде в четвер.
+de meterstand|показник лічильника|meter reading|le relevé du compteur|قراءة العداد|🔢|Ik geef de meterstand door.|Я передаю показник лічильника.
+de pmd-zak|мішок PMD для пластику й металу|PMD bag for plastic and cans|le sac PMC|كيس PMD للبلاستيك والمعادن|🧴|De blauwe pmd-zak zet ik op maandag buiten.|Синій мішок PMD я виставляю в понеділок.
+`],
+   huisbaas: ['Розмова з орендодавцем','Talking to the landlord','Parler au propriétaire','التحدث مع المالك', `
+Dag meneer, met Olena van appartement drie.|Добрий день, пане, це Олена з квартири номер три.|Hello sir, this is Olena from flat three.|Bonjour monsieur, c’est Olena de l’appartement trois.|مرحباً سيدي، معك أولينا من الشقة رقم ثلاثة.|📞
+Sinds gisteren is er geen warm water.|З учора немає гарячої води.|There has been no hot water since yesterday.|Il n’y a plus d’eau chaude depuis hier.|لا يوجد ماء ساخن منذ أمس.|🚿
+Wanneer kan de loodgieter komen?|Коли може прийти сантехнік?|When can the plumber come?|Quand le plombier peut-il venir ?|متى يمكن أن يأتي السبّاك؟|🔧
+Ik ben morgen de hele dag thuis.|Завтра я весь день удома.|I’m at home all day tomorrow.|Demain, je suis à la maison toute la journée.|سأكون في البيت طوال اليوم غداً.|🏠
+Het raam in de slaapkamer is kapot.|Вікно в спальні розбите.|The bedroom window is broken.|La fenêtre de la chambre est cassée.|نافذة غرفة النوم مكسورة.|🪟
+Ik heb een foto van het lek gemaakt.|Я зробив фото протікання.|I took a photo of the leak.|J’ai pris une photo de la fuite.|التقطت صورة للتسرّب.|📸
+Mag ik een huisdier hebben?|Чи можна мені тримати домашню тварину?|Am I allowed to have a pet?|Ai-je le droit d’avoir un animal ?|هل يُسمح لي باقتناء حيوان أليف؟|🐈
+Ik wil de huur opzeggen.|Я хочу розірвати договір оренди.|I want to give notice on the lease.|Je veux résilier le bail.|أريد إنهاء عقد الإيجار.|📄
+`],
+   openbaar: ['Автобус, трамвай і велосипед','Bus, tram and bike','Bus, tram et vélo','الحافلة والترام والدراجة', `
+Waar kan ik een busticket kopen?|Де можна купити квиток на автобус?|Where can I buy a bus ticket?|Où puis-je acheter un ticket de bus ?|أين يمكنني شراء تذكرة حافلة؟|🎫
+Je kunt een ticket in de app kopen.|Квиток можна купити в застосунку.|You can buy a ticket in the app.|Tu peux acheter un ticket dans l’application.|يمكنك شراء تذكرة عبر التطبيق.|📱
+Ik heb een abonnement voor een jaar.|У мене абонемент на рік.|I have a one-year pass.|J’ai un abonnement d’un an.|لدي اشتراك لمدة سنة.|💳
+Deze bus rijdt niet op zondag.|Цей автобус не їздить у неділю.|This bus doesn’t run on Sundays.|Ce bus ne circule pas le dimanche.|هذه الحافلة لا تعمل يوم الأحد.|🚌
+Door werken is er een omleiding.|Через ремонтні роботи є об’їзд.|There is a diversion because of roadworks.|À cause de travaux, il y a une déviation.|بسبب الأشغال هناك تحويلة.|🚧
+Hoeveel haltes is het nog?|Скільки ще зупинок?|How many more stops is it?|C’est encore combien d’arrêts ?|كم محطة باقية؟|🚏
+Ik zet mijn fiets in de fietsenstalling aan het station.|Я ставлю велосипед на велопарковці біля вокзалу.|I put my bike in the bike park at the station.|Je mets mon vélo au parking vélos de la gare.|أضع دراجتي في موقف الدراجات عند المحطة.|🚲
+Met de tram ben ik er in tien minuten.|Трамваєм я буду там за десять хвилин.|By tram I’ll be there in ten minutes.|En tram, j’y suis en dix minutes.|بالترام أصل في عشر دقائق.|🚋
+`],
+   omdat: ['Причина: want і omdat','Reasons: want and omdat','La cause : want et omdat','السبب: want و omdat', `
+Ik blijf thuis, want ik ben ziek.|Я залишаюся вдома, бо я хворий.|I’m staying at home because I’m ill.|Je reste à la maison, car je suis malade.|أبقى في البيت لأنني مريض.|🏠
+Ik ga naar de apotheek omdat ik hoest.|Я йду в аптеку, тому що кашляю.|I’m going to the pharmacy because I’m coughing.|Je vais à la pharmacie parce que je tousse.|أذهب إلى الصيدلية لأنني أسعل.|💊
+Ik neem de bus, want mijn fiets is kapot.|Я їду автобусом, бо мій велосипед зламався.|I’m taking the bus because my bike is broken.|Je prends le bus, car mon vélo est cassé.|أركب الحافلة لأن دراجتي معطلة.|🚌
+Ik neem de bus omdat mijn fiets kapot is.|Я їду автобусом, тому що велосипед зламаний.|I’m taking the bus since my bike is broken.|Je prends le bus parce que mon vélo est cassé.|أركب الحافلة بسبب عطل دراجتي.|🚲
+Ik leer Nederlands omdat ik hier wil werken.|Я вчу нідерландську, тому що хочу тут працювати.|I’m learning Dutch because I want to work here.|J’apprends le néerlandais parce que je veux travailler ici.|أتعلم الهولندية لأنني أريد العمل هنا.|📚
+Ik ben te laat omdat de trein vertraging had.|Я запізнився, тому що поїзд затримався.|I’m late because the train was delayed.|Je suis en retard parce que le train avait du retard.|تأخرت لأن القطار تأخر.|🚆
+Waarom bel je? Omdat ik een vraag heb.|Чому ти дзвониш? Тому що в мене є питання.|Why are you calling? Because I have a question.|Pourquoi tu appelles ? Parce que j’ai une question.|لماذا تتصل؟ لأن لدي سؤالاً.|📞
+Ik kom niet, want ik moet werken.|Я не прийду, бо мушу працювати.|I’m not coming because I have to work.|Je ne viens pas, car je dois travailler.|لن آتي لأنني يجب أن أعمل.|💼
+`],
+   scheidbaar: ['Perfectum дієслів, що розділяються','Perfect tense of separable verbs','Passé composé des verbes séparables','الماضي التام للأفعال المنفصلة', `
+ik ben opgestaan|я встав|I got up|je me suis levé|استيقظتُ|⏰|Ik ben om zes uur opgestaan.|Я встав о шостій.
+ik heb opgebeld|я подзвонив|I phoned|j’ai téléphoné|اتصلتُ هاتفياً|📞|Ik heb de huisarts opgebeld.|Я подзвонив сімейному лікарю.
+ik heb ingevuld|я заповнив|I filled in|j’ai rempli|ملأتُ|📝|Ik heb het formulier ingevuld.|Я заповнив анкету.
+ik ben uitgestapt|я вийшов (з транспорту)|I got off|je suis descendu|نزلتُ|🚏|Ik ben aan het station uitgestapt.|Я вийшов біля вокзалу.
+ik ben aangekomen|я прибув|I arrived|je suis arrivé|وصلتُ|🏁|De trein is op tijd aangekomen.|Поїзд прибув вчасно.
+ik heb meegenomen|я взяв із собою|I brought along|j’ai emporté|أحضرتُ معي|🎒|Ik heb mijn identiteitskaart meegenomen.|Я взяв із собою ID-картку.
+ik heb opgeruimd|я навів лад|I tidied up|j’ai rangé|رتّبتُ|🧹|Ik heb mijn kamer opgeruimd.|Я прибрав у своїй кімнаті.
+ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-vous|اتفقتُ على موعد|🤝|Ik heb met Anna afgesproken.|Я домовився з Анною.
+`]
+  },
+  // Short grammar rule shown above the exercises of a lesson (uk, en, fr, ar).
+  notes: {
+   weekplan: ['Час на початку → дієслово на другому місці: Morgen moet ik…','Time first → verb in second place: Morgen moet ik…','Le temps en tête → le verbe en 2e position : Morgen moet ik…','الزمن أولاً ← الفعل في المكان الثاني: Morgen moet ik…'],
+   solliciteren: ['Досвід: ik heb … gewerkt; ким був: ik was …','Experience: ik heb … gewerkt; what you were: ik was …','Expérience : ik heb … gewerkt ; ce que tu étais : ik was …','الخبرة: ik heb … gewerkt؛ ما كنتَ: ik was …'],
+   huisarts: ['Як довго? sinds + час: Ik heb sinds gisteren keelpijn.','How long? sinds + time: Ik heb sinds gisteren keelpijn.','Depuis quand ? sinds + temps : Ik heb sinds gisteren keelpijn.','منذ متى؟ sinds + الوقت: Ik heb sinds gisteren keelpijn.'],
+   orientatie: ['Наказ: дієслово на початку. Ga rechtdoor! Sla linksaf!','Imperative: the verb comes first. Ga rechtdoor! Sla linksaf!','Impératif : le verbe vient en premier. Ga rechtdoor ! Sla linksaf !','الأمر: الفعل في البداية. Ga rechtdoor! Sla linksaf!'],
+   weekend: ['Порівняння: leuker dan, liever, beter dan','Comparing: leuker dan, liever, beter dan','Comparer : leuker dan, liever, beter dan','المقارنة: leuker dan، liever، beter dan'],
+   buren: ['Ввічливо: u/uw з незнайомими, je/jij з друзями','Polite: u/uw with strangers, je/jij with friends','Poli : u/uw avec des inconnus, je/jij avec des amis','بأدب: u/uw مع الغرباء، je/jij مع الأصدقاء'],
+   plannen: ['Майбутнє: gaan/willen + інфінітив у кінці речення','Future: gaan/willen + infinitive at the end','Futur : gaan/willen + infinitif à la fin','المستقبل: gaan/willen + المصدر في نهاية الجملة'],
+   omdat: ['want + звичайний порядок слів; після omdat дієслово йде в кінець','want + normal word order; after omdat the verb goes to the end','want + ordre normal ; après omdat, le verbe va à la fin','بعد want ترتيب عادي؛ بعد omdat يأتي الفعل في النهاية'],
+   scheidbaar: ['Частка + ge + дієслово: opstaan → opgestaan, invullen → ingevuld','Particle + ge + verb: opstaan → opgestaan, invullen → ingevuld','Particule + ge + verbe : opstaan → opgestaan, invullen → ingevuld','الجزء + ge + الفعل: opstaan ← opgestaan، invullen ← ingevuld']
+  },
+  gaps: {
+   daily:['Gisteren heb ik de hele dag ___.','gepoetst','poetsen','poetst','gepoetsd'],
+   work:['Ik heb drie jaar in een winkel ___.','gewerkt','werken','werkt','gewerkd'],
+   zorg:['Ik heb ___ gisteren keelpijn.','sinds','voor','na','om'],
+   stad:['De bushalte is ___ de bank.','naast','rechtdoor','linksaf','straks'],
+   school:['Mijn zoon is ziek. Hij komt ___ naar school.','niet','geen','niets','nee'],
+   vrijetijd:['Ik vind zwemmen leuker ___ lopen.','dan','als','of','want'],
+   sociaal:['Kunt ___ dit pakje voor mij aannemen, mevrouw?','u','uw','jouw','hem'],
+   future:['Volgend jaar ___ ik een opleiding volgen.','ga','gaat','gaan','gegaan']
+  },
+  // Sentence builder: cat, level, tiles, roles, uk, en, fr, ar, extra tile, final punctuation.
+  bank: [
+   ['daily',1,'wie|doet|vandaag|de afwas','QVRR','Хто сьогодні миє посуд?','Who is doing the dishes today?','Qui fait la vaisselle aujourd’hui ?','من يغسل الأطباق اليوم؟','','?'],
+   ['daily',1,'op zaterdag|doe|ik|de was','TVSR','У суботу я перу білизну.','On Saturday I do the laundry.','Le samedi, je fais la lessive.','يوم السبت أغسل الملابس.','doen','.'],
+   ['daily',2,'ik|heb|de hele ochtend|gepoetst','SVRI','Я прибирав увесь ранок.','I cleaned all morning.','J’ai fait le ménage toute la matinée.','نظّفت طوال الصباح.','poetsen','.'],
+   ['work',1,'wanneer|kan|ik|beginnen','QVSI','Коли я можу почати?','When can I start?','Quand est-ce que je peux commencer ?','متى يمكنني أن أبدأ؟','','?'],
+   ['work',1,'ik|zoek|werk|in een winkel','SVRR','Я шукаю роботу в магазині.','I’m looking for work in a shop.','Je cherche du travail dans un magasin.','أبحث عن عمل في متجر.','','.'],
+   ['work',2,'ik|heb|drie jaar|in een winkel|gewerkt','SVRRI','Я три роки працював у магазині.','I worked in a shop for three years.','J’ai travaillé trois ans dans un magasin.','عملت ثلاث سنوات في متجر.','werken','.'],
+   ['zorg',1,'hebt|u|iets|tegen hoest','VSRR','У вас є щось від кашлю?','Do you have something for a cough?','Avez-vous quelque chose contre la toux ?','هل لديك شيء للسعال؟','','?'],
+   ['zorg',2,'de dokter|heeft|mij|een voorschrift|gegeven','SVRRI','Лікар дав мені рецепт.','The doctor gave me a prescription.','Le médecin m’a donné une ordonnance.','أعطاني الطبيب وصفة طبية.','geeft','.'],
+   ['stad',1,'waar|is|de wachtapotheek','QVS','Де чергова аптека?','Where is the on-duty pharmacy?','Où est la pharmacie de garde ?','أين الصيدلية المناوبة؟','','?'],
+   ['stad',1,'aan het kruispunt|ga|je|links','TVSR','На перехресті йдеш ліворуч.','At the crossroads you go left.','Au carrefour, tu vas à gauche.','عند التقاطع تذهب يساراً.','gaat','.'],
+   ['stad',2,'ik|ben|verkeerd|gelopen','SVRI','Я заблукав.','I went the wrong way.','Je me suis trompé de chemin.','أخطأت الطريق.','heb','.'],
+   ['school',1,'moet|ik|dit briefje|ondertekenen','VSRI','Мені треба підписати цей лист?','Do I have to sign this note?','Dois-je signer ce mot ?','هل يجب أن أوقّع هذه الورقة؟','','?'],
+   ['school',1,'de les|begint|om zeven uur','SVR','Заняття починається о сьомій.','The lesson starts at seven.','Le cours commence à sept heures.','يبدأ الدرس في السابعة.','','.'],
+   ['school',2,'na school|gaat|mijn dochter|naar de opvang','TVSR','Після школи донька йде в групу продовженого дня.','After school my daughter goes to after-school care.','Après l’école, ma fille va à la garderie.','بعد المدرسة تذهب ابنتي إلى الرعاية.','gaan','.'],
+   ['vrijetijd',1,'wat|doe|je|graag','QVSR','Що ти любиш робити?','What do you like doing?','Qu’est-ce que tu aimes faire ?','ماذا تحب أن تفعل؟','','?'],
+   ['vrijetijd',1,'ik|sport|twee keer per week','SVR','Я займаюся спортом двічі на тиждень.','I do sport twice a week.','Je fais du sport deux fois par semaine.','أمارس الرياضة مرتين في الأسبوع.','','.'],
+   ['vrijetijd',2,'vorig weekend|hebben|we|een fietstocht|gemaakt','TVSRI','Минулих вихідних ми їздили на велопрогулянку.','Last weekend we went on a bike ride.','Le week-end dernier, nous avons fait une balade à vélo.','في عطلة نهاية الأسبوع الماضية قمنا بجولة بالدراجة.','maken','.'],
+   ['sociaal',1,'zal|ik|je|helpen','VSRI','Тобі допомогти?','Shall I help you?','Je peux t’aider ?','هل أساعدك؟','','?'],
+   ['sociaal',1,'dat|is|heel vriendelijk|van u','SVRR','Це дуже люб’язно з вашого боку.','That’s very kind of you.','C’est très gentil de votre part.','هذا لطف كبير منك.','','.'],
+   ['sociaal',2,'hij|is|boos|want|de muziek|is|te luid','SVRRSVR','Він сердиться, бо музика надто гучна.','He is angry because the music is too loud.','Il est fâché, car la musique est trop forte.','إنه غاضب لأن الموسيقى عالية جداً.','omdat','.'],
+   ['future',1,'volgend jaar|ga|ik|verhuizen','TVSI','Наступного року я переїду.','Next year I’m going to move.','L’année prochaine, je vais déménager.','في السنة القادمة سأنتقل.','gaat','.'],
+   ['future',1,'eerst|zoek|ik|werk','TVSR','Спочатку я шукаю роботу.','First I look for work.','D’abord, je cherche du travail.','أولاً أبحث عن عمل.','','.'],
+   ['future',2,'na de cursus|wil|ik|in de zorg|werken','TVSRI','Після курсу я хочу працювати в догляді.','After the course I want to work in care.','Après le cours, je veux travailler dans les soins.','بعد الدورة أريد العمل في الرعاية.','wilt','.'],
+   ['wonen',1,'de verwarming|werkt|niet','SVR','Опалення не працює.','The heating isn’t working.','Le chauffage ne marche pas.','التدفئة لا تعمل.','','.'],
+   ['wonen',2,'wanneer|kan|de loodgieter|komen','QVSI','Коли може прийти сантехнік?','When can the plumber come?','Quand le plombier peut-il venir ?','متى يمكن أن يأتي السبّاك؟','','?'],
+   ['travel',1,'hoeveel haltes|is|het|nog','QVSR','Скільки ще зупинок?','How many more stops is it?','C’est encore combien d’arrêts ?','كم محطة باقية؟','','?'],
+   ['travel',2,'door werken|is|er|een omleiding','TVSR','Через ремонтні роботи є об’їзд.','There is a diversion because of roadworks.','À cause de travaux, il y a une déviation.','بسبب الأشغال هناك تحويلة.','','.'],
+   ['grammar2',2,'ik|blijf|thuis|omdat|ik|ziek|ben','SVRRSRV','Я залишаюся вдома, тому що хворію.','I’m staying at home because I’m ill.','Je reste à la maison parce que je suis malade.','أبقى في البيت لأنني مريض.','want','.'],
+   ['grammar2',2,'ik|ben|om zes uur|opgestaan','SVRI','Я встав о шостій.','I got up at six.','Je me suis levé à six heures.','استيقظتُ في السادسة.','heb','.']
+  ],
+  // Listening and role-play: [id, icon, title uk/en/fr/ar, lines nl|uk|en].
+  dialogues: [
+   ['daily','🧺','Хто що робить удома?','Who does what at home?','Qui fait quoi à la maison ?','من يفعل ماذا في البيت؟',[
+    ['Wie doet vandaag de afwas?','Хто сьогодні миє посуд?','Who is doing the dishes today?'],
+    ['Ik heb gisteren al de afwas gedaan.','Я вже мив посуд учора.','I already did the dishes yesterday.'],
+    ['Oké, dan doe ik hem vandaag. Kun jij stofzuigen?','Добре, тоді сьогодні мию я. Можеш попилососити?','OK, then I’ll do them today. Can you vacuum?'],
+    ['Ja, maar eerst breng ik de kinderen naar school.','Так, але спочатку я відведу дітей до школи.','Yes, but first I’ll take the children to school.'],
+    ['Vergeet de vuilniszak niet. Morgen komt de vuilniswagen.','Не забудь про пакет зі сміттям. Завтра приїде сміттєвоз.','Don’t forget the rubbish bag. The bin lorry comes tomorrow.'],
+    ['Ik zet hem vanavond buiten.','Я виставлю його сьогодні ввечері.','I’ll put it out tonight.']]],
+   ['work','💼','Співбесіда','A job interview','Un entretien d’embauche','مقابلة عمل',[
+    ['Goedemorgen, gaat u zitten. Waarom wilt u hier werken?','Доброго ранку, сідайте. Чому ви хочете тут працювати?','Good morning, have a seat. Why do you want to work here?'],
+    ['Ik werk graag met mensen en ik heb ervaring in een winkel.','Я люблю працювати з людьми, і маю досвід роботи в магазині.','I like working with people and I have experience in a shop.'],
+    ['Hoe lang hebt u in die winkel gewerkt?','Скільки ви працювали в тому магазині?','How long did you work in that shop?'],
+    ['Drie jaar, in Kyiv. Daar was ik verkoopster.','Три роки, у Києві. Там я була продавчинею.','Three years, in Kyiv. I was a shop assistant there.'],
+    ['Kunt u ook in het weekend werken?','Ви можете працювати й на вихідних?','Can you also work at weekends?'],
+    ['Ja, op zaterdag kan ik werken. Wanneer kan ik beginnen?','Так, у суботу я можу працювати. Коли я можу почати?','Yes, I can work on Saturdays. When can I start?']]],
+   ['zorg','💊','В аптеці','At the pharmacy','À la pharmacie','في الصيدلية',[
+    ['Goedemiddag. Kan ik u helpen?','Добрий день. Можу вам допомогти?','Good afternoon. Can I help you?'],
+    ['Ja, ik heb sinds gisteren keelpijn en ik hoest veel.','Так, у мене з учора болить горло, і я сильно кашляю.','Yes, I’ve had a sore throat since yesterday and I cough a lot.'],
+    ['Hebt u koorts?','У вас є температура?','Do you have a temperature?'],
+    ['Nee, geen koorts. Hebt u iets tegen hoest?','Ні, температури немає. У вас є щось від кашлю?','No, no temperature. Do you have something for a cough?'],
+    ['Deze siroop neemt u drie keer per dag, na het eten.','Цей сироп приймайте тричі на день після їжі.','Take this syrup three times a day, after meals.'],
+    ['Dank u. Als het niet beter wordt, ga ik naar de huisarts.','Дякую. Якщо не стане краще, я піду до сімейного лікаря.','Thank you. If it doesn’t get better, I’ll go to the GP.']]],
+   ['stad','🗺️','Дорога до будинку громади','The way to the town hall','Le chemin de la maison communale','الطريق إلى مبنى البلدية',[
+    ['Pardon, mevrouw. Waar is het gemeentehuis?','Перепрошую, пані. Де будинок громади?','Excuse me, madam. Where is the town hall?'],
+    ['Ga hier rechtdoor tot aan het kruispunt.','Ідіть тут прямо до перехрестя.','Go straight on here to the crossroads.'],
+    ['En dan?','А потім?','And then?'],
+    ['Aan het kruispunt gaat u linksaf. Het gemeentehuis is tegenover de kerk.','На перехресті поверніть ліворуч. Будинок громади навпроти церкви.','At the crossroads, turn left. The town hall is opposite the church.'],
+    ['Is het ver te voet?','Це далеко пішки?','Is it far on foot?'],
+    ['Nee, het is ongeveer tien minuten wandelen.','Ні, це приблизно десять хвилин пішки.','No, it’s about a ten-minute walk.']]],
+   ['school','🎒','Розмова з учителькою','Talking to the teacher','Parler à la maîtresse','التحدث مع المعلّمة',[
+    ['Dag juf, ik ben de mama van Sofia.','Добрий день, пані вчителько, я мама Софії.','Hello, Miss, I’m Sofia’s mum.'],
+    ['Dag mevrouw. Sofia doet het goed in de klas.','Добрий день, пані. Софія добре вчиться.','Hello. Sofia is doing well in class.'],
+    ['Fijn! Spreekt ze al goed Nederlands?','Чудово! Вона вже добре говорить нідерландською?','Great! Does she speak Dutch well already?'],
+    ['Ja, ze leert snel. Ze praat veel met haar vriendinnen.','Так, вона швидко вчиться. Вона багато розмовляє з подругами.','Yes, she learns fast. She talks a lot with her friends.'],
+    ['Moet ik dit briefje voor de schoolreis ondertekenen?','Мені треба підписати цей лист щодо екскурсії?','Do I need to sign this note for the school trip?'],
+    ['Ja, graag tegen vrijdag. De schoolreis kost twaalf euro.','Так, будь ласка, до п’ятниці. Екскурсія коштує дванадцять євро.','Yes, by Friday please. The school trip costs twelve euros.']]],
+   ['vrijetijd','⚽','Запис у клуб','Joining a club','S’inscrire dans un club','التسجيل في نادٍ',[
+    ['Goedenavond. Mijn zoon wil graag voetballen bij jullie club.','Добрий вечір. Мій син хоче грати у футбол у вашому клубі.','Good evening. My son would like to play football at your club.'],
+    ['Leuk! Hoe oud is hij?','Чудово! Скільки йому років?','Great! How old is he?'],
+    ['Hij is tien. Wanneer zijn de trainingen?','Йому десять. Коли тренування?','He is ten. When are the training sessions?'],
+    ['Op woensdagmiddag en op zaterdagochtend.','У середу після обіду й у суботу вранці.','On Wednesday afternoon and Saturday morning.'],
+    ['Hoeveel is het lidgeld?','Скільки коштує членський внесок?','How much is the membership fee?'],
+    ['Honderd euro per jaar. Het ziekenfonds betaalt soms een deel terug.','Сто євро на рік. Лікарняна каса іноді повертає частину.','A hundred euros a year. The health insurance fund sometimes refunds part of it.']]],
+   ['sociaal','🤝','Нова сусідка','The new neighbour','La nouvelle voisine','الجارة الجديدة',[
+    ['Dag, ik ben Olena, uw nieuwe buurvrouw.','Добрий день, я Олена, ваша нова сусідка.','Hello, I’m Olena, your new neighbour.'],
+    ['Dag Olena, welkom! Ik ben Jan. Woon je hier al lang?','Привіт, Олено, ласкаво просимо! Я Ян. Ти вже давно тут живеш?','Hello Olena, welcome! I’m Jan. Have you lived here long?'],
+    ['Nee, we zijn vorige week verhuisd.','Ні, ми переїхали минулого тижня.','No, we moved last week.'],
+    ['Als je iets nodig hebt, mag je altijd aanbellen.','Якщо тобі щось потрібно, завжди можеш подзвонити у двері.','If you need anything, you can always ring the bell.'],
+    ['Dat is heel vriendelijk. Kunt u morgen een pakje voor mij aannemen?','Це дуже люб’язно. Чи можете ви завтра прийняти для мене посилку?','That’s very kind. Could you take in a parcel for me tomorrow?'],
+    ['Natuurlijk, geen probleem.','Звичайно, без проблем.','Of course, no problem.']]],
+   ['future','🔜','Плани після курсу','Plans after the course','Projets après le cours','خطط بعد الدورة',[
+    ['Wat zijn jouw plannen na de cursus?','Які в тебе плани після курсу?','What are your plans after the course?'],
+    ['Eerst wil ik niveau A2 halen. Daarna zoek ik werk.','Спочатку я хочу досягти рівня A2. Потім шукатиму роботу.','First I want to reach level A2. After that I’ll look for work.'],
+    ['Welk werk wil je doen?','Яку роботу ти хочеш?','What work do you want to do?'],
+    ['Ik wil in de zorg werken. In Oekraïne was ik verpleegster.','Я хочу працювати в догляді за людьми. В Україні я була медсестрою.','I want to work in care. In Ukraine I was a nurse.'],
+    ['En wat ga je in de zomer doen?','А що ти робитимеш улітку?','And what are you going to do in summer?'],
+    ['We gaan naar een groter appartement verhuizen.','Ми переїдемо у більшу квартиру.','We’re going to move to a bigger flat.']]]
+  ],
+  // Speaking prompts: question, uk, en, model answer.
+  speech: [
+   ['Wie doet bij jou thuis de afwas?','Хто у вас удома миє посуд?','Who does the dishes in your home?','Bij ons doet mijn man de afwas.'],
+   ['Welk werk heb je vroeger gedaan?','Яку роботу ти виконував раніше?','What work did you do before?','Ik heb drie jaar in een winkel gewerkt.'],
+   ['Wat vraag je in de apotheek?','Що ти запитаєш в аптеці?','What do you ask at the pharmacy?','Hebt u iets tegen hoest?'],
+   ['Hoe kom je van je huis naar de winkel?','Як дійти від твого дому до магазину?','How do you get from your home to the shop?','Ik ga rechtdoor en aan het kruispunt ga ik links.'],
+   ['Waarom komt je kind vandaag niet naar school?','Чому твоя дитина сьогодні не прийде до школи?','Why isn’t your child coming to school today?','Mijn zoon komt niet omdat hij ziek is.'],
+   ['Wat doe je graag in je vrije tijd?','Що ти любиш робити у вільний час?','What do you like doing in your free time?','Ik sport graag en ik lees veel.'],
+   ['Hoe stel je je voor aan een nieuwe buur?','Як ти представишся новому сусідові?','How do you introduce yourself to a new neighbour?','Dag, ik ben Olena, uw nieuwe buurvrouw.'],
+   ['Wat zijn je plannen voor volgend jaar?','Які твої плани на наступний рік?','What are your plans for next year?','Volgend jaar wil ik werk zoeken.']
+  ],
+  // Two original reading texts: a school letter and a municipal notice.
+  reading: [
+   'Beste ouders, op vrijdag 14 maart gaan alle klassen op schoolreis naar de zoo. De bus vertrekt om half negen aan de schoolpoort. We zijn om vier uur terug. De schoolreis kost 15 euro. Geef uw kind een lunchpakket en een drankje mee. Betaal voor 7 maart via de schoolrekening. Met vriendelijke groeten, juf Ann',
+   'Gemeente Zonnedorp. Vanaf 1 april is het gemeentehuis open van maandag tot vrijdag, van 9 tot 12 uur. Op woensdag is het ook open van 14 tot 19 uur. Voor een nieuwe identiteitskaart maakt u eerst online een afspraak. Breng een pasfoto en uw oude kaart mee.'
+  ]
+  ,
+  // Reading questions: text index, question uk/en/fr/ar, answer first, then three wrong options.
+  readingQs: [
+   [0,'О котрій вирушає автобус?','What time does the bus leave?','À quelle heure part le bus ?','متى تغادر الحافلة؟',['Om half negen','Om vier uur','Om acht uur','Om half tien']],
+   [0,'Що дитина має взяти з собою?','What should the child take along?','Qu’est-ce que l’enfant doit emporter ?','ماذا يجب أن يأخذ الطفل معه؟',['Een lunchpakket en een drankje','Vijftien euro in een envelop','Een fiets','Een pasfoto']],
+   [0,'До якого дня треба заплатити?','By when do you have to pay?','Avant quelle date faut-il payer ?','قبل أي تاريخ يجب الدفع؟',['Voor 7 maart','Op 14 maart','Na de schoolreis','Voor 1 april']],
+   [1,'Коли будинок громади відкритий після обіду?','When is the town hall open in the afternoon?','Quand la maison communale est-elle ouverte l’après-midi ?','متى يكون مبنى البلدية مفتوحاً بعد الظهر؟',['Op woensdag','Op maandag','Op vrijdag','Elke dag']],
+   [1,'Що треба зробити спочатку для нової ID-картки?','What do you do first for a new identity card?','Que faut-il faire d’abord pour une nouvelle carte d’identité ?','ماذا تفعل أولاً للحصول على بطاقة هوية جديدة؟',['Online een afspraak maken','Een brief schrijven','Naar de bibliotheek gaan','Om 19 uur langskomen']],
+   [1,'Що треба принести?','What must you bring?','Que faut-il apporter ?','ماذا يجب أن تحضر؟',['Een pasfoto en de oude kaart','Een voorschrift','Het lidgeld','Een kassabon']]
+  ],
+  // Spaced review of A1.2 grammar across chapters (answer first).
+  review: [
+   ['gap','Gisteren ___ ik naar de markt gegaan.','ben','heb','is','word'],
+   ['gap','Ik heb het formulier ___.','ingevuld','geinvuld','invullen','vul in'],
+   ['gap','Ik ben om zes uur ___.','opgestaan','opstaan','geopstaan','sta op'],
+   ['gap','Ik kom niet omdat ik moet ___.','werken','werk','werkt','gewerkt'],
+   ['pick','Ik neem de bus omdat mijn fiets kapot is.','Ik neem de bus omdat mijn fiets is kapot.','Ik neem de bus want mijn fiets kapot is.','Ik neem de bus omdat is mijn fiets kapot.'],
+   ['gap','De trein is sneller ___ de bus.','dan','als','van','om'],
+   ['gap','Waar is Tom? Ik zie ___ niet.','hem','hij','zijn','hun'],
+   ['gap','Volgend jaar ___ we verhuizen.','gaan','gaat','ga','gegaan'],
+   ['gap','Aan het kruispunt sla je ___.','linksaf','tegenover','naast','voorbij'],
+   ['pick','Morgen moet ik de vuilniszak buitenzetten.','Morgen ik moet de vuilniszak buitenzetten.','Morgen moet ik buitenzetten de vuilniszak.','Morgen moet de vuilniszak ik buitenzetten.']
+  ]
+ };
  function apply({DATA,CATEGORIES,UI,R,LEVELS}) {
   const grammar = {...CATEGORIES.find(c=>c.id==='grammar')}; // Includes the untouched diphthongs lesson.
   grammar.tabs=grammar.tabs.filter(t=>t!=='adjectives');
@@ -641,5 +1033,5 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
    ['Welke kamer vind je beter?','Яка кімната тобі більше подобається?','Which room do you prefer?','Ik vind deze kamer beter omdat ze groter is.']
   ])speech.push({q,uk,en,m,lvl:'a12',open:true});
  }
- return {chapters,advanced,lessons,topicInfo,apply,buildBank,assessments,games};
+ return {chapters,advanced,a12,lessons,topicInfo,apply,buildBank,assessments,games};
 })();
