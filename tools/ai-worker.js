@@ -4,14 +4,17 @@
 //   "anthropic"  — Claude (best Dutch + Ukrainian explanations). Secret ANTHROPIC_KEY. Optional MODEL (default claude-haiku-5-5).
 //   "gemini"     — Google Gemini PAID tier (the free tier may not be used for apps serving EU users). Secret GEMINI_KEY. Optional MODEL.
 //   "workers-ai" — Cloudflare Workers AI (free daily allowance). Add a Workers AI binding named AI. Optional MODEL.
-// Optional: KV binding RATE (daily limit per visitor, DAILY_LIMIT default 60 messages).
+// Optional: KV binding RATE (daily limit per device, DAILY_LIMIT default 60 successful AI replies; plus a higher ceiling per
+// network, DAILY_IP_LIMIT default 150, so one Wi-Fi can hold a few learners but a rotating-id bot cannot multiply the quota).
+// Visitors are never stored in clear: the IP address and the random device code the app sends (X-Leren-Device) are only
+// kept as truncated HMAC hashes (secret: RATE_SALT, or ANTHROPIC_KEY / GEMINI_KEY when RATE_SALT is not set), for one day.
 //
 // Request:  {mode: "chat"|"ask"|"memo", target: "nl"|"en"|"fr", lang: UI language, level, scene, char, profile, memory, messages: [{role, content}]}
 // Response: chat → {reply, reply_nl, translation, correction|null}
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-01-talk-natural-opening-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-01-limits-v2"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -204,33 +207,55 @@ const cut = (s, n) => String(s || "").slice(0, n);
 const TRANSLIT = {а:"a",б:"b",в:"v",г:"h",ґ:"g",д:"d",е:"e",є:"ie",ж:"zh",з:"z",и:"y",і:"i",ї:"i",й:"i",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"kh",ц:"ts",ч:"ch",ш:"sh",щ:"shch",ь:"",ю:"iu",я:"ia",ы:"y",э:"e",ё:"io",ъ:"","'":"'"};
 const latin = s => String(s || "").replace(/[\u0400-\u04FF]/g, ch => { const l = ch.toLowerCase(), r = TRANSLIT[l] ?? ""; return ch !== l && r ? r[0].toUpperCase() + r.slice(1) : r; });
 
+// ---- Limits -------------------------------------------------------------------------------------------------------
+const positive = (v, d) => { const n = Number(v); return Number.isFinite(n) && n >= 1 ? Math.floor(n) : d; }; // "abc" or 0 must not switch a limit off
+const secondsToUtcMidnight = (now = new Date()) => Math.max(1, Math.ceil((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1) - now.getTime()) / 1000));
+// Anonymous visitor keys: truncated HMAC-SHA256, so no IP address or device code is ever written to KV or sent to the limiter in clear.
+async function visitorKey(secret, label, value) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", enc.encode(secret), {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
+  const mac = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(label + ":" + value)));
+  return Array.from(mac.slice(0, 12), b => b.toString(16).padStart(2, "0")).join("");
+}
+const MAX_DEVICES_PER_NETWORK = 12; // devices counted separately behind one IP; further ids share one bucket
+async function readDaily(env, day, net) {
+  const empty = {n: 0, d: {}};
+  if (!env.RATE) return empty;
+  try {
+    const v = JSON.parse(await env.RATE.get(`${day}:${net}`) || "null");
+    return v && typeof v === "object" && Number.isFinite(v.n) && v.d && typeof v.d === "object" ? v : empty;
+  } catch (e) { console.log("rate get", String(e)); return empty; } // KV down: per-minute limits still apply (fail open on the daily count only)
+}
+async function chargeDaily(env, day, net, dev, state) {
+  if (!env.RATE) return;
+  const d = {...state.d}, slot = d[dev] !== undefined || Object.keys(d).length < MAX_DEVICES_PER_NETWORK ? dev : "other";
+  d[slot] = (d[slot] || 0) + 1;
+  try { await env.RATE.put(`${day}:${net}`, JSON.stringify({n: state.n + 1, d}), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
+}
+
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const origin = req.headers.get("Origin") || "";
-    const cors = {"Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0], "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin"};
+    const cors = {"Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0], "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, X-Leren-Device", "Access-Control-Expose-Headers": "Retry-After", "Vary": "Origin"};
     if (req.method === "OPTIONS") return new Response(null, {headers: cors});
-    const json = (o, status = 200) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION}});
+    const json = (o, status = 200, extra = {}) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION, ...extra}});
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
 
     // Emergency switch: set the variable AI_OFF = 1 in Cloudflare to stop all model calls at once.
     if (env.AI_OFF === "1") return json({error: "off"}, 503);
     // Spend guard. Rate limiting bindings (wrangler.toml) are counted per Cloudflare location without a daily write
-    // quota, so they keep working when KV doesn't: per visitor per minute, and for everybody together per minute
-    // (a ceiling on what the model can cost per minute). If a binding is missing or fails, refuse rather than spend.
-    const ip = req.headers.get("CF-Connecting-IP") || "x";
-    for (const [b, key] of [[env.PER_IP, ip], [env.ALL, "all"]]) {
+    // quota, so they keep working when KV doesn't: per device per minute, per network per minute (several learners on one
+    // Wi-Fi), and for everybody together per minute (a ceiling on what the model can cost per minute). Failed requests
+    // count here too (they stop retry storms). If a binding is missing or fails, refuse rather than spend.
+    const secret = env.RATE_SALT || env.ANTHROPIC_KEY || env.GEMINI_KEY || "leren-be";
+    const net = await visitorKey(secret, "ip", req.headers.get("CF-Connecting-IP") || "x");
+    const deviceId = /^[A-Za-z0-9_-]{16,64}$/.test(req.headers.get("X-Leren-Device") || "") ? req.headers.get("X-Leren-Device") : "";
+    const dev = deviceId ? (await visitorKey(secret, "dev", deviceId)).slice(0, 10) : "anon"; // old app versions send no id: they share one bucket per network
+    const slow = () => json({error: "slow", retry_after: 60}, 429, {"Retry-After": "60"}); // the app says "wait a moment", not "come back tomorrow"
+    for (const [b, key] of [[env.PER_IP, net + ":" + dev], [env.IP_CEIL, net], [env.ALL, "all"]]) {
       if (!b) continue;
       let ok = false; try { ok = (await b.limit({key})).success; } catch (e) { console.log("limiter", String(e)); }
-      if (!ok) return json({error: "slow"}, 429); // the app says "wait a moment", not "come back tomorrow"
-    }
-    // Daily limit per visitor (KV "leren-ai-rate", best effort): the free plan allows ~1000 KV writes a day; when KV
-    // fails the per-minute limits above still apply, and the monthly spend limit in the Anthropic Console is the hard cap.
-    if (env.RATE) {
-      const key = new Date().toISOString().slice(0, 10) + ":" + ip;
-      let n = 0;
-      try { n = Number(await env.RATE.get(key)) || 0; } catch (e) { console.log("rate get", String(e)); }
-      if (n >= Number(env.DAILY_LIMIT || 60)) return json({error: "limit"}, 429);
-      try { await env.RATE.put(key, String(n + 1), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
+      if (!ok) return slow();
     }
 
     // Requests from the app are a few KB: refuse big bodies before parsing them.
@@ -244,6 +269,15 @@ export default {
       console.log("AI_REPORT " + JSON.stringify({at: new Date().toISOString(), kind: String(body.kind || "").slice(0, 10), target: String(body.target || "").slice(0, 5), lang: String(body.lang || "").slice(0, 5), text: String(body.text || "").slice(0, 1500)}));
       return json({ok: true});
     }
+    // Daily limit (KV "leren-ai-rate", best effort), counted only for AI replies that were actually delivered:
+    // a failed or timed-out call is free, so a retry never costs the learner a second message.
+    const day = new Date().toISOString().slice(0, 10), deviceCap = positive(env.DAILY_LIMIT, 60), networkCap = positive(env.DAILY_IP_LIMIT, Math.round(deviceCap * 2.5));
+    const daily = await readDaily(env, day, net);
+    const left = secondsToUtcMidnight(), resetAt = new Date(Date.now() + left * 1000).toISOString();
+    const usedBySlot = daily.d[dev] ?? (Object.keys(daily.d).length >= MAX_DEVICES_PER_NETWORK ? daily.d.other || 0 : 0);
+    if (usedBySlot >= deviceCap) return json({error: "limit", scope: "device", retry_after: left, reset_at: resetAt}, 429, {"Retry-After": String(left)});
+    if (daily.n >= networkCap) return json({error: "limit", scope: "network", retry_after: left, reset_at: resetAt}, 429, {"Retry-After": String(left)});
+    const charge = () => { const p = chargeDaily(env, day, net, dev, daily); if (ctx && ctx.waitUntil) ctx.waitUntil(p); return p; };
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
@@ -264,7 +298,7 @@ export default {
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     // Don't wait forever for the model: the app shows "try again" instead of hanging.
-    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 45000);
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 25000); // shorter than the app's 30 s: the Worker answers "timeout" first, so a retry never overlaps the first call
     try {
       let text = "";
       if (provider === "anthropic") {
@@ -285,11 +319,12 @@ export default {
         text = typeof r?.response === "string" ? r.response : JSON.stringify(r?.response || "");
       }
       const o = parseJSON(text);
-      if (mode === "memo") return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)});
+      if (mode === "memo") { if (o && typeof o.memory === "string") await charge(); return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)}); }
       if (mode === "ask") {
         if (!o || !o.answer) return json({error: "format"}, 502);
         const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr"].includes(e.lang)).slice(0, 3)
           .map(e => ({lang: e.lang, text: cut(e.text, 200), translation: cut(e.translation, 200)}));
+        await charge();
         return json({answer: cut(o.answer, 1500), examples: ex});
       }
       const reply = o && (o.reply || o.reply_nl);
@@ -300,6 +335,7 @@ export default {
       const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
       if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)};
+      await charge();
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
     } catch (e) {
       const late = e && e.name === "AbortError";

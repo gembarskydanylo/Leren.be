@@ -14,11 +14,20 @@ id = "09641fb73afe40d69bf47f75a7c15bf5"
 
 # Spend guard (tools/ai-worker.js): at most 12 AI requests a minute per visitor, and 300 a minute for everybody
 # together in one Cloudflare location. Counted by Cloudflare's rate limiter (no daily write quota, unlike KV).
+# PER_IP is counted per DEVICE (hashed IP + the app's random device code), 12 a minute each, so learners sharing a Wi-Fi do not
+# block each other. IP_CEIL caps the whole network per minute; it is what stops a bot that rotates device codes.
 [[ratelimits]]
 name = "PER_IP"
 namespace_id = "1001"
   [ratelimits.simple]
   limit = 12
+  period = 60
+
+[[ratelimits]]
+name = "IP_CEIL"
+namespace_id = "1003"
+  [ratelimits.simple]
+  limit = 40
   period = 60
 
 [[ratelimits]]
