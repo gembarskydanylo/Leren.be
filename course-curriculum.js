@@ -907,6 +907,9 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
   grammar2:['Deze tas is even groot ___ die tas.','als','dan','omdat','naar'],
   ...a12.gaps
  };
+ // Chapter tests whose question set changed get a new version: old results stay saved under the old ID but do not count for the new test.
+ const testVersions={travel:3,wonen:3,grammar2:3};
+ const testId=id=>`course_${id}_v${testVersions[id]||2}`;
  function assessments(tests,DATA) {
   const translated=(uk,en,fr,ar)=>({uk,en,fr,ar});
   const prompt=translated('Заповни пропуск','Fill the gap','Complète','أكمل الفراغ');
@@ -938,7 +941,7 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
     else questions.push({type:'mc',q:translated(`Як нідерландською «${item.uk}»?`,`How do you say “${item.en}” in Dutch?`,`Comment dit-on « ${item.fr||item.en} » en néerlandais ?`,`كيف تقول «${item.ar||item.en}» بالهولندية؟`),opts:cand.map(x=>x.nl),ok:0});
    });
    const no=lvl==='a11'?chapters.findIndex(c=>c[0]===id)+1:advanced.findIndex(c=>c[0]===id)+1,clean=title.replace(/^\S+\s/,m=>/\p{Extended_Pictographic}/u.test(m)?'':m);
-   tests.push({id:`course_${id}_v2`,lvl,group:'chapter',no,chapter:id,dutch:clean,title:translated(`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`),questions});
+   tests.push({id:testId(id),lvl,group:'chapter',no,chapter:id,dutch:clean,title:translated(`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`),questions});
   }
   const levelTest=tests.find(t=>t.kind==='leveltest'&&t.unlocks==='a12');
   levelTest.id='lt_a12_course_v2';
@@ -1052,5 +1055,5 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
   for(const [id,icon,uk,en,fr,ar,lines] of a12.dialogues)dialogues.push({id:`course_${id}`,lvl:'a12',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'A1.2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
   for(const [q,uk,en,m] of a12.speech)speech.push({q,uk,en,m,lvl:'a12',open:true});
  }
- return {chapters,advanced,a12,lessons,topicInfo,apply,buildBank,assessments,games};
+ return {chapters,advanced,a12,lessons,topicInfo,testId,apply,buildBank,assessments,games};
 })();

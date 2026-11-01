@@ -8,7 +8,7 @@ vm.runInContext(script.slice(start,end)+'\n'+script.slice(script.indexOf('const 
 const api=c.LerenTestLibrary,tests=c.fixture.TOETS,original=tests.filter(t=>t.kind!=='block'),snapshot=JSON.stringify(original);
 api.ensureCombined(tests);api.ensureCombined(tests);
 assert.equal(tests.filter(t=>t.kind==='block').length,6,'Idempotent combined banks');
-assert(['block_a12-1-4_v109','block_a12-5-8_v109','block_a12-9-12_v109','block_a12-13-16_v109'].every(id=>tests.some(t=>t.id===id)),'Old A1.2 block IDs stay stable');
+assert(['block_a11-1-6_v109','block_a11-7-12_v109','block_a12-1-4_v171','block_a12-5-8_v171','block_a12-9-12_v171','block_a12-13-16_v171'].every(id=>tests.some(t=>t.id===id)),'A1.1 block IDs unchanged; changed A1.2 blocks get new IDs');
 for(const level of ['a11','a12']){
  const blocks=api.blocks(tests,level),all=blocks.flatMap(b=>b.tests);
  assert.equal(all.length,level==='a11'?12:16);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
