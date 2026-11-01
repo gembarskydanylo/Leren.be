@@ -409,7 +409,7 @@ Ik vind de blauwe mooier.|Мені більше подобається синя.
   lessons: {
    chores: ['Хатні справи','Household chores','Tâches ménagères','الأعمال المنزلية', `
 de was ophangen|розвішувати білизну|to hang out the washing|étendre le linge|نشر الغسيل|🧺|Bij mooi weer hang ik de was buiten op.|У гарну погоду я розвішую білизну надворі.
-de afwas doen|мити посуд|to do the dishes|faire la vaisselle|غسل الأطباق|🍽️|Wie doet vandaag de afwas?|Хто сьогодні миє посуд?
+de tafel afruimen|прибирати зі столу|to clear the table|débarrasser la table|رفع الأطباق عن المائدة|🍽️|Na het eten ruim ik de tafel af.|Після їжі я прибираю зі столу.
 de vaatwasmachine leegmaken|розвантажувати посудомийку|to empty the dishwasher|vider le lave-vaisselle|تفريغ غسالة الصحون|🧹|Wie maakt de vaatwasmachine leeg?|Хто розвантажить посудомийку?
 kuisen|прибирати, чистити (у Фландрії)|to clean (Flemish)|nettoyer (en Flandre)|ينظّف (في فلاندرز)|🧽|Ik kuis de badkamer elke week.|Я прибираю ванну щотижня.
 het bed opmaken|застеляти ліжко|to make the bed|faire le lit|ترتيب السرير|🛏️|De kinderen maken zelf hun bed op.|Діти самі застеляють ліжка.
@@ -430,7 +430,7 @@ In het weekend rust ik uit.|На вихідних я відпочиваю.|At th
    werkplek: ['На роботі','At work','Au travail','في العمل', `
 de werkgever|роботодавець|employer|l’employeur|صاحب العمل|🧑‍💼|Mijn werkgever is tevreden over mij.|Мій роботодавець задоволений мною.
 de werkkledij|робочий одяг|work clothes|les vêtements de travail|ملابس العمل|👔|Op het werk draag ik werkkledij.|На роботі я ношу робочий одяг.
-het loon|зарплата|wage|le salaire|الأجر|💶|Het loon komt aan het einde van de maand.|Зарплата приходить у кінці місяця.
+de loonfiche|розрахунковий листок із зарплатою|payslip|la fiche de paie|قسيمة الراتب|🧾|Elke maand krijg ik een loonfiche.|Щомісяця я отримую розрахунковий листок.
 het uurrooster|графік роботи|work schedule|l’horaire|جدول الدوام|🗓️|Ik krijg mijn uurrooster op vrijdag.|Я отримую графік роботи в п’ятницю.
 de vroege ploeg|рання зміна|early shift|l’équipe du matin|الوردية الصباحية|⏰|Deze week werk ik in de vroege ploeg.|Цього тижня я працюю в ранню зміну.
 het interimkantoor|кадрове агентство|temp agency|l’agence d’intérim|وكالة التوظيف المؤقت|🏢|Ik heb werk gevonden via een interimkantoor.|Я знайшов роботу через кадрове агентство.
@@ -449,7 +449,7 @@ Wanneer kan ik beginnen?|Коли я можу почати?|When can I start?|Qu
 `],
    apotheek: ['В аптеці','At the pharmacy','À la pharmacie','في الصيدلية', `
 de apotheker|фармацевт|pharmacist|le pharmacien|الصيدلي|💊|De apotheker legt alles goed uit.|Фармацевт усе добре пояснює.
-de hoestsiroop|сироп від кашлю|cough syrup|le sirop contre la toux|شراب السعال|🥄|Neem twee keer per dag een lepel hoestsiroop.|Приймай ложку сиропу від кашлю двічі на день.
+de thermometer|термометр|thermometer|le thermomètre|ميزان الحرارة|🌡️|Met de thermometer meet ik mijn koorts.|Термометром я міряю температуру.
 de wachtapotheek|чергова аптека|on-duty pharmacy|la pharmacie de garde|الصيدلية المناوبة|🌃|Op zondag ga ik naar de wachtapotheek.|У неділю я йду в чергову аптеку.
 het ziekenfonds|лікарняна каса|health insurance fund|la mutuelle|صندوق التأمين الصحي|🪪|Het ziekenfonds betaalt een deel terug.|Лікарняна каса повертає частину грошей.
 de spoed|відділення невідкладної допомоги|emergency department|les urgences|قسم الطوارئ|🏥|Na een ongeval ga je naar de spoed.|Після нещасного випадку їдуть у відділення невідкладної допомоги.
@@ -478,7 +478,7 @@ de rotonde|кругова розв’язка|roundabout|le rond-point|الدو�
 voorbij|за (проминувши)|past|après, plus loin que|بعد (تجاوز)|🚶|Het station is net voorbij de brug.|Вокзал одразу за мостом.
 `],
    diensten: ['Міські служби','Local services','Les services de la ville','خدمات المدينة', `
-Waar is het gemeentehuis?|Де будинок громади?|Where is the town hall?|Où est la maison communale ?|أين مبنى البلدية؟|🏛️
+Waar is de dienst burgerzaken?|Де відділ реєстрації населення?|Where is the civil affairs office?|Où est le service population ?|أين مكتب شؤون السكان؟|🏛️
 Is het ver te voet?|Це далеко пішки?|Is it far on foot?|C’est loin à pied ?|هل هو بعيد سيراً على الأقدام؟|🚶
 Het is ongeveer tien minuten wandelen.|Це приблизно десять хвилин пішки.|It’s about a ten-minute walk.|C’est à environ dix minutes à pied.|إنه حوالي عشر دقائق سيراً.|⏱️
 Ik moet een nieuwe identiteitskaart aanvragen.|Мені треба подати заяву на нову ID-картку.|I need to apply for a new identity card.|Je dois demander une nouvelle carte d’identité.|يجب أن أطلب بطاقة هوية جديدة.|🪪
@@ -528,7 +528,7 @@ De tickets zijn uitverkocht.|Квитки розпродані.|The tickets are 
 Ik blijf liever thuis met een goed boek.|Я краще залишуся вдома з гарною книжкою.|I’d rather stay at home with a good book.|Je préfère rester à la maison avec un bon livre.|أفضّل البقاء في البيت مع كتاب جيد.|📖
 `],
    gevoelens: ['Почуття й настрій','Feelings and mood','Sentiments et humeur','المشاعر والمزاج', `
-opgelucht|відчуває полегшення|relieved|soulagé|مرتاح البال|😌|Ik ben opgelucht, want mijn zoon is weer gezond.|Мені полегшало, бо мій син знову здоровий.
+opgelucht|заспокоєний, з полегшенням|relieved|soulagé|مرتاح البال|😌|Ik ben opgelucht, want mijn zoon is weer gezond.|Мені полегшало, бо мій син знову здоровий.
 boos|сердитий|angry|fâché|غاضب|👎|Mijn buurman is boos, want de muziek is te luid.|Мій сусід сердиться, бо музика надто гучна.
 ongerust|стурбований|worried|inquiet|قلق|😔|Ik ben ongerust over mijn familie in Oekraïne.|Я хвилююся за свою родину в Україні.
 zenuwachtig|знервований|nervous|nerveux|متوتر|🤞|Voor het examen ben ik zenuwachtig.|Перед іспитом я нервую.
@@ -544,7 +544,7 @@ Zal ik je helpen met de boodschappen?|Допомогти тобі з покуп�
 Dat is heel vriendelijk van u.|Це дуже люб’язно з вашого боку.|That’s very kind of you.|C’est très gentil de votre part.|هذا لطف كبير منك.|🙏
 Sorry voor het lawaai gisteren.|Вибачте за шум учора.|Sorry about the noise yesterday.|Désolé pour le bruit d’hier.|آسف على الضجيج أمس.|🔇
 Hoe gaat het met je moeder?|Як справи у твоєї мами?|How is your mother?|Comment va ta mère ?|كيف حال والدتك؟|👵
-Proficiat met je nieuwe job!|Вітаю з новою роботою!|Congratulations on your new job!|Félicitations pour ton nouveau travail !|مبروك على عملك الجديد!|🎉
+Proficiat met je diploma!|Вітаю з дипломом!|Congratulations on your diploma!|Félicitations pour ton diplôme !|مبروك على شهادتك!|🎉
 Kom je eens een koffie drinken?|Зайдеш якось на каву?|Will you come round for a coffee sometime?|Tu viens prendre un café un de ces jours ?|هل تأتي لشرب القهوة يوماً ما؟|☕
 `],
    tijdwoorden: ['Коли? Слова про майбутнє','When? Future time words','Quand ? Les mots du futur','متى؟ كلمات المستقبل', `
@@ -555,7 +555,7 @@ later|пізніше, згодом|later|plus tard|لاحقاً|⏳|Later wil ik
 eerst|спочатку|first|d’abord|أولاً|1️⃣|Eerst leer ik Nederlands.|Спочатку я вчу нідерландську.
 daarna|після цього|after that|ensuite|بعد ذلك|2️⃣|Daarna zoek ik werk.|Після цього я шукаю роботу.
 de droom|мрія|dream|le rêve|الحلم|✨|Mijn droom is een eigen bakkerij.|Моя мрія — власна пекарня.
-het doel|мета|goal|l’objectif|الهدف|🎯|Mijn doel is werk vinden in Gent.|Моя мета — знайти роботу в Генті.
+het doel|мета|goal|l’objectif|الهدف|🎯|Mijn doel is een job in Gent.|Моя мета — робота в Генті.
 `],
    plannen: ['Мої плани','My plans','Mes projets','خططي', `
 Volgend jaar ga ik een opleiding tot kok volgen.|Наступного року я піду вчитися на кухаря.|Next year I’m going to train as a cook.|L’année prochaine, je vais suivre une formation de cuisinier.|في السنة القادمة سأتابع تدريباً لأصبح طباخاً.|🧑‍🍳
