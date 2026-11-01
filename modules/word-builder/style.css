@@ -54,3 +54,6 @@
 .wb-result{scroll-margin-bottom:120px;gap:2px;padding:12px 14px}
 .wb-res-word{font-size:24px}
 .wb-result .row{margin-top:6px}
+.wb-art .wb-emoji{width:min(46vw,190px);height:auto;max-height:min(30vh,190px);object-fit:contain;display:block}
+.wb-art div.wb-emoji{display:grid;place-items:center}.wb-art div.wb-emoji img{width:100%;height:auto;max-height:min(30vh,190px);object-fit:contain}
+.wb-meaning{margin:6px 0 0;text-align:center;font-weight:800;color:var(--ink-2)}

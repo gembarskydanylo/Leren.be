@@ -19,31 +19,50 @@
  }
  function create(course,storage){
   const byId=new Map(course.lessons.map(l=>[l.id,l])),cardIds=course.cards;
+  // A1.1 and A1.2 are independent courses: each has its own route start and its own paused lesson.
+  const levels=[...new Set(course.chapters.map(c=>c.level))],levelOf=new Map(course.chapters.map(c=>[c.id,c.level]));
+  const lessonLevel=id=>levelOf.get(byId.get(id)?.chapter),cardLevel=new Map();
+  for(const l of course.lessons)for(const id of l.ids)if(!cardLevel.has(id))cardLevel.set(id,levelOf.get(l.chapter));
+  const courseLessons=level=>course.lessons.filter(l=>levelOf.get(l.chapter)===level);
   let persistent=true,raw;
   let value;try{value=storage.getItem(KEY)}catch{persistent=false}
   try{raw=JSON.parse(value||'null')}catch{}
   const obj=v=>v&&typeof v==='object'&&!Array.isArray(v);
   const state={version:1,started:false,entry:course.lessons[0].id,completed:{},mistakes:[],session:null,placement:null};
+  const validSession=s=>obj(s)&&['lesson','review'].includes(s.kind)&&Array.isArray(s.ids)&&s.ids.length>0&&s.ids.length<=5&&new Set(s.ids).size===s.ids.length&&s.ids.every(id=>cardIds.has(id))&&Number.isInteger(s.phase)&&s.phase>=0&&s.phase<=2&&Number.isInteger(s.index)&&s.index>=0&&s.index<=s.ids.length&&Array.isArray(s.answers)&&s.answers.length<=s.ids.length&&s.answers.every(a=>a===true||a===false)&&s.answers.length===s.index&&(s.kind==='review'&&s.phase===2||byId.has(s.lesson)&&JSON.stringify(s.ids)===JSON.stringify(byId.get(s.lesson).ids));
+  const copySession=s=>({kind:s.kind,lesson:s.lesson,ids:s.ids,phase:s.phase,index:s.index,answers:s.answers});
+  state.course=levels[0];state.entries={};state.parked={};
   if(obj(raw)&&raw.version===1){
    state.started=raw.started===true;
    if(byId.has(raw.entry))state.entry=raw.entry;
    if(obj(raw.completed))for(const [id,value] of Object.entries(raw.completed))if(byId.has(id)&&Number.isInteger(value)&&value>=0&&value<=byId.get(id).ids.length)state.completed[id]=value;
    if(Array.isArray(raw.mistakes))state.mistakes=[...new Set(raw.mistakes.filter(id=>cardIds.has(id)))];
    const s=raw.session;
-   if(obj(s)&&['lesson','review'].includes(s.kind)&&Array.isArray(s.ids)&&s.ids.length>0&&s.ids.length<=5&&new Set(s.ids).size===s.ids.length&&s.ids.every(id=>cardIds.has(id))&&Number.isInteger(s.phase)&&s.phase>=0&&s.phase<=2&&Number.isInteger(s.index)&&s.index>=0&&s.index<=s.ids.length&&Array.isArray(s.answers)&&s.answers.length<=s.ids.length&&s.answers.every(a=>a===true||a===false)&&s.answers.length===s.index){
-    if(s.kind==='review'&&s.phase===2||byId.has(s.lesson)&&JSON.stringify(s.ids)===JSON.stringify(byId.get(s.lesson).ids))state.session={kind:s.kind,lesson:s.lesson,ids:s.ids,phase:s.phase,index:s.index,answers:s.answers};
-   }
+   if(validSession(s))state.session=copySession(s);
+   // Older saves had one route over both courses: the saved entry and paused lesson tell which course was active.
+   if(levels.includes(raw.course))state.course=raw.course;else if(state.session?.kind==='lesson')state.course=lessonLevel(state.session.lesson);else state.course=lessonLevel(state.entry)||levels[0];
+   if(obj(raw.entries))for(const [level,id] of Object.entries(raw.entries))if(levels.includes(level)&&lessonLevel(id)===level)state.entries[level]=id;
+   if(!obj(raw.entries)&&lessonLevel(state.entry))state.entries[lessonLevel(state.entry)]=state.entry;
+   if(obj(raw.parked))for(const [level,p] of Object.entries(raw.parked))if(levels.includes(level)&&level!==state.course&&validSession(p)&&p.kind==='lesson'&&lessonLevel(p.lesson)===level)state.parked[level]=copySession(p);
    const p=raw.placement;
    if(obj(p)&&Array.isArray(p.answers)&&p.answers.length<=12&&p.answers.every(a=>typeof a==='boolean'))state.placement={answers:p.answers};
   }
   function save(){try{storage.setItem(KEY,JSON.stringify(state))}catch{persistent=false}}
-  function recommended(){
-   if(state.session?.kind==='lesson'&&!(state.session.phase===2&&state.session.index===state.session.ids.length))return byId.get(state.session.lesson);
-   const start=course.lessons.findIndex(l=>l.id===state.entry);
-   return course.lessons.slice(start).find(l=>!Object.hasOwn(state.completed,l.id))||course.lessons.slice(0,start).find(l=>!Object.hasOwn(state.completed,l.id))||null;
+  const entryOf=level=>state.entries[level]||courseLessons(level)[0]?.id;
+  function recommended(level=state.course){
+   if(level===state.course&&state.session?.kind==='lesson'&&lessonLevel(state.session.lesson)===level&&!(state.session.phase===2&&state.session.index===state.session.ids.length))return byId.get(state.session.lesson);
+   const list=courseLessons(level),start=Math.max(0,list.findIndex(l=>l.id===entryOf(level)));
+   return list.slice(start).find(l=>!Object.hasOwn(state.completed,l.id))||list.slice(0,start).find(l=>!Object.hasOwn(state.completed,l.id))||null;
   }
-  function begin(id){const l=byId.get(id);if(!l)return false;state.started=true;state.session={kind:'lesson',lesson:id,ids:[...l.ids],phase:0,index:0,answers:[]};save();return true}
-  function beginReview(){if(!state.mistakes.length)return false;state.session={kind:'review',lesson:null,ids:state.mistakes.slice(0,5),phase:2,index:0,answers:[]};save();return true}
+  // Switching course parks an unfinished lesson of the old course and restores the one of the new course.
+  function setCourse(level){
+   if(!levels.includes(level))return false;if(level===state.course)return true;
+   const s=state.session;if(s?.kind==='lesson'&&lessonLevel(s.lesson)===state.course&&!(s.phase===2&&s.index===s.ids.length))state.parked[state.course]=s;
+   state.session=state.parked[level]||null;delete state.parked[level];state.course=level;save();return true;
+  }
+  function begin(id){const l=byId.get(id);if(!l)return false;state.started=true;if(lessonLevel(id)!==state.course){state.course=lessonLevel(id)}delete state.parked[state.course];state.session={kind:'lesson',lesson:id,ids:[...l.ids],phase:0,index:0,answers:[]};save();return true}
+  const courseMistakes=()=>state.mistakes.filter(id=>cardLevel.get(id)===state.course);
+  function beginReview(){const ids=courseMistakes();if(!ids.length)return false;state.session={kind:'review',lesson:null,ids:ids.slice(0,5),phase:2,index:0,answers:[]};save();return true}
   function current(){const s=state.session;return s&&s.index<s.ids.length?course.cards.get(s.ids[s.index]):null}
   function advance(id,correct){
    const s=state.session,w=current();if(!s||!w||w.id!==id||typeof correct!=='boolean')return false;
@@ -60,18 +79,20 @@
    save();return result;
   }
   function continueRoute(){state.session=null;save();const l=recommended();if(l)begin(l.id);return l}
-  function start(){state.started=true;state.entry=course.lessons[0].id;state.session=null;state.placement=null;save()}
+  function start(){state.started=true;state.entries[state.course]=courseLessons(state.course)[0].id;state.entry=state.entries[state.course];state.session=null;state.placement=null;save()}
   function place(){state.placement={answers:[]};save()}
   function placementCard(){const i=state.placement?.answers.length;if(!Number.isInteger(i)||i>=12)return null;const ch=course.chapters[i];return ch?course.cards.get(ch.lessons[0]?.ids[0]):null}
   function placementAnswer(id,ok){const w=placementCard();if(!w||w.id!==id||typeof ok!=='boolean')return false;state.placement.answers.push(ok);save();return true}
   function acceptPlacement(){
    const answers=state.placement?.answers;if(!answers||answers.length!==12)return false;
    const first=answers.indexOf(false),index=first<0?12:first;
-   state.entry=course.chapters[index].lessons[0].id;state.started=true;state.session=null;state.placement=null;save();return true;
+   state.entry=course.chapters[index].lessons[0].id;state.course=lessonLevel(state.entry);state.entries[state.course]=state.entry;state.started=true;state.session=null;state.placement=null;save();return true;
   }
   return {state,course,phases,get persistent(){return persistent},save,recommended,begin,beginReview,current,advance,nextPhase,finish,continueRoute,start,place,placementCard,placementAnswer,acceptPlacement,
    home(){state.session=null;save()},cancelPlacement(){state.placement=null;save()},lesson:id=>byId.get(id),
-   stats(chapter){const ls=chapter?course.chapters.find(c=>c.id===chapter).lessons:course.lessons;return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
+   stats(chapter){const ls=chapter?course.chapters.find(c=>c.id===chapter).lessons:courseLessons(state.course);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
+   courseStats(level){const ls=courseLessons(level);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
+   levels,setCourse,get course(){return state.course},mistakes:courseMistakes,
    mastered(id){const l=byId.get(id);return l&&state.completed[id]/l.ids.length>=.8}
   };
  }

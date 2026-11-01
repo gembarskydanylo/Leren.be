@@ -18,10 +18,10 @@
   const t=tr(lang),legacy=LerenCompanion.tr(lang),box=node('section','fh-hero'),content=node('div','fh-hero-content'),art=node('div','fh-hero-art'),cat=LerenCompanion.cat('welcome',true,lang);
   const greeting=node('span','fh-cat-caption',({uk:'Вчимося разом',en:'Learning together',fr:'On apprend ensemble',ar:'نتعلّم معاً'})[lang]);
   cat.onclick=()=>{cat.dataset.pose=cat.dataset.pose==='welcome'?'happy':'welcome';greeting.textContent=legacy.wave};art.append(cat,greeting);
-  content.append(node('p','fh-eyebrow',(allDone?'A1':level||'A1.1')+' · '+t.next),node('h2','',allDone?t.doneAll:placing?({uk:'Знайдемо твій старт',en:'Find your starting point',fr:'Trouvons ton départ',ar:'لنحدّد بدايتك'})[lang]:chapter||t.first),node('p','fh-description',allDone?t.doneHint:placing?(started?t.resume:t.intro):(globalThis.LerenCurriculum?.topicInfo?.(chapterId,lang)?.description||(started?t.resume:t.intro))));
+  content.append(node('p','fh-eyebrow',(level||'A1.1')+' · '+t.next),node('h2','',allDone?t.doneAll:placing?({uk:'Знайдемо твій старт',en:'Find your starting point',fr:'Trouvons ton départ',ar:'لنحدّد بدايتك'})[lang]:chapter||t.first),node('p','fh-description',allDone?t.doneHint:placing?(started?t.resume:t.intro):(globalThis.LerenCurriculum?.topicInfo?.(chapterId,lang)?.description||(started?t.resume:t.intro))));
   if(lesson&&!placing){const detail=node('div','fh-lesson-detail');detail.append(node('strong','',lesson),node('span','',t.time+(totalParts>1?' · '+t.part+' '+part+'/'+totalParts:'')));content.append(detail)}
   const actions=node('div','fh-main-action');actions.append(button(allDone?t.all:placing?({uk:'Продовжити перевірку старту',en:'Continue my starting check',fr:'Continuer le bilan de départ',ar:'تابع تحديد البداية'})[lang]:started?legacy.resume:legacy.start,allDone?onMap:onBegin,'fh-primary'));
-  if(!started&&!placing){const start=button(t.known+' →',onPlacement,'fh-alternative');start.title=t.newPlace;actions.appendChild(start)}
+  if(!started&&!placing&&onPlacement){const start=button(t.known+' →',onPlacement,'fh-alternative');start.title=t.newPlace;actions.appendChild(start)}
   if(onFree&&!placing)actions.appendChild(button(freeLabel||'Самостійно вивчати',onFree,'fh-alternative fh-free'));
   content.append(actions);box.append(content,art);fitTitle(box);
   const footer=node('div','fh-hero-footer');if(started&&total&&!placing){footer.classList.add('fh-has-progress');footer.append(node('span','fh-progress-label',({uk:done+' з '+total+' уроків пройдено',en:done+' of '+total+' lessons done',fr:done+' leçons sur '+total+' terminées',ar:done+' من '+total+' دروس مكتملة'})[lang]||done+' / '+total),meter(done,total,t.completed))}else{footer.append(node('span','',t.steps));if(total&&done)footer.append(meter(done,total,t.completed))}box.append(footer);return box;
@@ -33,8 +33,26 @@
   const info=globalThis.LerenCurriculum?.topicInfo?.(chapter.id,lang),pct=total?Math.round(done/total*100):0,foot=node('span','fh-topic-foot'),pctText=node('span','fh-pct');pctText.append(node('b','',pct+'%'),node('span','',' '+(DONE_WORD[lang]||DONE_WORD.uk)));foot.append(pctText,node('span','fh-topic-cta',(state==='ahead'?CTA[lang]?.start:state==='done'?CTA[lang]?.repeat:CTA[lang]?.go)||'→'));
   body.append(node('span','fh-state',(state==='done'?'✓ ':state==='current'?'→ ':'')+t[state]),node('strong','fh-topic-title',title));if(info?.description)body.appendChild(node('span','fh-topic-desc',info.description));body.append(node('small','',chapter.level+' · '+done+' / '+total+' '+t.lessons),meter(done,total,title),foot);tile.append(picture,body);tile.setAttribute('aria-label',title+' · '+t[state]+' · '+done+' / '+total);if(current)tile.setAttribute('aria-current','step');return tile;
  }
+ // Course switcher under the header: one card per course; the active one is highlighted, a course that is not ready cannot be opened.
+ const COURSE_COPY={uk:{label:'Курс',soon:'Незабаром',done:(d,t)=>d+' з '+t+' уроків',a11:'Основи',a12:'Продовження',a21:'Наступний рівень',active:'Зараз вивчаєш'},
+  en:{label:'Course',soon:'Coming soon',done:(d,t)=>d+' of '+t+' lessons',a11:'Basics',a12:'Next steps',a21:'Next level',active:'Studying now'},
+  fr:{label:'Cours',soon:'Bientôt',done:(d,t)=>d+' leçons sur '+t,a11:'Les bases',a12:'La suite',a21:'Niveau suivant',active:'En cours'},
+  ar:{label:'الدورة',soon:'قريباً',done:(d,t)=>d+' من '+t+' دروس',a11:'الأساسيات',a12:'المتابعة',a21:'المستوى التالي',active:'تدرسها الآن'}};
+ function courses({lang,active,items,onPick}){
+  const c=COURSE_COPY[lang]||COURSE_COPY.uk,nav=node('nav','fh-courses');nav.setAttribute('aria-label',c.label);
+  for(const it of items){
+   const on=it.level===active,pct=it.total?Math.round(it.done/it.total*100):0,card=node('button','fh-course'+(on?' is-active':'')+(it.soon?' is-soon':''));card.type='button';card.dataset.level=it.level;
+   card.setAttribute('aria-pressed',String(on));if(it.soon){card.disabled=true;card.setAttribute('aria-disabled','true')}else card.onclick=()=>{if(!on)onPick(it.level)};
+   const top=node('span','fh-course-top');top.append(node('strong','fh-course-name',it.level),node('span','fh-course-pct',it.soon?c.soon:pct+'%'));
+   card.append(top,node('span','fh-course-sub',c[it.key]||''));
+   if(!it.soon){card.append(meter(it.done,it.total,it.level),node('span','fh-course-done',c.done(it.done,it.total)))}
+   card.setAttribute('aria-label',it.level+' · '+(c[it.key]||'')+' · '+(it.soon?c.soon:pct+'% · '+c.done(it.done,it.total))+(on?' · '+c.active:''));
+   nav.appendChild(card);
+  }
+  return nav;
+ }
  function about(lang){
   const t=tr(lang),d=node('dialog','fh-about');d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';d.setAttribute('aria-labelledby','fhAboutTitle');const h=node('h2','','Leren.be');h.id='fhAboutTitle';d.append(h,node('p','',t.aboutText),node('p','',t.teachers),node('p','',t.aboutAi));const links=node('div','fh-about-links'),privacy=node('a','',t.privacy),contact=node('a','',t.contact);privacy.href='./privacy.html';contact.href='mailto:gembarsky.d@gmail.com';links.append(privacy,contact);d.append(links,button(t.close,()=>d.close(),'fh-primary'));const previous=document.activeElement;d.addEventListener('close',()=>{d.remove();if(previous?.isConnected)previous.focus()},{once:true});document.body.append(d);d.showModal();return d;
  }
- window.LerenFocus={tr,node,button,meter,tools,hero,topic,about};
+ window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,about};
 })();

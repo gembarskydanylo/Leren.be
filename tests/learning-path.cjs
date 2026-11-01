@@ -24,14 +24,44 @@ for(let phase=0;phase<3;phase++){
 const result=m.finish();assert.equal(result.correct,first.ids.length);assert(m.mastered(first.id));assert.equal(m.stats('comm').done,1);
 assert.equal(m.recommended().id,course.lessons[1].id);assert.equal(core.create(course,s).recommended().id,course.lessons[1].id);
 assert.equal(m.continueRoute().id,course.lessons[1].id);
-// Complete the entire catalogue to exercise the A1.1 → A1.2 boundary and ending.
+const same=(a,b,msg)=>assert.equal(JSON.stringify(a),JSON.stringify(b),msg);
+// Complete both courses: each route ends at the end of its own course (no silent jump from A1.1 into A1.2).
 const full=core.create(course,storage());full.start();let visited=0;
-while(full.recommended()){
- const l=full.recommended();full.begin(l.id);
- for(let phase=0;phase<3;phase++){while(full.current())full.advance(full.current().id,true);if(phase<2)full.nextPhase()}
- full.finish();visited++;assert(visited<=course.lessons.length);
+const a11=course.lessons.filter(l=>course.chapters.find(c=>c.id===l.chapter).level==='A1.1').length,a12=course.lessons.length-a11;
+for(const level of ['A1.1','A1.2']){
+ assert(full.setCourse(level));assert.equal(full.course,level);
+ while(full.recommended()){
+  const l=full.recommended();assert.equal(course.chapters.find(c=>c.id===l.chapter).level,level,'The route stays inside the selected course');full.begin(l.id);
+  for(let phase=0;phase<3;phase++){while(full.current())full.advance(full.current().id,true);if(phase<2)full.nextPhase()}
+  full.finish();visited++;assert(visited<=course.lessons.length);
+ }
+ same(full.courseStats(level),{done:level==='A1.1'?a11:a12,total:level==='A1.1'?a11:a12});
 }
-assert.equal(visited,course.lessons.length);assert.equal(full.stats().done,course.lessons.length);
+assert.equal(visited,course.lessons.length);same(full.stats(),{done:a12,total:a12},'Overall stats follow the selected course');
+assert.equal(full.setCourse('A2.1'),false,'A course without lessons cannot be selected');assert.equal(full.course,'A1.2');
+
+// Independent progress per course.
+{
+ let st=storage(),x=core.create(course,st);x.start();
+ const first11=x.recommended();x.begin(first11.id);x.advance(x.current().id,true);x.advance(x.current().id,true);
+ assert(x.setCourse('A1.2'));assert.equal(x.state.session,null,'An A1.1 lesson in progress is parked, not shown in A1.2');
+ const first12=x.recommended();assert.equal(first12.chapter,'past');same(x.courseStats('A1.2'),{done:0,total:a12});
+ x.begin(first12.id);for(let phase=0;phase<3;phase++){while(x.current())x.advance(x.current().id,phase!==2||x.state.session.index>0);if(phase<2)x.nextPhase()}x.finish();
+ assert.equal(x.courseStats('A1.2').done,1);assert.equal(x.courseStats('A1.1').done,0,'A1.2 progress never counts for A1.1');
+ const wrong=first12.ids[0];assert.deepEqual(Array.from(x.mistakes()),[wrong]);
+ x=core.create(course,st);assert.equal(x.course,'A1.2','Selected course survives a reload');assert.equal(x.courseStats('A1.2').done,1);
+ assert(x.setCourse('A1.1'));assert.equal(x.state.session.lesson,first11.id,'Switching back restores the paused A1.1 lesson');assert.equal(x.state.session.index,2);
+ assert.equal(x.mistakes().length,0,'A1.2 mistakes are reviewed in A1.2 only');assert.equal(x.beginReview(),false);
+ x=core.create(course,st);assert.equal(x.course,'A1.1');assert.equal(x.state.session.index,2);assert(x.setCourse('A1.2'));assert.equal(x.recommended().id,x.course==='A1.2'&&course.lessons.filter(l=>l.chapter==='past')[1].id);
+ // Saves from before the course switcher (one route over both courses) keep every completed lesson and the paused lesson.
+ const done11=course.lessons[0].id,done12=course.lessons[a11].id,paused=course.lessons[a11+1];
+ const old={version:1,started:true,entry:course.lessons[0].id,completed:{[done11]:5,[done12]:4},mistakes:[],session:{kind:'lesson',lesson:paused.id,ids:paused.ids,phase:1,index:0,answers:[]},placement:null};
+ x=core.create(course,storage({[core.KEY]:JSON.stringify(old)}));
+ assert.equal(x.course,'A1.2','The course of the paused lesson becomes the active course');assert.equal(x.recommended().id,paused.id);
+ assert.equal(x.courseStats('A1.1').done,1);assert.equal(x.courseStats('A1.2').done,1);assert.equal(x.state.completed[done11],5);assert.equal(x.state.completed[done12],4);
+ assert(x.setCourse('A1.1'));assert.equal(x.recommended().id,course.lessons[1].id,'The old route start is kept for A1.1');
+ const fresh=core.create(course,storage({[core.KEY]:JSON.stringify({...old,session:null})}));assert.equal(fresh.course,'A1.1');
+}
 // A weak result never locks the learner; wrong words are saved for a targeted review.
 m.state.session.phase=2;
 while(m.current())m.advance(m.current().id,false);
@@ -43,7 +73,7 @@ assert.equal(m.finish().kind,'review');assert.equal(m.state.mistakes.length,0);a
 m=core.create(course,storage());m.place();
 for(let i=0;i<12;i++){const w=m.placementCard();assert(w);assert(m.placementAnswer(w.id,i!==3));m=core.create(course,{getItem:()=>JSON.stringify(m.state),setItem(){}})}
 assert(m.acceptPlacement());assert.equal(m.recommended().chapter,course.chapters[3].id);assert.equal(m.stats().done,0);
-m=core.create(course,storage());m.place();for(let i=0;i<12;i++)m.placementAnswer(m.placementCard().id,true);assert(m.acceptPlacement());assert.equal(m.recommended().chapter,'past');
+m=core.create(course,storage());m.place();for(let i=0;i<12;i++)m.placementAnswer(m.placementCard().id,true);assert(m.acceptPlacement());assert.equal(m.recommended().chapter,'past');assert.equal(m.course,'A1.2','Placement past A1.1 opens course A1.2');
 // Corrupt data and denied browser storage cannot break startup.
 for(const raw of ['{','null','[]','{"version":1,"completed":{"bad":999},"session":{"kind":"lesson","ids":["bad"],"phase":9}}']){
  const x=core.create(course,storage({[core.KEY]:raw}));assert.equal(x.state.session,null);assert.equal(x.stats().done,0);
@@ -54,6 +84,6 @@ const from=script.indexOf('function recordPathResult('),to=script.indexOf('\nfun
 function host(){const x=vm.createContext({learningPath:{model:m},lsGet:k=>ledger[k],lsSet:(k,v)=>ledger[k]=v,rewardCheck(){},queueProgressSync(){},addXP(){},saveStore(){},updateStats(){}});vm.runInContext('const pathSessionRewards={};'+script.slice(from,to),x);return x}
 let h=host();assert.equal(h.recordPathResult(first.id,2,first.ids.length),10);assert.equal(h.recordPathResult(first.id,2,first.ids.length),0);
 h=host();assert.equal(h.recordPathResult(first.id,2,first.ids.length),0);assert.equal(h.recordPathResult(first.id,5,first.ids.length),15);assert.equal(h.recordPathResult('bad',5,5),0);
-const files=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const file of ['core.js','ui.js','style.css'])assert(files.includes('./modules/learning-path/'+file+'?v='+(file==='core.js'?'102':file==='ui.js'?'171':'141')));
+const files=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const file of ['core.js','ui.js','style.css'])assert(files.includes('./modules/learning-path/'+file+'?v='+(file==='core.js'?'172':file==='ui.js'?'172':'141')));
 new vm.Script(read('modules/learning-path/ui.js'));
 console.log(`PASS: ${course.chapters.length} chapters, ${course.lessons.length} lessons, all ${actual.length} course cards; phase-by-phase resume, stale answers, next lesson, targeted review, 12-question placement, corrupt/blocked storage, repeat-safe host XP and offline dependencies`);
