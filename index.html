@@ -43,6 +43,7 @@
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=172"></script>
 <script src="./modules/learning-path/ui.js?v=172"></script>
+<script src="./modules/dialogues/translations.js?v=173"></script>
 <title>lerenbe.com — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -5381,7 +5382,7 @@ const DIALOGUES=[
   ["B","Oké. Neem je boek, pagina twaalf.","Добре. Візьми книжку, сторінка дванадцять.","Okay. Take your book, page twelve."],
   ["A","Dank u, juf.","Дякую, пані вчителько.","Thank you, teacher."]]}
 ];
-const dlgLineTr=l=>uiLang==="uk"?l[2]:l[3];
+const dlgLineTr=l=>l[{uk:2,en:3,fr:4,ar:5}[uiLang]||3]||l[3];
 
 // --- speaking questions (class "bubbles") ---
 const SPEAK_Q=[
@@ -5409,6 +5410,9 @@ const SPEAK_Q=[
 ];
 
 LerenCurriculum.games(DIALOGUES,SPEAK_Q);
+// French and Arabic for every dialogue line (index 4 and 5), and titles that only had Ukrainian and English.
+if(window.LerenDialogueTr)for(const d of DIALOGUES){const t=LerenDialogueTr[d.id];if(!t||t.lines.length!==d.lines.length)continue;
+ if(t.title){d.title.fr=d.title.fr||t.title[0];d.title.ar=d.title.ar||t.title[1]}d.lines.forEach((l,i)=>{l[4]=t.lines[i][0];l[5]=t.lines[i][1]})}
 
 // --- my day ---
 const NL_NUM=["twaalf","een","twee","drie","vier","vijf","zes","zeven","acht","negen","tien","elf","twaalf"];
@@ -6868,8 +6872,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="172";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "A1.1 і A1.2 тепер два окремі курси.", "items": ["На головному екрані перемикач курсів A1.1 · A1.2 · A2.1 з твоїм прогресом.", "A1.2 відкритий одразу, без проходження A1.1. A2.1 — незабаром.", "У кожного курсу свій маршрут, повторення й результати; бали спільні.", "Ігри та Пітер підлаштовуються під вибраний курс."], "hint": "Обери курс одним натисканням під шапкою.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A1.1 and A1.2 are now two separate courses.", "items": ["The home screen has a course switcher A1.1 · A1.2 · A2.1 with your progress.", "A1.2 is open right away, no need to finish A1.1 first. A2.1 is coming soon.", "Each course has its own route, review and results; points are shared.", "Games and Peter adapt to the course you choose."], "hint": "Pick a course with one tap under the header.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "A1.1 et A1.2 sont maintenant deux cours séparés.", "items": ["L’écran d’accueil a un sélecteur de cours A1.1 · A1.2 · A2.1 avec ta progression.", "A1.2 est ouvert tout de suite, sans terminer A1.1. A2.1 arrive bientôt.", "Chaque cours a son parcours, ses révisions et ses résultats ; les points sont communs.", "Les jeux et Peter s’adaptent au cours choisi."], "hint": "Choisis un cours d’un seul geste sous l’en-tête.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبحت A1.1 وA1.2 دورتين منفصلتين.", "items": ["في الشاشة الرئيسية مبدّل دورات A1.1 · A1.2 · A2.1 مع تقدمك.", "A1.2 متاحة فوراً دون إنهاء A1.1. A2.1 قريباً.", "لكل دورة مسارها ومراجعتها ونتائجها؛ النقاط مشتركة.", "الألعاب وبيتر تتكيف مع الدورة المختارة."], "hint": "اختر دورة بنقرة واحدة تحت الشريط العلوي.", "ok": "فهمت"}};
+const RELEASE_VERSION="173";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Діалоги тепер перекладені всіма мовами застосунку.", "items": ["Усі 24 діалоги A1.1 і A1.2 мають французький та арабський переклад кожної репліки.", "Ігри «Діалог» і «Рольова гра» показують переклад мовою, яку ти вибрав.", "Назви діалогів A1.1 тепер теж є французькою та арабською."], "hint": "Відкрий «Ігри» → «Діалог» або «Рольова гра».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Dialogues are now translated into every app language.", "items": ["All 24 A1.1 and A1.2 dialogues have a French and Arabic translation for every line.", "The Dialogue and Role play games show the translation in your language.", "A1.1 dialogue titles are now in French and Arabic too."], "hint": "Open Games → Dialogue or Role play.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Les dialogues sont maintenant traduits dans toutes les langues de l’application.", "items": ["Les 24 dialogues A1.1 et A1.2 ont une traduction française et arabe pour chaque réplique.", "Les jeux Dialogue et Jeu de rôle affichent la traduction en français.", "Les titres des dialogues A1.1 existent aussi en français et en arabe."], "hint": "Ouvre Jeux → Dialogue ou Jeu de rôle.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبحت الحوارات مترجمة إلى كل لغات التطبيق.", "items": ["كل الحوارات الـ24 في A1.1 وA1.2 لها ترجمة فرنسية وعربية لكل جملة.", "لعبتا «الحوار» و«لعب الأدوار» تعرضان الترجمة بالعربية.", "عناوين حوارات A1.1 أصبحت بالفرنسية والعربية أيضاً."], "hint": "افتح الألعاب ← الحوار أو لعب الأدوار.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
