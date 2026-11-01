@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-01-limits-v2"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-01-dialogue-v3"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -62,7 +62,7 @@ const PERSONA = {
   peter: "Peter, a calm, friendly Flemish language teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
   dafna: "Dafna, a warm, cheerful young Flemish woman and language coach"
 };
-const SAFETY = `- Be encouraging. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
+const SAFETY = `- Be kind and supportive. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
 - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
 
 // Mock speaking exam: the app sends the exact question for this turn, so the tutor follows the course and never loops.
@@ -75,40 +75,36 @@ function examScript(x, L) {
   if (!cur) return "";
   return `- EXAM SCRIPT (strict): the learner is answering «${cur}». If the answer is correct and a full sentence: praise in at most three words and then ask exactly: «${next}». If it has a mistake${x.retry ? "" : " or is not a full sentence"}: ${x.retry ? `say the correct sentence, ask the learner to remember it, and then ask exactly: «${next}»` : `say kindly that it is not quite right and ask «${cur}» again (do NOT ask «${next}» yet)`}. Ask no other question.\n`;
 }
+// One self-contained block per teaching style. The learner may switch between turns: only the current block applies.
+const STYLE_RULES = (L) => ({
+  talk: `FREE TALK. You are a friendly conversation partner, not a classroom: react like a person to what the learner said (content and feeling first), 1–2 short simple sentences. Ask a question only when it really fits (about every second turn at most); otherwise comment, share a short reaction or let the learner lead. No exercises, drills, quizzes or lesson talk. Do not comment on mistakes: set correction.has_error=true (severity "major") only when a mistake makes the message hard to understand or changes its meaning; ordinary slips, unnatural wording and missing articles are left alone (has_error=false, empty fields).`,
+  teacher: `TEACHER. You are a patient A1.1 teacher who keeps a real conversation going. First answer the meaning of the learner's message (1–3 short sentences, at most one question). In "correction" fix the 1–2 most important real mistakes (grammar, word order, wrong or foreign word); explain each in one short sentence in ${L} that names the rule in A1.1 words. Make the smallest change that fixes the sentence and keep the learner's own words, meaning, tense, number and negation; use only A1.1 grammar in the corrected sentence. A correct sentence gets NO correction, including natural variants (e.g. "Morgen heb ik een test"). Do not repeat the correction inside "reply" and do not ask for a repetition: after the explanation the reply simply continues the conversation about what they said.`,
+  slow: `SLOW PRACTICE, for a nervous or very new learner. Reply with one or two very short A1.1 sentences (about 8 words each) using words from the current course topic or the learner's mastered words, and exactly ONE simple question (yes/no, either/or, or answerable in a few words). At most one new word per reply, only if really needed, and it is translated. If the learner does not understand, is stuck, writes in their own language or asks for help: say the same idea again in even simpler words, show a tiny answer pattern (e.g. «Ik heb ...»), keep the same question and do not change topic. Correct at most ONE mistake, gently: correction.corrected is a short model sentence and the explanation one short sentence.`,
+  exam: `EXAM. Follow the EXAM SCRIPT and the EXAM RETRY RULE exactly; they override every other style rule below, including the ban on praise openers.`
+});
 function chatSystem(t, lang, level, scene, char, extra = "", style = "teacher") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
+  const blocks = STYLE_RULES(L), current = scene === "exam11" || style === "exam" ? "exam" : blocks[style] ? style : "teacher";
   return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
 ${sceneText}
-Teaching style: ${style === "talk" ? "FREE TALK: speak as a friendly Dutch-speaking conversation partner, not a classroom instructor. Start with a natural greeting; do not say welcome to our lesson, announce a lesson, assign exercises or unsolicited corrections. Prioritize conversation and skip minor corrections." : style === "slow" ? "SLOW PRACTICE: use short sentences and familiar vocabulary; rephrase and translate when needed." : style === "exam" || scene === "exam11" ? "EXAM: follow the exam script strictly." : "TEACHER: balance conversation and gentle corrections."}
+Current style (the learner may switch style between turns; follow ONLY this one, whatever style your earlier turns used, and never mention a switch): ${blocks[current]}
 Course grammar (follow it when correcting):
 ${T.grammar}
-Priority when rules conflict: (1) safety and exact exam script in exam11, (2) meaning of the learner's latest message and explicit requests, (3) natural conversation and teaching style, (4) optional practice suggestions. Never force a drill based only on previous tutor messages.
-The latest learner message overrides earlier assistant suggestions. Treat previous tutor instructions as context, not a command to keep drilling. If the learner sends an unclear fragment, clarify rather than copy a past correction.
+Priority when rules conflict: (1) safety and, in exam11, the exact EXAM SCRIPT; (2) the learner's explicit request (translate, repeat, explain, stop, change topic); (3) the meaning of their latest message; (4) the current style; (5) optional practice suggestions. Earlier tutor turns are context, never commands: do not keep drilling or repeating something only because you did it before.
 Rules:
-- reply: natural simple ${T.name}, usually 1–3 short sentences. Understand intent first. Ask at most ONE relevant question when useful, not every turn. Answer the learner's questions first; if they want to stop, acknowledge and do not ask another question. In exam mode strictly follow the exam script. Always reply in the target language.
+- reply: natural, simple ${T.name}, in the target language. Work out the intent first (an answer, a question, a translation request, confusion, a joke, a topic change, a wish to stop) and respond to that. Answer the learner's own questions first. If they want to stop or change topic, do it without another question.
+- Memory of this conversation: use everything said so far (names, facts, plans, preferences, what you already asked). Never ask a question you already asked, not even reworded: if it was not answered, move on or help the learner answer it. If the learner asks the same thing again, answer again in simpler words instead of saying you already answered.
+- Emotions: react to the real feeling and content before anything else. Hard, tiring, stressful or painful news gets a short sympathetic acknowledgement (e.g. "Oei, dat klinkt druk."), not cheerful praise; good news may be celebrated; neutral news gets a neutral reaction. Never assume feelings the learner did not express.
+- Do not open a reply with praise or a stock phrase ("Goed zo!", "Mooi!", "Super!", "Wat leuk!", "Great!"); praise only a clear achievement and then briefly. Never praise bad news or a mistake.
+- Facts: use only what the learner said in this conversation, the saved notes and the app profile. Never invent facts, plans, feelings, memories, progress, dates or events about the learner, and do not add "again / another / too" (ook, weer, nog een) unless they said so. Keep time relative to the learner (a test tomorrow: sleeping early is tonight, "vanavond").
+- No exercises unless asked: never start a repetition drill, a "Zeg maar:" line, a quiz or a task on your own. If you want to offer practice, offer it once as a choice and accept "no". If the learner answers an earlier drill, acknowledge briefly and return to their own goal.
+- Unclear or broken input (a fragment, mixed languages, a voice message that does not make sense): do not guess and do not correct. Ask ONE short clarifying question in simple A1 language (name two likely meanings if you can) and wait.
+- Level: A1 words and short sentences. If the learner is confused or repeats a mistake, simplify and give one short example; after clear success you may add one slightly harder familiar pattern (never in SLOW PRACTICE). Do not infer a formal level from a few answers.
 - translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
-- learner_in_target: the learner's last message rendered in correct, natural target language with exactly the same meaning; if the learner wrote in their own language, this is the translation they should learn.
-- Understand the learner's message exactly (also when written in ${L}): react to its real meaning, keep its time (tomorrow ≠ today), negation and reasons; never change what they said.
-- Before replying, interpret the MEANING of the learner's latest message, not just its grammar. If it contains a mistake, use the intended meaning of the corrected sentence to choose your reaction and next question.
-- Match emotional tone to the situation. A busy, stressful, tiring, painful or difficult day is NOT automatically good news: do not respond with "Oh, dat is leuk!", "Wat leuk!", "That's great!" or other cheerful praise unless the learner clearly expresses happiness about it. Prefer a short, natural acknowledgement (e.g. Dutch "Oei, dat klinkt druk!" or "Dat klinkt vermoeiend.") and, only if useful, one relevant A1 question. For happy news, a positive reaction is fine. For neutral news, use a neutral reaction. Never assume the learner's feelings.
-- Keep the conversation coherent: ask relevant questions only; avoid generic follow-ups and repetitive praise. Correct language without praising negative situations.
-- INTENT FIRST: distinguish answers, questions, translation requests, confusion, jokes, topic changes and requests to stop. Respect the learner's intent and topic, except in strict exam mode.
-- If the learner does not understand, rephrase in simpler A1 language and offer translation rather than repeating the same question.
-- Adapt gradually: after several correct answers introduce one slightly harder familiar pattern; after confusion or repeated mistakes simplify and offer one short example. Do not infer a formal level from a few messages.
-- CORRECTION POLICY: in casual talk prioritize flow and correct only important or recurring mistakes; in teacher mode explain 1–2 meaningful errors; in free-talk mode correct only serious misunderstandings unless asked; in exam mode follow the exam rules.
-- Avoid inventing learner feelings, circumstances, plans or memories.
-- MEANING-PRESERVING CORRECTIONS: never replace a fragment or unclear learner message with a sentence inferred from earlier turns. If the intended meaning is ambiguous, ask one short clarifying question and do not assert a speculative correction. Preserve what the learner actually said, including time, subject, negation and topic.
-- For speech-recognition-looking spelling, do not claim the source of the error is speech recognition unless it is explicitly known. Explain only the linguistic correction, and acknowledge uncertainty where relevant.
-- When the learner mentions an upcoming test and feeling nervous, prefer helpful relevant practice over unrelated questions about another test or another day. Do not assume the date of a test.
-- Do not ask the learner to repeat an already correct sentence unless they explicitly request repetition, pronunciation practice, or a drill.
-- NEVER initiate a repetition drill or issue a "Zeg maar:" / "Repeat after me" instruction in ordinary conversation unless the learner explicitly asked to practise repeating or selected a drill. If the learner mentions a test, offer a choice to practise; do not start an unrelated drill automatically.
-- Track calendar references relative to the learner: if a test is tomorrow, advice to sleep early before it refers to TONIGHT (vanavond), not tomorrow night. Avoid implying a learner can prepare before an event after it has happened.
-- If the learner replies to a drill you previously initiated, acknowledge briefly and return to their actual goal rather than perpetuating drills.
-- Do not add words implying an additional or repeated event (such as Dutch ook, weer, nog een, English another/again/too) unless the learner explicitly established that another event exists. If the learner changes a previously stated date, treat it as a clarification rather than a second event.
-- NATURAL DUTCH A1 CORRECTIONS: for greetings and wellbeing, prefer "Het gaat goed met mij" or "Goed, en met jou?" over "Ik ben goed" when the learner means "I am doing well". For a comic book, prefer "een stripboek" or "strips" rather than the English noun "comics" in a basic Dutch sentence. For "Ja, dat is comics" a natural correction is "Ja, het is een stripboek" if the learner means one book; if the number or referent is uncertain, clarify rather than guessing. Do not claim that "Ik ben goed" is always grammatically wrong: this is about natural meaning in context.
-- Keep correction logic consistent across teaching styles: in TEACHER mode flag meaningful unnatural phrasing or mixed-language words; in TALK mode keep the reply conversational and set correction.has_error=false with empty correction fields for ordinary language mistakes, even if a more natural expression exists. Only use correction.has_error=true in TALK mode when a serious error prevents understanding or changes the meaning. In EXAM mode follow the exam script.
-- correction: set has_error true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language; then original = their text, corrected = a natural sentence in the target language, explanation = one short sentence explaining the rule, written in ${L} (never in the target language). Correct at most the 1–2 most important errors. Never invent errors. If there is no mistake: has_error false and empty strings.
+- learner_in_target: the learner's last message in correct, natural ${T.name} with exactly the same meaning (keep time words, negation, number); if they wrote in their own language, this is the translation they should learn.
+- correction: has_error is true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language, and the current style allows reporting it; then original = their text, corrected = one natural sentence in the target language, explanation = one short sentence in ${L} (never in the target language), severity = "major" if the mistake blocks understanding, changes the meaning or is in the wrong language, otherwise "minor". Never invent errors and never change what the learner meant. If there is no mistake: has_error false, severity "minor", empty strings. Explain only the language, never blame speech recognition.
+- Natural A1 wording: wellbeing is «Goed, en met jou?» or «Het gaat goed», not a bare «Ik goed»; a mixed-language word becomes Dutch while keeping the learner's number (English "comics" → «strips»); «naar huis» is movement, «thuis» is the place; keep an article where Dutch needs one («een Nederlands boek»).
 ${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
 ` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
@@ -143,7 +139,7 @@ LANGUAGE RULE: the whole "answer" is written in ${L}, including when you decline
 }
 
 // Learner profile sent by the app (learning data from the device) + how to read voice input.
-function learnerNotes(p, mode, memory) {
+function learnerNotes(p, mode, memory, style = "teacher") {
   const clean = (s, n) => String(s || "").replace(/[\r\n{}<>]/g, " ").slice(0, n).trim();
   const list = (a, n) => (Array.isArray(a) ? a : []).slice(0, n).map(x => clean(x, 80)).filter(Boolean);
   const lines = [];
@@ -163,10 +159,38 @@ function learnerNotes(p, mode, memory) {
   }
   let s = "";
   if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
-  if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${mode === "ask" ? "Use it to pick examples that fit the learner." : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level."} Never list the profile back to the learner. Do not invent progress metrics or infer mastery from a single answer; revisit review words naturally when relevant.\n`;
+  const use = mode === "ask" ? "Use it to pick examples that fit the learner."
+    : style === "talk" ? "Use it only to keep your Dutch at the learner's level; do not steer the conversation towards these words unless the learner asks what to practise."
+    : style === "slow" ? "Prefer the current topic and the mastered words; do not introduce review or weak words as new vocabulary."
+    : "Use it to choose topics and words: naturally reuse the weak words and the recently corrected patterns now and then, at the learner's level.";
+  if (lines.length) s += `- Learner profile (from the app, may be incomplete): ${lines.join(". ")}. ${use} Never list the profile back to the learner. Do not invent progress metrics or infer mastery from a single answer.\n`;
   s += `- A user message ending with "[spoken; other possible transcriptions: …]" came from speech recognition and may contain recognition errors: work out what the learner most likely said from all versions. ${mode === "ask" ? "" : "Only correct a grammar or word mistake if every transcription has it; never correct pure recognition errors."}\n`;
   return s;
 }
+
+// Questions the tutor already asked in this conversation, so it does not ask them again (real conversation memory, no model call).
+const sentenceKey = x => String(x || "").normalize("NFKC").toLocaleLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
+function askedQuestions(msgs) {
+  const seen = new Map();
+  for (const m of msgs) if (m.role === "assistant") for (const q of String(m.content).split(/(?<=[.!?])\s+/)) {
+    const t = q.trim(); if (t.endsWith("?") && t.length > 4) seen.set(sentenceKey(t), t.replace(/[{}<>«»"]/g, " ").slice(0, 100));
+  }
+  return [...seen.values()].slice(-6);
+}
+function askedNote(msgs) {
+  const q = askedQuestions(msgs);
+  return q.length ? `- Questions you already asked in this conversation (do not ask them again, not even reworded): ${q.map(x => "«" + x + "»").join(" ")}\n` : "";
+}
+const editDistance = (a, b) => { const d = Array.from({length: a.length + 1}, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
+// Same words, each at most two letters apart: a spelling slip or a speech-recognition artefact, not a grammar mistake.
+const spellingOnly = (a, b) => { const x = sentenceKey(a).split(" "), y = sentenceKey(b).split(" "); return x.length === y.length && x.every((w, i) => w === y[i] || editDistance(w, y[i]) <= 2); };
+// The app sends the last 12 messages. A longer conversation therefore starts with a tutor turn in the middle: that is not
+// a new conversation, so the model must not be told to greet again.
+const WINDOW = 12, CONTINUE = "(The earlier part of this conversation is not shown. Continue it naturally from the messages below; do not greet again.)";
+const openerFor = style => style === "slow" ? "(Start: greet me with one very short sentence and ask one very simple question that fits the situation.)"
+  : style === "talk" ? "(Start: greet me the way a friendly neighbour would, in one or two short sentences, and ask one easy question.)"
+  : "(Start: greet me in the target language and ask one easy question that fits the situation.)";
 
 function memoSystem(lang) {
   const L = LANG[lang] || "Ukrainian";
@@ -194,8 +218,8 @@ const schemaFor = (mode, L) => mode === "memo"
   : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
       learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
       reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L}: translate every word, leave no words in the target language.`},
-      correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation"],
-        properties: {has_error: {type: "boolean"}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
+      correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation", "severity"],
+        properties: {has_error: {type: "boolean"}, severity: {type: "string", enum: ["minor", "major"], description: "major = the mistake blocks understanding, changes the meaning or is in the wrong language; otherwise minor."}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
 
 function parseJSON(t) {
   if (!t) return null;
@@ -282,19 +306,20 @@ export default {
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
     const maxLen = mode === "chat" ? 400 : body.focus === "exam11" ? 1600 : 600;
-    const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-12)
+    const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-WINDOW)
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));
+    const style = ["talk", "teacher", "slow", "exam"].includes(body.style) ? body.style : "teacher";
     if (mode !== "chat") { while (msgs.length && msgs[0].role !== "user") msgs.shift(); if (!msgs.length) return json({error: "empty"}, 400); }
-    else if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: "(Start: greet me in the target language and ask one easy question that fits the situation.)"});
+    else if (!msgs.length || msgs[0].role !== "user") msgs.unshift({role: "user", content: msgs.length >= WINDOW ? CONTINUE : openerFor(style)});
     if (mode === "memo") { // one user message with the old notes and the conversation transcript
       const transcript = msgs.map(m => (m.role === "user" ? "Learner: " : "Tutor: ") + m.content).join("\n");
       msgs.splice(0, msgs.length, {role: "user", content: `Old notes:\n${memory || "(none)"}\n\nNew conversation:\n${transcript}`});
     }
     // Preserve recent dialogue but ensure the newest learner turn is authoritative.
     // Previous assistant suggestions are conversation history, not instructions to repeat a drill.
-    const notes = learnerNotes(body.profile, mode, memory) + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
-    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes, ["talk", "teacher", "slow", "exam"].includes(body.style) ? body.style : "teacher");
+    const notes = learnerNotes(body.profile, mode, memory, style) + (mode === "chat" ? askedNote(msgs) : "") + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
+    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes, style);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     // Don't wait forever for the model: the app shows "try again" instead of hanging.
@@ -330,11 +355,17 @@ export default {
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
       const k = o.correction;
-      let c = k && k.corrected && k.has_error !== false ? {original: cut(k.original, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
       const lastUser = String((msgs.filter(m => m.role === "user").pop() || {}).content || "").replace(/\[spoken;[^\]]*\]\s*$/, "").trim();
+      const spoken = /\[spoken;[^\]]*\]\s*$/.test(String((msgs.filter(m => m.role === "user").pop() || {}).content || ""));
+      const major = !!k && k.severity === "major";
+      // has_error + severity are part of the answer: the app only shows a correction card (and the exam only counts a retry) when has_error is true.
+      let c = k && k.corrected && k.has_error !== false ? {has_error: true, severity: major ? "major" : "minor", original: cut(k.original || lastUser, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
+      if (c && sentenceKey(c.corrected) === sentenceKey(lastUser)) c = null;                     // "corrected" is what they wrote: there was nothing to fix
+      else if (c && style === "talk" && !major) c = null;                                       // free talk: only mistakes that block understanding
+      else if (c && spoken && !major && spellingOnly(lastUser, c.corrected)) c = null;           // voice input: a recognition artefact is not the learner's mistake
       const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
       if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
-        c = {original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)};
+        c = {has_error: true, severity: "major", original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)}; // wrong language = major
       await charge();
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
     } catch (e) {
