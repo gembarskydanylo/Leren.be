@@ -184,5 +184,26 @@ globalThis.LerenDialogueTr = {
   ['Quel travail veux-tu faire ?', 'ما العمل الذي تريدين القيام به؟'],
   ['Je veux travailler dans les soins. En Ukraine, j’étais infirmière.', 'أريد العمل في مجال الرعاية. في أوكرانيا كنت ممرضة.'],
   ['Et qu’est-ce que tu vas faire cet été ?', 'وماذا ستفعلين في الصيف؟'],
-  ['Nous allons déménager dans un appartement plus grand.', 'سننتقل إلى شقة أكبر.']]}
+  ['Nous allons déménager dans un appartement plus grand.', 'سننتقل إلى شقة أكبر.']]},
+ course_past: {lines: [
+  ['Qu’as-tu fait ce week-end ?', 'ماذا فعلت في عطلة نهاية الأسبوع؟'],
+  ['Samedi, j’ai travaillé. Dimanche, je suis allé au parc.', 'يوم السبت عملت. يوم الأحد ذهبت إلى الحديقة.'],
+  ['Il faisait beau ?', 'هل كان الطقس جميلاً؟'],
+  ['Oui, il faisait chaud. Nous avons mangé dehors.', 'نعم، كان الجو دافئاً. أكلنا في الخارج.'],
+  ['Et tu as fait du sport ?', 'وهل مارست الرياضة أيضاً؟'],
+  ['Non, j’étais trop fatigué. Je suis allé me coucher tôt.', 'لا، كنت متعباً جداً. ذهبت إلى النوم مبكراً.']]},
+ course_wonen: {lines: [
+  ['Bonjour, c’est Olena de l’appartement trois.', 'صباح الخير، معك أولينا من الشقة رقم ثلاثة.'],
+  ['Bonjour Olena. Qu’est-ce qui se passe ?', 'مرحباً أولينا. ما الأمر؟'],
+  ['Depuis hier, le chauffage ne marche pas.', 'التدفئة لا تعمل منذ أمس.'],
+  ['Oh là là. J’appelle le plombier. Vous êtes à la maison demain ?', 'يا للأسف. سأتصل بالسبّاك. هل ستكونين في البيت غداً؟'],
+  ['Oui, je suis à la maison toute la journée.', 'نعم، سأكون في البيت طوال اليوم.'],
+  ['Bien. Il vient demain à dix heures.', 'حسناً. سيأتي غداً في الساعة العاشرة.']]},
+ course_reading: {lines: [
+  ['Regarde, il y a une affiche sur la porte.', 'انظر، هناك ورقة معلّقة على الباب.'],
+  ['Qu’est-ce qui est écrit ?', 'ماذا مكتوب عليها؟'],
+  ['La bibliothèque est fermée lundi.', 'المكتبة مغلقة يوم الاثنين.'],
+  ['Dommage. Et quand est-elle de nouveau ouverte ?', 'للأسف. ومتى تفتح من جديد؟'],
+  ['Mardi à partir de neuf heures.', 'يوم الثلاثاء ابتداءً من الساعة التاسعة.'],
+  ['Alors je rapporte mes livres mardi.', 'إذن سأعيد كتبي يوم الثلاثاء.']]}
 };
