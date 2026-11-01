@@ -16,7 +16,7 @@ for(const chapter of course.chapters){
  for(let i=0;i<3;i++){const token=m.token();assert(m.submit(m.current().sample,token));assert.equal(m.submit(m.current().sample,token),false);assert(m.next(token));assert.equal(m.next(token),false)}
  assert.equal(m.state.stage,'summary');assert.equal(m.stats().turns,3);
 }
-assert.equal(m.state.completed.length,20);
+assert.equal(m.state.completed.length,28);
 const first=course.lessons[0].id;m.begin(first);
 assert(m.submit('Hallo!',m.token()));m.next(m.token());
 assert(m.submit('Ik bent Olena.',m.token()));assert.equal(m.state.pending.corrected,'Ik ben Olena.');assert.equal(m.state.pending.rule,'zijn');
@@ -51,5 +51,5 @@ const stale=recognizer;view.cancel();stale.ok(['late callback']);assert.equal(ui
 canListen=false;bridge.render();assert(!flat(root).some(e=>e.tag==='button'&&e.textContent==='🎤 Відповісти голосом'));assert(flat(root).some(e=>e.tag==='textarea'));
 for(const lang of api.langs){assert(api.tr('hint3',lang));assert(api.tr('unknown',lang));assert(api.tr('limits',lang))}
 assert(/"leren_path_talk_v1"[,\]]/.test(script),'Conversation transcripts must be excluded from account sync');
-const cache=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const f of ['content','core','ui'])assert(cache.includes('./modules/lesson-conversation/'+f+'.js?v=112'));
+const cache=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const [f,v] of [['content',171],['core',112],['ui',112]])assert(cache.includes('./modules/lesson-conversation/'+f+'.js?v='+v));
 console.log(`PASS: ${turns} authored turns across 20 topics; four languages, seven correction patterns, sentence repetition and transfer, interrupted-conversation restoration, hints/assisted counts, duplicate/stale guards, speech-after-playback and stale microphone callbacks, text fallback, corrupt/blocked storage and offline assets`);

@@ -20,7 +20,7 @@ console.log('PASS: student cat and teacher roles, first lesson CTA, resumable ro
 
 // The focused home keeps one main action and discloses the full map separately.
 route.home();let homeButtons=flat(root).filter(e=>e.tag==='button');assert.equal(homeButtons.filter(e=>e.className==='fh-primary').length,1);
-click(c.LerenFocus.tr('uk').all+' \u2192');assert.equal(flat(root).filter(e=>e.className?.startsWith('fh-topic ')).length,12);click('A1.2');assert.equal(flat(root).filter(e=>e.className?.startsWith('fh-topic ')).length,8);
+click(c.LerenFocus.tr('uk').all+' \u2192');assert.equal(flat(root).filter(e=>e.className?.startsWith('fh-topic ')).length,12);click('A1.2');assert.equal(flat(root).filter(e=>e.className?.startsWith('fh-topic ')).length,16);
 flat(root).find(e=>e.className?.startsWith('fh-topic ')).onclick();assert(flat(root).some(e=>e.className==='fh-lesson-list'));
 flat(root).find(e=>e.className==='fh-lesson-row').onclick();assert.equal(route.model.state.session.lesson.split(':')[0],'past');
 route.home();assert(flat(root).some(e=>e.textContent===api.tr('uk').resume));assert(!flat(root).some(e=>e.className==='fh-lesson-list'));
