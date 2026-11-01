@@ -12,7 +12,7 @@ const sandbox = { console };
 vm.createContext(sandbox);
 const prefix = source.slice(0, source.indexOf("export default"));
 assert.ok(prefix.length > 1000, "Worker module export must be present");
-vm.runInContext(prefix + "\nthis.__test = {chatSystem, learnerNotes, examScript, askedNote, askedQuestions, spellingOnly, openerFor, STYLE_RULES, schemaFor, WORKER_VERSION};", sandbox);
+vm.runInContext(prefix + "\nthis.__test = {chatSystem, learnerNotes, examScript, askedNote, askedQuestions, openerFor, STYLE_RULES, schemaFor, WORKER_VERSION};", sandbox);
 const T = sandbox.__test;
 const prompt = (style = "teacher", scene = null, extra = "") => T.chatSystem("nl", "uk", "a11", scene, "peter", extra, style);
 const rulesOf = p => p.slice(p.indexOf("Rules:"));
@@ -139,10 +139,9 @@ const tests = [
     assert.deepEqual(Array.from(sc.required).sort(), ["corrected", "explanation", "has_error", "original", "severity"]);
     assert.deepEqual(Array.from(sc.properties.severity.enum), ["minor", "major"]);
   }],
-  ["spelling-only detector", () => {
-    assert.equal(T.spellingOnly("Ik ga thous", "Ik ga thuis"), true);
-    assert.equal(T.spellingOnly("Ik lees Nederlands boek", "Ik lees een Nederlands boek"), false);
-    assert.equal(T.spellingOnly("Ik heb een test", "Ik heb een toets"), false);
+  ["voice artefact rule is based on the recognizer's own alternatives, not on letter distance", () => {
+    assert.doesNotMatch(source, /spellingOnly|editDistance/);
+    assert.match(source, /alternatives\.includes\(sentenceKey\(c\.corrected\)\)/);
   }]
 ];
 let failed = 0;

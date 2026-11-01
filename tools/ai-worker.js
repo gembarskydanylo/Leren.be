@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-01-dialogue-v3"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-01-dialogue-v4"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -181,10 +181,6 @@ function askedNote(msgs) {
   const q = askedQuestions(msgs);
   return q.length ? `- Questions you already asked in this conversation (do not ask them again, not even reworded): ${q.map(x => "«" + x + "»").join(" ")}\n` : "";
 }
-const editDistance = (a, b) => { const d = Array.from({length: a.length + 1}, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
-  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
-// Same words, each at most two letters apart: a spelling slip or a speech-recognition artefact, not a grammar mistake.
-const spellingOnly = (a, b) => { const x = sentenceKey(a).split(" "), y = sentenceKey(b).split(" "); return x.length === y.length && x.every((w, i) => w === y[i] || editDistance(w, y[i]) <= 2); };
 // The app sends the last 12 messages. A longer conversation therefore starts with a tutor turn in the middle: that is not
 // a new conversation, so the model must not be told to greet again.
 const WINDOW = 12, CONTINUE = "(The earlier part of this conversation is not shown. Continue it naturally from the messages below; do not greet again.)";
@@ -250,11 +246,14 @@ async function readDaily(env, day, net) {
     return v && typeof v === "object" && Number.isFinite(v.n) && v.d && typeof v.d === "object" ? v : empty;
   } catch (e) { console.log("rate get", String(e)); return empty; } // KV down: per-minute limits still apply (fail open on the daily count only)
 }
-async function chargeDaily(env, day, net, dev, state) {
+// Reserve one message before the model call (so a burst of parallel requests sees it, as before), give it back if no reply
+// was delivered. KV is not atomic: this is best effort; the per-minute limiters are the hard guard.
+async function chargeDaily(env, day, net, dev, state, delta = 1) {
   if (!env.RATE) return;
-  const d = {...state.d}, slot = d[dev] !== undefined || Object.keys(d).length < MAX_DEVICES_PER_NETWORK ? dev : "other";
-  d[slot] = (d[slot] || 0) + 1;
-  try { await env.RATE.put(`${day}:${net}`, JSON.stringify({n: state.n + 1, d}), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
+  const fresh = delta < 0 ? await readDaily(env, day, net) : state; // refunds re-read: other requests may have counted meanwhile
+  const d = {...fresh.d}, slot = d[dev] !== undefined || Object.keys(d).length < MAX_DEVICES_PER_NETWORK ? dev : "other";
+  d[slot] = Math.max(0, (d[slot] || 0) + delta);
+  try { await env.RATE.put(`${day}:${net}`, JSON.stringify({n: Math.max(0, fresh.n + delta), d}), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
 }
 
 export default {
@@ -293,15 +292,15 @@ export default {
       console.log("AI_REPORT " + JSON.stringify({at: new Date().toISOString(), kind: String(body.kind || "").slice(0, 10), target: String(body.target || "").slice(0, 5), lang: String(body.lang || "").slice(0, 5), text: String(body.text || "").slice(0, 1500)}));
       return json({ok: true});
     }
-    // Daily limit (KV "leren-ai-rate", best effort), counted only for AI replies that were actually delivered:
-    // a failed or timed-out call is free, so a retry never costs the learner a second message.
+    // Daily limit (KV "leren-ai-rate", best effort): one message is reserved now and given back when no reply is
+    // delivered, so a failed or timed-out call is free and a retry never costs the learner a second message.
     const day = new Date().toISOString().slice(0, 10), deviceCap = positive(env.DAILY_LIMIT, 60), networkCap = positive(env.DAILY_IP_LIMIT, Math.round(deviceCap * 2.5));
     const daily = await readDaily(env, day, net);
     const left = secondsToUtcMidnight(), resetAt = new Date(Date.now() + left * 1000).toISOString();
     const usedBySlot = daily.d[dev] ?? (Object.keys(daily.d).length >= MAX_DEVICES_PER_NETWORK ? daily.d.other || 0 : 0);
     if (usedBySlot >= deviceCap) return json({error: "limit", scope: "device", retry_after: left, reset_at: resetAt}, 429, {"Retry-After": String(left)});
     if (daily.n >= networkCap) return json({error: "limit", scope: "network", retry_after: left, reset_at: resetAt}, 429, {"Retry-After": String(left)});
-    const charge = () => { const p = chargeDaily(env, day, net, dev, daily); if (ctx && ctx.waitUntil) ctx.waitUntil(p); return p; };
+    let delivered = false;
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
@@ -322,6 +321,7 @@ export default {
     const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes, style);
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
+    await chargeDaily(env, day, net, dev, daily);
     // Don't wait forever for the model: the app shows "try again" instead of hanging.
     const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 25000); // shorter than the app's 30 s: the Worker answers "timeout" first, so a retry never overlaps the first call
     try {
@@ -344,33 +344,37 @@ export default {
         text = typeof r?.response === "string" ? r.response : JSON.stringify(r?.response || "");
       }
       const o = parseJSON(text);
-      if (mode === "memo") { if (o && typeof o.memory === "string") await charge(); return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)}); }
+      if (mode === "memo") { if (o && typeof o.memory === "string") delivered = true; return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)}); }
       if (mode === "ask") {
         if (!o || !o.answer) return json({error: "format"}, 502);
         const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr"].includes(e.lang)).slice(0, 3)
           .map(e => ({lang: e.lang, text: cut(e.text, 200), translation: cut(e.translation, 200)}));
-        await charge();
+        delivered = true;
         return json({answer: cut(o.answer, 1500), examples: ex});
       }
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
       const k = o.correction;
       const lastUser = String((msgs.filter(m => m.role === "user").pop() || {}).content || "").replace(/\[spoken;[^\]]*\]\s*$/, "").trim();
-      const spoken = /\[spoken;[^\]]*\]\s*$/.test(String((msgs.filter(m => m.role === "user").pop() || {}).content || ""));
+      const heard = String((msgs.filter(m => m.role === "user").pop() || {}).content || "").match(/\[spoken; other possible transcriptions: ([^\]]*)\]\s*$/);
+      const alternatives = heard ? heard[1].split(" | ").map(sentenceKey) : [];
       const major = !!k && k.severity === "major";
       // has_error + severity are part of the answer: the app only shows a correction card (and the exam only counts a retry) when has_error is true.
       let c = k && k.corrected && k.has_error !== false ? {has_error: true, severity: major ? "major" : "minor", original: cut(k.original || lastUser, 300), corrected: cut(latin(k.corrected), 300), explanation: cut(k.explanation, 300)} : null;
       if (c && sentenceKey(c.corrected) === sentenceKey(lastUser)) c = null;                     // "corrected" is what they wrote: there was nothing to fix
       else if (c && style === "talk" && !major) c = null;                                       // free talk: only mistakes that block understanding
-      else if (c && spoken && !major && spellingOnly(lastUser, c.corrected)) c = null;           // voice input: a recognition artefact is not the learner's mistake
+      else if (c && !major && alternatives.includes(sentenceKey(c.corrected))) c = null;      // voice: the recognizer also heard the correct sentence, so it is an artefact, not the learner's mistake
       const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
       if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {has_error: true, severity: "major", original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)}; // wrong language = major
-      await charge();
+      delivered = true;
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
     } catch (e) {
       const late = e && e.name === "AbortError";
       return json({error: late ? "timeout" : "ai"}, late ? 504 : 502);
-    } finally { clearTimeout(timer); }
+    } finally {
+      clearTimeout(timer);
+      if (!delivered) { const p = chargeDaily(env, day, net, dev, daily, -1); if (ctx && ctx.waitUntil) ctx.waitUntil(p); else await p; }
+    }
   }
 };

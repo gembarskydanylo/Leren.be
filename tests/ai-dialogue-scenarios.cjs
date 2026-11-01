@@ -88,7 +88,8 @@ async function load() {
     assert.equal((await ask(out, {text: "Ik ga thous."})).json.correction.corrected, "Ik ga naar huis.");
     const spellingOut = modelAnswer("Oké.", fix("Ik ga thuis."));
     assert.equal((await ask(spellingOut, {text: "Ik ga thous."})).json.correction.corrected, "Ik ga thuis.", "typed spelling slip is shown");
-    assert.equal((await ask(spellingOut, {text: "Ik ga thous.", spoken: ["ik ga thuis", "ik ga thous"]})).json.correction, null, "voice: same words, letters differ → recognition artefact");
+    assert.equal((await ask(spellingOut, {text: "Ik ga thous.", spoken: ["ik ga thuis", "ik ga thous"]})).json.correction, null, "voice: the recognizer itself heard the correct sentence → artefact");
+    assert.equal((await ask(spellingOut, {text: "Ik ga thous.", spoken: ["ik ga thous", "ik ga touw"]})).json.correction.corrected, "Ik ga thuis.", "voice: no alternative has the correct form → it is shown");
     assert.equal((await ask(modelAnswer("Oké.", fix("Ik ga thuis.", "major")), {text: "Ik ga thous.", spoken: ["ik ga thuis"]})).json.correction.severity, "major", "a serious mistake still passes");
   });
 
@@ -155,6 +156,14 @@ async function load() {
     assert.equal(bad.json.correction.has_error, true);
     const good = await ask(modelAnswer("Goed zo! Wat eet je?", NONE), {style: "exam", scene: "exam11", exam: {cur: "Hoe laat sta je op?", next: "Wat eet je?"}, text: "Ik sta om zeven uur op."});
     assert.equal(good.json.correction, null);
+  });
+
+  t("exam11 by voice: a one-letter grammar mistake (werk/werkt) still counts, so the retry rule fires", async () => {
+    const out = modelAnswer("Bijna! Zeg het nog eens.", fix("Hij werkt thuis.", "minor", "hij + -t"));
+    const r = await ask(out, {style: "exam", scene: "exam11", exam: {cur: "Waar werkt hij?", next: "Wat eet je?"}, text: "Hij werk thuis.", spoken: ["hij werk thuis", "hij werk thuis"]});
+    assert.equal(r.json.correction && r.json.correction.has_error, true);
+    const teacher = await ask(out, {text: "Hij werk thuis.", spoken: ["hij werk thuis"]});
+    assert.equal(teacher.json.correction.corrected, "Hij werkt thuis.");
   });
 
   t("writing in the learner's own language still gets the 'say it in Dutch' card, even in free talk", async () => {

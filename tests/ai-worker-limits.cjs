@@ -133,7 +133,8 @@ const baseEnv = (extra = {}) => ({PROVIDER: "anthropic", ANTHROPIC_KEY: "sk-test
       async () => { const e = new Error("aborted"); e.name = "AbortError"; throw e; }
     ];
     for (const f of failures) await withModel(f, async () => assert.ok([502, 504].includes((await send(env, post(chatBody()))).status)));
-    assert.equal(env.RATE.log.puts, 0, "nothing written to KV for failures");
+    const stored = JSON.parse([...env.RATE.m.values()][0] || '{"n":0,"d":{}}');
+    assert.equal(stored.n, 0, "every reserved message was given back"); assert.ok(Object.values(stored.d).every(v => v === 0));
     await withModel(modelOk(CHAT), async () => {
       assert.equal((await send(env, post(chatBody()))).status, 200);
       assert.equal((await send(env, post(chatBody()))).status, 200);
@@ -223,6 +224,17 @@ const baseEnv = (extra = {}) => ({PROVIDER: "anthropic", ANTHROPIC_KEY: "sk-test
     await withModel(modelOk({memory: "• Naam: Anna"}), async () => assert.equal((await send(env, post({mode: "memo", memory: "", messages: [{role: "user", content: "Ik ben Anna."}, {role: "assistant", content: "Hallo!"}]}))).status, 200));
     await withModel(modelOk(ASK), async () => assert.equal((await send(env, post({mode: "ask", messages: [{role: "user", content: "Wat is huis?"}]}))).status, 200));
     await withModel(modelOk(CHAT), async () => assert.equal((await send(env, post(chatBody()))).status, 429));
+  });
+
+  t("a burst at normal pace cannot pass the daily limit (message reserved before the model call)", async () => {
+    const env = baseEnv({DAILY_LIMIT: "3"});
+    const slow = async () => { await new Promise(r => setTimeout(r, 200)); return modelOk(CHAT)(); };
+    await withModel(slow, async () => {
+      const ps = [];
+      for (let i = 0; i < 8; i++) { ps.push(send(env, post(chatBody()))); await new Promise(r => setTimeout(r, 5)); }
+      const st = (await Promise.all(ps)).map(r => r.status);
+      assert.equal(st.filter(s => s === 200).length, 3, "statuses " + st.join(","));
+    });
   });
 
   t("emergency switch", async () => assert.equal((await send(baseEnv({AI_OFF: "1"}), post(chatBody()))).status, 503));
