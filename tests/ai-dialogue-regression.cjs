@@ -92,6 +92,15 @@ const tests = [
     assert.match(r, /severity = "major"/); assert.match(r, /never blame speech recognition/);
   }],
 
+  ["course level: A1.2 learners get A1.2 grammar, A1.1 learners keep A1.1", () => {
+    const a12 = (style) => styleBlock(T.chatSystem("nl", "uk", "a12", null, "peter", "", style));
+    assert.match(a12("teacher"), /patient A1\.2 teacher/); assert.match(a12("teacher"), /use only A1\.1–A1\.2 \(also perfectum[^)]*want\/omdat[^)]*\) grammar/);
+    assert.match(a12("slow"), /very short A1\.2 sentences/); assert.doesNotMatch(a12("slow"), /A1\.1 sentences/);
+    assert.match(T.chatSystem("nl", "uk", "a12", null, "peter", "", "teacher"), /course A1\.2 \/ A1 learner/);
+    assert.match(styleBlock(prompt("teacher")), /patient A1\.1 teacher/); assert.doesNotMatch(styleBlock(prompt("teacher")), /A1\.2/);
+    assert.match(styleBlock(T.chatSystem("nl", "uk", "zz", null, "peter", "", "teacher")), /A1\.1 teacher/, "unknown level falls back to A1.1");
+  }],
+
   // --- slow practice ---
   ["slow: short A1.1 sentences, one simple question, no vocabulary overload, help when stuck", () => {
     const b = styleBlock(prompt("slow"));

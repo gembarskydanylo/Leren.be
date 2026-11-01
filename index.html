@@ -16,7 +16,7 @@
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<script src="./modules/learning-path/core.js?v=102"></script>
+<script src="./modules/learning-path/core.js?v=172"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
 <script src="./modules/scenes/map.js?v=165"></script>
@@ -29,7 +29,7 @@
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=149"></script>
+<script src="./modules/focused-home/ui.js?v=172"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=171"></script>
 <script src="./modules/lesson-conversation/content.js?v=171"></script>
@@ -41,8 +41,8 @@
 <script src="./modules/emoji/cards.js?v=146"></script>
 <script src="./modules/emoji/variants.js?v=147"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
-<script src="./modules/word-builder/game.js?v=150"></script>
-<script src="./modules/learning-path/ui.js?v=171"></script>
+<script src="./modules/word-builder/game.js?v=172"></script>
+<script src="./modules/learning-path/ui.js?v=172"></script>
 <title>lerenbe.com — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -1023,9 +1023,9 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=144">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=172">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
-<link rel="stylesheet" href="./modules/word-builder/style.css?v=113">
+<link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
 <link rel="stylesheet" href="./modules/game-gallery/style.css?v=111">
 
@@ -2538,8 +2538,10 @@ const shown=it=>(artOf(it)?artOf(it)+" ":"")+labelFor(it);
 
 function stateFor(id){if(!store[id])store[id]={seen:0,correct:0,wrong:0,streak:0,due:0,known:false};if(typeof store[id].streak!=="number")store[id].streak=0;return store[id]}
 const allItems=()=>Object.values(DATA).flatMap(d=>d.items);
-function dueItems(){const now=Date.now();return allItems().filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
-const learnedCount=()=>allItems().filter(x=>stateFor(x.id).known).length;
+// Words of one course (its topics); a word card belongs to the course of its topic.
+const levelItems=lv=>{const seen=new Set();return levelCats(lv).flatMap(c=>c.tabs).flatMap(t=>DATA[t]?.items||[]).filter(x=>x&&x.id&&!seen.has(x.id)&&seen.add(x.id))};
+function dueItems(lv){const now=Date.now();return (lv?levelItems(lv):allItems()).filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
+const learnedCount=lv=>(lv?levelItems(lv):allItems()).filter(x=>stateFor(x.id).known).length;
 
 function updateStats(){
  const u=getUI();
@@ -2562,7 +2564,8 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 const dayStr=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const yesterdayStr=()=>{const d=new Date();d.setDate(d.getDate()-1);return dayStr(d)};
 function levelById(id){return LEVELS.find(l=>l.id===id)}
-function levelUnlocked(id){const L=levelById(id);if(!L||L.soon)return false;if(id==="a11")return true;return score>=L.need||lsGet("poly_unlocked",[]).includes(id)}
+function levelUnlocked(id){const L=levelById(id);if(!L||L.soon)return false;if(id==="a11"||id==="a12")return true; // A1.1 and A1.2 are two independent courses, no lock
+ return score>=L.need||lsGet("poly_unlocked",[]).includes(id)}
 function levelCats(lv){lv=lv||curLevel;return CATEGORIES.filter(c=>c.lvl===lv)}
 function catLevel(id){return (CATEGORIES.find(c=>c.id===id)||{}).lvl||"a11"}
 // highest open level and the next goal
@@ -2625,7 +2628,7 @@ function renderProgressPanel(){
  const to=el("span","pp-badge next"+(next&&next.soon?" soon":""),next?next.name+(next.soon?"":" 🔒"):"🏆");
  r2.append(from,track,to);box.appendChild(r2);
  const cap=el("div","pp-cap");cap.append(el("span","",label));
- const stats=el("span","pp-stats");stats.append(p.learned+" ",el("strong","",String(learnedCount()))," · "+p.review+" ",el("strong","",String(dueItems().length)));
+ const stats=el("span","pp-stats");stats.append(p.learned+" ",el("strong","",String(learnedCount(curLevel)))," · "+p.review+" ",el("strong","",String(dueItems(curLevel).length)));
  cap.appendChild(stats);box.appendChild(cap);
 }
 function renderLevelNav(){
@@ -2639,10 +2642,16 @@ function renderLevelNav(){
   b.onclick=()=>{
    if(L.soon){closeSheet("topicsSheet");if(view!=="lesson")setView("lesson");showLevelSoon();return}
    if(!open){closeSheet("topicsSheet");if(view!=="lesson")setView("lesson");showLevelLocked(L);return}
-   if(curLevel!==L.id){curLevel=L.id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";if(mode==="toets")mode=lessonMode;saveStore();updateModeButtons();buildNav();newRound()}
+   if(curLevel!==L.id){switchCourse(L.id);updateModeButtons();buildNav();newRound()}
   };
   nav.appendChild(b);
  });
+}
+// The selected course (A1.1 / A1.2) is shared by lessons, games, tests, the learning path and the AI tutor.
+function switchCourse(id){
+ const L=levelById(id);if(!L||!levelUnlocked(id))return false;if(curLevel===id)return true;
+ curLevel=id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";if(mode==="toets")mode=lessonMode;saveStore();
+ if(typeof learningPath!=="undefined"&&learningPath&&view!=="path")learningPath.refresh();return true;
 }
 function showLevelLocked(L){
  const p=pgU(),card=$("card");$("prog").textContent="";$("rnd").textContent="";
@@ -5028,10 +5037,10 @@ function renderProgressView(){
  const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;renderRewards();
  renderProgressPanel();
  grid.replaceChildren();
- [[n.pvLearned,learnedCount()],[n.pvReview,dueItems().length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
+ [[n.pvLearned,learnedCount(curLevel)],[n.pvReview,dueItems(curLevel).length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
  tb.replaceChildren(el("h3","",n.pvToets));
  const best=lsGet("poly_toetsbest",{}),list=el("div","pv-list");
- TOETS.filter(t=>t.kind!=="leveltest").forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
+ TOETS.filter(t=>t.kind!=="leveltest"&&(t.lvl||"a11")===curLevel).forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
   r.append(el("span","",t.title[uiLang]||t.title.en||t.id),el("strong","",b!=null?b+" / "+t.questions.length:n.pvNone));if(b==null)r.classList.add("none");list.appendChild(r)});
  tb.appendChild(list);renderDiphthongsProgress(tb);
  const mk=$("pvMistakes");if(mk&&typeof renderMistakes==="function")renderMistakes(mk);
@@ -5570,7 +5579,7 @@ Object.keys(G_UI).forEach(l=>{if(!window.LerenWordBuilder)return;const k=LerenWo
 function wbStart(){
  if(!window.LerenWordBuilder){toast(gU().nlOnly);return}
  gState={wb:1};
- LerenWordBuilder.start({lang:()=>uiLang,head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),mistake:t=>logMistake(t,"wb"),
+ LerenWordBuilder.start({lang:()=>uiLang,words:()=>wbCourseWords(),picture:icon=>{if(String(icon).startsWith('<')){const d=el("div","wb-emoji");d.innerHTML=icon;return d}return window.LerenEmoji?LerenEmoji.make(icon,'wb-emoji'):null},head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),mistake:t=>logMistake(t,"wb"),
   done:xp=>{if(xp)toast(gU().pts(xp));gameDone("wb",xp)},home:renderGamesHome});
 }
 const ksU=()=>KS_UI[uiLang]||KS_UI.en;
@@ -5699,6 +5708,14 @@ th:first-child,td:first-child{width:31%}.fold{display:flex;justify-content:flex-
 }
 
 // --- games home ---
+// "Een dag in België" and "Mijn dag" are A1.1 stories; the verb sheet and want/omdat are grammar of both courses.
+const A11_ONLY_GAMES=["story","md"];
+const gameForLevel=(id,lv=curLevel)=>lv==="a11"||!A11_ONLY_GAMES.includes(id);
+// Spell-the-word words of the selected course: nouns with a verified picture ([word, article, plural, uk, en, fr, ar, picture]).
+function wbCourseWords(lv=curLevel){
+ if(lv==="a11")return null;const seen=new Set();
+ return levelItems(lv).flatMap(x=>{const m=/^(de|het) ([a-zë]{3,11})$/.exec(String(x.nl||""));const pic=String(x.icon||""),verified=pic.startsWith('<img class="card-3d"')||!!(window.LerenCard3D&&LerenCard3D[pic]);if(!m||seen.has(m[2])||!verified)return [];seen.add(m[2]);return [[m[2],m[1],"",x.uk,x.en,x.fr,x.ar,x.icon]]});
+}
 function renderGamesHome(){
  if(gState&&gState.chat)aiRemember(gState); // leaving the AI chat: save what was learned about the learner
  gStop();gState=null;cardOwner="games";const g=gU(),rec=gRecords(),w=weekState();
@@ -5709,7 +5726,7 @@ function renderGamesHome(){
  const dots=el("div","g-dots");for(let i=0;i<5;i++)dots.appendChild(el("i",i<w.played.length?"on":""));
  wk.append(el("strong","",(w.done?"✅ ":"🏆 ")+g.week),el("span","",g.weekT),dots);card.appendChild(wk);
  const grid=el("div","g-grid");
- GAMES.filter(([id])=>curLevel==="a11"||!["story","md","om","ks"].includes(id)).forEach(([id,icon,nl])=>{
+ GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
   const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":"./img/games/"+id+"-v111.webp";art.alt="";art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
@@ -6044,7 +6061,8 @@ function blStart(){
 }
 function blNext(){
  const s=gState,g=gU();s.cur=s.pool[Math.floor(Math.random()*s.pool.length)];
- const right=meaningFor(s.cur),wrong=shuffle(s.pool.filter(x=>meaningFor(x)!==right)).slice(0,3).map(meaningFor);
+ // Different cards can share a translation: the four answer texts must all be different.
+ const right=meaningFor(s.cur),wrong=[...new Set(shuffle(s.pool.filter(x=>meaningFor(x)!==right)).map(meaningFor))].slice(0,3);
  const card=gHead(g.bl,"",true);$("rnd").textContent=g.score+": "+s.score;gBar(s.left/60);
  const top=el("div","g-blitz");top.append(el("span","g-time",""),el("strong","g-score","⭐ "+s.score));top.firstChild.id="gTime";top.firstChild.textContent=s.left+"s";card.appendChild(top);
  const w=el("h2","g-word",shown(s.cur));tgt(w);card.appendChild(w);
@@ -6061,7 +6079,8 @@ function blEnd(){
 
 // --- 5. memory ---
 function mmStart(){
- const pairs=shuffle(gPool()).slice(0,6);const cards=shuffle(pairs.flatMap(p=>[{p,nl:true},{p,nl:false}]));
+ // Six pairs with six different words and six different translations, so every card has exactly one match.
+ const seenNl=new Set(),seenTr=new Set(),pairs=shuffle(gPool()).filter(x=>{const a=shown(x),b=meaningFor(x);if(seenNl.has(a)||seenTr.has(b))return false;seenNl.add(a);seenTr.add(b);return true}).slice(0,6);const cards=shuffle(pairs.flatMap(p=>[{p,nl:true},{p,nl:false}]));
  gState={cards,open:[],found:new Set(),moves:0,busy:false};mmRender();
 }
 function mmRender(){
@@ -6088,7 +6107,8 @@ function mmEnd(){
 function dcStart(){
  const pool=gPool();const sents=pool.filter(x=>x.ex_nl&&targetLang==="nl"&&x.ex_nl.split(" ").length<=8).map(x=>({t:x.ex_nl,tr:x["ex_"+uiLang]||x.ex_uk||""}));
  const words=pool.map(x=>({t:shown(x),tr:meaningFor(x)}));
- const list=shuffle(sents.length>=6?sents:words).slice(0,6);gState={list,i:0,ok:0};dcRender();
+ const uniq=a=>{const seen=new Set();return a.filter(x=>x.t&&!seen.has(x.t.toLowerCase())&&seen.add(x.t.toLowerCase()))};
+ const list=shuffle(uniq(sents).length>=6?uniq(sents):uniq(words)).slice(0,6);gState={list,i:0,ok:0};dcRender();
 }
 function dcRender(res){
  const g=gU(),s=gState,card=gHead(g.dc,(Math.min(s.i+1,s.list.length))+" / "+s.list.length);gBar(s.i/s.list.length);
@@ -6409,12 +6429,14 @@ function aiLimitText(err){
 // What the tutor knows about the learner (learning data only, read from this device): level, topic, weak words, recent mistakes.
 function aiProfile(){
  const u=getUI(),k=x=>{const s=store[x.id];return s?s.wrong-s.correct/2:0};
- const weak=allItems().filter(x=>store[x.id]&&store[x.id].wrong>0&&x[targetLang]).sort((a,b)=>k(b)-k(a)).slice(0,8).map(x=>x[targetLang]);
+ // A1.1 learners only get A1.1 words; A1.2 builds on A1.1, so its learners may get words from both courses.
+ const scope=curLevel==="a11"?levelItems("a11"):allItems();
+ const weak=scope.filter(x=>store[x.id]&&store[x.id].wrong>0&&x[targetLang]).sort((a,b)=>k(b)-k(a)).slice(0,8).map(x=>x[targetLang]);
  const mistakes=targetLang==="nl"?lsGet("leren_mistakes",[]).slice(0,5).map(m=>m.nl):[];
  const topic=tab==="all"?((u.cats||{})[currentCat]||""):String((u.tabs||{})[tab]||tab).replace(/^\d+\.\s*/,"");
- const review=dueItems().filter(x=>x[targetLang]).slice(0,8).map(x=>x[targetLang]);
- const mastered=allItems().filter(x=>stateFor(x.id).known&&x[targetLang]).slice(0,8).map(x=>x[targetLang]);
- return {level:curLevel,topic,learned:learnedCount(),weak,mistakes,review,mastered};
+ const review=dueItems(curLevel).filter(x=>x[targetLang]).slice(0,8).map(x=>x[targetLang]);
+ const mastered=scope.filter(x=>stateFor(x.id).known&&x[targetLang]).slice(0,8).map(x=>x[targetLang]);
+ return {level:curLevel,topic,learned:learnedCount(curLevel),weak,mistakes,review,mastered};
 }
 // Report an AI answer (Google Play AI-generated content policy): the text goes to the worker log.
 async function aiReport(text,mode){
@@ -6791,6 +6813,7 @@ function initLearningPath(){
  const root=$("learningPath");if(!root||learningPath)return;
  learningPath=LerenLearningPath.mount(root,{
   data:DATA,curriculum:LerenCurriculum,language:()=>uiLang,
+  level:()=>levelById(curLevel)?.name,setLevel:name=>{const L=LEVELS.find(l=>l.name===name);return !!L&&switchCourse(L.id)},
   lessonLabel:(id,lang)=>(UI[lang]||UI.uk).tabs[id],
   setLanguage:lang=>{uiLang=lang;saveStore();updateHeader()},
   dark:()=>document.documentElement.dataset.theme==="dark",
@@ -6800,7 +6823,7 @@ function initLearningPath(){
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
   listen:(ok,fail)=>listenOnce(ok,fail,"nl-BE"),
   stopListening:()=>{if(gRec)gRec.abort()},
-  ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
+  ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente",zorg:"huisarts",stad:"gemeente",openbaar:"station"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
   answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
   complete:recordPathResult,rewards:()=>setView("progress"),
   assess:id=>{const test=TOETS.find(t=>t.id===LerenCurriculum.testId(id));if(!test)return;curLevel=test.lvl;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion()}
@@ -6845,8 +6868,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="171";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Курс A1.2 став повним: 8 нових тем про життя у Фландрії.", "items": ["Нові теми: побут, робота, аптека й лікар, місто, школа, дозвілля, сусіди, плани.", "Житло й ремонт, автобус і трамвай, want/omdat та perfectum дієслів, що розділяються.", "Кожне слово з прикладом, короткі правила, діалоги для аудіювання й усні завдання.", "Нові тести: читання листа зі школи й оголошення громади та повторення граматики A1.2."], "hint": "Обери курс A1.2 у навчальному маршруті або в «Тестах».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Course A1.2 is now complete: 8 new topics about life in Flanders.", "items": ["New topics: home life, work, pharmacy and GP, town, school, free time, neighbours, plans.", "Housing repairs, bus and tram, want/omdat and the perfect tense of separable verbs.", "Every word has an example, short grammar rules, listening dialogues and speaking tasks.", "New tests: reading a school letter and a town notice, plus an A1.2 grammar review."], "hint": "Choose course A1.2 in the learning path or in Tests.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Le cours A1.2 est complet : 8 nouveaux thèmes sur la vie en Flandre.", "items": ["Nouveaux thèmes : maison, travail, pharmacie et médecin, ville, école, loisirs, voisins, projets.", "Logement et réparations, bus et tram, want/omdat et le passé composé des verbes séparables.", "Chaque mot a un exemple, des règles courtes, des dialogues à écouter et des tâches orales.", "Nouveaux tests : lire une lettre de l’école et un avis de la commune, et révision de grammaire A1.2."], "hint": "Choisis le cours A1.2 dans le parcours ou dans Tests.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "اكتملت دورة A1.2: ثمانية مواضيع جديدة عن الحياة في فلاندرز.", "items": ["مواضيع جديدة: البيت والعمل والصيدلية والطبيب والمدينة والمدرسة ووقت الفراغ والجيران والخطط.", "السكن والإصلاحات والحافلة والترام وwant/omdat والماضي التام للأفعال المنفصلة.", "لكل كلمة مثال، وقواعد قصيرة، وحوارات للاستماع ومهام للتحدث.", "اختبارات جديدة: قراءة رسالة من المدرسة وإعلان من البلدية ومراجعة قواعد A1.2."], "hint": "اختر دورة A1.2 في مسار التعلم أو في الاختبارات.", "ok": "فهمت"}};
+const RELEASE_VERSION="172";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "A1.1 і A1.2 тепер два окремі курси.", "items": ["На головному екрані перемикач курсів A1.1 · A1.2 · A2.1 з твоїм прогресом.", "A1.2 відкритий одразу, без проходження A1.1. A2.1 — незабаром.", "У кожного курсу свій маршрут, повторення й результати; бали спільні.", "Ігри та Пітер підлаштовуються під вибраний курс."], "hint": "Обери курс одним натисканням під шапкою.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A1.1 and A1.2 are now two separate courses.", "items": ["The home screen has a course switcher A1.1 · A1.2 · A2.1 with your progress.", "A1.2 is open right away, no need to finish A1.1 first. A2.1 is coming soon.", "Each course has its own route, review and results; points are shared.", "Games and Peter adapt to the course you choose."], "hint": "Pick a course with one tap under the header.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "A1.1 et A1.2 sont maintenant deux cours séparés.", "items": ["L’écran d’accueil a un sélecteur de cours A1.1 · A1.2 · A2.1 avec ta progression.", "A1.2 est ouvert tout de suite, sans terminer A1.1. A2.1 arrive bientôt.", "Chaque cours a son parcours, ses révisions et ses résultats ; les points sont communs.", "Les jeux et Peter s’adaptent au cours choisi."], "hint": "Choisis un cours d’un seul geste sous l’en-tête.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبحت A1.1 وA1.2 دورتين منفصلتين.", "items": ["في الشاشة الرئيسية مبدّل دورات A1.1 · A1.2 · A2.1 مع تقدمك.", "A1.2 متاحة فوراً دون إنهاء A1.1. A2.1 قريباً.", "لكل دورة مسارها ومراجعتها ونتائجها؛ النقاط مشتركة.", "الألعاب وبيتر تتكيف مع الدورة المختارة."], "hint": "اختر دورة بنقرة واحدة تحت الشريط العلوي.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

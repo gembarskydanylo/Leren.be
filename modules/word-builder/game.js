@@ -60,11 +60,12 @@
  function save(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch{}}
  const shuffle=a=>{const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r};
  // Unseen and weak words first, then the rest; never the same word twice in a round.
- function pick(n){const st=load(),score=w=>{const s=st[w[0]];return s?s.ok*2-s.miss:-5};return shuffle(WORDS).sort((a,b)=>score(a)-score(b)).slice(0,n)}
+ function pick(n,words=WORDS){const st=load(),score=w=>{const s=st[w[0]];return s?s.ok*2-s.miss:-5};return shuffle(words).sort((a,b)=>score(a)-score(b)).slice(0,n)}
  function tiles(word){let t;do{t=shuffle([...word].map((ch,i)=>({ch,i})))}while(word.length>2&&t.map(x=>x.ch).join('')===word);return t}
 
  function start(host){
-  const lang=host.lang(),u=tr(lang),list=pick(ROUND);let i=0,firstTry=0,xp=0;const results=[];
+  // The host may pass the words of the selected course: [word, article, plural, uk, en, fr, ar, picture].
+  const own=host.words?.(),lang=host.lang(),u=tr(lang),list=pick(ROUND,own&&own.length>=ROUND?own:WORDS);let i=0,firstTry=0,xp=0;const results=[];
   const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
   const btn=(text,cls,fn)=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b};
   let keyHandler=null;const unbind=()=>{if(keyHandler){document.removeEventListener('keydown',keyHandler);keyHandler=null}};
@@ -73,7 +74,9 @@
    const st={placed:[],pool:tiles(word),wrong:0,hints:0,shownHint:false,solved:false,gaveUp:false,bad:new Set()};
    const box=node('section','wb');box.dir=lang==='ar'?'rtl':'ltr';
    const top=node('div','wb-top');top.append(node('span','wb-count',(i+1)+' / '+list.length),node('span','wb-xp','+'+xp+' XP'));
-   const pic=node('figure','wb-pic');pic.append(node('figcaption','',u.ask));const art=node('div','wb-art');art.innerHTML=globalThis.LerenWordArt?LerenWordArt.svg(word,meaning(w,lang)):'';pic.appendChild(art);
+   const pic=node('figure','wb-pic');pic.append(node('figcaption','',u.ask));const art=node('div','wb-art');art.innerHTML=globalThis.LerenWordArt?LerenWordArt.svg(word,meaning(w,lang)):'';if(!art.innerHTML&&w[7]&&host.picture){const img=host.picture(w[7],word);if(img)art.appendChild(img)}pic.appendChild(art);
+   // Course words use shared app pictures that can fit several words: the translation makes the task unambiguous.
+   if(w[7])pic.appendChild(node('p','wb-meaning',meaning(w,lang)));
    const hintLine=node('p','wb-hint-line');
    const slots=node('div','wb-slots');slots.dir='ltr';slots.lang='nl';slots.setAttribute('role','group');slots.setAttribute('aria-label',u.slots);
    const live=node('p','wb-live');live.setAttribute('aria-live','polite');
