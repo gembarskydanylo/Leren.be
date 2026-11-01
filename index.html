@@ -31,8 +31,8 @@
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=149"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
-<script src="./modules/test-library/ui.js?v=109"></script>
-<script src="./modules/lesson-conversation/content.js?v=112"></script>
+<script src="./modules/test-library/ui.js?v=171"></script>
+<script src="./modules/lesson-conversation/content.js?v=171"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
 <script src="./modules/lesson-conversation/ui.js?v=112"></script>
 <script src="./modules/ai-coach/core.js?v=169"></script>
@@ -42,7 +42,7 @@
 <script src="./modules/emoji/variants.js?v=147"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=150"></script>
-<script src="./modules/learning-path/ui.js?v=149"></script>
+<script src="./modules/learning-path/ui.js?v=171"></script>
 <title>lerenbe.com — Nederlands A1.1 &amp; A1.2</title>
 <style>
 /* =========================================================
@@ -1175,7 +1175,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
-<script src="./course-curriculum.js?v=122"></script>
+<script src="./course-curriculum.js?v=171"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -6845,8 +6845,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="170";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "AI-розмова стала природнішою.", "items": ["«Вільна розмова» відповідає по суті й емоціях, не починає з похвали і не нав’язує вправ.", "«Викладач» виправляє лише справжні помилки, коротко пояснює й продовжує діалог; правильні речення не чіпає.", "«Повільна практика»: короткі речення A1.1 і одне просте запитання за раз.", "Виправлення знову з’являються в чаті, а в іспиті повтор спроби знову працює."], "hint": "Відкрий «Ігри» → «Praat met …» і обери стиль.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The AI conversation feels more natural.", "items": ["Free talk answers the content and the feeling, does not open with praise and does not push exercises.", "Teacher fixes only real mistakes, explains them briefly and carries on talking; correct sentences are left alone.", "Slow practice: short A1.1 sentences and one simple question at a time.", "Corrections show up in the chat again, and retrying an answer in the exam works again."], "hint": "Open Games → “Praat met …” and choose a style.", "ok": "Got it"}, "fr": {"title": "Les nouveautés de Leren.be", "intro": "La conversation IA est plus naturelle.", "items": ["La conversation libre répond au contenu et aux émotions, ne commence pas par un compliment et n’impose pas d’exercices.", "Le mode Professeur ne corrige que les vraies erreurs, explique brièvement et continue le dialogue ; les phrases correctes ne sont pas touchées.", "Pratique lente : des phrases A1.1 courtes et une question simple à la fois.", "Les corrections réapparaissent dans le chat et le nouvel essai fonctionne de nouveau à l’examen."], "hint": "Ouvre Jeux → « Praat met … » et choisis un style.", "ok": "Compris"}, "ar": {"title": "الجديد في Leren.be", "intro": "أصبحت محادثة الذكاء الاصطناعي أكثر طبيعية.", "items": ["المحادثة الحرة تردّ على المضمون والمشاعر ولا تبدأ بالمدح ولا تفرض تمارين.", "وضع المعلّم يصحّح الأخطاء الحقيقية فقط، ويشرحها باختصار ويتابع الحوار؛ الجمل الصحيحة لا تُمَسّ.", "الممارسة البطيئة: جمل A1.1 قصيرة وسؤال بسيط واحد في كل مرة.", "عادت التصحيحات إلى الدردشة، وعادت إعادة المحاولة في الامتحان تعمل."], "hint": "افتح «الألعاب» ← «Praat met …» واختر أسلوباً.", "ok": "فهمت"}};
+const RELEASE_VERSION="171";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Курс A1.2 став повним: 8 нових тем про життя у Фландрії.", "items": ["Нові теми: побут, робота, аптека й лікар, місто, школа, дозвілля, сусіди, плани.", "Житло й ремонт, автобус і трамвай, want/omdat та perfectum дієслів, що розділяються.", "Кожне слово з прикладом, короткі правила, діалоги для аудіювання й усні завдання.", "Нові тести: читання листа зі школи й оголошення громади та повторення граматики A1.2."], "hint": "Обери курс A1.2 у навчальному маршруті або в «Тестах».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Course A1.2 is now complete: 8 new topics about life in Flanders.", "items": ["New topics: home life, work, pharmacy and GP, town, school, free time, neighbours, plans.", "Housing repairs, bus and tram, want/omdat and the perfect tense of separable verbs.", "Every word has an example, short grammar rules, listening dialogues and speaking tasks.", "New tests: reading a school letter and a town notice, plus an A1.2 grammar review."], "hint": "Choose course A1.2 in the learning path or in Tests.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Le cours A1.2 est complet : 8 nouveaux thèmes sur la vie en Flandre.", "items": ["Nouveaux thèmes : maison, travail, pharmacie et médecin, ville, école, loisirs, voisins, projets.", "Logement et réparations, bus et tram, want/omdat et le passé composé des verbes séparables.", "Chaque mot a un exemple, des règles courtes, des dialogues à écouter et des tâches orales.", "Nouveaux tests : lire une lettre de l’école et un avis de la commune, et révision de grammaire A1.2."], "hint": "Choisis le cours A1.2 dans le parcours ou dans Tests.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "اكتملت دورة A1.2: ثمانية مواضيع جديدة عن الحياة في فلاندرز.", "items": ["مواضيع جديدة: البيت والعمل والصيدلية والطبيب والمدينة والمدرسة ووقت الفراغ والجيران والخطط.", "السكن والإصلاحات والحافلة والترام وwant/omdat والماضي التام للأفعال المنفصلة.", "لكل كلمة مثال، وقواعد قصيرة، وحوارات للاستماع ومهام للتحدث.", "اختبارات جديدة: قراءة رسالة من المدرسة وإعلان من البلدية ومراجعة قواعد A1.2."], "hint": "اختر دورة A1.2 في مسار التعلم أو في الاختبارات.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

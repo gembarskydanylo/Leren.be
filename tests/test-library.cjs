@@ -7,10 +7,11 @@ const start=script.indexOf('const DIPH_UI = '),end=script.indexOf('\nlet toetsId
 vm.runInContext(script.slice(start,end)+'\n'+script.slice(script.indexOf('const BUILD_BANK='),script.indexOf('const SENT='))+'\nglobalThis.fixture={TOETS,LerenCurriculum};',c);
 const api=c.LerenTestLibrary,tests=c.fixture.TOETS,original=tests.filter(t=>t.kind!=='block'),snapshot=JSON.stringify(original);
 api.ensureCombined(tests);api.ensureCombined(tests);
-assert.equal(tests.filter(t=>t.kind==='block').length,4,'Idempotent combined banks');
+assert.equal(tests.filter(t=>t.kind==='block').length,6,'Idempotent combined banks');
+assert(['block_a12-1-4_v109','block_a12-5-8_v109','block_a12-9-12_v109','block_a12-13-16_v109'].every(id=>tests.some(t=>t.id===id)),'Old A1.2 block IDs stay stable');
 for(const level of ['a11','a12']){
  const blocks=api.blocks(tests,level),all=blocks.flatMap(b=>b.tests);
- assert.equal(all.length,level==='a11'?12:8);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
+ assert.equal(all.length,level==='a11'?12:16);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
  for(const b of blocks){
   const t=tests.find(t=>t.block===b.id);assert.equal(t.questions.length,b.tests.length*3);
   assert(t.questions.every(q=>q.opts.length===4&&q.ok>=0&&q.ok<4));
@@ -34,8 +35,8 @@ api.render(o);nodes('tl-utility').find(e=>e.id!=='examPick').onclick();
 const rest=nodes('tl-row').map(e=>e.dataset.test);assert(rest.includes('diphthongs'));assert(rest.includes('lt_a12_course_v2'));
 assert.deepEqual(new Set(rest),new Set(tests.filter(t=>t.lvl==='a11'&&t.group!=='chapter'&&t.kind!=='block').map(t=>t.id)),'Every old test remains reachable exactly once');assert.equal(rest.length,new Set(rest).size);
 nodes('tl-back')[0].onclick();nodes('tl-level')[1].onclick();assert.equal(changed,'a12','Host retains responsibility for unlock policy');
-for(const lang of ['uk','en','fr','ar']){o.lang=lang;o.level='a12';api.render(o);assert.equal(nodes('tl-block').length,2);assert.equal(card.dir,lang==='ar'?'rtl':'ltr');nodes('tl-block')[1].onclick();assert.equal(nodes('tl-row').length,5);nodes('tl-back')[0].onclick();}
+for(const lang of ['uk','en','fr','ar']){o.lang=lang;o.level='a12';api.render(o);assert.equal(nodes('tl-block').length,4);assert(nodes('tl-title').every(e=>e.textContent));assert.equal(card.dir,lang==='ar'?'rtl':'ltr');nodes('tl-block')[1].onclick();assert.equal(nodes('tl-row').length,5);nodes('tl-back')[0].onclick();}
 assert.equal(JSON.stringify(best),JSON.stringify({course_comm_v2:7}),'Rendering must never alter saved bests');
 const offline=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const name of ['first-steps','everyday','practice']){const path='img/tests/'+name+'-v109.webp';assert(offline.includes('./'+path));assert(fs.statSync(path).size<100000)}
 assert(html.includes('if(!levelUnlocked(id))'));assert(!html.includes('poly_curlevel'));assert(html.includes('LerenTestLibrary.ensureCombined(TOETS)'));
-console.log('PASS: 12/8 topics partitioned without overlap, four stable balanced tests, every legacy test reachable, saved results untouched, collection return, host unlock policy, four languages and offline art');
+console.log('PASS: 12/16 topics partitioned without overlap, four stable balanced tests, every legacy test reachable, saved results untouched, collection return, host unlock policy, four languages and offline art');

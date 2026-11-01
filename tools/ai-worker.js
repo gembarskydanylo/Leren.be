@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-01-dialogue-v4"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-01-a12-topics-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -38,7 +38,7 @@ const GRAMMAR_NL = `- Main clause: verb in 2nd position (Ik woon in België). Af
 - Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het.
 - Polite: u (formal), alstublieft / alsjeblieft, graag (Ik wil graag een koffie).
 - Course A1.1 (first part of A1): introductions, personal details, prices/weather, time, birthdays, opening hours, forms, daily routine, invitations/plans, health, eating habits, groceries. Include possessives, inversion, niet/geen, separable verbs, modal verbs + infinitive, gaan + infinitive, aan het + infinitive, want/omdat, imperatives, frequency and plurals.
-- Course A1.2 (second part of A1, NOT A2): family/holiday accounts, shopping and exchanges, second-hand ads, travel disruptions, online appointments, messages and short articles/instructions. Practise perfectum (hebben/zijn + participle), common past forms, comparisons and connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
+- Course A1.2 (second part of A1, NOT A2): family/holiday accounts, shopping and exchanges, second-hand ads, travel disruptions, online appointments, messages and short articles/instructions, household tasks, work and job interviews, pharmacy and GP, directions and town services, children's school, free time and clubs, neighbours and feelings, future plans. Practise perfectum (hebben/zijn + participle, also separable verbs: opgestaan, ingevuld), common past forms (was, had), comparisons, reasons with want and omdat (verb at the end), gaan + infinitive and connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
 const GRAMMAR_EN = `- Word order: subject + verb + object (I live in Belgium). Questions with do/does (Do you work? Where does she live?); with be/can: invert (Are you tired? Can you help?).
 - Present simple: he/she/it + -s (she works, he goes, it has); negative don't/doesn't + base verb.
 - be: I am, you are, he/she/it is, we/they are. have got / has got.

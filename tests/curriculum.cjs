@@ -24,7 +24,11 @@ vm.runInContext(`
  for(const key of Object.keys(DATA))assert(allTabs.includes(key),'Orphaned lesson '+key);
  const owner=t=>CATEGORIES.find(c=>c.tabs.includes(t));
  for(const t of ['routine','separable','niet','bezit','modal','toekomst','afspraak','telefoon'])assert.equal(owner(t).lvl,'a11');
- for(const t of ['holiday','journey','returns','secondhand','messages','appointments','notices','directions','comparison','perfectum'])assert.equal(owner(t).lvl,'a12');
+ for(const t of ['holiday','journey','returns','secondhand','messages','appointments','notices','directions','comparison','perfectum','chores','weekplan','werkplek','solliciteren','apotheek','huisarts','orientatie','diensten','schoolwoorden','oudercontact','clubs','weekend','gevoelens','buren','tijdwoorden','plannen','woning','huisbaas','openbaar','omdat','scheidbaar'])assert.equal(owner(t).lvl,'a12');
+ assert.equal(CATEGORIES.filter(c=>c.lvl==='a12').length,16,'A1.2 has sixteen chapters');
+ for(const t of ['chores','apotheek','orientatie','scheidbaar'])assert(DATA[t].items.every(x=>x.ex_nl&&x.ex_uk),'Every A1.2 word card has an example: '+t);
+ assert(UI.uk.subs.omdat.includes('omdat')&&UI.en.subs.scheidbaar.includes('opgestaan'),'Grammar rule shown above the exercise');
+ for(const t of ['course_reading_texts_v2','course_a12_review_v1'])assert.equal(TOETS.find(x=>x.id===t)?.lvl,'a12');
  assert.equal(owner('diphthongs').id,'grammar');
  const ids=new Set();let added=0;
  for(const d of Object.values(DATA))for(const card of d.items){
@@ -52,8 +56,8 @@ vm.runInContext(`
  assert.equal(TOETS.find(t=>t.id==='t5').lvl,'a11');
  assert.equal(TOETS.find(t=>t.id==='t10_course_v2').lvl,'a11');
  const ds=[],ss=[];LerenCurriculum.games(ds,ss);
- assert.equal(ds.length,4);assert.equal(ss.length,6);assert(ds.every(d=>d.lvl==='a12'&&d.lines.length>=6));
- console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, four A1.2 dialogues, six A1.2 speaking prompts, unique lesson ownership and sentence coverage');
+ assert.equal(ds.length,12);assert.equal(ss.length,14);assert.equal(new Set(ds.map(d=>d.id)).size,12);assert(ds.every(d=>d.lvl==='a12'&&d.lines.length>=6));
+ console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, sixteen A1.2 chapters, twelve A1.2 dialogues, fourteen A1.2 speaking prompts, unique lesson ownership and sentence coverage');
 `,ctx);
 // Execute actual startup migration with old saved locations and earned progress.
 const start=script.indexOf('function validStored'),end=script.indexOf('const el=(t,c,x)');

@@ -771,6 +771,9 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    ['pick','Morgen moet ik de vuilniszak buitenzetten.','Morgen ik moet de vuilniszak buitenzetten.','Morgen moet ik buitenzetten de vuilniszak.','Morgen moet de vuilniszak ik buitenzetten.']
   ]
  };
+ advanced.push(...a12.chapters.map(([id,title,tabs])=>[id,title,[...tabs]]));
+ for(const [id,tabs] of Object.entries(a12.extraTabs))advanced.find(c=>c[0]===id)[2].push(...tabs);
+ Object.assign(topicLabels,a12.labels);
  function apply({DATA,CATEGORIES,UI,R,LEVELS}) {
   const grammar = {...CATEGORIES.find(c=>c.id==='grammar')}; // Includes the untouched diphthongs lesson.
   grammar.tabs=grammar.tabs.filter(t=>t!=='adjectives');
@@ -789,6 +792,14 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
     return [`course_${key}_${i+1}`,nl,en,fr,uk,ar,lessonIcons[key]?.split(' ')[i]||'📖'];
    }));
    for(const [lang,label] of Object.entries({uk,en,fr,ar}))UI[lang].tabs[key]=UI[lang].subs[key]=label;
+  }
+  for(const [key,[uk,en,fr,ar,text]] of Object.entries(a12.lessons)) {
+   DATA[key]=R(text.trim().split('\n').map((line,i)=>{
+    const [nl,uk,en,fr,ar,icon,exNl,exUk]=line.split('|');
+    return [`course_${key}_${i+1}`,nl,en,fr,uk,ar,icon||'📖',exNl||'',exUk||''];
+   }));
+   const note=a12.notes[key];
+   for(const [i,[lang,label]] of Object.entries(Object.entries({uk,en,fr,ar}))){UI[lang].tabs[key]=label;UI[lang].subs[key]=note?.[i]||label;}
   }
   // Ordinals are explicit practice, not just mentioned in the chapter heading.
   const ordinals=[['eerste','перший','first','premier','الأول'],['tweede','другий','second','deuxième','الثاني'],['derde','третій','third','troisième','الثالث'],['vierde','четвертий','fourth','quatrième','الرابع'],['vijfde','п’ятий','fifth','cinquième','الخامس'],['zesde','шостий','sixth','sixième','السادس'],['zevende','сьомий','seventh','septième','السابع'],['achtste','восьмий','eighth','huitième','الثامن'],['negende','дев’ятий','ninth','neuvième','التاسع'],['tiende','десятий','tenth','dixième','العاشر'],['elfde','одинадцятий','eleventh','onzième','الحادي عشر'],['twaalfde','дванадцятий','twelfth','douzième','الثاني عشر']];
@@ -871,6 +882,7 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    ['plans',2,'nee, het spijt me,|ik|moet|koken','RSVI','Ні, мені шкода, я маю готувати.','No, I’m sorry, I have to cook.','Non, désolé, je dois cuisiner.','لا، آسف، يجب أن أطبخ.','poetsen']
   ];
   for(const [cat,level,q,roles,uk,en,fr,ar,x] of statements)add(cat,[level,q,roles,uk,en,fr,ar,x||'','.']);
+  for(const [cat,level,q,roles,uk,en,fr,ar,x,p] of a12.bank)add(cat,[level,q,roles,uk,en,fr,ar,x,p]);
  }
  const gaps={
   comm:['Hoe ___ jij?','heet','heten','heeft','heeten'],
@@ -892,7 +904,8 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
   wonen:['De huur is 700 euro. De kosten zijn 80 euro. Samen betaal ik ___ euro.','780','700','80','620'],
   contact:['Ik heb nog geen bevestiging ___.','ontvangen','ontvangt','ontvang','ontvangde'],
   reading:['Inschrijven kan tot en met vrijdag. Vrijdag inschrijven ___.','mag nog','is te laat','kan nooit','moet altijd'],
-  grammar2:['Deze tas is even groot ___ die tas.','als','dan','omdat','naar']
+  grammar2:['Deze tas is even groot ___ die tas.','als','dan','omdat','naar'],
+  ...a12.gaps
  };
  function assessments(tests,DATA) {
   const translated=(uk,en,fr,ar)=>({uk,en,fr,ar});
@@ -991,6 +1004,10 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    ]]
   ];
   for(const [id,title,questions] of thursday)tests.push({id,lvl:'a11',title,questions});
+  tests.push({id:'course_reading_texts_v2',lvl:'a12',title:T('A1.2 · Читання: школа й громада','A1.2 · Reading: school and town','A1.2 · Lecture : école et commune','A1.2 · القراءة: المدرسة والبلدية'),
+   questions:a12.readingQs.map(([n,uk,en,fr,ar,opts])=>({type:'read',text:a12.reading[n],q:T(uk,en,fr,ar),opts,ok:0}))});
+  tests.push({id:'course_a12_review_v1',lvl:'a12',title:T('A1.2 · Повторення граматики','A1.2 · Grammar review','A1.2 · Révision de grammaire','A1.2 · مراجعة القواعد'),
+   questions:a12.review.map(([kind,...x])=>kind==='gap'?gap(...x):mc(pick,...x))});
  }
  function games(dialogues,speech) {
   const data=[
@@ -1032,6 +1049,8 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    ['Heb je de bevestiging ontvangen?','Ти отримав підтвердження?','Have you received the confirmation?','Ik heb de bevestiging nog niet ontvangen.'],
    ['Welke kamer vind je beter?','Яка кімната тобі більше подобається?','Which room do you prefer?','Ik vind deze kamer beter omdat ze groter is.']
   ])speech.push({q,uk,en,m,lvl:'a12',open:true});
+  for(const [id,icon,uk,en,fr,ar,lines] of a12.dialogues)dialogues.push({id:`course_${id}`,lvl:'a12',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'A1.2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
+  for(const [q,uk,en,m] of a12.speech)speech.push({q,uk,en,m,lvl:'a12',open:true});
  }
  return {chapters,advanced,a12,lessons,topicInfo,apply,buildBank,assessments,games};
 })();
