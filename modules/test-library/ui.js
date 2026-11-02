@@ -28,7 +28,7 @@ function render(o){
  card.classList.add('test-library');card.replaceChildren();card.dir=lang==='ar'?'rtl':'ltr';
  const button=(text,cls,fn)=>{const e=el('button',cls,text);e.type='button';e.onclick=fn;return e};
  const go=id=>{section=id;render(o);card.ownerDocument?.defaultView?.scrollTo({top:0,behavior:'instant'});const h=card.querySelector?.('h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}};
- const picture=(name)=>{const img=el('img','tl-picture');img.src='./img/tests/'+name+'-v109.webp';img.alt='';img.width=768;img.height=512;return img};
+ const picture=(name)=>{const img=el('img','tl-picture');img.src='./img/tests/'+name+'-v109.webp';img.alt=({uk:'Кіт-маскот вчить нідерландську',en:'The cat mascot learning Dutch',fr:'Le chat mascotte apprend le néerlandais',ar:'القط التميمة يتعلّم الهولندية'})[globalThis.document?.documentElement?.lang]||'';img.width=768;img.height=512;return img};
  const passed=t=>best[t.id]!=null&&best[t.id]>=Math.ceil(t.questions.length*(t.pass||70)/100);
  const row=t=>{
   const info=t.chapter&&topicInfo(t.chapter,lang),title=info?.title||(t.title[lang]||t.title.en||'').replace(/^[^\p{L}\p{N}]+/u,'');

@@ -41,6 +41,6 @@ for(const args of [['bad',6,6],['quiz',100,10],['quiz',3,3],['dict',NaN,8],['qui
 assert.equal(h.recordDiphthongsResult('dict',8,8),40);assert.equal(h.recordDiphthongsResult('quiz',10,10),50);assert.equal(h.xp,90);
 // Exact versioned dependencies must install offline together, including the model.
 const files=JSON.parse(fs.readFileSync('sw.js','utf8').match(/const APP_FILES = (\[[^;]+\]);/)[1]);
-for(const file of ['lesson-core.js','widget.js','widget.html','widget.css','words.json'])assert(files.includes('./modules/diphthongs/'+file+'?v=87'));
-assert(html.includes('lesson-core.js?v=87'));assert(html.indexOf('lesson-core.js?v=87')<html.indexOf('widget.js?v=87'));
+for(const file of ['lesson-core.js','widget.js','widget.html','widget.css','words.json'])assert(files.includes('./modules/diphthongs/'+file+'?v='+(file==='widget.js'?'176':'87')));
+assert(html.includes('lesson-core.js?v=87'));assert(html.indexOf('lesson-core.js?v=87')<html.indexOf('widget.js?v=176'));
 console.log('PASS: balanced full rounds, resume after an answered question, stale-click guards, all three milestones, mistake-only review, legacy best, corrupt/blocked storage, personal-best XP and exact offline dependencies');
