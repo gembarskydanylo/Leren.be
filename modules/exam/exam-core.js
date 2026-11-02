@@ -4,16 +4,53 @@
  * (el, $, tgt, say, listenOnce, toast, addXP, lsGet, lsSet, shuffle, uiLang). */
 (function(){
 "use strict";
-const L=()=>uiLang==="uk"?"uk":"en";
-const Q=(uk,en)=>({uk,en});
-const tr=x=>typeof x==="string"?x:(x[L()]||x.uk||x.en||"");
+const LANGS=["uk","en","fr","ar"];
+const L=()=>LANGS.includes(uiLang)?uiLang:"en";
+const Q=(uk,en,fr,ar)=>({uk,en,fr,ar});
+const tr=x=>typeof x==="string"?x:(x[L()]||x.en||x.uk||"");
+// Engine words (the exam's own copy is in its data file).
+const E={
+ uk:{cont:"▶ Продовжити ",contAt:"Продовжити з питання ",contFrom:"Продовжуємо з питання ",restart:"↺ Почати заново",rule:"📘 Правило",omdat:"Склади відповідь: Omdat …",plural:"Натисни всі іменники в множині (meervoud), потім «Перевірити».",typePl:"Напиши множину…",plurals:"Множина в тексті: ",which:"Яке речення правильне?",inNl:w=>"Як нідерландською: «"+w+"»?",means:w=>"Що означає «"+w+"»?",cap:"Кожне речення з великої літери",dot:"Кожне речення закінчується . ! або ?",min:(n,c)=>"Щонайменше "+n+" речень (зараз: "+c+")",name:"Ім’я в кінці",stop:"⏹ Готово",listening:"Говори — я слухаю…",tr:"🇺🇦 Переклад",words:n=>n+" слів"},
+ en:{cont:"▶ Continue ",contAt:"Continue at question ",contFrom:"Continuing from question ",restart:"↺ Start over",rule:"📘 Rule",omdat:"Build the answer: Omdat …",plural:"Tap every plural noun, then «Check».",typePl:"Type the plural…",plurals:"Plurals: ",which:"Which sentence is correct?",inNl:w=>"In Dutch: “"+w+"”?",means:w=>"What does “"+w+"” mean?",cap:"Every sentence starts with a capital",dot:"Every sentence ends with . ! or ?",min:(n,c)=>"At least "+n+" sentences (now: "+c+")",name:"Your name at the end",stop:"⏹ Done",listening:"Speak — I'm listening…",tr:"Translation",words:n=>n+" words"},
+ fr:{cont:"▶ Continuer ",contAt:"Reprendre à la question ",contFrom:"On reprend à la question ",restart:"↺ Recommencer",rule:"📘 Règle",omdat:"Construis la réponse : Omdat …",plural:"Touche tous les noms au pluriel, puis « Vérifier ».",typePl:"Écris le pluriel…",plurals:"Pluriels : ",which:"Quelle phrase est correcte ?",inNl:w=>"En néerlandais : « "+w+" » ?",means:w=>"Que signifie « "+w+" » ?",cap:"Chaque phrase commence par une majuscule",dot:"Chaque phrase se termine par . ! ou ?",min:(n,c)=>"Au moins "+n+" phrases (maintenant : "+c+")",name:"Ton nom à la fin",stop:"⏹ Terminé",listening:"Parle, je t’écoute…",tr:"Traduction",words:n=>n+" mots"},
+ ar:{cont:"▶ متابعة ",contAt:"المتابعة من السؤال ",contFrom:"نتابع من السؤال ",restart:"↺ البدء من جديد",rule:"📘 القاعدة",omdat:"كوّن الجواب: Omdat …",plural:"اضغط على كل الأسماء بصيغة الجمع، ثم «تحقق».",typePl:"اكتب صيغة الجمع…",plurals:"صيغ الجمع: ",which:"أي جملة صحيحة؟",inNl:w=>"بالهولندية: «"+w+"»؟",means:w=>"ما معنى «"+w+"»؟",cap:"كل جملة تبدأ بحرف كبير",dot:"كل جملة تنتهي بـ . ! أو ?",min:(n,c)=>"على الأقل "+n+" جمل (الآن: "+c+")",name:"اسمك في النهاية",stop:"⏹ انتهيت",listening:"تكلّم، أنا أستمع…",tr:"الترجمة",words:n=>n+" كلمات"}
+};
+const X=()=>E[L()];
+const BASE={
+ uk:{backLesson:"← До уроку"},
+ en:{backLesson:"← Back to the lesson"},
+ fr:{back:"← Examen",toets:"← Tests",backLesson:"← Retour à la leçon",q:"Question",of:"sur",next:"Suivant",check:"Vérifier",right:"Correct !",wrong:"Pas tout à fait. La bonne réponse :",
+  listen:"▶ Écouter",again:"🔁 Encore",showText:"Afficher le texte",hideText:"Masquer le texte",readFirst:"Lis d’abord la question, puis écoute.",
+  done:"Terminé !",score:(a,b)=>a+" sur "+b+" correct",repeat:"À revoir :",restart:"Recommencer",best:"Meilleur",order:"Touche les mots dans l’ordre",clear:"Effacer",
+  wTask:"Consigne",wWrite:"Écris ici…",wCheck:"Vérifier mon texte",wModel:"Voir le modèle",wHideModel:"Masquer le modèle",wTips:"Liste de contrôle :",wSaved:"Ton brouillon est enregistré sur cet appareil.",
+  sAsk:"🔊 Question",sSpeak:"🎤 Répondre",sShow:"Voir la réponse",sHeard:"Tu as dit :",sModel:"Modèle :",sOk:"✓ Je sais",sRe:"↺ M’entraîner encore",sTopic:"Thème",sDone:(a,b)=>a+" questions sur "+b+" maîtrisées",
+  ai:"🤖 Coach IA",wAi:"🤖 Vérifier avec Peter",wAiEmpty:"Écris d’abord ton texte.",timer:"Temps"},
+ ar:{back:"← الامتحان",toets:"← الاختبارات",backLesson:"← العودة إلى الدرس",q:"السؤال",of:"من",next:"التالي",check:"تحقق",right:"صحيح!",wrong:"ليس تماماً. الإجابة الصحيحة:",
+  listen:"▶ استمع",again:"🔁 مرة أخرى",showText:"أظهر النص",hideText:"أخفِ النص",readFirst:"اقرأ السؤال أولاً، ثم استمع.",
+  done:"انتهيت!",score:(a,b)=>a+" من "+b+" صحيحة",repeat:"للمراجعة:",restart:"أعد المحاولة",best:"الأفضل",order:"اضغط على الكلمات بالترتيب",clear:"امسح",
+  wTask:"المهمة",wWrite:"اكتب هنا…",wCheck:"تحقق من نصي",wModel:"أظهر النموذج",wHideModel:"أخفِ النموذج",wTips:"قائمة التحقق:",wSaved:"تُحفظ مسودتك على هذا الجهاز.",
+  sAsk:"🔊 السؤال",sSpeak:"🎤 أجب",sShow:"أظهر الجواب",sHeard:"قلتَ:",sModel:"النموذج:",sOk:"✓ أستطيع",sRe:"↺ أتدرب أكثر",sTopic:"الموضوع",sDone:(a,b)=>a+" من "+b+" أسئلة متقنة",
+  ai:"🤖 المدرّب الذكي",wAi:"🤖 تحقق مع بيتر",wAiEmpty:"اكتب نصك أولاً.",timer:"الوقت"}
+};
+// Writing checklist, shared by the exam and the lesson writing practice. Returns {items:[{ok,label}], ok, total, pct, tips}.
+function score(w,text,common,minDefault=5){
+ const t=String(text||"").trim(),items=w.checks.map(([label,re])=>({ok:re.test(t),label}));
+ // The line after the closing (Groetjes, / Met vriendelijke groeten,) is the signature, not a sentence: "Olena Kovalenko, appartement 3".
+ const lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean),sign=lines.length>1&&/(groetjes|groeten|groet|kusjes|^tot\b.*)[,!]?$/i.test(lines[lines.length-2])&&/^[A-Z]/.test(lines[lines.length-1])?lines[lines.length-1]:"";
+ const sents=t.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(x=>x.length>2&&x!==sign&&!/^(hallo|beste|dag|hoi|lieve|groetjes|groeten)\b/i.test(x)&&!/,$/.test(x)&&x.split(/\s+/).length>1);
+ if(!w.form){const cap=sents.filter(x=>!/^[A-Z’'0-9]/.test(x)),dot=sents.filter(x=>!/[.!?]$/.test(x)),n=w.min||minDefault;
+  items.push({ok:cap.length===0,label:X().cap},{ok:dot.length===0,label:X().dot},{ok:sents.length>=n,label:X().min(n,sents.length)},{ok:!!sign||/\n\s*[A-Z][a-z]+\s*$/.test(t)||/groetjes,?\s*\n?\s*\S+\s*$/i.test(t),label:X().name})}
+ const tips=(common||[]).filter(([re])=>re.test(t)).map(([,m])=>tr(m)),ok=items.filter(x=>x.ok).length;
+ return {items,ok,total:items.length,pct:Math.round(ok/items.length*100),tips};
+}
 function make(D){
 const {KEY,T,TEXTS,LEZEN,DLG,LUISTEREN,WOORDEN=[],GRAM,WRITE,COMMON=[],SPREKEN,MV=null,MV_PICK=null,OM=null,OM_MC=null,RULES={}}=D,OPT_UK=D.OPT_UK||{};
-const U=()=>T[L()];
+// Exam copy: shared words from BASE, the exam's own title and parts from its data file (English as fallback).
+const U=()=>({...T.en,...BASE[L()],...(T[L()]||{})});
 function mkMV(m,i){const acc=m[2].split("|"),gap=m[0].replace("___","___ ("+m[1]+")"),full=m[0].replace("___",acc[0]);
  return i%2?{kind:"type",gap,acc,ok:acc[0],full,u:m[4],e:L()==="uk"?m[1]+" → "+acc.join(" / "):m[1]+" → "+acc[0]}:{kind:"mc",gap,o:[acc[0],...m[3]],ok:acc[0],full,u:m[4],e:m[1]+" → "+acc.join(" / "),nlOpts:true}}
 function mkOM(o){const w=o[1].replace(/\.$/,"").split(" ");return{kind:"order",prompt:o[0],promptU:o[2],w:w.map((x,i)=>i===w.length-1?x+".":x),a:o[1],u:o[3],e:tr(Q("Omdat → дієслово в кінці речення","Omdat → verb at the end"))}}
-function mkOMmc(o){return{kind:"mc",q:L()==="uk"?"Яке речення правильне?":"Which sentence is correct?",o:[o[0],...o[1]],ok:o[0],full:o[0],u:o[2],nlOpts:true,e:/^Want/.test(o[0])?tr(Q("want → звичайний порядок: підмет + дієслово","want → normal order")):tr(Q("omdat → дієслово(а) в кінці","omdat → verb(s) at the end"))}}
+function mkOMmc(o){return{kind:"mc",q:X().which,o:[o[0],...o[1]],ok:o[0],full:o[0],u:o[2],nlOpts:true,e:/^Want/.test(o[0])?tr(Q("want → звичайний порядок: підмет + дієслово","want → normal order")):tr(Q("omdat → дієслово(а) в кінці","omdat → verb(s) at the end"))}}
 function mkPick(){return{kind:"pick",ptext:MV_PICK.text,targets:MV_PICK.targets,ok:MV_PICK.targets.join(", "),textUk:MV_PICK.uk,e:tr(Q("heten, eten — дієслова, не множина іменників","heten, eten are verbs, not plural nouns"))}}
 // ---------------- HELPERS ----------------
 const st=()=>{try{const s=lsGet(KEY,{});return s&&typeof s==="object"?s:{}}catch(e){return{}}};
@@ -22,7 +59,8 @@ function setBest(part,pct){const s=st();s.best=s.best||{};if(!(s.best[part]>=pct
 function head(title,sub,backTo){
  cardToTop&&cardToTop();
  const c=$("card");c.replaceChildren();$("prog").textContent=title;$("rnd").textContent=sub||"";bar(0);
- const b=el("button","ex-back",backTo==="toets"?U().toets:U().back);b.type="button";b.onclick=backTo==="toets"?()=>startToets():home;c.appendChild(b);
+ c.dir=L()==="ar"?"rtl":"ltr";
+ const hook=typeof backTo==="function"?backTo:null,b=el("button","ex-back",hook?U().backLesson||U().back:backTo==="toets"?U().toets:U().back);b.type="button";b.onclick=hook||(backTo==="toets"?()=>startToets():home);c.appendChild(b);
  return c;
 }
 function bar(p){const f=$("barfill");if(f){f.style.width=Math.round(p*100)+"%";f.parentElement&&f.parentElement.setAttribute("aria-valuenow",String(Math.round(p*100)))}}
@@ -44,7 +82,7 @@ function home(){
  Object.entries(u.parts).forEach(([id,[ic,t,d]])=>{
   const b=el("button","ex-tile"+(id==="proef"?" wide":""));b.type="button";b.dataset.part=id;
   b.append(el("span","ex-ic",ic),el("strong","",t),el("span","ex-d",d));
-  const run=(s.run||{})[id];if(run&&run.i>0&&run.i<(run.items||[]).length)b.appendChild(el("span","ex-cont",(L()==="uk"?"▶ Продовжити ":"▶ Continue ")+(run.i+1)+"/"+run.items.length));
+  const run=(s.run||{})[id];if(run&&run.i>0&&run.i<(run.items||[]).length)b.appendChild(el("span","ex-cont",X().cont+(run.i+1)+"/"+run.items.length));
   const best=s.best&&s.best[id];if(best!=null){b.appendChild(el("span","ex-best","★ "+best+"%"));if(best>=70)b.classList.add("ok")}
   b.onclick=()=>({schrijven:writePick,spreken:speakPick}[id]||(()=>quiz(id)))();
   grid.appendChild(b);
@@ -55,7 +93,7 @@ function home(){
   c.appendChild(el("h3","ex-aih",u.ai));c.appendChild(el("p","ex-sub",fix(u.aiS)));
   const mk=(id,t,d,fn)=>{const b=el("button","btn toets-pick ex-ai");b.type="button";b.dataset.ai=id;const av=el("span","tp-no ex-av");try{av.innerHTML=charSvg("happy")}catch(e){av.textContent="🤖"}b.appendChild(av);const tx=el("span","tp-text");tx.append(el("strong","",fix(t)),el("small","tp-meta",fix(d)));b.appendChild(tx);b.onclick=fn;c.appendChild(b)};
   let aiRun=null;try{aiRun=lsGet(D.ai.store,null)}catch(e){}
-  const cont=aiRun&&aiRun.exam&&!aiRun.exam.done&&aiRun.msgs&&aiRun.msgs.length?(L()==="uk"?" · ▶ Продовжити з питання ":" · ▶ Continue at question ")+(aiRun.exam.i+1)+"/"+aiRun.exam.list.length:"";
+  const cont=aiRun&&aiRun.exam&&!aiRun.exam.done&&aiRun.msgs&&aiRun.msgs.length?" · ▶ "+X().contAt+(aiRun.exam.i+1)+"/"+aiRun.exam.list.length:"";
   mk("speak",u.aiSpeak,u.aiSpeakS+cont,()=>aiStart({id:D.ai.scene,fromExam:true}));
   mk("ask",u.aiAsk,u.aiAskS,()=>askStart({focus:D.focus}));
  }
@@ -67,14 +105,16 @@ function mkLuisteren(x){return{kind:"mc",dlg:DLG[x.d],q:tr(x.q),o:x.o,ok:x.o[0]}
 function wordPool(){ // the exam words + every word of the four "exam words" lessons (chapters 8-11)
  const seen=new Set(),out=[];const add=x=>{const k=x[0].toLowerCase();if(!seen.has(k)&&x[1]){seen.add(k);out.push(x)}};
  WOORDEN.forEach(add);
- try{D.wordTabs.forEach(t=>(DATA[t]?.items||[]).forEach(it=>add([it.nl,it.uk,it.en])))}catch(e){}
+ try{D.wordTabs.forEach(t=>(DATA[t]?.items||[]).forEach(it=>add([it.nl,it.uk,it.en,it.fr,it.ar])))}catch(e){}
  return out;
 }
 function mkWoord(w,i,all){
  const kind=x=>/[.?!]$/.test(x[0])?"s":/\s/.test(x[0].replace(/^(de|het|een) /i,""))?"p":"w";
- const same=all.filter(x=>x!==w&&kind(x)===kind(w)&&x[1]!==w[1]);const others=shuffle(same.length>=3?same:all.filter(x=>x!==w)).slice(0,3),dir=i%2;
- return dir?{kind:"mc",pair:w,q:(L()==="uk"?"Як нідерландською: «":"In Dutch: “")+(L()==="uk"?w[1]:w[2])+(L()==="uk"?"»?":"”?"),o:[w[0],...others.map(x=>x[0])],ok:w[0],nlOpts:true}
-  :{kind:"mc",pair:w,q:(L()==="uk"?"Що означає «":"What does “")+w[0]+(L()==="uk"?"»?":"” mean?"),o:[L()==="uk"?w[1]:w[2],...others.map(x=>L()==="uk"?x[1]:x[2])],ok:L()==="uk"?w[1]:w[2],nlQ:w[0]};
+ const same=all.filter(x=>x!==w&&kind(x)===kind(w)&&x[1]!==w[1]&&x[2]!==w[2]);const others=shuffle(same.length>=3?same:all.filter(x=>x!==w)).slice(0,3),dir=i%2;
+ // [nl, uk, en, fr, ar]: older word lists only have uk and en, then English is used.
+ const m=x=>x[{uk:1,en:2,fr:3,ar:4}[L()]]||x[2]||x[1];
+ return dir?{kind:"mc",pair:w,q:X().inNl(m(w)),o:[w[0],...others.map(x=>x[0])],ok:w[0],nlOpts:true}
+  :{kind:"mc",pair:w,q:X().means(w[0]),o:[m(w),...others.map(m)],ok:m(w),nlQ:w[0]};
 }
 function mkGram(g){return g.w?{kind:"order",w:g.w,a:g.a,e:tr(g.e),u:g.u}:{kind:"mc",gap:g.s,full:fullGap(g),o:g.o,ok:g.o[0],e:tr(g.e),u:g.u,nlOpts:true}}
 function build(part){
@@ -96,12 +136,12 @@ function qzSave(){if(!QZ)return;const s=st();s.run=s.run||{};const clean=o=>JSON
 function qzClear(part){const s=st();if(s.run&&s.run[part]){delete s.run[part];save(s)}}
 function quiz(part,fresh){
  const r=!fresh&&(st().run||{})[part];
- if(r&&Array.isArray(r.items)&&r.i>0&&r.i<r.items.length){QZ={part,items:r.items,i:r.i,right:r.right||0,miss:r.miss||[],t0:r.t0||Date.now()};toast((L()==="uk"?"Продовжуємо з питання ":"Continuing from question ")+(r.i+1));ask();return}
+ if(r&&Array.isArray(r.items)&&r.i>0&&r.i<r.items.length){QZ={part,items:r.items,i:r.i,right:r.right||0,miss:r.miss||[],t0:r.t0||Date.now()};toast(X().contFrom+(r.i+1));ask();return}
  QZ={part,items:build(part),i:0,right:0,miss:[],t0:Date.now()};qzSave();if(part==="proef")toast(U().proefInfo);ask()}
 function ask(){
  const u=U(),s=QZ,it=s.items[s.i],title=u.parts[s.part][0]+" "+u.parts[s.part][1];
  const c=head(title,u.q+" "+(s.i+1)+" "+u.of+" "+s.items.length);bar(s.i/s.items.length);
- if(s.i>0){const rs=el("button","ex-restart",L()==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>quiz(s.part,true);c.firstChild.after(rs)}
+ if(s.i>0){const rs=el("button","ex-restart",X().restart);rs.type="button";rs.onclick=()=>quiz(s.part,true);c.firstChild.after(rs)}
  if(it.text){const box=el("div","ex-text");box.appendChild(el("small","",it.text.title));const p=el("p","");p.appendChild(nl(it.text.body));box.appendChild(p);c.appendChild(box);it._textEl=box}
  if(it.dlg){
   c.appendChild(el("p","ex-hint",u.readFirst));
@@ -111,19 +151,19 @@ function ask(){
   sh.onclick=()=>{box.hidden=!box.hidden;sh.textContent=box.hidden?u.showText:u.hideText};
   row.append(pl,sh);c.append(row,box);it._box=box;
  }
- if(RULES[s.part]){const d=el("details","ex-rules");if(s.i===0)d.open=true;d.appendChild(el("summary","",L()==="uk"?"📘 Правило":"📘 Rule"));const r=el("div","ex-rtext");r.innerHTML=RULES[s.part][L()]||RULES[s.part].uk;d.appendChild(r);c.appendChild(d)}
+ if(RULES[s.part]){const d=el("details","ex-rules");if(s.i===0)d.open=true;d.appendChild(el("summary","",X().rule));const r=el("div","ex-rtext");r.innerHTML=RULES[s.part][L()]||RULES[s.part].uk;d.appendChild(r);c.appendChild(d)}
  if(it.prompt){const pq=el("div","ex-text ex-speakq");const qt=el("p","ex-q");qt.appendChild(nl(it.prompt));pq.appendChild(qt);const sb=el("button","btn ex-say","🔊");sb.type="button";sb.onclick=()=>say(it.prompt,sb);pq.appendChild(sb);if(UKON()&&it.promptU)pq.appendChild(trEl(it.promptU));c.appendChild(pq)}
  const qh=el("h3","ex-q");
  if(it.gap){qh.appendChild(nl(it.gap))}else if(it.nlQ){qh.textContent=it.q.split(it.nlQ)[0];qh.appendChild(nl(it.nlQ));qh.append(it.q.split(it.nlQ)[1]||"")}else qh.textContent=it.q;
- if(it.kind==="order")qh.textContent=it.prompt?(L()==="uk"?"Склади відповідь: Omdat …":"Build the answer: Omdat …"):u.order;
- if(it.kind==="pick")qh.textContent=L()==="uk"?"Натисни всі іменники в множині (meervoud), потім «Перевірити».":"Tap every plural noun, then «Check».";
+ if(it.kind==="order")qh.textContent=it.prompt?X().omdat:u.order;
+ if(it.kind==="pick")qh.textContent=X().plural;
  c.appendChild(qh);
  if(it.kind==="mc"){
   const box=el("div","opts ex-opts");
   shuffle(it.o).forEach(o=>{const b=el("button","opt");b.type="button";b.appendChild(it.nlOpts||it.text||it.dlg||it.gap?nl(o):el("span","",o));b.onclick=()=>answer(o===it.ok,b,box);box.appendChild(b)});
   c.appendChild(box);
  }else if(it.kind==="type"){
-  const f=el("form","g-type ex-typef"),inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.placeholder=L()==="uk"?"Напиши множину…":"Type the plural…";
+  const f=el("form","g-type ex-typef"),inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.placeholder=X().typePl;
   const b=el("button","btn primary",u.check);b.type="submit";f.append(inp,b);
   f.onsubmit=e=>{e.preventDefault();const v=inp.value.trim().toLowerCase().replace(/[’`´]/g,"'");if(!v)return;inp.disabled=true;const ok=it.acc.some(a=>a.toLowerCase().replace(/[’]/g,"'")===v);inp.classList.add(ok?"ok":"bad");answer(ok,null,f)};
   c.appendChild(f);setTimeout(()=>{try{inp.focus()}catch(e){}},50);
@@ -150,7 +190,7 @@ function answer(ok,btn,box,orderAnswer){
  s.i++;qzSave();s.i--; // the answer counts even if the learner leaves now
  const fb=el("div","ex-fb "+(ok?"ok":"bad"));fb.appendChild(el("strong","",ok?u.right:u.wrong+" "));
  if(!ok&&it.kind!=="pick"){fb.appendChild(nl(it.kind==="order"?it.a:it.ok))}
- if(it.kind==="pick")fb.appendChild(el("p","",(L()==="uk"?"Множина в тексті: ":"Plurals: ")+it.ok));
+ if(it.kind==="pick")fb.appendChild(el("p","",X().plurals+it.ok));
  if(it.kind==="pick"&&UKON()&&it.textUk){const d2=el("details","ex-trbox");d2.append(el("summary","","🇺🇦 Переклад"),trEl(it.textUk,"p"));fb.appendChild(d2)}
  if(UKON()){
   if(it.full||it.kind==="order"){const sx=el("p","ex-full");sx.appendChild(nl(it.full||it.a));fb.appendChild(sx);if(it.u)fb.appendChild(trEl(it.u,"p"))}
@@ -184,28 +224,24 @@ function writePick(){
  c.appendChild(el("p","ex-sub",u.parts.schrijven[2]));
  WRITE.forEach((w,i)=>{const b=el("button","btn toets-pick ex-wpick");b.type="button";b.dataset.write=w.id;b.append(el("span","tp-no",String(i+1)));const tx=el("span","tp-text");tx.appendChild(el("strong","",tr(w.title)));const d=(st().draft||{})[w.id];if(d)tx.appendChild(el("small","tp-meta","✎ "+d.trim().split(/\s+/).length+" woorden"));b.appendChild(tx);b.onclick=()=>write(w);c.appendChild(b)});
 }
-function write(w){
- const u=U(),c=head(u.parts.schrijven[0]+" "+u.parts.schrijven[1],tr(w.title));
+function write(w,back){
+ // back: a function when the task is opened from a lesson; "back" then returns there instead of to the exam.
+ const u=U(),c=head(u.parts.schrijven[0]+" "+u.parts.schrijven[1],tr(w.title),back);
  c.appendChild(el("h3","ex-q",tr(w.title)));
  if(w.card){const box=el("div","ex-text ex-card");box.appendChild(nl(w.card));if(UKON()&&w.card_uk){const d2=el("details","ex-trbox");d2.append(el("summary","","🇺🇦 Переклад"),trEl(w.card_uk,"p"));box.appendChild(d2)}c.appendChild(box)}
- const tk=el("p","ex-task");tk.append(el("b","",u.wTask+": "));tk.appendChild(nl(w.task));if(UKON()&&w.task_uk)tk.appendChild(trEl(w.task_uk,"span"));c.appendChild(tk);
- const ta=el("textarea","ex-ta");ta.rows=10;ta.lang="nl";ta.placeholder=u.wWrite;ta.setAttribute("spellcheck","false");ta.value=((st().draft||{})[w.id])||"";
+ const own=(w.task_tr&&w.task_tr[L()])||(L()==="uk"?w.task_uk:"");
+ const tk=el("p","ex-task");tk.append(el("b","",u.wTask+": "));tk.appendChild(nl(w.task));if(own)tk.appendChild(trEl(own,"span"));c.appendChild(tk);
+ const ta=el("textarea","ex-ta");ta.rows=10;ta.lang="nl";ta.dir="ltr";ta.placeholder=u.wWrite;ta.setAttribute("spellcheck","false");ta.value=((st().draft||{})[w.id])||"";
  ta.oninput=()=>{const s=st();s.draft=s.draft||{};s.draft[w.id]=ta.value;save(s)};
  c.append(ta,el("small","ex-hint",u.wSaved));
  const res=el("div","ex-check");const model=el("div","ex-text ex-model");model.hidden=true;model.appendChild(nl(w.model));if(UKON()&&w.model_uk){const d2=el("details","ex-trbox");d2.open=true;d2.append(el("summary","","🇺🇦 Переклад"),trEl(w.model_uk,"p"));model.appendChild(d2)}
- const row=el("div","row"),ck=el("button","btn primary",u.wCheck),md=el("button","btn",u.wModel);ck.type=md.type="button";
+ const row=el("div","row ex-wrow"),ck=el("button","btn primary",u.wCheck),md=el("button","btn",u.wModel);ck.type=md.type="button";
  ck.onclick=()=>{
-  const t=ta.value.trim();res.replaceChildren(el("strong","",u.wTips));const ul=el("ul","ex-list");let okN=0;
-  w.checks.forEach(([lbl,re])=>{const ok=re.test(t);if(ok)okN++;const li=el("li",ok?"ok":"bad",(ok?"✅ ":"⬜ ")+lbl);ul.appendChild(li)});
-  // The line after the closing (Groetjes, / Met vriendelijke groeten,) is the signature, not a sentence: "Olena Kovalenko, appartement 3".
-  const lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean),sign=lines.length>1&&/(groetjes|groeten|tot \S+)[,!]?$/i.test(lines[lines.length-2])&&/^[A-Z]/.test(lines[lines.length-1])?lines[lines.length-1]:"";
-  const sents=t.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(x=>x.length>2&&x!==sign&&!/^(hallo|beste|dag|hoi|lieve|groetjes|groeten)\b/i.test(x)&&!/,$/.test(x)&&x.split(/\s+/).length>1);
-  const cap=sents.filter(x=>!/^[A-Z’'0-9]/.test(x)),dot=sents.filter(x=>!/[.!?]$/.test(x));
-  if(!w.form)[[cap.length===0,L()==="uk"?"Кожне речення з великої літери":"Every sentence starts with a capital"],[dot.length===0,L()==="uk"?"Кожне речення закінчується . ! або ?":"Every sentence ends with . ! or ?"],[sents.length>=(w.min||5),(L()==="uk"?"Щонайменше "+(w.min||5)+" речень (зараз: ":"At least "+(w.min||5)+" sentences (now: ")+sents.length+")"],[!!sign||/\n\s*[A-Z][a-z]+\s*$/.test(t)||/groetjes,?\s*\n?\s*\S+\s*$/i.test(t),L()==="uk"?"Ім’я в кінці":"Your name at the end"]].forEach(([ok,lbl])=>{if(ok)okN++;ul.appendChild(el("li",ok?"ok":"bad",(ok?"✅ ":"⬜ ")+lbl))});
-  res.appendChild(ul);
-  const tips=COMMON.filter(([re])=>re.test(t));if(tips.length){const tl=el("ul","ex-list warn");tips.forEach(([,m])=>tl.appendChild(el("li","bad","⚠️ "+tr(m))));res.appendChild(tl)}
-  const total=w.checks.length+(w.form?0:4),pct=Math.round(okN/total*100);setBest("schrijven",pct);bar(okN/total);
-  if(pct===100&&!tips.length)toast("🏆 "+pct+"%");
+  const r=score(w,ta.value,COMMON,D.min||5);res.replaceChildren(el("strong","",u.wTips));const ul=el("ul","ex-list");
+  r.items.forEach(x=>ul.appendChild(el("li",x.ok?"ok":"bad",(x.ok?"✅ ":"⬜ ")+x.label)));res.appendChild(ul);
+  if(r.tips.length){const tl=el("ul","ex-list warn");r.tips.forEach(m=>tl.appendChild(el("li","bad","⚠️ "+m)));res.appendChild(tl)}
+  setBest("schrijven",r.pct);{const s=st();s.wbest=s.wbest||{};if(!(s.wbest[w.id]>=r.pct)){s.wbest[w.id]=r.pct;save(s)}}bar(r.ok/r.total);
+  if(r.pct===100&&!r.tips.length)toast("🏆 "+r.pct+"%");
  };
  md.onclick=()=>{model.hidden=!model.hidden;md.textContent=model.hidden?u.wModel:u.wHideModel};
  row.append(ck,md);
@@ -213,12 +249,11 @@ function write(w){
   askStart({focus:D.focus,send:"Kijk mijn e-mail na ("+D.examName+"). Opdracht: "+w.task+(w.card?"\nUitnodiging: "+w.card.replace(/\n/g," "):"")+"\n\nMijn e-mail:\n"+t})};row.appendChild(ai)}
  c.append(row,res,model);
 }
-
 // ---------------- SPEAKING ----------------
 function speakPick(){
  const u=U(),c=head(u.parts.spreken[0]+" "+u.parts.spreken[1],""),s=st();
  c.appendChild(el("p","ex-sub",u.parts.spreken[2]));
- SPREKEN.forEach((t,i)=>{const okN=((s.sp||{})[t.id]||[]).length;const b=el("button","btn toets-pick");b.type="button";b.dataset.speak=t.id;b.append(el("span","tp-no",String(i+1)));const tx=el("span","tp-text");tx.append(el("strong","",tr(t.t)),el("small","tp-meta",u.sDone(okN,t.qa.length)));b.appendChild(tx);if(okN>=t.qa.length)b.classList.add("passed");const pos=((s.spPos||{})[t.id])||0;if(pos>0&&pos<t.qa.length)tx.appendChild(el("small","tp-nl",(L()==="uk"?"Продовжити з питання ":"Continue at question ")+(pos+1)));b.onclick=()=>speak(t,pos>0&&pos<t.qa.length?pos:0);c.appendChild(b)});
+ SPREKEN.forEach((t,i)=>{const okN=((s.sp||{})[t.id]||[]).length;const b=el("button","btn toets-pick");b.type="button";b.dataset.speak=t.id;b.append(el("span","tp-no",String(i+1)));const tx=el("span","tp-text");tx.append(el("strong","",tr(t.t)),el("small","tp-meta",u.sDone(okN,t.qa.length)));b.appendChild(tx);if(okN>=t.qa.length)b.classList.add("passed");const pos=((s.spPos||{})[t.id])||0;if(pos>0&&pos<t.qa.length)tx.appendChild(el("small","tp-nl",X().contAt+(pos+1)));b.onclick=()=>speak(t,pos>0&&pos<t.qa.length?pos:0);c.appendChild(b)});
 }
 const norm=x=>String(x).toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9à-ÿ' ]+/g," ").replace(/\s+/g," ").trim();
 function speak(topic,i){
@@ -234,7 +269,7 @@ function speak(topic,i){
   out.replaceChildren(el("small","",u.sHeard),nl(" «"+said+"» "),el("span",good?"ex-good":"ex-meh",good?" 👍":" 🙂"));model.hidden=false};
  mic.onclick=()=>{
   if(mic.classList.contains("rec")){job&&job.stop();return}
-  mic.classList.add("rec");mic.textContent=L()==="uk"?"⏹ Готово":"⏹ Done";out.replaceChildren(el("small","",L()==="uk"?"Говори — я слухаю…":"Speak — I'm listening…"));
+  mic.classList.add("rec");mic.textContent=X().stop;out.replaceChildren(el("small","",X().listening));
   const reset=()=>{mic.classList.remove("rec");mic.textContent=u.sSpeak;job=null};
   if(typeof listenLong==="function")job=listenLong({onInterim:t=>{out.replaceChildren(el("small","",u.sHeard),nl(" «"+t+"»"))},onDone:alts=>{reset();judge(alts)},onFail:()=>{reset();model.hidden=false}});
   else listenOnce(alts=>{reset();judge(alts)},()=>{reset();model.hidden=false});
@@ -264,7 +299,11 @@ function speakScript(){ // mock speaking exam for the AI: 6 topics in course ord
  return out;
 }
 function chips(){return D.chips?D.chips(L()):[]}
-return {open:home,texts,chips,speakScript,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},_quiz:quiz,_write:write,_speak:speak};
+// Writing practice inside lessons: open one task by id with a "back to the lesson" target.
+const tasks=()=>[...WRITE,...(D.LESSON_WRITE||[])];
+function writeTask(id,back){const w=tasks().find(x=>x.id===id);if(!w)return false;write(w,back);return true}
+const writeBest=id=>((st().wbest||{})[id]);
+return {open:home,texts,chips,speakScript,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},tasks,writeTask,writeBest,score:(w,t)=>score(w,t,COMMON,D.min||5),_current:()=>QZ&&QZ.items[QZ.i],_quiz:quiz,_write:write,_speak:speak};
 }
-globalThis.LerenExam={make,Q};
+globalThis.LerenExam={make,Q,score};
 })();
