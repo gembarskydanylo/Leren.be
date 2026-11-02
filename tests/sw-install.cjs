@@ -22,7 +22,7 @@ async function simulate(fail){
   return;
  }
  assert.equal(error,null);assert.equal(waiting,1);
- assert(opened.every(name=>name==='leren-be-v175'));
+ assert(opened.every(name=>name==='leren-be-v176'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));
  if(fail==='optional')assert(added.length<1007,'some optional files should fail');
  else assert.equal(added.length,1007);
