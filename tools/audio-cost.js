@@ -10,7 +10,7 @@ const billable=t=>(`<prosody rate='${rate}'>`+esc(t)+'</prosody>').length;
 const rows=[];
 for(const [dir,voice] of [['audio/nl','nl-BE-ArnaudNeural (Peter)'],['audio/nl-f','nl-BE-DenaNeural (Dafna)']]){
  // Recordings on this computer count (also ones not committed yet); the manifest is only a fallback.
- const files=fs.existsSync(dir)?fs.readdirSync(dir).filter(f=>f.endsWith('.m4a')).map(f=>f.slice(0,-4)):[];
+ const files=fs.existsSync(dir)?fs.readdirSync(dir).filter(f=>f.endsWith('.m4a')&&!f.startsWith('.')).map(f=>f.slice(0,-4)):[];
  const have=new Set(files.length?files:JSON.parse(fs.readFileSync(dir+'/manifest.json','utf8')));
  const missing=texts.filter(([h])=>!have.has(h)),chars=missing.reduce((n,[,t])=>n+t.length,0),bill=missing.reduce((n,[,t])=>n+billable(t),0);
  rows.push({voice,missing:missing.length,textChars:chars,billable:bill});

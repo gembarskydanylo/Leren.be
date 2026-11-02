@@ -2,7 +2,7 @@
 // Run after recording and after pulling other recordings: node tools/audio-manifest.js
 const fs=require('fs');
 for(const dir of ['audio/nl','audio/nl-f']){
- const ids=fs.readdirSync(dir).filter(f=>f.endsWith('.m4a')).map(f=>f.slice(0,-4)).sort();
+ const ids=fs.readdirSync(dir).filter(f=>f.endsWith('.m4a')&&!f.startsWith('.')).map(f=>f.slice(0,-4)).sort();
  fs.writeFileSync(dir+'/manifest.json',JSON.stringify(ids)+'\n');
  console.log(dir+': '+ids.length+' recordings');
 }
