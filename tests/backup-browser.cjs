@@ -53,7 +53,7 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
    log('backup');// Backup as a file (the same keys as the account sync).
    const [dl]=await Promise.all([page.waitForEvent('download'),page.locator('#insBackup .btn.primary').click()]);
    assert.match(dl.suggestedFilename(),/^leren-progress-\d{4}-\d{2}-\d{2}\.json$/);const file=path.join(os.tmpdir(),'leren-backup-test.json');await dl.saveAs(file);
-   const atBackup=await snap(),backup=JSON.parse(fs.readFileSync(file,'utf8'));assert.equal(backup.v,3);for(const k of keys)assert.equal(backup.keys[k],atBackup[k],'in the backup: '+k);for(const k of ['poly_toetsbest','leren_exam12','poly_streak','leren_skills_v1','leren_minutes_v1','leren_goal_min','leren_achievements_v1'])assert.equal(atBackup[k],before[k],'unchanged by the app: '+k);
+   const atBackup=await snap(),backup=JSON.parse(fs.readFileSync(file,'utf8'));assert.equal(backup.v,4);assert.match(backup.sha256,/^[0-9a-f]{64}$/);for(const k of keys)assert.equal(backup.keys[k],atBackup[k],'in the backup: '+k);for(const k of ['poly_toetsbest','leren_exam12','poly_streak','leren_skills_v1','leren_minutes_v1','leren_goal_min','leren_achievements_v1'])assert.equal(atBackup[k],before[k],'unchanged by the app: '+k);
    assert.equal(await page.locator('#insBackup').count(),0,'reminder gone after a backup');
    log('delete');// "Delete site data": everything gone, then restore from the file through the Restore button.
    await page.evaluate(()=>{localStorage.clear();sessionStorage.setItem('seeded','1')});await page.reload();await page.waitForFunction(()=>window.learningPath);
@@ -64,11 +64,11 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
    assert.deepEqual(await page.evaluate(()=>[score,streakState().n,goalMin()]),[350,4,15]);
    // Restoring an older backup over newer progress keeps the newer results.
    await page.evaluate(()=>{lsSet('poly_toetsbest',{course_comm_v2:10,course_people_v2:7});lsSet('poly_score',500);localStorage.setItem('poly_score','500')});
-   const merged=await page.evaluate(txt=>{backupRestore(txt);return {t:lsGet('poly_toetsbest',{}),s:localStorage.getItem('poly_score')}},fs.readFileSync(file,'utf8'));
+   const merged=await page.evaluate(async txt=>{await backupRestore(txt);return {t:lsGet('poly_toetsbest',{}),s:localStorage.getItem('poly_score')}},fs.readFileSync(file,'utf8'));
    assert.deepEqual(merged.t,{course_comm_v2:10,course_people_v2:7});assert.equal(merged.s,'500');
    // An old v2 clipboard backup still restores words and points.
-   const v2=await page.evaluate(()=>backupRestore(JSON.stringify({v:2,score:777,store:{c_dag:{seen:1,correct:1,wrong:0,streak:1,due:0,known:false}},companion:{}})));assert.equal(v2,true);
-   assert.equal(await page.evaluate(()=>backupRestore('{"x":1}')),false,'not a backup');
+   const v2=await page.evaluate(()=>backupRestore(JSON.stringify({v:2,score:777,store:{c_dag:{seen:1,correct:1,wrong:0,streak:1,due:0,known:false}},companion:{}})));assert.equal(v2.ok,true);
+   assert.equal((await page.evaluate(()=>backupRestore('{"x":1}'))).ok,false,'not a backup');
    assert.deepEqual(errors,[]);await ctx.close();fs.rmSync(file,{force:true});}
   console.log('PASS: lesson finished at 4 of 10 minutes shown as a success (goal only a note, no streak change); caches and service worker cleared without losing progress; guest reminder; full backup file restores tests, exams, streak, skills, minutes, goal and badges after "delete site data"; restore never lowers newer results; v2 backups still work');
  }finally{await browser.close();server.close()}

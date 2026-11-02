@@ -58,7 +58,7 @@ function oldData(){
    const act=await page.evaluate(()=>{const now=Date.now();setView('dict');actTick=now-5000;actMark();const a=actStep(now);setView('lesson');actTick=now-5000;actInput=now-100000;const b=actStep(now);actTick=now-5000;actMark();const c=actStep(now);return [a,b,c]});
    assert.deepEqual(act,[0,0,5000]);
    // Reaching the goal adds one streak day, once.
-   const goal=await page.evaluate(()=>{const m=lsGet('leren_minutes_v1',{days:{}});m.days[dayStr()]=596;lsSet('leren_minutes_v1',m);const now=Date.now();actTick=now-5000;actMark();actStep(now);
+   const goal=await page.evaluate(()=>{const m=lsGet('leren_minutes_v1',{days:{}});const own=LerenMerge.minutesView(lsGet('leren_minutes_v2',{})).days[dayStr()]||0;m.days[dayStr()]=Math.max(0,595-own);lsSet('leren_minutes_v1',m);/* v174 data + this device's seconds = 9:55; +5 s → 10 min */const now=Date.now();actTick=now-5000;actMark();actStep(now);
     const first=streakState();const again=goalCheck();return {n:first.n,today:first.today,again,earned:Object.keys(rewards.state.earned),label:$('progressPanel').querySelector('.pp-goal').classList.contains('done')}});
    assert.equal(goal.n,who==='old'?7:1,tag+': streak +1');assert(goal.today&&goal.again===false&&goal.label);
    if(who==='old')assert(goal.earned.includes('streak-7'),'7-day badge');else assert(!goal.earned.includes('streak-3'));
@@ -82,7 +82,7 @@ function oldData(){
     await page.evaluate(()=>{lsSet('poly_toetsbest',{...lsGet('poly_toetsbest',{}),[TOETS.find(t=>(t.lvl||'a11')==='a11'&&t.kind!=='leveltest').id]:1});setView('progress')});
     await page.locator('#insPeter .ins-tip[data-kind="test"] button').click();assert.equal(await page.evaluate(()=>view),'toets');assert(await page.evaluate(()=>!!toetsId));
     // Exam answers count for the exam's course only (A1.2 here), A1.1 stays as it was.
-    const sk=await page.evaluate(async()=>{lsSet('leren_skills_v1',{});EXAM12._quiz('lezen',true);for(let i=0;i<40;i++){await new Promise(r=>setTimeout(r,5));const it=EXAM12._current();if(!it||document.querySelector('#card .ex-end'))break;[...document.querySelectorAll('#card .ex-opts .opt')].find(x=>x.textContent===it.ok).click();document.querySelector('#card #nx').click()}return lsGet('leren_skills_v1',{})});
+    const sk=await page.evaluate(async()=>{lsSet('leren_skills_v1',{});lsSet('leren_skills_v2',{});EXAM12._quiz('lezen',true);for(let i=0;i<40;i++){await new Promise(r=>setTimeout(r,5));const it=EXAM12._current();if(!it||document.querySelector('#card .ex-end'))break;[...document.querySelectorAll('#card .ex-opts .opt')].find(x=>x.textContent===it.ok).click();document.querySelector('#card #nx').click()}return LerenMerge.skillsView(skillsStore())});
     assert(sk.a12.lezen.n>=14&&sk.a12.lezen.ok===sk.a12.lezen.n,'A1.2 reading counted: '+JSON.stringify(sk.a12.lezen));assert.equal(sk.a11.lezen.n,0);
     await page.evaluate(()=>{switchCourse('a12');setView('progress')});assert.match(await page.locator('#insSkills .ins-row[data-skill="lezen"]').innerText(),/100% правильних · \d+ відповід/);
    }

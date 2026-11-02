@@ -16,7 +16,8 @@
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<script src="./modules/review/srs.js?v=174"></script>
+<script src="./modules/review/srs.js?v=175"></script>
+<script src="./modules/sync/merge.js?v=175"></script>
 <script src="./modules/insights/core.js?v=174"></script>
 <script src="./modules/learning-path/core.js?v=174"></script>
 <script src="./modules/rewards/core.js?v=174"></script>
@@ -30,7 +31,7 @@
 <script src="./modules/card-art/more-people.js?v=135"></script>
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=174"></script>
-<script src="./modules/rewards/ui.js?v=174"></script>
+<script src="./modules/rewards/ui.js?v=175"></script>
 <script src="./modules/focused-home/ui.js?v=174"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=173"></script>
@@ -2420,6 +2421,12 @@ if(tab!=="all"&&!activeCatObj.tabs.includes(tab)||!tabVisible(tab)){currentCat=C
 
 let mode="quiz",deck=[],q=0,right=0,round=1,roundTotal=0,roundBase=0,locked=false,item=null;
 let score=loadNumber("poly_score",0),roundPoints=0,sessionIds=[],store=loadStore();
+// This browser's own id for per-device counters (modules/sync/merge.js). Never synced, never in backups.
+const DEVICE_ID=(()=>{let id=null;try{id=localStorage.getItem("leren_device_id")}catch(e){}if(!id||!/^d[a-z0-9]{4,30}$/.test(id)){id=LerenMerge.newDeviceId();try{localStorage.setItem("leren_device_id",id)}catch(e){}}return id})();
+// Points are a ledger (leren_xp_v2): base (points from before v175 or from older app versions) + record grants with a key
+// (counted once on any number of devices) + this device's points per day. poly_score keeps the total for older versions.
+function xpInit(){let raw=null;try{raw=JSON.parse(localStorage.getItem("leren_xp_v2"))}catch(e){}const x=LerenMerge.xpAbsorb(raw,loadNumber("poly_score",0));score=LerenMerge.xpTotal(x);try{localStorage.setItem("leren_xp_v2",JSON.stringify(x));localStorage.setItem("poly_score",String(score))}catch(e){}}
+xpInit();
 let curLevel=validStored("poly_level",LEVELS.map(l=>l.id),"a11");
 if(tab!=="all"&&levelUnlocked(catLevel(currentCat)))curLevel=catLevel(currentCat);
 if(!levelUnlocked(curLevel))curLevel="a11";
@@ -2537,7 +2544,7 @@ function rewardCheck(celebrate=false){
 function renderRewards(){
  const host=$("pvToets");if(!host)return;document.getElementById("rewardsPanel")?.remove();rewardCheck();
  const panel=LerenRewards.panel(rewards,{lang:uiLang,score,user:acct.user,
-  synced:acct.lastSnap===JSON.stringify(syncSnapshot())?lsGet("leren_sync_at",0):0,
+  synced:syncStatus()==="synced"?lsGet("leren_sync_at",0):0,syncText:acct.user?syncLine():"",syncState:syncStatus()||"",
   onLogin:acctSignIn,onBackup:()=>$("exportProgBtn").click()});panel.id="rewardsPanel";host.before(panel);
 }
 function queueProgressSync(){if(!acct.user)return;clearTimeout(acct.saveTimer);acct.saveTimer=setTimeout(()=>syncPush().catch(()=>{}),1500)}
@@ -2601,12 +2608,18 @@ function dailyState(){const d=lsGet("poly_daily",{});return d.d===dayStr()?d:{d:
 function streakState(){return LerenInsights.streakView(lsGet("poly_streak",{}),dayStr())}
 // Daily goal in minutes of active study (leren_goal_min: 5/10/15/20/30, default 10). The old points goal (poly_goal) is no longer used.
 const goalMin=()=>LerenInsights.goal(lsGet("leren_goal_min",LerenInsights.GOAL_DEFAULT));
-const minutesToday=()=>LerenInsights.minutesOn(lsGet("leren_minutes_v1",{}),dayStr());
+// Minutes, skills and grammar slips are counted per device (v2 keys); data of v174 (the v1 keys, possibly still written
+// by an older app on another device) is read as one extra part. See modules/sync/merge.js.
+const minutesStore=()=>LerenMerge.minutesMerge(lsGet("leren_minutes_v2",{}),LerenMerge.minutesFromV1(lsGet("leren_minutes_v1",{})));
+const skillsStore=()=>LerenMerge.skillsMerge(lsGet("leren_skills_v2",{}),LerenMerge.skillsFromV1(lsGet("leren_skills_v1",{})));
+const slipsStore=()=>LerenMerge.slipsMerge(lsGet("leren_slips_v2",{}),LerenMerge.slipsFromV1(lsGet("leren_slips_v1",{})));
+const minutesToday=()=>LerenInsights.minutesOn(LerenMerge.minutesView(minutesStore()),dayStr());
 // every XP gain goes through here
-function addXP(n){
+// key: a record grant (route lesson, test, exam part, weekly bonus) that must count once on all devices; no key: a new event.
+function addXP(n,key){
  if(!Number.isFinite(n)||!(n>0))return;
  const before=rankInfo().cur.id;
- score+=n;
+ const x=LerenMerge.xpAdd(LerenMerge.xpAbsorb(lsGet("leren_xp_v2",null),score),DEVICE_ID,dayStr(),n,key);lsSet("leren_xp_v2",x);score=LerenMerge.xpTotal(x);
  try{localStorage.setItem("poly_score",String(score))}catch(e){}
  const d=dailyState();d.xp+=n;lsSet("poly_daily",d); // points of the day; the daily goal and the streak count study minutes now
 
@@ -2618,9 +2631,9 @@ function addXP(n){
 // ========== INSIGHTS: skills, active study minutes, daily goal, streak, Peter's advice (logic: modules/insights/core.js) ==========
 // Progress by skill is kept per course (A1.1 / A1.2): the course of the exam, otherwise the course being studied.
 const examCourse=key=>key==="leren_exam12"?"a12":"a11";
-function skillLog(skill,ok,lv=curLevel){lsSet("leren_skills_v1",LerenInsights.skillLog(lsGet("leren_skills_v1",{}),lv,skill,ok))}
-function skillSpoke(lv=curLevel){lsSet("leren_skills_v1",LerenInsights.spoke(lsGet("leren_skills_v1",{}),lv))}
-function slipLog(tag,ok,lv=curLevel){lsSet("leren_slips_v1",LerenInsights.slipLog(lsGet("leren_slips_v1",{}),lv,tag,ok))}
+function skillLog(skill,ok,lv=curLevel){lsSet("leren_skills_v2",LerenMerge.skillAdd(lsGet("leren_skills_v2",{}),DEVICE_ID,lv,skill,ok))}
+function skillSpoke(lv=curLevel){lsSet("leren_skills_v2",LerenMerge.skillAdd(lsGet("leren_skills_v2",{}),DEVICE_ID,lv,"spreken"))}
+function slipLog(tag,ok,lv=curLevel){lsSet("leren_slips_v2",LerenMerge.slipAdd(lsGet("leren_slips_v2",{}),DEVICE_ID,lv,tag,ok))}
 // Called by the exam engine (modules/exam/exam-core.js) for every checked answer, writing tip and spoken answer.
 function examLog(key,it,ok){const lv=examCourse(key);if(!it)return;
  if(it.src==="lezen"||it.src==="luisteren")skillLog(it.src,ok,lv);
@@ -2638,7 +2651,7 @@ const actMark=()=>{actInput=Date.now()};
 document.addEventListener("visibilitychange",()=>{actTick=Date.now()});
 function actStep(now=Date.now()){
  const on=document.visibilityState==="visible"&&LEARN_VIEWS.includes(view),ms=LerenInsights.credit(actTick,now,actInput,on);actTick=now;if(!ms)return 0;
- const before=minutesToday();lsSet("leren_minutes_v1",LerenInsights.addTime(lsGet("leren_minutes_v1",{}),ms,dayStr()));
+ const before=minutesToday();lsSet("leren_minutes_v2",LerenMerge.minutesAdd(lsGet("leren_minutes_v2",{}),DEVICE_ID,dayStr(),ms));
  if(minutesToday()!==before){goalCheck();updateStats()}return ms;
 }
 setInterval(()=>actStep(),5000);
@@ -2654,7 +2667,7 @@ function adviceFor(lv=curLevel){
  const E=lv==="a12"?window.EXAM12:window.EXAM11,exam=lsGet(lv==="a12"?"leren_exam12":"leren_exam11",{}),best=lsGet("poly_toetsbest",{});
  const tests=TOETS.filter(t=>t.kind!=="leveltest"&&(t.lvl||"a11")===lv&&Number.isFinite(best[t.id])).map(t=>({id:t.id,title:t.title[uiLang]||t.title.en||t.id,best:best[t.id],total:t.questions.length}));
  const wt=E?E.tasks().find(w=>!(E.writeBest(w.id)>=80)):null,L=levelById(lv);
- return LerenInsights.recommend({lv,skills:LerenInsights.summary(lsGet("leren_skills_v1",{}),lv,exam),slips:LerenInsights.cleanSlips(lsGet("leren_slips_v1",{}))[lv],
+ return LerenInsights.recommend({lv,skills:LerenInsights.summary(LerenMerge.skillsView(skillsStore()),lv,exam),slips:LerenInsights.cleanSlips(LerenMerge.slipsView(slipsStore()))[lv],
   due:dueItems(lv).map(x=>x.id),tests,lessonsDone:learningPath&&L?learningPath.model.courseStats(L.name).done:0,writeTask:wt?wt.id:null,
   tabs:levelCats(lv).flatMap(c=>c.tabs).filter(tabVisible),canSpeak:!!(window.SpeechRecognition||window.webkitSpeechRecognition)});
 }
@@ -2671,7 +2684,7 @@ function runAdvice(a){
 // Progress screen: the four skills of the current course and Peter's advice.
 function renderInsights(host){
  const lv=curLevel,L=levelById(lv).name,iu=LerenInsights.ui(uiLang),pt=LerenInsights.tr(uiLang);
- const exam=lsGet(lv==="a12"?"leren_exam12":"leren_exam11",{}),sk=LerenInsights.summary(lsGet("leren_skills_v1",{}),lv,exam);
+ const exam=lsGet(lv==="a12"?"leren_exam12":"leren_exam11",{}),sk=LerenInsights.summary(LerenMerge.skillsView(skillsStore()),lv,exam);
  const box=el("section","ins-skills");box.id="insSkills";box.appendChild(el("h3","",iu.skills(L)));
  const row=(key,lines,pct)=>{const r=el("div","ins-row");r.dataset.skill=key;const head=el("div","ins-head");head.append(el("strong","",iu.sk[key]));if(pct!=null)head.append(el("span","ins-pct",pct+"%"));r.appendChild(head);
   if(pct!=null){const m=el("div","ins-meter");m.setAttribute("role","img");m.setAttribute("aria-label",iu.sk[key]+" "+pct+"%");const i=el("i");i.style.width=pct+"%";m.appendChild(i);r.appendChild(m)}
@@ -2695,43 +2708,40 @@ function renderInsights(host){
 // streak, skills, minutes, rewards…), as a file and in the clipboard. Restoring merges with what is already here
 // (syncMerge): the better value of each result is kept, so an old backup never erases newer progress.
 const BACKUP_UI={
- uk:{saved:f=>"Резервну копію збережено: "+f+". Копія також у буфері обміну.",savedClip:"Резервну копію скопійовано в буфер обміну. Встав її в нотатки чи лист собі.",paste:"Встав резервну копію (текст):",restored:"Прогрес відновлено. Нові результати на цьому пристрої збережено.",bad:"Це не резервна копія Leren.be.",
+ uk:{saved:f=>"Резервну копію збережено: "+f+". Копія також у буфері обміну.",savedClip:"Резервну копію скопійовано в буфер обміну. Встав її в нотатки чи лист собі.",paste:"Встав резервну копію (текст):",restored:"Прогрес відновлено. Нові результати на цьому пристрої збережено.",bad:"Цю резервну копію не відновлено: файл пошкоджений або це не копія Leren.be. Прогрес не змінено.",
   warn:"Прогрес зберігається лише в цьому браузері. Очищення кешу його не видаляє, але «видалення даних сайту» видалить. Збережи резервну копію або увійди в акаунт — тоді копія буде в хмарі.",save:"💾 Зберегти копію",login:"Увійти"},
- en:{saved:f=>"Backup saved: "+f+". It is also in the clipboard.",savedClip:"Backup copied to the clipboard. Paste it into a note or an e-mail to yourself.",paste:"Paste your backup (text):",restored:"Progress restored. Newer results on this device were kept.",bad:"This is not a Leren.be backup.",
+ en:{saved:f=>"Backup saved: "+f+". It is also in the clipboard.",savedClip:"Backup copied to the clipboard. Paste it into a note or an e-mail to yourself.",paste:"Paste your backup (text):",restored:"Progress restored. Newer results on this device were kept.",bad:"This backup was not restored: the file is damaged or not a Leren.be backup. Your progress was not changed.",
   warn:"Your progress is stored only in this browser. Clearing the cache does not remove it, but “delete site data” does. Save a backup or sign in to keep a cloud copy.",save:"💾 Save a backup",login:"Sign in"},
- fr:{saved:f=>"Sauvegarde enregistrée : "+f+". Elle est aussi dans le presse-papiers.",savedClip:"Sauvegarde copiée dans le presse-papiers. Colle-la dans une note ou un e-mail.",paste:"Colle ta sauvegarde (texte) :",restored:"Progression restaurée. Les résultats plus récents de cet appareil sont gardés.",bad:"Ce n’est pas une sauvegarde Leren.be.",
+ fr:{saved:f=>"Sauvegarde enregistrée : "+f+". Elle est aussi dans le presse-papiers.",savedClip:"Sauvegarde copiée dans le presse-papiers. Colle-la dans une note ou un e-mail.",paste:"Colle ta sauvegarde (texte) :",restored:"Progression restaurée. Les résultats plus récents de cet appareil sont gardés.",bad:"Sauvegarde non restaurée : fichier endommagé ou pas une sauvegarde Leren.be. Ta progression n’a pas changé.",
   warn:"Ta progression est enregistrée seulement dans ce navigateur. Vider le cache ne l’efface pas, mais « supprimer les données du site » oui. Fais une sauvegarde ou connecte-toi pour une copie dans le cloud.",save:"💾 Sauvegarder",login:"Se connecter"},
- ar:{saved:f=>"تم حفظ النسخة الاحتياطية: "+f+". وهي أيضاً في الحافظة.",savedClip:"تم نسخ النسخة الاحتياطية إلى الحافظة. الصقها في ملاحظة أو رسالة لنفسك.",paste:"الصق نسختك الاحتياطية (نص):",restored:"تمت استعادة التقدّم. احتفظنا بالنتائج الأحدث على هذا الجهاز.",bad:"هذه ليست نسخة احتياطية من Leren.be.",
+ ar:{saved:f=>"تم حفظ النسخة الاحتياطية: "+f+". وهي أيضاً في الحافظة.",savedClip:"تم نسخ النسخة الاحتياطية إلى الحافظة. الصقها في ملاحظة أو رسالة لنفسك.",paste:"الصق نسختك الاحتياطية (نص):",restored:"تمت استعادة التقدّم. احتفظنا بالنتائج الأحدث على هذا الجهاز.",bad:"لم تتم الاستعادة: الملف تالف أو ليس نسخة من Leren.be. لم يتغيّر تقدّمك.",
   warn:"تقدّمك محفوظ في هذا المتصفح فقط. مسح ذاكرة التخزين المؤقت لا يحذفه، لكن «حذف بيانات الموقع» يحذفه. احفظ نسخة احتياطية أو سجّل الدخول لنسخة سحابية.",save:"💾 احفظ نسخة",login:"تسجيل الدخول"}};
 const backupU=()=>BACKUP_UI[uiLang]||BACKUP_UI.uk;
-function backupData(){saveStore();return {app:"leren.be",v:3,ts:Date.now(),keys:syncSnapshot()}}
-function backupExport(){
- const txt=JSON.stringify(backupData()),name="leren-progress-"+dayStr()+".json",bu=backupU();
+// Export (v4): every synced key + a SHA-256 digest, so a damaged or edited file is recognised before anything changes.
+async function backupData(){saveStore();return LerenMerge.buildBackup(syncSnapshot())}
+async function backupExport(){
+ const txt=JSON.stringify(await backupData()),name="leren-progress-"+dayStr()+".json",bu=backupU();
  try{const url=URL.createObjectURL(new Blob([txt],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}catch(e){}
  const done=msg=>{try{localStorage.setItem("leren_backup_at",String(Date.now()))}catch(e){}toast(msg,true);if(view==="progress")renderProgressView()};
  try{navigator.clipboard.writeText(txt).then(()=>done(bu.saved(name))).catch(()=>done(bu.saved(name)))}catch(e){done(bu.saved(name))}
  return txt;
 }
-// Restore: a v3 backup is merged key by key; an old v2 backup (words, points, route, rewards) goes the old way.
-function backupRestore(txt){
- let data;try{data=JSON.parse(txt)}catch(e){return false}
- if(data&&data.app==="leren.be"&&data.v===3&&data.keys&&typeof data.keys==="object"&&!Array.isArray(data.keys)){
-  const theirs={};Object.entries(data.keys).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")theirs[k]=v});
-  const merged=syncMerge({},syncSnapshot(),theirs);Object.entries(merged).forEach(([k,v])=>{try{if(localStorage.getItem(k)!==v)localStorage.setItem(k,v)}catch(e){}});return true;
- }
- if(data&&data.store&&typeof data.store==="object"&&!Array.isArray(data.store)&&Object.values(data.store).every(v=>v&&typeof v==="object"&&!Array.isArray(v))&&
-    (data.score===undefined||typeof data.score==="number"&&Number.isFinite(data.score)&&data.score>=0)){
-  if(data.v===2&&data.companion&&typeof data.companion==="object")for(const k of ["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"]){const value=data.companion[k];if(value&&typeof value==="object"&&!Array.isArray(value))lsSet(k,value)}
-  store=data.store;if(typeof data.score==="number")score=data.score;saveStore();return true;
- }
- return false;
+// Restore any backup (v4, v3, v2): read and check the whole file first (LerenMerge.readBackup), then merge it with the
+// progress on this device by the same rules as the account sync (the better result of each item wins, counters never
+// add twice), then write all values or none. Returns {ok, error}.
+async function backupRestore(txt){
+ const r=await LerenMerge.readBackup(txt,syncable);if(!r.ok)return r;
+ const local=syncSnapshot(),merged=syncMerge({},local,{...local,...r.keys}),writes={};
+ Object.entries(merged).forEach(([k,v])=>{if(local[k]!==v)writes[k]=v});
+ if(!LerenMerge.applyAll(localStorage,writes))return {ok:false,error:"storage"};
+ queueProgressSync();return {ok:true,changed:Object.keys(writes).length};
 }
-function backupDone(ok){const bu=backupU();if(!ok){alert(bu.bad);return}queueProgressSync();alert(bu.restored);location.reload()}
+function backupDone(r){const bu=backupU();if(!r||!r.ok){alert(bu.bad+(r&&r.error?" ("+r.error+")":""));return}alert(bu.restored);location.reload()}
 // Pick a backup file; closing the picker without a file offers pasting the text (older backups were clipboard text).
 function backupImportPick(){
  const inp=document.createElement("input");inp.type="file";inp.accept=".json,.txt,application/json,text/plain";let used=false;
- const paste=()=>{if(used)return;used=true;const txt=prompt(backupU().paste);if(txt)backupDone(backupRestore(txt))};
- inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f){paste();return}used=true;f.text().then(t=>backupDone(backupRestore(t))).catch(()=>backupDone(false))};
+ const paste=()=>{if(used)return;used=true;const txt=prompt(backupU().paste);if(txt)backupRestore(txt).then(backupDone)};
+ inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f){paste();return}used=true;f.text().then(backupRestore).then(backupDone).catch(()=>backupDone(null))};
  inp.addEventListener("cancel",paste);inp.click();
 }
 // Ask the browser to keep this site's storage under storage pressure (no effect on a manual "delete site data").
@@ -3194,7 +3204,7 @@ function recordDiphthongsResult(kind,correct,total){
  const previous=Math.max(stored,diphthongsSessionBest[kind]||0),gain=Math.max(0,correct-previous)*5;
  if(!gain)return 0;
  diphthongsSessionBest[kind]=correct;ledger[kind]=correct;lsSet("leren_diphthongs_xp_v2",ledger);
- addXP(gain);saveStore();updateStats();return gain;
+ addXP(gain,"dp:"+kind);saveStore();updateStats();return gain;
 }
 function renderDiphthongsProgress(container){
  const labels=({uk:["Дифтонги · мініурок","Батл слів","Впізнай звук","Перевір себе","Відкрити мініурок"],en:["Diphthongs · mini-lesson","Word battle","Identify the sound","Test yourself","Open mini-lesson"],fr:["Diphtongues · mini-leçon","Bataille de mots","Reconnais le son","Teste-toi","Ouvrir la mini-leçon"],ar:["الأصوات المزدوجة · درس مصغّر","تحدّي الكلمات","تعرّف على الصوت","اختبر نفسك","افتح الدرس"]})[uiLang]||["Diphthongs","Battle","Sounds","Quiz","Open"];
@@ -3394,12 +3404,12 @@ function renderStudyControls(card){
  const row=el("div","row study-row");
  const hear=el("button","btn listen",u.repeat||u.listen);hear.type="button";hear.onclick=()=>say(spoken(),hear);row.appendChild(hear);
  const known=el("button","btn primary",u.markKnown);known.type="button";known.onclick=()=>{
-  const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;
+  const s=stateFor(item.id);s.seen++;s.due=Date.now()+864e5;s.t=Date.now();
   saveStore();updateStats();
   studyNext();
  };row.appendChild(known);
  const again=el("button","btn",u.markAgain);again.type="button";again.onclick=()=>{
-  const s=stateFor(item.id);s.seen++;s.wrong++;s.streak=0;s.known=false;s.due=Date.now();
+  const s=stateFor(item.id);s.seen++;s.wrong++;s.streak=0;s.known=false;s.due=Date.now();s.t=Date.now();
   saveStore();updateStats();studyNext();
  };row.appendChild(again);card.appendChild(row);
 }
@@ -4239,7 +4249,7 @@ function endToets(){
     const un = lsGet("poly_unlocked",[]); if(!un.includes(test.unlocks)){ un.push(test.unlocks); lsSet("poly_unlocked", un); }
     unlockedNow = levelById(test.unlocks);
   }
-  addXP(gain); saveStore(); updateStats();
+  addXP(gain,test?"t:"+test.id:undefined); saveStore(); updateStats();
   if(unlockedNow) toast(pg.passedLT(unlockedNow.name), true);
   end.appendChild(el("h2","", toetsRight + " / " + total));
   end.appendChild(el("p","", pct + "% · " + (passed ? (u.toetsPassed||"Склав!") : (u.toetsFailed||"Ще практика"))));
@@ -5561,7 +5571,7 @@ function weekState(){const w=lsGet("leren_week",{});return w.w===isoWeek()?w:{w:
 function gameDone(id,xp){
  if(xp>0)addXP(xp);
  const w=weekState();if(!w.played.includes(id))w.played.push(id);
- if(!w.done&&w.played.length>=5){w.done=true;addXP(100);toast(gU().weekDone,true)}
+ if(!w.done&&w.played.length>=5){w.done=true;addXP(100,"w:"+w.w);toast(gU().weekDone,true)}
  lsSet("leren_week",w);
  saveStore();updateStats();
 }
@@ -6784,9 +6794,23 @@ const ACCT_UI={
  ar:{label:"الحساب (اختياري)",out:"تقدّمك وإعداداتك على كل أجهزتك. ذاكرة الذكاء الاصطناعي تبقى على هذا الجهاز فقط. بدونه يعمل كل شيء كما كان.",signIn:"تسجيل الدخول عبر Google",synced:"تمت المزامنة",never:"لم تتم المزامنة بعد",emailIn:"تسجيل الدخول عبر البريد الإلكتروني",emailQ:"بريدك الإلكتروني:",emailSent:"أُرسل رابط تسجيل الدخول إلى {e}. افتحه على هذا الجهاز.",emailAgain:"أكّد البريد الإلكتروني الذي وصل إليه الرابط:",signOut:"تسجيل الخروج",del:"حذف الحساب",
   delQ:"حذف حسابك وكل البيانات السحابية؟ يبقى التقدّم على هذا الجهاز.",deleted:"تم حذف الحساب والبيانات السحابية.",err:"لم ينجح ذلك. تحقّق من الاتصال وحاول مرة أخرى.",
   keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب).",delLink:"لحذف حسابك، أكّد أنك أنت: أرسلنا رابطًا إلى {e}. افتحه على هذا الجهاز.",delCancel:"أُلغي الحذف. لم يُحذف شيء.",delAgain:"حُذفت بياناتك السحابية، لكن الحساب لم يُحذف بعد. اضغط «حذف الحساب» مرة أخرى.",delPending:"لم يكتمل الحذف: اضغط «حذف الحساب» مرة أخرى."}};
-const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
+const acctU=()=>({...ACCT_UI.en,...SYNC_UI.en,...(ACCT_UI[uiLang]||{}),...(SYNC_UI[uiLang]||{})});
+// Sync status words (shown under the account and on the progress screen).
+const SYNC_UI={
+ uk:{pending:"очікує синхронізації",error:"помилка синхронізації",why:{offline:"немає інтернету",network:"немає зв’язку з сервером",denied:"немає доступу — увійди ще раз",size:"прогрес завеликий для хмари — збережи резервну копію",busy:"сервер зайнятий",server:"помилка сервера",storage:"браузер не зміг зберегти дані"},retry:"спробуємо ще раз автоматично",
+  otherAcct:"На цьому пристрої є прогрес іншого акаунта. Об’єднати його з цим акаунтом?\n\nOK — об’єднати. Скасувати — показати тільки прогрес цього акаунта (копія прогресу пристрою збережеться)."},
+ en:{pending:"waiting to sync",error:"sync error",why:{offline:"no internet",network:"cannot reach the server",denied:"no access — sign in again",size:"progress is too large for the cloud — save a backup",busy:"the server is busy",server:"server error",storage:"the browser could not save data"},retry:"we will retry automatically",
+  otherAcct:"This device has progress from another account. Merge it into this account?\n\nOK — merge. Cancel — show only this account’s progress (a copy of the device’s progress is kept)."},
+ fr:{pending:"en attente de synchronisation",error:"erreur de synchronisation",why:{offline:"pas d’internet",network:"serveur injoignable",denied:"accès refusé — reconnecte-toi",size:"progression trop grande pour le cloud — fais une sauvegarde",busy:"serveur occupé",server:"erreur du serveur",storage:"le navigateur n’a pas pu enregistrer"},retry:"nouvel essai automatique",
+  otherAcct:"Cet appareil contient la progression d’un autre compte. La fusionner avec ce compte ?\n\nOK — fusionner. Annuler — afficher seulement ce compte (une copie de l’appareil est gardée)."},
+ ar:{pending:"بانتظار المزامنة",error:"خطأ في المزامنة",why:{offline:"لا يوجد إنترنت",network:"تعذّر الوصول إلى الخادم",denied:"لا صلاحية — سجّل الدخول مجدداً",size:"التقدّم أكبر من حدّ السحابة — احفظ نسخة احتياطية",busy:"الخادم مشغول",server:"خطأ في الخادم",storage:"تعذّر على المتصفح حفظ البيانات"},retry:"سنعيد المحاولة تلقائياً",
+  otherAcct:"على هذا الجهاز تقدّم لحساب آخر. هل تدمجه مع هذا الحساب؟\n\nموافق — دمج. إلغاء — عرض تقدّم هذا الحساب فقط (تُحفظ نسخة من تقدّم الجهاز)."}};
+// One line for the status: "synced 14:05", "waiting to sync" or "sync error: no internet — we will retry automatically".
+function syncLine(){const u=acctU(),st=syncStatus(),at=Number(lsGet("leren_sync_at",0));if(!st)return "";
+ if(st==="error")return u.error+": "+(u.why[acct.err]||acct.err)+(acct.err==="size"||acct.err==="denied"?"":" — "+u.retry);
+ if(st==="pending")return u.pending;return u.synced+(at?" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"")}
 // Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
-const SYNC_SKIP=new Set(["leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
+const SYNC_SKIP=new Set(["leren_device_id","leren_sync_uid","leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
  "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
@@ -6811,12 +6835,14 @@ const syncStr=v=>v===undefined?undefined:(syncObj(v)&&"__raw" in v&&Object.keys(
 function syncMerge(base,local,cloud){
  const out={};new Set([...Object.keys(local),...Object.keys(cloud)]).forEach(k=>{if(!syncable(k))return;
   const l=local[k],c=cloud[k],b=base[k];let v;
-  if(k==="leren_path_v1"&&l&&c){
-   const ll=syncParse(l),cc=syncParse(c),bb=syncParse(b)||{};
-   if(syncObj(ll)&&syncObj(cc))v=JSON.stringify({...cc,...ll,completed:syncMergeVal(bb.completed,ll.completed||{},cc.completed||{}),mistakes:syncMergeVal(bb.mistakes,ll.mistakes||[],cc.mistakes||[])});
-   else v=l;
-  }else if(l===c)v=l;else if(l===b)v=c;else if(c===b)v=l;else v=syncStr(syncMergeVal(syncParse(b),syncParse(l),syncParse(c)));
+  // Keys with learning results have their own rule (modules/sync/merge.js: per-device counters, record grants,
+  // newer answer per word, route per field…); the rest uses the generic three-way merge below.
+  const special=l!==undefined&&c!==undefined&&l!==c?LerenMerge.mergeKey(k,b,l,c):undefined;
+  if(special!==undefined)v=special;
+  else if(l===c)v=l;else if(l===b)v=c;else if(c===b)v=l;else v=syncStr(syncMergeVal(syncParse(b),syncParse(l),syncParse(c)));
   if(typeof v==="string")out[k]=v});
+ // Points: the total is the ledger's (it already holds every device's points once); poly_score follows it.
+ if(out.leren_xp_v2||out.poly_score){let x=null;try{x=JSON.parse(out.leren_xp_v2||"null")}catch(e){}x=LerenMerge.xpAbsorb(x,Number(out.poly_score)||0);out.leren_xp_v2=JSON.stringify(x);out.poly_score=String(LerenMerge.xpTotal(x))}
  return out;
 }
 function syncApply(o){if(!o||typeof o!=="object"||Array.isArray(o))throw new Error("Invalid cloud progress");Object.keys(syncSnapshot()).forEach(k=>{if(!(k in o))localStorage.removeItem(k)});Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")localStorage.setItem(k,v)})}
@@ -6835,36 +6861,71 @@ async function fsUserDoc(method,body){
 const syncPaused=()=>!acct.user||acct.deleting||lsGet("leren_del_pending",false);
 // Writes only if the cloud copy is still the one we last saw (Firestore precondition), so two devices can't
 // overwrite each other: a conflict makes us read the newer copy, merge and try again.
+// Firestore rules allow a blob below 900,000 characters (firestore.rules); a larger copy is not sent at all.
+const SYNC_MAX=899000;
 async function syncWrite(snap){
- const ts=Date.now(),q=acct.rev?"?currentDocument.updateTime="+encodeURIComponent(acct.rev):"?currentDocument.exists=false";
- const t=await acct.user.getIdToken();
- const r=await fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid+q,
-  {method:"PATCH",headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({fields:{blob:{stringValue:JSON.stringify(snap)},updated:{integerValue:String(ts)},v:{integerValue:"2"}}})});
- if(!r.ok)return r.status===400||r.status===409||r.status===412?"conflict":"error";
+ const ts=Date.now(),q=acct.rev?"?currentDocument.updateTime="+encodeURIComponent(acct.rev):"?currentDocument.exists=false",blob=JSON.stringify(snap);
+ if(blob.length>=SYNC_MAX)return syncFail("size");
+ let t,r;try{t=await acct.user.getIdToken();
+ r=await fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid+q,
+  {method:"PATCH",headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({fields:{blob:{stringValue:blob},updated:{integerValue:String(ts)},v:{integerValue:"2"}}})});
+ }catch(e){return syncFail(navigator.onLine===false?"offline":"network")}
+ // 409/412 (and 400 for a failed precondition): someone else wrote first → read, merge, write again.
+ if(r.status===409||r.status===412||r.status===400&&acct.rev)return "conflict";
+ if(!r.ok)return syncFail(r.status===401||r.status===403?"denied":r.status===413||r.status===400?"size":r.status===429?"busy":"server");
  const d=await r.json().catch(()=>({}));acct.rev=d.updateTime||"";
- lsSet("leren_sync_base",snap);acct.lastSnap=JSON.stringify(snap);lsSet("leren_sync_at",ts);acctRender();return "ok";
+ // Only now, with the server's answer, the copy counts as saved in the cloud.
+ lsSet("leren_sync_base",snap);acct.lastSnap=JSON.stringify(snap);lsSet("leren_sync_at",ts);lsSet("leren_sync_uid",acct.user.uid);syncOk();return "ok";
 }
+// Sync status: "synced" only after the server confirmed this exact copy; "pending" while local changes wait;
+// "error" with a reason after a failed attempt (retried automatically: 30 s, 2, 5, then every 10 min, and when back online).
+// Compared with sorted keys: the browser may list stored keys in a different order after a write.
+// Same content, whatever the order of keys (also inside each stored value).
+const syncDeep=v=>{let x=v;if(typeof v==="string"){try{x=JSON.parse(v)}catch(e){return JSON.stringify(v)}}if(Array.isArray(x))return "["+x.map(syncDeep).join(",")+"]";if(x&&typeof x==="object")return "{"+Object.keys(x).sort().map(k=>JSON.stringify(k)+":"+syncDeep(x[k])).join(",")+"}";return JSON.stringify(x)};
+const syncSame=(snapText,snap)=>{try{return !!snapText&&syncDeep(JSON.parse(snapText))===syncDeep(snap)}catch(e){return false}};
+// The base is stored, so the status survives a reload: it is the last copy the server confirmed (or the cloud copy just
+// merged in, if the write that followed has not been confirmed yet — then the status is "pending").
+function syncStatus(){if(!acct.user)return null;if(acct.err)return "error";const base=localStorage.getItem("leren_sync_base");return syncSame(base,syncSnapshot())?"synced":"pending"}
+function syncFail(reason){acct.err=reason;acct.fails=(acct.fails||0)+1;clearTimeout(acct.retry);
+ if(reason!=="size"&&reason!=="denied")acct.retry=setTimeout(()=>syncPush().catch(()=>{}),[30,120,300,600][Math.min(3,acct.fails-1)]*1000);
+ acctRender();if(view==="progress")renderRewards();return "error"}
+function syncOk(){acct.err="";acct.fails=0;clearTimeout(acct.retry);acctRender();if(view==="progress")renderRewards()}
+addEventListener("online",()=>{if(acct.user&&acct.err)syncPush().catch(()=>{})});
 function syncOnce(fn){ // one sync at a time; later calls wait for the running one
  const run=(acct.syncing||Promise.resolve()).catch(()=>{}).then(fn);acct.syncing=run.finally(()=>{if(acct.syncing===run)acct.syncing=null});return run;
 }
 function syncPush(){return syncOnce(async()=>{
- if(syncPaused())return;const base=lsGet("leren_sync_base",null);if(!base||!acct.rev)return syncPullNow();
- const snap=syncSnapshot(),str=JSON.stringify(snap);if(str===acct.lastSnap)return;
+ if(syncPaused())return;const base=lsGet("leren_sync_base",null);if(!base||!acct.rev||acct.err)return syncPullNow();
+ const snap=syncSnapshot();if(syncSame(acct.lastSnap,snap)){acctRender();return}
  if(await syncWrite(snap)==="conflict")return syncPullNow();
 })}
 function syncPull(){return syncOnce(syncPullNow)}
 async function syncPullNow(tries=0){
  if(syncPaused()||tries>3)return;
- const r=await fsUserDoc("GET");let cloud={},cloudKeys=0;
+ let r;try{r=await fsUserDoc("GET")}catch(e){syncFail(navigator.onLine===false?"offline":"network");return}
+ let cloud={},cloudKeys=0;
  if(r.status===404)acct.rev="";
- else{if(!r.ok)return;const d=await r.json();acct.rev=d.updateTime||"";
+ else{if(!r.ok){syncFail(r.status===401||r.status===403?"denied":r.status===429?"busy":"server");return}const d=await r.json();acct.rev=d.updateTime||"";
   try{const o=JSON.parse(d.fields.blob.stringValue);if(syncObj(o)){cloudKeys=Object.keys(o).length;Object.entries(o).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")cloud[k]=v})}}catch(e){}}
- const local=syncSnapshot(),merged=syncMerge(lsGet("leren_sync_base",{})||{},local,cloud),changedHere=!syncEq(merged,local);
+ // Another account's progress on this device is not merged into this account without asking (shared devices).
+ const prevUid=lsGet("leren_sync_uid",""),local=syncSnapshot();
+ if(prevUid&&prevUid!==acct.user.uid&&Object.keys(local).length&&!confirm(acctU().otherAcct)){lsSet("leren_sync_backup",{at:Date.now(),snap:local});
+  Object.keys(local).forEach(k=>localStorage.removeItem(k));Object.entries(cloud).forEach(([k,v])=>localStorage.setItem(k,v));lsSet("leren_sync_uid",acct.user.uid);lsSet("leren_sync_base",cloud);acct.lastSnap=JSON.stringify(cloud);location.reload();return}
+ let merged=syncMerge(lsGet("leren_sync_base",{})||{},local,cloud);
+ // A value with the same content as here keeps this device's text (no rewrite and no reload just for key order).
+ merged=Object.fromEntries(Object.entries(merged).map(([k,v])=>[k,k in local&&syncDeep(local[k])===syncDeep(v)?local[k]:v]));
+ const changedHere=syncDeep(merged)!==syncDeep(local);
  if(changedHere){lsSet("leren_sync_backup",{at:Date.now(),snap:local}); // one step back, if a merge ever goes wrong
-  Object.keys(local).forEach(k=>{if(!(k in merged))localStorage.removeItem(k)});Object.entries(merged).forEach(([k,v])=>{if(local[k]!==v)localStorage.setItem(k,v)})}
- if(!syncEq(merged,cloud)||cloudKeys!==Object.keys(cloud).length||r.status===404){ // also rewrites old copies that still hold device-only keys
-  const w=await syncWrite(merged);if(w==="conflict")return syncPullNow(tries+1);if(w!=="ok")return;
- }else{lsSet("leren_sync_base",merged);acct.lastSnap=JSON.stringify(merged);lsSet("leren_sync_at",Date.now());acctRender()}
+  // All or nothing: if the browser refuses one value, every value from before is put back.
+  const writes={};Object.entries(merged).forEach(([k,v])=>{if(local[k]!==v)writes[k]=v});
+  if(!LerenMerge.applyAll(localStorage,writes)){syncFail("storage");return}
+  Object.keys(local).forEach(k=>{if(!(k in merged))localStorage.removeItem(k)})}
+ // The cloud copy is now part of this device's data: it is the base of the next merge even if the write below fails,
+ // so its changes are never counted a second time.
+ lsSet("leren_sync_base",cloud);
+ if(syncDeep(merged)!==syncDeep(cloud)||cloudKeys!==Object.keys(cloud).length||r.status===404){ // also rewrites old copies that still hold device-only keys
+  const w=await syncWrite(merged);if(w==="conflict")return syncPullNow(tries+1);if(w!=="ok"){if(changedHere)location.reload();return}
+ }else{lsSet("leren_sync_base",merged);acct.lastSnap=JSON.stringify(merged);lsSet("leren_sync_at",Date.now());lsSet("leren_sync_uid",acct.user.uid);syncOk()}
  if(changedHere)location.reload();
 }
 async function acctSignIn(){
@@ -6921,7 +6982,7 @@ function acctRender(){
  const u=acctU(),lab=$("acctLabel");if(!lab)return;lab.textContent=u.label;
  const btn=$("acctBtn"),del=$("acctDelBtn"),hint=$("acctHint"),user=acct.user;
  if(user){const at=Number(lsGet("leren_sync_at",0));
-  hint.textContent=(user.email||user.displayName||"")+" · "+(lsGet("leren_del_pending",false)?u.delPending:at?u.synced+" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):u.never);
+  hint.textContent=(user.email||user.displayName||"")+" · "+(lsGet("leren_del_pending",false)?u.delPending:at||acct.err?syncLine():u.never);hint.dataset.sync=syncStatus()||"";
   btn.textContent=u.signOut;btn.onclick=acctSignOut;del.hidden=false;del.textContent=u.del;del.onclick=acctDelete;
  }else{hint.textContent=u.out;btn.textContent=u.signIn;btn.onclick=acctSignIn;del.hidden=false;del.textContent=u.emailIn;del.onclick=acctEmailIn}
  if(window.LerenDesktop)LerenDesktop.refresh();
@@ -6969,7 +7030,7 @@ function recordPathResult(id,correct,total){
  let best=lsGet("leren_path_rewards_v1",{});if(!best||typeof best!=="object"||Array.isArray(best))best={};
  const old=best[id],previous=Math.max(Number.isInteger(old)&&old>=0&&old<=total?old:0,pathSessionRewards[id]||0);
  const gain=Math.max(0,correct-previous)*5;if(!gain){rewardCheck(true);queueProgressSync();return 0}
- pathSessionRewards[id]=correct;best[id]=correct;lsSet("leren_path_rewards_v1",best);addXP(gain);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
+ pathSessionRewards[id]=correct;best[id]=correct;lsSet("leren_path_rewards_v1",best);addXP(gain,"p:"+id);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
 }
 
 function start(){
@@ -6978,7 +7039,7 @@ function start(){
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
  const nav=$("modeButtons"),head=document.querySelector("main > header");if(nav&&head){head.after(nav);nav.setAttribute("role","navigation")}
- rewardCheck();askPersist();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
+ rewardCheck();askPersist();goalCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
  // Desktop header (≥1024px): reminders bell and account. Language stays in Settings.
  if(window.LerenDesktop){const focusRow=(row,ctl)=>setTimeout(()=>{$(row)?.scrollIntoView({block:"center"});$(ctl)?.focus({preventScroll:true})},150);
   LerenDesktop.mount({language:()=>uiLang,setLanguage:l=>changeUiLang(l),user:()=>acct.user,canRemind:()=>{const r=$("remindRow");return !!r&&!r.hidden},
@@ -7000,8 +7061,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="174";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Застосунок тепер бачить, що вдається, а що варто повторити.", "items": ["Розумне повторення: слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу. Раз на день маршрут дає коротку розминку перед уроком.", "Прогрес за навичками в «Прогресі»: читання, аудіювання, письмо й говоріння — окремо для A1.1 і A1.2.", "Щоденна мета в хвилинах (5–30, спочатку 10). Рахуємо лише час у вправах.", "Серія днів і нові нагороди: 3, 14 і 30 днів, 50 і 100 слів, 5 тем, перший іспит, курс A1.1 і A1.2. Пропущений день нічого не забирає.", "Пітер радить, що повторити, і одразу відкриває потрібну вправу.", "Повна резервна копія прогресу файлом: тести, іспити, серія й навички. Відновлення не стирає новіших результатів."], "hint": "Відкрий «Прогрес», щоб побачити навички й поради Пітера.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The app now sees what goes well and what needs review.", "items": ["Smart review: a word comes back after 1, 3, 7, 14 and 30 days, and right away after a mistake. Once a day the route starts with a short warm-up.", "Progress by skill in Progress: reading, listening, writing and speaking — separately for A1.1 and A1.2.", "A daily goal in minutes (5–30, 10 to start). Only time in exercises counts.", "Streak and new rewards: 3, 14 and 30 days, 50 and 100 words, 5 topics, first exam, course A1.1 and A1.2. A missed day takes nothing away.", "Peter suggests what to review and opens the right exercise.", "A full progress backup as a file: tests, exams, streak and skills. Restoring never erases newer results."], "hint": "Open Progress to see your skills and Peter’s advice.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "L’application voit maintenant ce qui va bien et ce qu’il faut réviser.", "items": ["Révision intelligente : un mot revient après 1, 3, 7, 14 et 30 jours, et tout de suite après une erreur. Une fois par jour, le parcours commence par un court échauffement.", "Progrès par compétence dans Progrès : lecture, écoute, écrit et oral — séparément pour A1.1 et A1.2.", "Un objectif du jour en minutes (5 à 30, 10 au départ). Seul le temps dans les exercices compte.", "Série et nouvelles récompenses : 3, 14 et 30 jours, 50 et 100 mots, 5 thèmes, premier examen, cours A1.1 et A1.2. Un jour manqué n’enlève rien.", "Peter te conseille quoi réviser et ouvre le bon exercice.", "Une sauvegarde complète en fichier : tests, examens, série et compétences. La restauration n’efface jamais les résultats plus récents."], "hint": "Ouvre Progrès pour voir tes compétences et les conseils de Peter.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "التطبيق يرى الآن ما ينجح وما يحتاج إلى مراجعة.", "items": ["مراجعة ذكية: تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وفوراً بعد الخطأ. مرة في اليوم يبدأ المسار بتمرين قصير.", "التقدّم حسب المهارة في «التقدّم»: القراءة والاستماع والكتابة والتحدث، لكل من A1.1 وA1.2 على حدة.", "هدف يومي بالدقائق (من 5 إلى 30، و10 في البداية). نحسب فقط الوقت في التمارين.", "السلسلة ومكافآت جديدة: 3 و14 و30 يوماً، 50 و100 كلمة، 5 مواضيع، أول امتحان، دورة A1.1 وA1.2. اليوم الفائت لا يأخذ شيئاً.", "بيتر ينصحك بما تراجعه ويفتح التمرين المناسب مباشرة.", "نسخة احتياطية كاملة للتقدّم كملف: الاختبارات والامتحانات والسلسلة والمهارات. الاستعادة لا تمحو النتائج الأحدث."], "hint": "افتح «التقدّم» لترى مهاراتك ونصائح بيتر.", "ok": "فهمت"}};
+const RELEASE_VERSION="175";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Прогрес надійніше зберігається між телефоном і комп’ютером.", "items": ["Навчання на двох пристроях одночасно: вправи, хвилини й бали з обох пристроїв додаються без подвоєння.", "Нагорода за той самий рекорд (урок, тест, іспит) зараховується один раз, навіть якщо його побито на двох пристроях.", "Статус синхронізації: «синхронізовано» лише після підтвердження сервера, інакше — «очікує синхронізації» або «помилка» з причиною.", "Резервна копія з контрольною сумою: пошкоджений файл не змінює прогрес; старі копії більше не стирають новіших результатів."], "hint": "Статус синхронізації видно в налаштуваннях акаунта й на екрані «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Progress is kept more safely between your phone and computer.", "items": ["Studying on two devices at once: exercises, minutes and points from both devices add up without doubling.", "A reward for the same record (lesson, test, exam) counts once, even if you beat it on two devices.", "Sync status: “synced” only after the server confirms; otherwise “waiting to sync” or “sync error” with the reason.", "Backups carry a checksum: a damaged file changes nothing; old backups no longer erase newer results."], "hint": "The sync status is shown under your account and on the Progress screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "La progression est mieux protégée entre téléphone et ordinateur.", "items": ["Apprendre sur deux appareils en même temps : exercices, minutes et points des deux appareils s’additionnent sans doublons.", "La récompense d’un même record (leçon, test, examen) compte une seule fois, même battu sur deux appareils.", "État de la synchronisation : « synchronisé » seulement après confirmation du serveur, sinon « en attente » ou « erreur » avec la raison.", "Sauvegardes avec somme de contrôle : un fichier endommagé ne change rien ; les anciennes sauvegardes n’effacent plus les résultats récents."], "hint": "L’état de la synchronisation s’affiche sous ton compte et dans Progrès.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "تقدّمك محفوظ بأمان أكبر بين الهاتف والحاسوب.", "items": ["التعلّم على جهازين في الوقت نفسه: التمارين والدقائق والنقاط من الجهازين تُجمع دون تكرار.", "مكافأة الرقم القياسي نفسه (درس، اختبار، امتحان) تُحسب مرة واحدة حتى لو حققته على جهازين.", "حالة المزامنة: «تمت المزامنة» فقط بعد تأكيد الخادم، وإلا «بانتظار المزامنة» أو «خطأ» مع السبب.", "النسخ الاحتياطية بمجموع تحقق: الملف التالف لا يغيّر شيئاً، والنسخ القديمة لم تعد تمحو النتائج الأحدث."], "hint": "تظهر حالة المزامنة تحت حسابك وفي شاشة «التقدّم».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -7202,7 +7263,7 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam-core.js?v=174" defer></script>
+<script src="./modules/exam/exam-core.js?v=175" defer></script>
 <script src="./modules/exam/exam11.js?v=173" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=173" defer></script>
