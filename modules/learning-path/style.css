@@ -124,3 +124,13 @@
 .lp-done{display:grid;gap:4px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--ok-soft,#e6f6ec);color:var(--ink)}
 .lp-done strong{font-size:18px;color:var(--ok-deep,#1d7a45)}.lp-goal-note{font-size:14px;color:var(--ink-2)}
 :root[data-theme="dark"] .lp-done strong{color:var(--ok)}
+/* Listening step: picture (72–80px) and the yellow "Listen" button in one row; counter and task on one line */
+.lp-listen-head{margin:6px 0 10px}.lp-listen-head strong{color:var(--ink)}
+.lp-listen-row{display:flex;align-items:center;gap:12px;margin:8px 0 12px;padding:12px 14px;border:2px solid var(--line);border-radius:18px;background:var(--surface)}
+.lp-exercise .lp-listen-row .lp-word-art.lp-listen-pic{flex:none;display:grid;width:76px;height:76px;margin:0;border-radius:14px}
+.lp-listen-row .lp-word-art.lp-listen-pic .lp-word-art-cue{display:none}
+.lp-listen-row .fh-sound{flex:1;min-width:0;white-space:nowrap;padding:8px 12px;min-height:52px;margin:0;border:0;border-radius:14px;background:var(--be-yellow,#FDDA24);color:#2A1D12;box-shadow:0 4px 0 var(--be-yellow-deep,#C9A400);font-size:16px;font-weight:900}
+.lp-listen-row .fh-sound:active{transform:translateY(4px);box-shadow:none}
+.lp-exercise .lp-listen-row~.lp-options{margin:10px 0}
+@media(max-width:620px){.lp-exercise .lp-listen-row~.lp-options .lp-button{min-height:54px}}
+@media(max-width:360px){.lp-listen-row{gap:10px;padding:10px}.lp-exercise .lp-listen-row .lp-word-art.lp-listen-pic{width:64px;height:64px}.lp-listen-row .fh-sound{font-size:15px}}
