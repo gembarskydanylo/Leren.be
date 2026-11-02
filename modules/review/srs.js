@@ -9,7 +9,7 @@
  function update(s,ok,now=Date.now()){
   if(ok){s.correct++;s.streak++;s.due=now+interval(s.streak)*DAY}
   else{s.wrong++;s.streak=0;s.due=now}
-  s.known=s.streak>=2;return s;
+  s.known=s.streak>=2;s.t=now;return s; // t: time of the answer, the newer answer decides the schedule when devices merge
  }
  // Higher = review sooner: words answered wrong more often, then words that waited longest past their date.
  const weight=(s,now=Date.now())=>(s.wrong-s.correct/2)*10+Math.min(30,Math.max(0,(now-s.due)/DAY));

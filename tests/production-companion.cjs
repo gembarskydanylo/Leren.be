@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 // Load the real merge functions, with the production key policy replaced only for this isolated fixture.
-const x=vm.createContext({syncable:()=>true});vm.runInContext(script.slice(script.indexOf('const syncEq='),script.indexOf('function syncApply(')),x);
+const x=vm.createContext({syncable:()=>true});vm.runInContext(fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+script.slice(script.indexOf('const syncEq='),script.indexOf('function syncApply(')),x);
 const route=(completed,session)=>JSON.stringify({version:1,started:true,completed,mistakes:[],session});
 const localSession={kind:'lesson',lesson:'comm:hallo:0',phase:1,index:1,ids:['hello'],answers:[false]};
 const cloudSession={...localSession,phase:2,index:0,answers:[]};

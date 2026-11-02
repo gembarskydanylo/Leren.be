@@ -22,10 +22,10 @@ async function simulate(fail){
   return;
  }
  assert.equal(error,null);assert.equal(waiting,1);
- assert(opened.every(name=>name==='leren-be-v174'));
+ assert(opened.every(name=>name==='leren-be-v175'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));
- if(fail==='optional')assert(added.length<1006,'some optional files should fail');
- else assert.equal(added.length,1006);
+ if(fail==='optional')assert(added.length<1007,'some optional files should fail');
+ else assert.equal(added.length,1007);
  let activate;handlers.activate({waitUntil:p=>activate=p});await activate;
  assert.deepEqual(deleted,['leren-be-v167']);assert.equal(claimed,1);
 }

@@ -20,13 +20,13 @@ const BASE={
  uk:{backLesson:"← До уроку"},
  en:{backLesson:"← Back to the lesson"},
  fr:{back:"← Examen",toets:"← Tests",backLesson:"← Retour à la leçon",q:"Question",of:"sur",next:"Suivant",check:"Vérifier",right:"Correct !",wrong:"Pas tout à fait. La bonne réponse :",
-  listen:"▶ Écouter",again:"🔁 Encore",showText:"Afficher le texte",hideText:"Masquer le texte",readFirst:"Lis d’abord la question, puis écoute.",
+  listen:"🎧 Écouter",again:"🔁 Encore",showText:"Afficher le texte",hideText:"Masquer le texte",readFirst:"Lis d’abord la question, puis écoute.",
   done:"Terminé !",score:(a,b)=>a+" sur "+b+" correct",repeat:"À revoir :",restart:"Recommencer",best:"Meilleur",order:"Touche les mots dans l’ordre",clear:"Effacer",
   wTask:"Consigne",wWrite:"Écris ici…",wCheck:"Vérifier mon texte",wModel:"Voir le modèle",wHideModel:"Masquer le modèle",wTips:"Liste de contrôle :",wSaved:"Ton brouillon est enregistré sur cet appareil.",
   sAsk:"🔊 Question",sSpeak:"🎤 Répondre",sShow:"Voir la réponse",sHeard:"Tu as dit :",sModel:"Modèle :",sOk:"✓ Je sais",sRe:"↺ M’entraîner encore",sTopic:"Thème",sDone:(a,b)=>a+" questions sur "+b+" maîtrisées",
   ai:"🤖 Coach IA",wAi:"🤖 Vérifier avec Peter",wAiEmpty:"Écris d’abord ton texte.",timer:"Temps"},
- ar:{back:"← الامتحان",toets:"← الاختبارات",backLesson:"← العودة إلى الدرس",q:"السؤال",of:"من",next:"التالي",check:"تحقق",right:"صحيح!",wrong:"ليس تماماً. الإجابة الصحيحة:",
-  listen:"▶ استمع",again:"🔁 مرة أخرى",showText:"أظهر النص",hideText:"أخفِ النص",readFirst:"اقرأ السؤال أولاً، ثم استمع.",
+ ar:{back:"→ الامتحان",toets:"→ الاختبارات",backLesson:"→ العودة إلى الدرس",q:"السؤال",of:"من",next:"التالي",check:"تحقق",right:"صحيح!",wrong:"ليس تماماً. الإجابة الصحيحة:",
+  listen:"🎧 استمع",again:"🔁 مرة أخرى",showText:"أظهر النص",hideText:"أخفِ النص",readFirst:"اقرأ السؤال أولاً، ثم استمع.",
   done:"انتهيت!",score:(a,b)=>a+" من "+b+" صحيحة",repeat:"للمراجعة:",restart:"أعد المحاولة",best:"الأفضل",order:"اضغط على الكلمات بالترتيب",clear:"امسح",
   wTask:"المهمة",wWrite:"اكتب هنا…",wCheck:"تحقق من نصي",wModel:"أظهر النموذج",wHideModel:"أخفِ النموذج",wTips:"قائمة التحقق:",wSaved:"تُحفظ مسودتك على هذا الجهاز.",
   sAsk:"🔊 السؤال",sSpeak:"🎤 أجب",sShow:"أظهر الجواب",sHeard:"قلتَ:",sModel:"النموذج:",sOk:"✓ أستطيع",sRe:"↺ أتدرب أكثر",sTopic:"الموضوع",sDone:(a,b)=>a+" من "+b+" أسئلة متقنة",
@@ -212,7 +212,7 @@ function end(){
  const u=U(),s=QZ,n=s.items.length,pct=Math.round(s.right/n*100),title=u.parts[s.part][0]+" "+u.parts[s.part][1];
  const c=head(title,u.done);bar(1);
  qzClear(s.part);const prev=(st().best||{})[s.part];setBest(s.part,pct);
- const xp=Math.max(0,s.right-Math.round((prev||0)/100*n))*5;if(xp)addXP(xp);
+ const xp=Math.max(0,s.right-Math.round((prev||0)/100*n))*5;if(xp)addXP(xp,"x:"+KEY+":"+s.part); // a record grant: counted once on all devices
  const box=el("div","ex-end");box.append(el("div","ex-big",pct>=70?"🏆":"💪"),el("h2","",pct+"%"),el("p","ex-score",u.score(s.right,n)+(xp?" · +"+xp+" ⭐":"")));
  if(s.part==="proef"){const m=Math.round((Date.now()-s.t0)/60000);box.appendChild(el("p","ex-hint",u.timer+": "+m+" min"))}
  if(s.miss.length){box.appendChild(el("h3","",u.repeat));const ul=el("ul","ex-miss");s.miss.forEach(it=>{const li=el("li","");li.append(el("span","",(it.gap||it.q||u.order)+" → "));li.appendChild(nl(it.kind==="order"?it.a:it.ok));ul.appendChild(li)});box.appendChild(ul)}

@@ -5,10 +5,10 @@
 "use strict";
 const T={
  uk:{title:"🎓 Іспит 1.1 · deel 8 → 11",sub:"Підготовка точно за листком вчителя: читання, слухання, письмо, говоріння, слова й граматика.",
-  when:"Чт 29.10 — Lezen · Schrijven · Luisteren\nПт 30.10 — Spreken",back:"← Іспит",toets:"← Toets",
+  when:"Чт 29.10 — Lezen · Schrijven · Luisteren\nПт 30.10 — Spreken",back:"← Іспит",toets:"← Тести",
   parts:{lezen:["📖","Lezen","Запрошення, чат, інформація на ліках"],luisteren:["🎧","Luisteren","Запрошення й діалог у лікаря"],schrijven:["✍️","Schrijven","3 листи: мій день, відповідь на запрошення, мої страви"],spreken:["🗣️","Spreken","6 тем: питання вчителя + твоя відповідь"],woorden:["📚","Woordenschat","Усі слова розділів 8–11 (25 випадкових за раз)"],grammatica:["🧩","Grammatica","Inversie, niet/geen, omdat, moeten, meer/minder"],meervoud:["🔢","Meervoud","Множина: +en, +s, ’s, raam → ramen (з уроку 26.10)"],omdat:["❓","Waarom? Omdat …","Відповідай «Omdat …» — дієслово в кінці (з уроку 26.10)"],proef:["🏁","Proefexamen","Великий пробний тест: половина всього"]},
   q:"Питання",of:"з",next:"Далі",check:"Перевірити",right:"Правильно!",wrong:"Неправильно. Правильна відповідь:",
-  listen:"▶ Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
+  listen:"🎧 Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
   done:"Готово!",score:(a,b)=>a+" з "+b+" правильно",repeat:"Повтори:",restart:"Пройти ще раз",best:"Найкраще",
   order:"Натискай слова по порядку",clear:"Очистити",
   wTask:"Завдання",wWrite:"Напиши лист тут…",wCheck:"Перевірити лист",wModel:"Показати зразок",wHideModel:"Сховати зразок",wTips:"Перевірка:",wSaved:"Чернетка зберігається на цьому пристрої.",
@@ -19,7 +19,7 @@ const T={
   when:"Thu 29.10 — Reading · Writing · Listening\nFri 30.10 — Speaking",back:"← Exam",toets:"← Tests",
   parts:{lezen:["📖","Lezen","Invitation, chat, medicine label"],luisteren:["🎧","Luisteren","Invitation and doctor dialogue"],schrijven:["✍️","Schrijven","3 e-mails: my day, reply to an invitation, my meals"],spreken:["🗣️","Spreken","6 topics: teacher's questions + your answer"],woorden:["📚","Woordenschat","Words of chapters 8–11"],grammatica:["🧩","Grammatica","Inversion, niet/geen, omdat, moeten, meer/minder"],meervoud:["🔢","Meervoud","Plurals: +en, +s, ’s, raam → ramen"],omdat:["❓","Waarom? Omdat …","Answer with «Omdat …» — verb at the end"],proef:["🏁","Proefexamen","Big mock test: half of everything"]},
   q:"Question",of:"of",next:"Next",check:"Check",right:"Correct!",wrong:"Not quite. The right answer:",
-  listen:"▶ Listen",again:"🔁 Again",showText:"Show text",hideText:"Hide text",readFirst:"Read the question first, then listen.",
+  listen:"🎧 Listen",again:"🔁 Again",showText:"Show text",hideText:"Hide text",readFirst:"Read the question first, then listen.",
   done:"Done!",score:(a,b)=>a+" of "+b+" correct",repeat:"Review:",restart:"Try again",best:"Best",
   order:"Tap the words in order",clear:"Clear",
   wTask:"Task",wWrite:"Write your e-mail here…",wCheck:"Check my e-mail",wModel:"Show model",wHideModel:"Hide model",wTips:"Checklist:",wSaved:"Your draft is saved on this device.",

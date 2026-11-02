@@ -3,7 +3,7 @@
 // Run: node tests/sync-v174.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-const c=vm.createContext({});vm.runInContext(script.slice(script.indexOf('const SYNC_SKIP='),script.indexOf('function syncApply('))+'\nglobalThis.S={syncable,syncMerge};',c);const x=c.S;
+const c=vm.createContext({});vm.runInContext(fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+script.slice(script.indexOf('const SYNC_SKIP='),script.indexOf('function syncApply('))+'\nglobalThis.S={syncable,syncMerge};',c);const x=c.S;
 const J=JSON.stringify,P=s=>JSON.parse(s);
 // Last agreed copy (base), then each device studied on its own.
 const base={leren_goal_min:'10',poly_streak:J({n:3,last:'2026-10-31',best:3}),leren_minutes_v1:J({days:{'2026-10-31':700}}),

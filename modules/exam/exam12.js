@@ -4,10 +4,10 @@
 if(!window.LerenExam||!window.EXAM12_DATA)return;
 const T={
  uk:{title:"🎓 Фінальний іспит A1.2",sub:"Перевір усі 16 тем A1.2 як на іспиті NT2: читання, аудіювання, письмо, говоріння, слова й граматика.",
-  when:"Склади кожну частину щонайменше на 70%, потім пройди пробний іспит.",back:"← Іспит",toets:"← Toets",
+  when:"Склади кожну частину щонайменше на 70%, потім пройди пробний іспит.",back:"← Іспит",toets:"← Тести",
   parts:{lezen:["📖","Lezen","Оголошення, лист зі школи, вакансія, аптека, лист подруги"],luisteren:["🎧","Luisteren","Вокзал, лікар, дзвінок зі школи, магазин, сусідка"],schrijven:["✍️","Schrijven","11 повідомлень і 2 анкети"],spreken:["🗣️","Spreken","6 тем: питання + твоя відповідь"],woorden:["📚","Woordenschat","Слова всіх 16 тем A1.2 (25 випадкових за раз)"],grammatica:["🧩","Grammatica","Perfectum, was/had, порівняння, hem/haar, want/omdat, наказ, gaan + інфінітив"],proef:["🏁","Proefexamen","Пробний іспит: читання, аудіювання, слова й граматика"]},
   q:"Питання",of:"з",next:"Далі",check:"Перевірити",right:"Правильно!",wrong:"Неправильно. Правильна відповідь:",
-  listen:"▶ Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
+  listen:"🎧 Слухати",again:"🔁 Ще раз",showText:"Показати текст",hideText:"Сховати текст",readFirst:"Спершу прочитай питання, потім слухай.",
   done:"Готово!",score:(a,b)=>a+" з "+b+" правильно",repeat:"Повтори:",restart:"Пройти ще раз",best:"Найкраще",
   order:"Натискай слова по порядку",clear:"Очистити",
   wTask:"Завдання",wWrite:"Напиши тут…",wCheck:"Перевірити лист",wModel:"Показати зразок",wHideModel:"Сховати зразок",wTips:"Перевірка:",wSaved:"Чернетка зберігається на цьому пристрої.",
@@ -18,7 +18,7 @@ const T={
   when:"Pass every part with at least 70%, then take the mock exam.",back:"← Exam",toets:"← Tests",
   parts:{lezen:["📖","Lezen","Advert, school letter, job advert, pharmacy, e-mail"],luisteren:["🎧","Luisteren","Station, doctor, call from school, shop, neighbour"],schrijven:["✍️","Schrijven","11 messages and 2 forms"],spreken:["🗣️","Spreken","6 topics: questions + your answer"],woorden:["📚","Woordenschat","Words of all 16 A1.2 topics (25 at a time)"],grammatica:["🧩","Grammatica","Perfect tense, was/had, comparison, hem/haar, want/omdat, imperative, gaan + infinitive"],proef:["🏁","Proefexamen","Mock exam: reading, listening, words and grammar"]},
   q:"Question",of:"of",next:"Next",check:"Check",right:"Correct!",wrong:"Not quite. The right answer:",
-  listen:"▶ Listen",again:"🔁 Again",showText:"Show text",hideText:"Hide text",readFirst:"Read the question first, then listen.",
+  listen:"🎧 Listen",again:"🔁 Again",showText:"Show text",hideText:"Hide text",readFirst:"Read the question first, then listen.",
   done:"Done!",score:(a,b)=>a+" of "+b+" correct",repeat:"Review:",restart:"Try again",best:"Best",
   order:"Tap the words in order",clear:"Clear",
   wTask:"Task",wWrite:"Write here…",wCheck:"Check my e-mail",wModel:"Show model",wHideModel:"Hide model",wTips:"Checklist:",wSaved:"Your draft is saved on this device.",
