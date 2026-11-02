@@ -1262,7 +1262,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/word-builder/art.js?v=150"></script>
 <script src="./modules/emoji/cards.js?v=146"></script>
 <script src="./modules/emoji/variants.js?v=147"></script>
-<script src="./modules/emoji/renderer.js?v=142"></script>
+<script src="./modules/emoji/renderer.js?v=177"></script>
 <script src="./modules/word-builder/game.js?v=172"></script>
 <script src="./modules/learning-path/ui.js?v=178"></script>
 <script src="./modules/dialogues/translations.js?v=173"></script>
@@ -7172,7 +7172,10 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="176";
+const RELEASE_VERSION="177";
+// The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
+// saw those notes is not shown them again.
+const RELEASE_NOTES_VERSION="176";
 const RELEASE_UI={"uk": {"title": "Що нового в lerenbe.com", "intro": "Прогрес надійніше зберігається між телефоном і комп’ютером.", "items": ["Навчання на двох пристроях одночасно: вправи, хвилини й бали з обох пристроїв додаються без подвоєння.", "Нагорода за той самий рекорд (урок, тест, іспит) зараховується один раз, навіть якщо його побито на двох пристроях.", "Статус синхронізації: «синхронізовано» лише після підтвердження сервера, інакше — «очікує синхронізації» або «помилка» з причиною.", "Резервна копія з контрольною сумою: пошкоджений файл не змінює прогрес; старі копії більше не стирають новіших результатів.", "Компактніші вправи на телефоні: «Почуй» і «Перевір» без великих картинок, диктант без зайвої іконки, кнопки «назад» більші, слова не рвуться посередині.", "Краща доступність: картинки персонажів, тем та ігор мають описи для екранних читачів."], "hint": "Статус синхронізації видно в налаштуваннях акаунта й на екрані «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in lerenbe.com", "intro": "Progress is kept more safely between your phone and computer.", "items": ["Studying on two devices at once: exercises, minutes and points from both devices add up without doubling.", "A reward for the same record (lesson, test, exam) counts once, even if you beat it on two devices.", "Sync status: “synced” only after the server confirms; otherwise “waiting to sync” or “sync error” with the reason.", "Backups carry a checksum: a damaged file changes nothing; old backups no longer erase newer results.", "More compact exercises on phones: smaller pictures in Listen and Check, a tidier dictation, bigger back buttons, no words broken in the middle.", "Better accessibility: pictures of characters, topics and games have descriptions for screen readers."], "hint": "The sync status is shown under your account and on the Progress screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de lerenbe.com", "intro": "La progression est mieux protégée entre téléphone et ordinateur.", "items": ["Apprendre sur deux appareils en même temps : exercices, minutes et points des deux appareils s’additionnent sans doublons.", "La récompense d’un même record (leçon, test, examen) compte une seule fois, même battu sur deux appareils.", "État de la synchronisation : « synchronisé » seulement après confirmation du serveur, sinon « en attente » ou « erreur » avec la raison.", "Sauvegardes avec somme de contrôle : un fichier endommagé ne change rien ; les anciennes sauvegardes n’effacent plus les résultats récents.", "Exercices plus compacts sur téléphone : petites images dans Écoute et Vérifie, dictée plus claire, boutons retour plus grands, mots jamais coupés au milieu.", "Meilleure accessibilité : les images des personnages, thèmes et jeux ont des descriptions pour les lecteurs d’écran."], "hint": "L’état de la synchronisation s’affiche sous ton compte et dans Progrès.", "ok": "Compris"}, "ar": {"title": "ما الجديد في lerenbe.com", "intro": "تقدّمك محفوظ بأمان أكبر بين الهاتف والحاسوب.", "items": ["التعلّم على جهازين في الوقت نفسه: التمارين والدقائق والنقاط من الجهازين تُجمع دون تكرار.", "مكافأة الرقم القياسي نفسه (درس، اختبار، امتحان) تُحسب مرة واحدة حتى لو حققته على جهازين.", "حالة المزامنة: «تمت المزامنة» فقط بعد تأكيد الخادم، وإلا «بانتظار المزامنة» أو «خطأ» مع السبب.", "النسخ الاحتياطية بمجموع تحقق: الملف التالف لا يغيّر شيئاً، والنسخ القديمة لم تعد تمحو النتائج الأحدث.", "تمارين أكثر إحكاماً على الهاتف: صور أصغر في الاستماع والتحقق، إملاء أوضح، أزرار رجوع أكبر، ولا تنقسم الكلمات في المنتصف.", "إتاحة أفضل: صور الشخصيات والمواضيع والألعاب لها أوصاف لقارئات الشاشة."], "hint": "تظهر حالة المزامنة تحت حسابك وفي شاشة «التقدّم».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
@@ -7189,6 +7192,7 @@ function showReleaseNotes(){
 const releaseFirstVisit=!lsGet("leren_release_seen","")&&!Number(lsGet("poly_score",0))&&!lsGet("leren_tour_done",false);
 function announceRelease(){
  if(lsGet("leren_release_seen","")===RELEASE_VERSION)return;
+ if(Number(lsGet("leren_release_seen","0"))>=Number(RELEASE_NOTES_VERSION)){lsSet("leren_release_seen",RELEASE_VERSION);return}
  if(releaseFirstVisit){lsSet("leren_release_seen",RELEASE_VERSION);return}
  // Wait for onboarding and other dialogs rather than replacing an active dialog.
  const busy=[...document.querySelectorAll('[role="dialog"]')].some(p=>p.getClientRects().length>0);
