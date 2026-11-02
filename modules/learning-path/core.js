@@ -70,6 +70,8 @@
   function warmupIds(due=[]){return [...new Set([...courseMistakes(),...due.filter(id=>cardLevel.get(id)===state.course)])].slice(0,5)}
   function warmupDue(due=[],now){return state.started&&state.warmed!==today(now)&&warmupIds(due).length>=3}
   function beginWarmup(due=[],now){const ids=warmupIds(due);if(ids.length<3)return false;state.warmed=today(now);state.session={kind:'review',lesson:null,ids,phase:2,index:0,answers:[]};save();return true}
+  // Review of chosen words (Peter's advice): up to 5 cards of the current course.
+  function reviewWords(ids=[]){const own=[...new Set(ids)].filter(id=>cardLevel.get(id)===state.course).slice(0,5);if(!own.length)return false;state.started=true;state.session={kind:'review',lesson:null,ids:own,phase:2,index:0,answers:[]};save();return true}
   function current(){const s=state.session;return s&&s.index<s.ids.length?course.cards.get(s.ids[s.index]):null}
   function advance(id,correct){
    const s=state.session,w=current();if(!s||!w||w.id!==id||typeof correct!=='boolean')return false;
@@ -99,7 +101,7 @@
    home(){state.session=null;save()},cancelPlacement(){state.placement=null;save()},lesson:id=>byId.get(id),
    stats(chapter){const ls=chapter?course.chapters.find(c=>c.id===chapter).lessons:courseLessons(state.course);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
    courseStats(level){const ls=courseLessons(level);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
-   levels,setCourse,warmupIds,warmupDue,beginWarmup,get course(){return state.course},mistakes:courseMistakes,
+   levels,setCourse,warmupIds,warmupDue,beginWarmup,reviewWords,get course(){return state.course},mistakes:courseMistakes,
    mastered(id){const l=byId.get(id);return l&&state.completed[id]/l.ids.length>=.8}
   };
  }

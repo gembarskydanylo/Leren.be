@@ -12,7 +12,17 @@
   {id:'lesson-10',kind:'lessons',goal:10,hero:'peter',pose:'wow'},
   {id:'chapter-1',kind:'chapters',goal:1,hero:'dafna',pose:'wow'},
   {id:'perfect-1',kind:'perfect',goal:1,hero:'peter',pose:'wow'},
-  {id:'streak-7',kind:'streak',goal:7,hero:'dafna',pose:'wow'}];
+  {id:'streak-7',kind:'streak',goal:7,hero:'dafna',pose:'wow'},
+  // v174: concrete results. New badges go at the end: names in ui.js follow this order; old IDs never change.
+  {id:'streak-3',kind:'streak',goal:3,hero:'peter',pose:'wow'},
+  {id:'streak-14',kind:'streak',goal:14,hero:'peter',pose:'wow'},
+  {id:'streak-30',kind:'streak',goal:30,hero:'dafna',pose:'wow'},
+  {id:'words-50',kind:'words',goal:50,hero:'peter',pose:'wow'},
+  {id:'words-100',kind:'words',goal:100,hero:'dafna',pose:'wow'},
+  {id:'chapter-5',kind:'chapters',goal:5,hero:'peter',pose:'wow'},
+  {id:'exam-1',kind:'exams',goal:1,hero:'dafna',pose:'wow'},
+  {id:'course-a11',kind:'a11',goal:1,hero:'peter',pose:'wow'},
+  {id:'course-a12',kind:'a12',goal:1,hero:'dafna',pose:'wow'}];
  function clean(raw){const earned={};if(obj(raw?.earned))for(const b of badges){const v=raw.earned[b.id];if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T/.test(v)&&!Number.isNaN(Date.parse(v)))earned[b.id]=v}return {version:1,earned}}
  function create(storage){let persistent=true,state;try{state=clean(parse(storage.getItem(KEY)))}catch{state=clean({});persistent=false}
   function save(){try{storage.setItem(KEY,JSON.stringify(state))}catch{persistent=false}}

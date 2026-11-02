@@ -132,3 +132,8 @@
 .fh-write{margin:18px 0 8px;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
 .fh-write h3{margin:0 0 4px;font:900 17px/1.3 var(--font-body)}
 .fh-write .fh-write-task{display:block;width:100%;margin-top:8px;text-align:start}
+/* v174: Peter's advice under the next step on the home screen */
+.fh-advice{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px 12px;align-items:start;margin:14px 0;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink)}
+.fh-advice-face{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--surface-2)}
+.fh-advice-text strong{display:block;font-size:14px}.fh-advice-text p{margin:2px 0 0;font-size:14px;line-height:1.5}
+.fh-advice-btn{grid-column:2;justify-self:start;min-height:40px;padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-weight:700;cursor:pointer}

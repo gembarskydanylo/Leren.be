@@ -17,8 +17,9 @@
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <script src="./modules/review/srs.js?v=174"></script>
+<script src="./modules/insights/core.js?v=174"></script>
 <script src="./modules/learning-path/core.js?v=174"></script>
-<script src="./modules/rewards/core.js?v=102"></script>
+<script src="./modules/rewards/core.js?v=174"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
 <script src="./modules/scenes/map.js?v=165"></script>
 <script src="./modules/card-art/art.js?v=147"></script>
@@ -28,8 +29,8 @@
 <script src="./modules/card-art/places.js?v=135"></script>
 <script src="./modules/card-art/more-people.js?v=135"></script>
 <script src="./modules/card-art/more-things.js?v=135"></script>
-<script src="./modules/rewards/gifts.js?v=102"></script>
-<script src="./modules/rewards/ui.js?v=102"></script>
+<script src="./modules/rewards/gifts.js?v=174"></script>
+<script src="./modules/rewards/ui.js?v=174"></script>
 <script src="./modules/focused-home/ui.js?v=174"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=173"></script>
@@ -681,6 +682,17 @@ main[data-view="lesson"] #lerenbe-diphthongs-section{width:min(100%,760px);margi
 .search-item:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}
 .pv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .pv-tile{display:flex;flex-direction:column;gap:2px;padding:14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+/* v174 insights: Peter's advice and the four skills (progress screen) */
+.pv-insights{display:grid;gap:14px;margin:0 0 16px}
+.ins-peter,.ins-skills{padding:16px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink)}
+.ins-peter-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}.ins-peter-head h3,.ins-skills h3{margin:0}.ins-skills h3{margin-bottom:10px}
+.ins-face{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--surface-2);flex:none}
+.ins-tip{display:grid;gap:8px;padding:10px 0;border-top:1px solid var(--line)}.ins-tip:first-of-type{border-top:0}.ins-tip p{margin:0;line-height:1.5}.ins-tip .btn{justify-self:start}
+.ins-row{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--line)}.ins-row:first-of-type{border-top:0}
+.ins-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.ins-pct{font-weight:800;color:var(--ink)}
+.ins-meter{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}.ins-meter i{display:block;height:100%;background:var(--oranje);border-radius:99px}
+.ins-line{font-size:14px;color:var(--ink-2)}.ins-note{font-size:13px;color:var(--ink-2);margin:10px 0 0;line-height:1.45}
+.goal-noloss{font-size:13px}.rw-reason{color:var(--ink-2)}
 .pv-tile strong{font:800 26px var(--font-display);font-variant-numeric:tabular-nums}
 .pv-tile span{color:var(--ink-2);font-size:13px;font-weight:800}
 .pv-toets h3{margin:6px 4px 8px;font-size:16px}
@@ -2506,9 +2518,13 @@ let rewardTimer=0,rewardPending=[];
 function rewardFacts(){
  const path=lsGet("leren_path_v1",{}),done=path&&typeof path.completed==="object"?path.completed:{};
  const course=LerenLearningPath.catalog(DATA,LerenCurriculum),best=lsGet("poly_toetsbest",{});
+ const full=level=>{const ch=course.chapters.filter(c=>c.level===level&&c.lessons.length);return ch.length>0&&ch.every(c=>c.lessons.every(l=>Object.hasOwn(done||{},l.id)))};
  return {xp:score,lessons:Object.keys(done||{}).filter(id=>course.lessons.some(l=>l.id===id)).length,
   chapters:course.chapters.filter(c=>c.lessons.length&&c.lessons.every(l=>Object.hasOwn(done||{},l.id))).length,
-  perfect:TOETS.filter(t=>best[t.id]===t.questions.length&&t.questions.length>0).length,streak:streakState().n};
+  perfect:TOETS.filter(t=>best[t.id]===t.questions.length&&t.questions.length>0).length,streak:Math.max(streakState().n,streakState().best),
+  // Words learned (2 right answers in a row), final exams passed (mock exam 60% or more), whole courses completed.
+  words:learnedCount(),exams:["leren_exam11","leren_exam12"].filter(k=>{const e=lsGet(k,{});return !!(e&&e.best&&e.best.proef>=60)}).length,
+  a11:full("A1.1")?1:0,a12:full("A1.2")?1:0};
 }
 function rewardCheck(celebrate=false){
  const added=rewards.observe(rewardFacts());if(!celebrate||!added.length)return;
@@ -2581,26 +2597,96 @@ function rankInfo(){
  return {cur,next};
 }
 function dailyState(){const d=lsGet("poly_daily",{});return d.d===dayStr()?d:{d:dayStr(),xp:0,done:false}}
-function streakState(){const s=lsGet("poly_streak",{n:0,last:""});const live=s.last===dayStr()||s.last===yesterdayStr();return {n:live?s.n:0,last:s.last,today:s.last===dayStr()}}
-const dailyGoal=()=>{const g=Number(lsGet("poly_goal",50));return [30,50,100,200].includes(g)?g:50};
+// Streak of study days (poly_streak {n,last,best}): a day counts when the daily goal in minutes is reached; see modules/insights/core.js.
+function streakState(){return LerenInsights.streakView(lsGet("poly_streak",{}),dayStr())}
+// Daily goal in minutes of active study (leren_goal_min: 5/10/15/20/30, default 10). The old points goal (poly_goal) is no longer used.
+const goalMin=()=>LerenInsights.goal(lsGet("leren_goal_min",LerenInsights.GOAL_DEFAULT));
+const minutesToday=()=>LerenInsights.minutesOn(lsGet("leren_minutes_v1",{}),dayStr());
 // every XP gain goes through here
 function addXP(n){
  if(!Number.isFinite(n)||!(n>0))return;
  const before=rankInfo().cur.id;
  score+=n;
  try{localStorage.setItem("poly_score",String(score))}catch(e){}
- const d=dailyState();d.xp+=n;
- if(!d.done&&d.xp>=dailyGoal()){
-  d.done=true;
-  const s=lsGet("poly_streak",{n:0,last:""});
-  if(s.last!==dayStr()){s.n=(s.last===yesterdayStr()?s.n:0)+1;s.last=dayStr();lsSet("poly_streak",s);if(s.n>=3&&typeof maybeAskRating==="function")maybeAskRating()}
-  toast(pgU().goalDone+" · "+pgU().streak(s.n));
- }
- lsSet("poly_daily",d);
+ const d=dailyState();d.xp+=n;lsSet("poly_daily",d); // points of the day; the daily goal and the streak count study minutes now
+
  if(typeof pushSync==="function")pushSync();
  const after=rankInfo().cur;
  if(after.id!==before)toast(pgU().levelUp(after.name),true);
  rewardCheck(true);queueProgressSync();
+}
+// ========== INSIGHTS: skills, active study minutes, daily goal, streak, Peter's advice (logic: modules/insights/core.js) ==========
+// Progress by skill is kept per course (A1.1 / A1.2): the course of the exam, otherwise the course being studied.
+const examCourse=key=>key==="leren_exam12"?"a12":"a11";
+function skillLog(skill,ok,lv=curLevel){lsSet("leren_skills_v1",LerenInsights.skillLog(lsGet("leren_skills_v1",{}),lv,skill,ok))}
+function skillSpoke(lv=curLevel){lsSet("leren_skills_v1",LerenInsights.spoke(lsGet("leren_skills_v1",{}),lv))}
+function slipLog(tag,ok,lv=curLevel){lsSet("leren_slips_v1",LerenInsights.slipLog(lsGet("leren_slips_v1",{}),lv,tag,ok))}
+// Called by the exam engine (modules/exam/exam-core.js) for every checked answer, writing tip and spoken answer.
+function examLog(key,it,ok){const lv=examCourse(key);if(!it)return;
+ if(it.src==="lezen"||it.src==="luisteren")skillLog(it.src,ok,lv);
+ else if(it.src==="omdat"||it.src==="meervoud")slipLog(it.src,ok,lv);
+ else if(it.src==="gram")slipLog(LerenInsights.tagGram(it),ok,lv);
+ else if(it.src==="tip")slipLog(LerenInsights.tipTag(it.re),false,lv)}
+function examSpoke(key){skillSpoke(examCourse(key))}
+// Active study time: counted every 5 s only on a learning screen that is visible, and only while the learner
+// tapped, typed or scrolled in the last 90 s (LerenInsights.credit). A hidden tab, an idle page or a sleeping
+// computer adds nothing.
+const LEARN_VIEWS=["lesson","games","toets","path"];
+let actInput=0,actTick=Date.now();
+const actMark=()=>{actInput=Date.now()};
+["pointerdown","keydown","wheel","touchstart","scroll"].forEach(e=>addEventListener(e,actMark,{passive:true,capture:true}));
+document.addEventListener("visibilitychange",()=>{actTick=Date.now()});
+function actStep(now=Date.now()){
+ const on=document.visibilityState==="visible"&&LEARN_VIEWS.includes(view),ms=LerenInsights.credit(actTick,now,actInput,on);actTick=now;if(!ms)return 0;
+ const before=minutesToday();lsSet("leren_minutes_v1",LerenInsights.addTime(lsGet("leren_minutes_v1",{}),ms,dayStr()));
+ if(minutesToday()!==before){goalCheck();updateStats()}return ms;
+}
+setInterval(()=>actStep(),5000);
+// Goal reached today → one more day in the streak (once a day). Nothing is ever taken away for a missed day.
+function goalCheck(){
+ if(minutesToday()<goalMin())return false;const s0=lsGet("poly_streak",{});if(LerenInsights.streakView(s0,dayStr()).today)return false;
+ const s=LerenInsights.streakAdvance(s0,dayStr());lsSet("poly_streak",s);toast(pgU().goalDone+" · "+pgU().streak(s.n));
+ if(s.n>=3&&typeof maybeAskRating==="function")maybeAskRating();
+ rewardCheck(true);queueProgressSync();if(typeof pushSync==="function")pushSync();updateStats();return true;
+}
+// Facts for Peter's advice, from results already saved on this device.
+function adviceFor(lv=curLevel){
+ const E=lv==="a12"?window.EXAM12:window.EXAM11,exam=lsGet(lv==="a12"?"leren_exam12":"leren_exam11",{}),best=lsGet("poly_toetsbest",{});
+ const tests=TOETS.filter(t=>t.kind!=="leveltest"&&(t.lvl||"a11")===lv&&Number.isFinite(best[t.id])).map(t=>({id:t.id,title:t.title[uiLang]||t.title.en||t.id,best:best[t.id],total:t.questions.length}));
+ const wt=E?E.tasks().find(w=>!(E.writeBest(w.id)>=80)):null,L=levelById(lv);
+ return LerenInsights.recommend({lv,skills:LerenInsights.summary(lsGet("leren_skills_v1",{}),lv,exam),slips:LerenInsights.cleanSlips(lsGet("leren_slips_v1",{}))[lv],
+  due:dueItems(lv).map(x=>x.id),tests,lessonsDone:learningPath&&L?learningPath.model.courseStats(L.name).done:0,writeTask:wt?wt.id:null,
+  tabs:levelCats(lv).flatMap(c=>c.tabs).filter(tabVisible),canSpeak:!!(window.SpeechRecognition||window.webkitSpeechRecognition)});
+}
+// Every piece of advice opens the exercise itself.
+function runAdvice(a){
+ if(!a)return;
+ if(a.t==="review"){if(targetLang==="nl"&&learningPath){setView("path");if(learningPath.review(a.ids))return}lessonMode="review";mode="review";setView("lesson");newRound();return}
+ if(a.t==="game"){setView("games");const f={om:()=>omPlay("one"),dc:dcStart,sp:spStart}[a.id];if(f)f();return}
+ if(a.t==="exam"||a.t==="write"){const E=a.lv==="a12"?window.EXAM12:window.EXAM11;if(!E)return;setView("toets");if(a.t==="exam")E.practice(a.part);else E.writeTask(a.id);return}
+ if(a.t==="test"){const test=TOETS.find(t=>t.id===a.id);if(!test)return;setView("toets");toetsId=test.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion();return}
+ if(a.t==="tab"){const c=levelCats().find(c=>c.tabs.includes(a.tab));if(c){currentCat=c.id;tab=a.tab}}
+ if(a.t==="tab"||a.t==="mode"){lessonMode=a.mode;mode=a.mode;try{localStorage.setItem("leren_lesson_mode",a.mode)}catch(e){}saveStore();setView("lesson");buildNav();newRound()}
+}
+// Progress screen: the four skills of the current course and Peter's advice.
+function renderInsights(host){
+ const lv=curLevel,L=levelById(lv).name,iu=LerenInsights.ui(uiLang),pt=LerenInsights.tr(uiLang);
+ const exam=lsGet(lv==="a12"?"leren_exam12":"leren_exam11",{}),sk=LerenInsights.summary(lsGet("leren_skills_v1",{}),lv,exam);
+ const box=el("section","ins-skills");box.id="insSkills";box.appendChild(el("h3","",iu.skills(L)));
+ const row=(key,lines,pct)=>{const r=el("div","ins-row");r.dataset.skill=key;const head=el("div","ins-head");head.append(el("strong","",iu.sk[key]));if(pct!=null)head.append(el("span","ins-pct",pct+"%"));r.appendChild(head);
+  if(pct!=null){const m=el("div","ins-meter");m.setAttribute("role","img");m.setAttribute("aria-label",iu.sk[key]+" "+pct+"%");const i=el("i");i.style.width=pct+"%";m.appendChild(i);r.appendChild(m)}
+  lines.filter(Boolean).forEach(t=>r.appendChild(el("span","ins-line",t)));box.appendChild(r)};
+ for(const k of ["lezen","luisteren"]){const x=sk[k];row(k,[x.pct!=null?iu.right(x.pct,x.n):x.n?iu.few(x.n):iu.none,x.exam!=null?iu.exam(L,x.exam):""],x.pct)}
+ {const x=sk.schrijven,dpct=x.n>=5?Math.round(x.ok/x.n*100):null;row("schrijven",[dpct!=null?iu.dict(dpct,x.n):x.n?iu.dictFew(x.n):"",x.tasks?iu.tasks(x.tasks,x.avg):iu.noTasks],null)}
+ row("spreken",[iu.spoken(sk.spreken.n),iu.spExam(sk.spreken.exam)],null);
+ box.appendChild(el("p","ins-note",iu.note));
+ const adv=adviceFor(lv),peter=el("section","ins-peter");peter.id="insPeter";
+ const face=el("img","ins-face");face.src="./img/chars/peter.webp";face.alt="";face.width=56;face.height=56;
+ const head=el("div","ins-peter-head");head.append(face,el("h3","",pt.title));peter.appendChild(head);
+ if(!adv.items.length){peter.appendChild(el("p","",pt.none));const b=el("button","btn primary",pt.noneBtn);b.type="button";b.onclick=()=>setView(targetLang==="nl"?"path":"lesson");peter.appendChild(b)}
+ adv.items.forEach((r,i)=>{const it=el("div","ins-tip");it.dataset.kind=r.kind;if(r.tag)it.dataset.tag=r.tag;it.appendChild(el("p","",LerenInsights.say(r,uiLang,i===0?adv.strong:null)));
+  const b=el("button","btn"+(i===0?" primary":""),LerenInsights.label(r,uiLang));b.type="button";b.onclick=()=>runAdvice(r.action);it.appendChild(b);peter.appendChild(it)});
+ host.replaceChildren(peter,box);
 }
 // XP for a correct answer: full for new/due words, small for words already mastered and not due
 function xpForCorrect(s){return (s.known&&s.due>Date.now())?2:10}
@@ -2612,15 +2698,15 @@ function toast(msg,big){
 }
 function renderProgressPanel(){
  const u=getUI(),p=pgU(),box=$("progressPanel");if(!box)return;
- const {cur,next}=rankInfo(),st=streakState(),d=dailyState(),g=dailyGoal();
+ const {cur,next}=rankInfo(),st=streakState(),g=goalMin(),mins=minutesToday(),iu=LerenInsights.ui(uiLang);
  box.replaceChildren();
  // row 1: streak + daily goal
  const r1=el("div","pp-row");
  const sk=el("div","pp-streak"+(st.n?"":" off"));sk.append(el("span","pp-fire","🔥"),el("strong","",String(st.n)));sk.title=st.n?p.streak(st.n):p.streak0;
  const gb=el("button","pp-goal");gb.type="button";gb.title=p.goalTitle;gb.onclick=openGoalModal;
- const gl=el("span","pp-goal-l",p.goal);const gv=el("span","pp-goal-v",Math.min(d.xp,g)+" / "+g);
- const gt=el("span","pp-mini");const gi=el("i");gi.style.width=Math.min(100,Math.round(d.xp/g*100))+"%";gt.appendChild(gi);
- if(d.done)gb.classList.add("done");
+ const gl=el("span","pp-goal-l",p.goal);const gv=el("span","pp-goal-v",Math.min(mins,g)+" / "+g+" "+iu.min);gb.setAttribute("aria-label",p.goal+" · "+iu.today(Math.min(mins,g),g));
+ const gt=el("span","pp-mini");const gi=el("i");gi.style.width=Math.min(100,Math.round(mins/g*100))+"%";gt.appendChild(gi);
+ if(mins>=g)gb.classList.add("done");
  gb.append(gl,gt,gv);r1.append(sk,gb);box.appendChild(r1);
  // row 2: level bar
  const r2=el("div","pp-level");
@@ -2680,13 +2766,13 @@ function openGoalModal(){
  if(!m){m=el("div","search-modal");m.id="goalModal";m.addEventListener("click",e=>{if(e.target===m)m.hidden=true});document.body.appendChild(m)}
  m.replaceChildren();m.hidden=false;
  const panel=el("div","search-panel goal-panel");panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
- panel.append(el("h2","goal-title",p.goalTitle),el("p","goal-hint",p.goalHint));
+ const iu=LerenInsights.ui(uiLang);panel.append(el("h2","goal-title",iu.goalTitle),el("p","goal-hint",iu.goalHint));
  const list=el("div","goal-list");
- p.goals.forEach(([v,name,time])=>{const b=el("button","opt goal-opt"+(dailyGoal()===v?" correct":""));b.type="button";
-  b.append(el("strong","",v+" "+p.xp),el("span","",name+" · "+time));
-  b.onclick=()=>{lsSet("poly_goal",v);openGoalModal();renderProgressPanel()};list.appendChild(b)});
- panel.appendChild(list);
- const st=streakState();panel.appendChild(el("p","goal-hint",st.n?"🔥 "+p.streak(st.n):p.streak0));
+ LerenInsights.GOALS.forEach(v=>{const b=el("button","opt goal-opt"+(goalMin()===v?" correct":""));b.type="button";b.dataset.goal=v;
+  b.append(el("strong","",v+" "+iu.min),el("span","",iu.goals[v]));
+  b.onclick=()=>{lsSet("leren_goal_min",v);goalCheck();openGoalModal();updateStats()};list.appendChild(b)});
+ panel.appendChild(list);panel.appendChild(el("p","goal-hint",iu.today(minutesToday(),goalMin())));
+ const st=streakState();panel.appendChild(el("p","goal-hint",(st.n?"🔥 "+p.streak(st.n):p.streak0)+(st.best?" · "+iu.best(st.best):"")));panel.appendChild(el("p","goal-hint goal-noloss",iu.noLoss));
  const c=el("button","btn primary",p.close);c.type="button";c.onclick=()=>{m.hidden=true};panel.appendChild(c);
  m.appendChild(panel);c.focus();
 }
@@ -3290,7 +3376,7 @@ function renderStudyControls(card){
 
 function answer(ok,btn){
  if(locked)return;locked=true;
- const u=getUI(),s=stateFor(item.id);s.seen++;let gain=0;
+ const u=getUI(),s=stateFor(item.id);s.seen++;let gain=0;skillLog(mode==="audio"?"luisteren":"lezen",ok);
  if(ok){gain=xpForCorrect(s);right++;roundPoints+=gain;addXP(gain);LerenSRS.update(s,true)}
  else LerenSRS.update(s,false);
  saveStore();updateStats();
@@ -3473,7 +3559,7 @@ function klRender(){
 }
 function klAnswer(ok,btn){
  if(locked)return;locked=true;
- const u=getUI(),k=klU(),s=stateFor(item.id);s.seen++;
+ const u=getUI(),k=klU(),s=stateFor(item.id);s.seen++;slipLog("klinkers",ok);
  if(ok){const g=xpForCorrect(s);right++;roundPoints+=g;addXP(g);LerenSRS.update(s,true)}
  else LerenSRS.update(s,false);
  saveStore();updateStats();
@@ -3656,7 +3742,7 @@ function vhRender(){
 }
 function vhAnswer(ok,btn){
  if(locked)return;locked=true;
- const u=getUI(),g=item.g,s=stateFor(item.id);s.seen++;
+ const u=getUI(),g=item.g,s=stateFor(item.id);s.seen++;slipLog("werkwoorden",ok);
  if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);LerenSRS.update(s,true)}
  else LerenSRS.update(s,false);
  saveStore();updateStats();
@@ -3734,7 +3820,7 @@ function sepRender(){
 }
 function sepAnswer(ok,btn){
  if(locked)return;locked=true;
- const u=getUI(),d=item.sep,s=stateFor(item.id);s.seen++;
+ const u=getUI(),d=item.sep,s=stateFor(item.id);s.seen++;slipLog("scheidbaar",ok);
  if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);LerenSRS.update(s,true)}
  else LerenSRS.update(s,false);
  saveStore();updateStats();
@@ -5028,7 +5114,7 @@ function renderShellText(){
  $("voiceRowValue").textContent=recordedAvailable()&&useRecorded()?String((recVoice()==="f"?ru.voiceRecordedF:ru.voiceRecorded)||"").replace(/^🎙\s*/,""):saved?saved.split("|")[1]||saved:n.voiceDevice;
  $("voiceSettingsBtn").textContent=n.voicePick;
  $("autoRowLabel").textContent=n.auto;$("autoRowHint").textContent=n.autoHint;
- $("themeRowLabel").textContent=n.theme;$("goalRowLabel").textContent=n.goal;$("goalBtn").textContent=n.goalV(dailyGoal());
+ $("themeRowLabel").textContent=n.theme;$("goalRowLabel").textContent=n.goal;$("goalBtn").textContent=goalMin()+" "+LerenInsights.ui(uiLang).min;
  $("helpRowLabel").textContent=n.guide;$("helpBtn").textContent=n.guideBtn;
  $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
  const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
@@ -5041,6 +5127,7 @@ function renderShellText(){
 function renderProgressView(){
  const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;renderRewards();
  renderProgressPanel();
+ let ins=$("pvInsights");if(!ins){ins=el("div","pv-insights");ins.id="pvInsights";grid.before(ins)}renderInsights(ins);
  grid.replaceChildren();
  [[n.pvLearned,learnedCount(curLevel)],[n.pvReview,dueItems(curLevel).length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
  tb.replaceChildren(el("h3","",n.pvToets));
@@ -5519,7 +5606,7 @@ function micBox(onAnswer,opts){ // mic button + typing fallback; onAnswer(altern
  const form=el("form","g-type");form.hidden=true;const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang=targetLang;inp.setAttribute("aria-label",g.write);
  const ok=el("button","btn primary",g.send);ok.type="submit";form.append(inp,ok);
  let spoken=null;
- form.onsubmit=e=>{e.preventDefault();const v=inp.value.trim();if(!v)return;const a=spoken&&spoken[0].trim()===v?spoken:[v];spoken=null;st.textContent="";onAnswer(a)};
+ form.onsubmit=e=>{e.preventDefault();const v=inp.value.trim();if(!v)return;if(spoken)skillSpoke();const a=spoken&&spoken[0].trim()===v?spoken:[v];spoken=null;st.textContent="";onAnswer(a)};
  const showType=msg=>{form.hidden=false;if(msg)st.textContent=msg;setTimeout(()=>inp.focus(),30)};
  typeB.onclick=()=>showType();
  const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
@@ -5537,7 +5624,7 @@ function micBox(onAnswer,opts){ // mic button + typing fallback; onAnswer(altern
  }
  mic.onclick=()=>{if(mic.classList.contains("rec")){gRec&&gRec.stop&&gRec.stop();return}
   mic.textContent=g.listening+" ⏹";mic.classList.add("rec");
-  listenOnce(alts=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");st.textContent=g.heard+" «"+alts[0]+"»";onAnswer(alts)},
+  listenOnce(alts=>{skillSpoke();mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");st.textContent=g.heard+" «"+alts[0]+"»";onAnswer(alts)},
    err=>{mic.disabled=false;mic.textContent=g.mic;mic.classList.remove("rec");if(err==="not-allowed"||err==="service-not-allowed")showType(g.micDenied);else if(err==="no-speech"||err==="aborted")st.textContent=g.tryAgain;else showType(g.noMic)})};
  const row=el("div","row g-mic-row");row.append(mic,typeB);box.append(row,st,form);return box;
 }
@@ -5912,12 +5999,12 @@ function omGap(p,b){
  if(!ok){s.tries++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");
   const h=$("omHint");if(h){h.textContent=p===it.vi?o.sameGap:it.two?o.wrongGap2:o.wrongGap;h.classList.add("bad")}return}
  const before=omRects();s.alt=it.two&&p===L;s.order=omOrder(it,s.alt);s.step="done";
- const pts=s.tries?1:3;if(!s.tries)s.score++;s.xp+=pts;
+ const pts=s.tries?1:3;if(!s.tries)s.score++;s.xp+=pts;slipLog("omdat",!s.tries);
  omRender();omFlip(before,String(it.vi));setTimeout(()=>say(omSay()),omReduce()?0:650);
 }
 function omAnswer(c){
  const s=gState;if(s.step!=="pick")return;s.ans=c;
- if(c===s.conj){s.score++;s.xp+=2}
+ if(c===s.conj){s.score++;s.xp+=2}slipLog("omdat",c===s.conj);
  s.step="done";omRender();say(omSay());
 }
 function omEnd(){
@@ -6127,7 +6214,7 @@ function dcRender(res){
  if(!res){
   const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.setAttribute("aria-label",g.write);
   const ok=el("button","btn primary",g.check);ok.type="submit";form.append(inp,ok);
-  form.onsubmit=e=>{e.preventDefault();if(!inp.value.trim())return;const a=gNorm(inp.value),b=gNorm(it.t);const good=a===b;if(good)s.ok++;dcRender({good,typed:inp.value})};
+  form.onsubmit=e=>{e.preventDefault();if(!inp.value.trim())return;const a=gNorm(inp.value),b=gNorm(it.t);const good=a===b;if(good)s.ok++;skillLog("schrijven",good);dcRender({good,typed:inp.value})};
   card.appendChild(form);if(!s.played){s.played=true;setTimeout(()=>say(it.t),300)}return;
  }
  const fb=el("div","feedback");fb.id="feedback";fb.appendChild(el("strong","",res.good?g.ok:g.correctIs));
@@ -6829,11 +6916,13 @@ function initLearningPath(){
   free:()=>{setHomePref("free");setView("lesson");newRound()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
-  listen:(ok,fail)=>listenOnce(ok,fail,"nl-BE"),
+  listen:(ok,fail)=>listenOnce(a=>{skillSpoke();ok(a)},fail,"nl-BE"),
   stopListening:()=>{if(gRec)gRec.abort()},
   ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente",zorg:"huisarts",stad:"gemeente",openbaar:"station"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
-  answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;LerenSRS.update(s,ok);saveStore();updateStats()},
+  answer:(id,ok,final,listen)=>{skillLog(listen?"luisteren":"lezen",ok);if(!final)return;const s=stateFor(id);s.seen++;LerenSRS.update(s,ok);saveStore();updateStats()},
   due:()=>dueItems(curLevel).map(x=>x.id),
+  // Peter's first piece of advice for the home screen (not the review, the route's warm-up covers it).
+  advice:()=>{const r=adviceFor();const it=r.items.find(x=>x.kind!=="due");return it?{text:LerenInsights.say(it,uiLang,r.strong),label:LerenInsights.label(it,uiLang),run:()=>runAdvice(it.action)}:null},
   complete:recordPathResult,rewards:()=>setView("progress"),
   // Writing practice of an A1.2 topic: tasks from the A1.2 exam data, opened in the exam editor with "back to the lesson".
   writeTasks:(ch,lang)=>{const ids=(window.EXAM12_DATA&&EXAM12_DATA.TOPIC_WRITE[ch])||[];if(!window.EXAM12)return [];return ids.map(id=>EXAM12.tasks().find(w=>w.id===id)).filter(Boolean).map(w=>({id:w.id,title:w.title[lang]||w.title.en,best:EXAM12.writeBest(w.id)}))},
@@ -6881,7 +6970,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
 const RELEASE_VERSION="174";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Маршрут тепер сам стежить за словами, які ти забуваєш.", "items": ["Розумне повторення: після правильних відповідей слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу.", "Перед новим уроком маршрут раз на день пропонує коротку розминку з 3–5 слів, які пора повторити.", "Пітер на головному екрані пише план на сьогодні.", "Самостійне навчання лишається поруч: кнопка «Самостійно вивчати»."], "hint": "Натисни «Продовжити» на головному екрані.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The route now keeps track of words you are forgetting.", "items": ["Smart review: after right answers a word comes back in 1, 3, 7, 14 and 30 days; after a mistake, right away.", "Once a day, before a new lesson, the route offers a short warm-up of 3–5 words that are due for review.", "Peter writes today’s plan on the home screen.", "Free study stays one tap away: “Study on my own”."], "hint": "Tap “Continue” on the home screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Le parcours suit maintenant les mots que tu oublies.", "items": ["Révision intelligente : après de bonnes réponses, un mot revient dans 1, 3, 7, 14 et 30 jours ; après une erreur, tout de suite.", "Une fois par jour, avant une nouvelle leçon, le parcours propose un court échauffement de 3 à 5 mots à réviser.", "Peter écrit le programme du jour sur l’écran d’accueil.", "L’étude libre reste à portée de main."], "hint": "Touche « Continuer » sur l’écran d’accueil.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "المسار يتابع الآن الكلمات التي بدأت تنساها.", "items": ["مراجعة ذكية: بعد الإجابات الصحيحة تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وبعد الخطأ فوراً.", "مرة في اليوم، قبل درس جديد، يقترح المسار تمريناً قصيراً من 3 إلى 5 كلمات حان وقت مراجعتها.", "بيتر يكتب خطة اليوم على الشاشة الرئيسية.", "التعلّم الحر يبقى متاحاً بنقرة واحدة."], "hint": "اضغط «تابع» على الشاشة الرئيسية.", "ok": "فهمت"}};
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Застосунок тепер бачить, що вдається, а що варто повторити.", "items": ["Розумне повторення: слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу. Раз на день маршрут дає коротку розминку перед уроком.", "Прогрес за навичками в «Прогресі»: читання, аудіювання, письмо й говоріння — окремо для A1.1 і A1.2.", "Щоденна мета в хвилинах (5–30, спочатку 10). Рахуємо лише час у вправах.", "Серія днів і нові нагороди: 3, 14 і 30 днів, 50 і 100 слів, 5 тем, перший іспит, курс A1.1 і A1.2. Пропущений день нічого не забирає.", "Пітер радить, що повторити, і одразу відкриває потрібну вправу."], "hint": "Відкрий «Прогрес», щоб побачити навички й поради Пітера.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The app now sees what goes well and what needs review.", "items": ["Smart review: a word comes back after 1, 3, 7, 14 and 30 days, and right away after a mistake. Once a day the route starts with a short warm-up.", "Progress by skill in Progress: reading, listening, writing and speaking — separately for A1.1 and A1.2.", "A daily goal in minutes (5–30, 10 to start). Only time in exercises counts.", "Streak and new rewards: 3, 14 and 30 days, 50 and 100 words, 5 topics, first exam, course A1.1 and A1.2. A missed day takes nothing away.", "Peter suggests what to review and opens the right exercise."], "hint": "Open Progress to see your skills and Peter’s advice.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "L’application voit maintenant ce qui va bien et ce qu’il faut réviser.", "items": ["Révision intelligente : un mot revient après 1, 3, 7, 14 et 30 jours, et tout de suite après une erreur. Une fois par jour, le parcours commence par un court échauffement.", "Progrès par compétence dans Progrès : lecture, écoute, écrit et oral — séparément pour A1.1 et A1.2.", "Un objectif du jour en minutes (5 à 30, 10 au départ). Seul le temps dans les exercices compte.", "Série et nouvelles récompenses : 3, 14 et 30 jours, 50 et 100 mots, 5 thèmes, premier examen, cours A1.1 et A1.2. Un jour manqué n’enlève rien.", "Peter te conseille quoi réviser et ouvre le bon exercice."], "hint": "Ouvre Progrès pour voir tes compétences et les conseils de Peter.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "التطبيق يرى الآن ما ينجح وما يحتاج إلى مراجعة.", "items": ["مراجعة ذكية: تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وفوراً بعد الخطأ. مرة في اليوم يبدأ المسار بتمرين قصير.", "التقدّم حسب المهارة في «التقدّم»: القراءة والاستماع والكتابة والتحدث، لكل من A1.1 وA1.2 على حدة.", "هدف يومي بالدقائق (من 5 إلى 30، و10 في البداية). نحسب فقط الوقت في التمارين.", "السلسلة ومكافآت جديدة: 3 و14 و30 يوماً، 50 و100 كلمة، 5 مواضيع، أول امتحان، دورة A1.1 وA1.2. اليوم الفائت لا يأخذ شيئاً.", "بيتر ينصحك بما تراجعه ويفتح التمرين المناسب مباشرة."], "hint": "افتح «التقدّم» لترى مهاراتك ونصائح بيتر.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -7082,7 +7171,7 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam-core.js?v=173" defer></script>
+<script src="./modules/exam/exam-core.js?v=174" defer></script>
 <script src="./modules/exam/exam11.js?v=173" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=173" defer></script>

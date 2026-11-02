@@ -13,7 +13,16 @@
  'lesson-10':['headphones','Навушники для практики','Practice headphones','Casque d’entraînement','سماعات التدريب'],
  'chapter-1':['compass','Компас мандрівника','Traveller’s compass','Boussole du voyageur','بوصلة المسافر'],
  'perfect-1':['star','Зірка уважності','Star of attention','Étoile de l’attention','نجمة الانتباه'],
- 'streak-7':['scarf','Шарф наполегливості','Scarf of determination','Écharpe de persévérance','وشاح المثابرة']};
+ 'streak-7':['scarf','Шарф наполегливості','Scarf of determination','Écharpe de persévérance','وشاح المثابرة'],
+ 'streak-3':['medal','Медаль трьох днів','Three-day medal','Médaille des trois jours','ميدالية الأيام الثلاثة'],
+ 'streak-14':['scarf','Шарф двох тижнів','Two-week scarf','Écharpe des deux semaines','وشاح الأسبوعين'],
+ 'streak-30':['crown','Корона місяця','Crown of the month','Couronne du mois','تاج الشهر'],
+ 'words-50':['notebook','Словничок на 50 слів','50-word notebook','Carnet de 50 mots','دفتر الخمسين كلمة'],
+ 'words-100':['backpack','Рюкзак на 100 слів','100-word backpack','Sac des 100 mots','حقيبة المئة كلمة'],
+ 'chapter-5':['compass','Компас п’яти тем','Five-topic compass','Boussole des cinq thèmes','بوصلة المواضيع الخمسة'],
+ 'exam-1':['star','Зірка іспиту','Exam star','Étoile de l’examen','نجمة الامتحان'],
+ 'course-a11':['gold','Кубок курсу A1.1','A1.1 course cup','Coupe du cours A1.1','كأس دورة A1.1'],
+ 'course-a12':['crystal','Кришталевий кубок A1.2','A1.2 crystal cup','Coupe de cristal A1.2','كأس A1.2 البلورية']};
  let serial=0;
  const entry=b=>Object.hasOwn(gifts,b?.id)?gifts[b.id]:gifts['xp-100'];
  function title(b,lang){const i=['uk','en','fr','ar'].indexOf(lang);return entry(b)[i<0?2:i+1]}
