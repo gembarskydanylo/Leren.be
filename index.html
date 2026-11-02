@@ -45,7 +45,7 @@
 <script src="./modules/emoji/variants.js?v=147"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=172"></script>
-<script src="./modules/learning-path/ui.js?v=176"></script>
+<script src="./modules/learning-path/ui.js?v=177"></script>
 <script src="./modules/dialogues/translations.js?v=173"></script>
 <title>lerenbe.com — Nederlands A1.1 &amp; A1.2</title>
 <style>
@@ -192,7 +192,8 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .nav-scrollbar:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 
 /* ---------- progress ---------- */
-.meta{display:flex;justify-content:space-between;gap:8px;color:var(--ink-2);font-size:13px;font-weight:800;padding:0 4px;margin-bottom:-6px}
+.meta{display:flex;justify-content:space-between;gap:8px;color:var(--ink-2);font-size:13px;font-weight:800;padding:0 4px;margin-bottom:-6px}.meta #prog{flex:none;white-space:nowrap}.meta #rnd{flex:0 1 auto;min-width:0;text-align:end}
+main[data-ghome="1"] .meta,main[data-ghome="1"] .bar{display:none} /* games home has its own title and weekly dots */
 .bar{height:12px;border-radius:var(--r-pill);background:var(--surface-2);overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.06)}
 .bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--oranje);
  box-shadow:inset 0 -3px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.35);transition:width .35s var(--ease)}
@@ -231,7 +232,7 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .opt{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;
  min-height:58px;padding:10px 10px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);
- font-weight:800;font-size:16px;line-height:1.2;overflow-wrap:anywhere;box-shadow:0 var(--depth) 0 var(--edge)}
+ font-weight:800;font-size:16px;line-height:1.2;overflow-wrap:break-word;hyphens:auto;box-shadow:0 var(--depth) 0 var(--edge)}
 .opt:active:not(:disabled){transform:translateY(var(--depth));box-shadow:0 0 0 var(--edge)}
 .opt:disabled{cursor:default}
 .opt.correct{background:var(--ok-soft);border-color:var(--ok);color:var(--ok-deep);box-shadow:0 var(--depth) 0 var(--ok);animation:pop .35s var(--ease)}
@@ -308,7 +309,7 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 /* ---------- toets ---------- */
 .toets-text{font-size:16px;font-weight:700;white-space:pre-line;text-align:start;padding:14px;margin-bottom:6px;background:var(--surface-2);border-radius:var(--r-md);border-inline-start:5px solid var(--oranje)}
 .toets-pick{width:100%;flex:none;margin-bottom:10px;text-align:start;justify-content:flex-start;display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:64px}.toets-pick .tp-no{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--oranje);color:var(--on-oranje);font-family:var(--font-display);font-size:17px;font-weight:800}.toets-pick.passed .tp-no{background:var(--ok)}.toets-pick .tp-text{display:flex;flex-direction:column;gap:2px;min-width:0}.toets-pick .tp-text strong{font-size:16px;line-height:1.2}.toets-pick .tp-nl{font-size:13.5px;color:var(--oranje-deep);font-weight:800}.toets-pick .tp-meta{font-size:12.5px;color:var(--ink-2);font-weight:700}.exam-pick{border-color:var(--oranje);background:var(--oranje-soft)}.exam-pick .tp-no{background:var(--be-yellow);color:#1E1712}
-.ex-back{align-self:flex-start;border:0;background:none;color:var(--oranje-deep);font-weight:800;font-size:15px;padding:4px 0;margin-bottom:6px;cursor:pointer}
+.ex-back{align-self:flex-start;border:0;background:none;color:var(--oranje-deep);font-weight:800;font-size:15px;min-height:44px;padding:4px 8px 4px 0;margin-bottom:2px;cursor:pointer}
 .ex-h{font-family:var(--font-display);font-size:21px;margin:4px 0 6px;text-align:start}.ex-sub{color:var(--ink-2);margin:0 0 8px;text-align:start}
 .ex-when{display:inline-block;white-space:pre-line;line-height:1.5;margin:0 0 14px;padding:6px 12px;border-radius:var(--r-pill);background:var(--be-yellow);color:#1E1712;font-weight:800;font-size:13.5px}
 .ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -732,7 +733,7 @@ body.sheet-open{overflow:hidden}
 .topic-number{color:var(--ink-2);font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
 .topic-current{display:grid;place-items:center;width:19px;height:19px;background:var(--oranje);color:#fff;border-radius:50%;font-size:13px}
 .topic-art{display:block;width:100%;height:88px;object-fit:contain;border-radius:12px}
-.topic-name{font-size:16px;line-height:1.2;font-weight:900;margin-top:4px;overflow-wrap:anywhere}
+.topic-name{font-size:16px;line-height:1.2;font-weight:900;margin-top:4px;overflow-wrap:break-word;hyphens:auto}
 .topic-dutch{color:var(--ink-2);font-size:12px;line-height:1.35;font-weight:650;overflow-wrap:anywhere}
 #topicsSheet .topic-card[data-extra="true"]{grid-column:1/-1;display:grid;grid-template-columns:68px 1fr;column-gap:12px;padding:12px}
 .topic-card[data-extra="true"] .topic-art{grid-column:1;grid-row:1/4;height:62px;align-self:center}
@@ -823,7 +824,7 @@ header .brand h1{font-size:clamp(12px,calc((100cqw - 52px)/5.6),22px)}
 /* ---------- games ---------- */
 .modes-wrapper button{min-width:0}
 .g-top{display:flex;justify-content:flex-start;margin:-6px 0 6px}
-.g-back{border:0;background:none;color:var(--oranje-deep);font:900 14px var(--font-body);padding:6px 2px;cursor:pointer}
+.g-back{border:0;background:none;color:var(--oranje-deep);font:900 14px var(--font-body);min-height:44px;padding:6px 8px 6px 2px;cursor:pointer}
 :root[data-theme="dark"] .g-back{color:var(--oranje)}
 .g-home-head h2{margin:0;font-family:var(--font-display);font-size:22px}
 .g-home-head p{margin:4px 0 12px;color:var(--ink-2)}
@@ -901,6 +902,7 @@ header .brand h1{font-size:clamp(12px,calc((100cqw - 52px)/5.6),22px)}
 .g-type[hidden]{display:none}.ai-type input{flex:1;min-width:0}.g-type.ai-type .btn[type=submit]{flex:0 0 60px;width:60px;min-width:0;font-size:20px;padding:0}
 .g-type input{flex:1;min-width:0;min-height:50px;padding:0 14px;border:2px solid var(--line);border-radius:var(--r-md);background:var(--surface);color:var(--ink);font:700 17px var(--font-body)}
 .g-type input:focus{outline:none;border-color:var(--oranje)}
+.g-type>.btn{flex:0 0 auto;min-width:0;white-space:nowrap;padding-inline:18px}@media(max-width:360px){.g-type:not(.ai-type){flex-wrap:wrap}.g-type:not(.ai-type) input,.g-type:not(.ai-type)>.btn{flex:1 1 100%}}
 .g-bubble{display:inline-block;padding:12px 18px;border-radius:22px;background:var(--surface-2);border:2px solid var(--line)}
 .g-tr{margin:6px 0 4px;color:var(--ink-2)}
 .g-checks{list-style:none;padding:0;margin:6px 0;text-align:start;display:inline-block}
@@ -1038,10 +1040,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=176">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=177">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=174">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=176">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
@@ -4848,9 +4850,9 @@ const DICT_UI={
   irr:"irregular verb",withZijn:"with zijn",withBoth:"with hebben or zijn",adjForm:"Before a noun",cmp:"Comparison",
   ex:"Example",fromLessons:"From lessons",en:"EN",listen:"Listen",star:"Add to My words",unstar:"Remove from My words",
   wod:"Word of the day",recent:"Recent searches",mine:"My words",mineEmpty:"Tap ☆ next to a word to save it here.",tryT:"Try:",clear:"Clear"}};
-DICT_UI.fr=Object.assign({},DICT_UI.en,{ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
+DICT_UI.fr=Object.assign({},DICT_UI.en,{pos:{n:"nom",v:"verbe",adj:"adj.",adv:"adv.",prep:"prép.",conj:"conj.",pron:"pron.",num:"num.",det:"dét.",int:"interj.",phr:"expression"},pl:"pl.",sg:"sg.",deW:"mot en de",hetW:"mot en het",both:"de ou het",ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
  filters:[["","Tout"],["n","Noms"],["v","Verbes"],["adj","Adjectifs"],["phr","Expressions"]],wod:"Mot du jour",recent:"Recherches récentes",mine:"Mes mots",mineEmpty:"Touche ☆ à côté d'un mot pour l'enregistrer ici.",tryT:"Essaie :",listen:"Écouter",ex:"Exemple",fromLessons:"Des leçons",present:"Présent",past:"Passé",perfect:"Passé composé"});
-DICT_UI.ar=Object.assign({},DICT_UI.en,{ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
+DICT_UI.ar=Object.assign({},DICT_UI.en,{pos:{n:"اسم",v:"فعل",adj:"صفة",adv:"ظرف",prep:"حرف جر",conj:"أداة ربط",pron:"ضمير",num:"عدد",det:"أداة",int:"تعجب",phr:"عبارة"},pl:"جمع",sg:"مفرد",deW:"كلمة de",hetW:"كلمة het",both:"de أو het",ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
  filters:[["","الكل"],["n","أسماء"],["v","أفعال"],["adj","صفات"],["phr","عبارات"]],wod:"كلمة اليوم",recent:"عمليات البحث الأخيرة",mine:"كلماتي",mineEmpty:"اضغط ☆ بجانب الكلمة لحفظها هنا.",tryT:"جرّب:",listen:"استمع",ex:"مثال",fromLessons:"من الدروس"});
 const dU=()=>DICT_UI[uiLang]||DICT_UI.en;
 const DICT={ix:null,loading:null,offline:false,pos:"",open:-1,corpus:null};
@@ -5053,9 +5055,9 @@ function ico(name,cls){const s=el("span","ico"+(cls?" "+cls:""));s.setAttribute(
 function fillIcons(root){(root||document).querySelectorAll("[data-ico]").forEach(e=>{if(!e.firstChild)e.replaceWith(Object.assign(ico(e.dataset.ico,e.className.replace(/\bico\b/,"").trim()),{}))})}
 const NAV_UI={
  uk:{lesson:"Урок",toets:"Тести",dict:"Словник",progress:"Прогрес",settings:"Налаштування",topics:"Вибір теми",change:"Змінити",level:"Рівень",learn:"Мова, яку вчу",expl:"Мова пояснень",voice:"Голос озвучення",voicePick:"Вибрати",voiceDevice:"голос пристрою",auto:"Автоозвучення",autoHint:"слово звучить саме, щойно з’являється",theme:"Темна тема",goal:"Ціль дня",goalV:n=>n+" балів",guide:"Інструкція",guideBtn:"Показати",dictTitle:"Словник",dictHint:"Шукай нідерландською, українською чи англійською. Словник розуміє форми (huizen → huis, ging → gaan) і помилки в написанні.",progressTitle:"Мій прогрес",toetsTitle:"Toets — міні-іспити як на курсі",pvLearned:"Вивчено слів",pvReview:"До повторення",pvPoints:"Балів усього",pvStreak:"Днів поспіль",pvToets:"Найкращі результати Toets",pvNone:"ще не складали",close:"Закрити",streakT:n=>n?n+" дн. поспіль":"Серія ще не почалась"},
- en:{lesson:"Lesson",toets:"Toets",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Search in Dutch or English. The dictionary understands word forms (huizen → huis, ging → gaan) and typos.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
- fr:{lesson:"Leçon",toets:"Toets",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Cherche en néerlandais ou en français. Le dictionnaire reconnaît les formes (huizen → huis, ging → gaan) et les fautes de frappe.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
- ar:{lesson:"الدرس",toets:"Toets",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"ابحث بالهولندية أو العربية أو الإنجليزية. يفهم القاموس صيغ الكلمات والأخطاء الإملائية.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
+ en:{lesson:"Lesson",toets:"Tests",dict:"Dictionary",progress:"Progress",settings:"Settings",topics:"Choose a topic",change:"Change",level:"Level",learn:"I'm learning",expl:"Explanations in",voice:"Speech voice",voicePick:"Choose",voiceDevice:"device voice",auto:"Auto-play audio",autoHint:"a word is spoken as soon as it appears",theme:"Dark theme",goal:"Daily goal",goalV:n=>n+" points",guide:"Guide",guideBtn:"Show",dictTitle:"Dictionary",dictHint:"Search in Dutch or English. The dictionary understands word forms (huizen → huis, ging → gaan) and typos.",progressTitle:"My progress",toetsTitle:"Toets — mini exams like in class",pvLearned:"Words learned",pvReview:"To review",pvPoints:"Total points",pvStreak:"Days in a row",pvToets:"Best Toets results",pvNone:"not taken yet",close:"Close",streakT:n=>n?n+"-day streak":"No streak yet"},
+ fr:{lesson:"Leçon",toets:"Tests",dict:"Dico",progress:"Progrès",settings:"Réglages",topics:"Choisir un thème",change:"Changer",level:"Niveau",learn:"J'apprends",expl:"Explications en",voice:"Voix",voicePick:"Choisir",voiceDevice:"voix de l'appareil",auto:"Lecture auto",autoHint:"le mot est lu dès qu'il apparaît",theme:"Thème sombre",goal:"Objectif du jour",goalV:n=>n+" points",guide:"Guide",guideBtn:"Afficher",dictTitle:"Dictionnaire",dictHint:"Cherche en néerlandais ou en français. Le dictionnaire reconnaît les formes (huizen → huis, ging → gaan) et les fautes de frappe.",progressTitle:"Mes progrès",toetsTitle:"Toets — mini-examens comme en classe",pvLearned:"Mots appris",pvReview:"À réviser",pvPoints:"Points au total",pvStreak:"Jours d'affilée",pvToets:"Meilleurs résultats Toets",pvNone:"pas encore passé",close:"Fermer",streakT:n=>n?n+" jours d'affilée":"Pas encore de série"},
+ ar:{lesson:"الدرس",toets:"الاختبارات",dict:"القاموس",progress:"التقدّم",settings:"الإعدادات",topics:"اختر موضوعًا",change:"تغيير",level:"المستوى",learn:"أتعلّم",expl:"لغة الشرح",voice:"صوت النطق",voicePick:"اختيار",voiceDevice:"صوت الجهاز",auto:"النطق التلقائي",autoHint:"تُنطق الكلمة فور ظهورها",theme:"الوضع الداكن",goal:"هدف اليوم",goalV:n=>n+" نقطة",guide:"الشرح",guideBtn:"عرض",dictTitle:"القاموس",dictHint:"ابحث بالهولندية أو العربية أو الإنجليزية. يفهم القاموس صيغ الكلمات والأخطاء الإملائية.",progressTitle:"تقدّمي",toetsTitle:"Toets — امتحانات قصيرة كما في الصف",pvLearned:"كلمات تعلّمتها",pvReview:"للمراجعة",pvPoints:"مجموع النقاط",pvStreak:"أيام متتالية",pvToets:"أفضل نتائج Toets",pvNone:"لم يُؤدَّ بعد",close:"إغلاق",streakT:n=>n?n+" أيام متتالية":"لا سلسلة بعد"}
 };
 const navU=()=>NAV_UI[uiLang]||NAV_UI.uk;
 const LESSON_MODES=()=>["study","quiz","audio"].concat(targetLang==="nl"?["build"]:[],["review"]);
@@ -5078,7 +5080,7 @@ function applyView(){
  $("headerRoute").hidden=targetLang!=="nl";
 }
 function setView(v){
- const prev=view;if(v==="path"&&targetLang!=="nl")v="lesson";view=v;if(learningPath)learningPath.pauseSpeech();if(typeof gStop==="function")gStop();
+ delete document.querySelector("main").dataset.ghome;const prev=view;if(v==="path"&&targetLang!=="nl")v="lesson";view=v;if(learningPath)learningPath.pauseSpeech();if(typeof gStop==="function")gStop();
  if(prev==="games"&&v!=="games"){if(gState&&gState.chat)aiRemember(gState);gState=null;}
  const wasGames=cardOwner==="games";
  if(v==="path"){if(learningPath)learningPath.open();updateModeButtons()}
@@ -5576,10 +5578,10 @@ function gameDone(id,xp){
  saveStore();updateStats();
 }
 function gHead(title,sub,keep){
- if(!keep)gStop();cardOwner="games";
+ if(!keep)gStop();cardOwner="games";delete document.querySelector("main").dataset.ghome;
  $("prog").textContent=title;$("rnd").textContent=sub||"";gBar(0);
  const card=$("card");card.replaceChildren();
- const top=el("div","g-top");const examBack=gState&&gState.fromExam?window[gState.fromExam===true?"EXAM11":gState.fromExam]:null,fromExam=!!examBack;const back=el("button","g-back",fromExam?(uiLang==="uk"?"← Іспит":"← Exam"):gU().back);back.type="button";back.onclick=()=>{if(examBack){if(gState.chat)aiRemember(gState);gStop();examBack.open()}else renderGamesHome()};top.appendChild(back);card.appendChild(top);
+ const top=el("div","g-top");const examBack=gState&&gState.fromExam?window[gState.fromExam===true?"EXAM11":gState.fromExam]:null,fromExam=!!examBack;const back=el("button","g-back",fromExam?({uk:"← Іспит",fr:"← Examen",ar:"→ الامتحان"}[uiLang]||"← Exam"):gU().back);back.type="button";back.onclick=()=>{if(examBack){if(gState.chat)aiRemember(gState);gStop();examBack.open()}else renderGamesHome()};top.appendChild(back);card.appendChild(top);
  return card;
 }
 function gBar(p){const value=String(Math.round(Math.max(0,Math.min(1,p))*100));$("barfill").style.width=value+"%";$("barfill").parentElement.setAttribute("aria-valuenow",value)}
@@ -5853,7 +5855,7 @@ function wbCourseWords(lv=curLevel){
 }
 function renderGamesHome(){
  if(gState&&gState.chat)aiRemember(gState); // leaving the AI chat: save what was learned about the learner
- gStop();gState=null;cardOwner="games";const g=gU(),rec=gRecords(),w=weekState();
+ gStop();gState=null;cardOwner="games";document.querySelector("main").dataset.ghome="1";const g=gU(),rec=gRecords(),w=weekState();
  $("prog").textContent=g.title;$("rnd").textContent="";gBar(Math.min(1,w.played.length/5));
  const card=$("card");card.replaceChildren();
  const head=el("div","g-home-head");head.append(el("h2","",g.title),el("p","",g.sub));card.appendChild(head);
@@ -6249,7 +6251,7 @@ function dcRender(res){
  const g=gU(),s=gState,card=gHead(g.dc,(Math.min(s.i+1,s.list.length))+" / "+s.list.length);gBar(s.i/s.list.length);
  if(s.i>=s.list.length){const xp=s.ok*10;card.appendChild(el("p","g-done",s.ok+" / "+s.list.length+" · "+g.pts(xp)));const row=el("div","row");const nx=el("button","btn primary",g.again);nx.type="button";nx.id="nx";nx.onclick=dcStart;row.appendChild(nx);card.appendChild(row);if(!s.awarded){s.awarded=true;gameDone("dc",xp)}return}
  const it=s.list[s.i];
- const top=el("div","q");top.appendChild(el("small","",g.write));top.appendChild(el("div","icon-box","🎧"));
+ const top=el("div","q");top.appendChild(el("small","",g.write)); // the yellow buttons already say "listen"; no extra big icon
  const row1=el("div","row");const h=el("button","listen",getUI().repeat||"🔊");h.type="button";h.onclick=()=>say(it.t,h);const sl=el("button","listen",g.slow);sl.type="button";sl.onclick=()=>saySlow(it.t);row1.append(h,sl);top.appendChild(row1);card.appendChild(top);
  if(!res){
   const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("spellcheck","false");inp.lang="nl";inp.setAttribute("aria-label",g.write);
@@ -7062,7 +7064,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
 const RELEASE_VERSION="175";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Прогрес надійніше зберігається між телефоном і комп’ютером.", "items": ["Навчання на двох пристроях одночасно: вправи, хвилини й бали з обох пристроїв додаються без подвоєння.", "Нагорода за той самий рекорд (урок, тест, іспит) зараховується один раз, навіть якщо його побито на двох пристроях.", "Статус синхронізації: «синхронізовано» лише після підтвердження сервера, інакше — «очікує синхронізації» або «помилка» з причиною.", "Резервна копія з контрольною сумою: пошкоджений файл не змінює прогрес; старі копії більше не стирають новіших результатів."], "hint": "Статус синхронізації видно в налаштуваннях акаунта й на екрані «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Progress is kept more safely between your phone and computer.", "items": ["Studying on two devices at once: exercises, minutes and points from both devices add up without doubling.", "A reward for the same record (lesson, test, exam) counts once, even if you beat it on two devices.", "Sync status: “synced” only after the server confirms; otherwise “waiting to sync” or “sync error” with the reason.", "Backups carry a checksum: a damaged file changes nothing; old backups no longer erase newer results."], "hint": "The sync status is shown under your account and on the Progress screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "La progression est mieux protégée entre téléphone et ordinateur.", "items": ["Apprendre sur deux appareils en même temps : exercices, minutes et points des deux appareils s’additionnent sans doublons.", "La récompense d’un même record (leçon, test, examen) compte une seule fois, même battu sur deux appareils.", "État de la synchronisation : « synchronisé » seulement après confirmation du serveur, sinon « en attente » ou « erreur » avec la raison.", "Sauvegardes avec somme de contrôle : un fichier endommagé ne change rien ; les anciennes sauvegardes n’effacent plus les résultats récents."], "hint": "L’état de la synchronisation s’affiche sous ton compte et dans Progrès.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "تقدّمك محفوظ بأمان أكبر بين الهاتف والحاسوب.", "items": ["التعلّم على جهازين في الوقت نفسه: التمارين والدقائق والنقاط من الجهازين تُجمع دون تكرار.", "مكافأة الرقم القياسي نفسه (درس، اختبار، امتحان) تُحسب مرة واحدة حتى لو حققته على جهازين.", "حالة المزامنة: «تمت المزامنة» فقط بعد تأكيد الخادم، وإلا «بانتظار المزامنة» أو «خطأ» مع السبب.", "النسخ الاحتياطية بمجموع تحقق: الملف التالف لا يغيّر شيئاً، والنسخ القديمة لم تعد تمحو النتائج الأحدث."], "hint": "تظهر حالة المزامنة تحت حسابك وفي شاشة «التقدّم».", "ok": "فهمت"}};
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Прогрес надійніше зберігається між телефоном і комп’ютером.", "items": ["Навчання на двох пристроях одночасно: вправи, хвилини й бали з обох пристроїв додаються без подвоєння.", "Нагорода за той самий рекорд (урок, тест, іспит) зараховується один раз, навіть якщо його побито на двох пристроях.", "Статус синхронізації: «синхронізовано» лише після підтвердження сервера, інакше — «очікує синхронізації» або «помилка» з причиною.", "Резервна копія з контрольною сумою: пошкоджений файл не змінює прогрес; старі копії більше не стирають новіших результатів.", "Компактніші вправи на телефоні: «Почуй» і «Перевір» без великих картинок, диктант без зайвої іконки, кнопки «назад» більші, слова не рвуться посередині."], "hint": "Статус синхронізації видно в налаштуваннях акаунта й на екрані «Прогрес».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Progress is kept more safely between your phone and computer.", "items": ["Studying on two devices at once: exercises, minutes and points from both devices add up without doubling.", "A reward for the same record (lesson, test, exam) counts once, even if you beat it on two devices.", "Sync status: “synced” only after the server confirms; otherwise “waiting to sync” or “sync error” with the reason.", "Backups carry a checksum: a damaged file changes nothing; old backups no longer erase newer results.", "More compact exercises on phones: smaller pictures in Listen and Check, a tidier dictation, bigger back buttons, no words broken in the middle."], "hint": "The sync status is shown under your account and on the Progress screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "La progression est mieux protégée entre téléphone et ordinateur.", "items": ["Apprendre sur deux appareils en même temps : exercices, minutes et points des deux appareils s’additionnent sans doublons.", "La récompense d’un même record (leçon, test, examen) compte une seule fois, même battu sur deux appareils.", "État de la synchronisation : « synchronisé » seulement après confirmation du serveur, sinon « en attente » ou « erreur » avec la raison.", "Sauvegardes avec somme de contrôle : un fichier endommagé ne change rien ; les anciennes sauvegardes n’effacent plus les résultats récents.", "Exercices plus compacts sur téléphone : petites images dans Écoute et Vérifie, dictée plus claire, boutons retour plus grands, mots jamais coupés au milieu."], "hint": "L’état de la synchronisation s’affiche sous ton compte et dans Progrès.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "تقدّمك محفوظ بأمان أكبر بين الهاتف والحاسوب.", "items": ["التعلّم على جهازين في الوقت نفسه: التمارين والدقائق والنقاط من الجهازين تُجمع دون تكرار.", "مكافأة الرقم القياسي نفسه (درس، اختبار، امتحان) تُحسب مرة واحدة حتى لو حققته على جهازين.", "حالة المزامنة: «تمت المزامنة» فقط بعد تأكيد الخادم، وإلا «بانتظار المزامنة» أو «خطأ» مع السبب.", "النسخ الاحتياطية بمجموع تحقق: الملف التالف لا يغيّر شيئاً، والنسخ القديمة لم تعد تمحو النتائج الأحدث.", "تمارين أكثر إحكاماً على الهاتف: صور أصغر في الاستماع والتحقق، إملاء أوضح، أزرار رجوع أكبر، ولا تنقسم الكلمات في المنتصف."], "hint": "تظهر حالة المزامنة تحت حسابك وفي شاشة «التقدّم».", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -7263,10 +7265,10 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam-core.js?v=175" defer></script>
-<script src="./modules/exam/exam11.js?v=173" defer></script>
+<script src="./modules/exam/exam-core.js?v=176" defer></script>
+<script src="./modules/exam/exam11.js?v=176" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
-<script src="./modules/exam/exam12.js?v=173" defer></script>
+<script src="./modules/exam/exam12.js?v=176" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->

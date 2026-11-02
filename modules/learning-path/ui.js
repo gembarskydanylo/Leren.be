@@ -128,7 +128,9 @@
    const w=model.current(),listen=s.phase===1;
    // Listening: the counter and the task on one line, then the picture and the yellow "Listen" button side by side,
    // so all four answers fit on a phone screen without scrolling (no big headphones icon above the button).
-   if(listen){const head=node('p','lp-caption lp-listen-head');head.append(node('strong','',(s.index+1)+' / '+s.ids.length),' · '+t('phaseHint')[s.phase]);const row=node('div','lp-listen-row'),art=illustration(w);art.classList.add('lp-listen-pic');const play=listenButton(w.nl);play.textContent='🎧 '+t('sound');row.append(art,play);box.append(head,row)}
+   // Checking: the same compact row with the small picture and the word to translate.
+   if(s.phase>0){const head=node('p','lp-caption lp-listen-head');head.append(node('strong','',(s.index+1)+' / '+s.ids.length),' · '+t('phaseHint')[s.phase]);const row=node('div','lp-listen-row'+(listen?'':' lp-check-row')),art=illustration(w);art.classList.add('lp-listen-pic');
+    if(listen){const play=listenButton(w.nl);play.textContent='🎧 '+t('sound');row.append(art,play)}else row.append(art,node('p','lp-word',translation(w)));box.append(head,row)}
    else box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]),illustration(w));
    if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
     // Say each new word once by itself; the learner already tapped to get here, and the voice setting decides.
@@ -136,8 +138,6 @@
     if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}
     const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
    }else{
-    // The illustration above already represents the word; do not render its icon again.
-    if(!listen)box.appendChild(node('p','lp-word',translation(w)));
     const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2,listen);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
    }
    root.appendChild(box);note();
