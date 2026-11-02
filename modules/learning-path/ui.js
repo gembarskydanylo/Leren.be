@@ -92,11 +92,9 @@
    for(const x of pool){const text=x[key]||x.uk;if(!seen.has(text)){seen.add(text);opts.push({text,ok:false});if(opts.length===4)break}}
    return opts.sort(()=>Math.random()-.5);
   }
-  // The card's picture: a drawing (trusted SVG from modules/card-art or the lesson data) or an emoji.
-  function picture(w){const ic=w&&w.icon;if(!ic)return null;const svg=String(ic).startsWith('<'),d=node('div','icon-box lp-picture'+(svg?' kt':''));d.setAttribute('aria-hidden','true');if(svg)d.innerHTML=ic;else d.textContent=ic;return d}
   function exercises(){
    const s=model.state.session;if(!s){go('home');return}
-   const box=node('div','lp-card lp-exercise');
+   const box=node('div','lp-card lp-exercise');if(s.phase===2)box.classList.add('lp-check-phase');
    // The topic name is left out of the small line above when the lesson title already starts with it.
    if(s.kind==='lesson'){const l=model.lesson(s.lesson),ch=chapter(l),lt=lessonTitle(l),words=x=>new Set(x.toLowerCase().split(/[^\p{L}]+/u).filter(w=>w.length>=3)),a=words(lt),b=words(title(ch)),same=b.size>0&&[...b].filter(w=>a.has(w)).length/b.size>=.6;box.append(node('span','lp-eyebrow',ch.level+(same?'':' · '+title(ch))),node('h2','',lt))}else box.appendChild(node('h2','',t('review')));
    const steps=node('ol','lp-steps');['study','listen','check'].forEach((key,i)=>{const li=node('li',i===s.phase?'lp-active':'',(i<s.phase?'✓ ':i+1+'. ')+t(key));if(i===s.phase)li.setAttribute('aria-current','step');steps.appendChild(li)});box.appendChild(steps);
@@ -138,7 +136,7 @@
     if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}
     const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
    }else{
-    const cp=!listen&&picture(w);if(cp)box.appendChild(cp);
+    // The illustration above already represents the word; do not render its icon again.
     if(!listen)box.appendChild(node('p','lp-word',translation(w)));
     const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2,listen);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
    }

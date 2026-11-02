@@ -134,3 +134,15 @@
 .lp-exercise .lp-listen-row~.lp-options{margin:10px 0}
 @media(max-width:620px){.lp-exercise .lp-listen-row~.lp-options .lp-button{min-height:54px}}
 @media(max-width:360px){.lp-listen-row{gap:10px;padding:10px}.lp-exercise .lp-listen-row .lp-word-art.lp-listen-pic{width:64px;height:64px}.lp-listen-row .fh-sound{font-size:15px}}
+
+
+/* One concise illustration per check question, including the answer feedback. */
+.lp-exercise.lp-check-phase .lp-word-art{height:142px;max-width:290px;margin:10px auto 12px}
+.lp-exercise.lp-check-phase>.lp-word{margin:12px 0;font-size:clamp(24px,5.5vw,34px)}
+.lp-exercise.lp-check-phase .lp-options{margin:12px 0;gap:9px}
+.lp-exercise.lp-check-phase .lp-options .lp-button{min-height:58px}
+.lp-exercise.lp-check-phase .lp-feedback{margin:12px 0;padding:14px}
+.lp-exercise.lp-check-phase .lp-feedback .lp-word-art{height:132px;max-width:250px}
+.lp-exercise.lp-check-phase .lp-feedback .lp-word{margin:10px 0 8px;font-size:clamp(23px,5.6vw,32px)}
+.lp-exercise.lp-check-phase .lp-feedback .lc-coach{margin-bottom:8px}
+@media(max-width:600px){.lp-exercise.lp-check-phase{padding-bottom:115px}.lp-exercise.lp-check-phase .lp-word-art{height:120px}.lp-exercise.lp-check-phase .lp-feedback .lp-word-art{height:114px}}
