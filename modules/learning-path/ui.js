@@ -56,8 +56,14 @@
    const ch=course.chapters.find(c=>c.id===mapChapter),st=model.stats(ch.id),summary=node('div','fh-chapter-summary');summary.append(LerenFocus.meter(st.done,st.total,title(ch)),node('span','lp-caption',st.done+' / '+st.total+' '+f.lessons));root.appendChild(summary);
    const list=node('ol','fh-lesson-list');for(const l of ch.lessons){const done=Object.hasOwn(model.state.completed,l.id),active=model.recommended()?.id===l.id,state=done?'done':active?'current':'ahead',li=node('li','is-'+state),b=button('',()=>begin(l));b.className='fh-lesson-row';const label=node('span','fh-lesson-copy');label.append(node('strong','',lessonTitle(l)),node('small','',done&&!model.mastered(l.id)?t('review'):f[state]));b.append(node('span','fh-lesson-marker',done?'✓':String(ch.lessons.indexOf(l)+1)),label,node('span','fh-lesson-end',done?'✓':active?'→':f.time));if(active)b.setAttribute('aria-current','step');li.appendChild(b);list.appendChild(li)}root.appendChild(list);
    if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last)root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
+   writeBlock(ch.id);
    if(st.done===st.total)root.appendChild(button(t('openTest'),()=>bridge.assess(ch.id),true));
   }
+  // Writing practice (A1.2 topics): one or two short messages or forms per topic, checked with a checklist.
+  const WRITE_T={uk:['✍️ Письмо','Напиши коротке повідомлення на тему уроку. Застосунок перевірить його за списком.','Написати'],en:['✍️ Writing','Write a short message on the topic. The app checks it with a checklist.','Write'],fr:['✍️ Écrit','Écris un court message sur le thème. L’application le vérifie avec une liste.','Écrire'],ar:['✍️ الكتابة','اكتب رسالة قصيرة عن موضوع الدرس. يتحقق التطبيق منها بقائمة.','اكتب']};
+  const writeTasks=chId=>bridge.writeTasks?bridge.writeTasks(chId,lang):[];
+  function writeBlock(chId){const tasks=writeTasks(chId);if(!tasks.length)return;const w=WRITE_T[lang]||WRITE_T.uk,box=node('section','fh-write');box.append(node('h3','',w[0]),node('p','lp-caption',w[1]));
+   for(const task of tasks){const b=button((task.best>=100?'✓ ':'')+task.title+(task.best!=null?' · ★ '+task.best+'%':''),()=>bridge.openWrite(task.id,chId));b.classList.add('fh-write-task');b.dataset.write=task.id;box.appendChild(b)}root.appendChild(box)}
   function intro(){const s=model.state.session,l=model.lesson(s.lesson),ch=chapter(l),box=node('div','lp-card');box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),node('p','',t('goalText')));
    const list=node('ul','lp-preview-list');l.ids.forEach(id=>{const w=word(id);list.appendChild(node('li','',w.nl+' — '+translation(w)))});box.append(list,node('p','lp-caption',t('minutes')),button(t('begin'),()=>go('lesson'),true));root.appendChild(box);note()}
   function listenButton(text){const b=button('▶ '+t('sound'),()=>bridge.speak(text,b));b.classList.add('listen','fh-sound');b.setAttribute('aria-label',t('sound')+' · '+text);return b}
@@ -106,6 +112,7 @@
     if(model.mistakes().length)box.appendChild(button(t('reviewBtn'),()=>{model.beginReview();go('lesson')}));
     if(result.kind==='lesson'){const ch=chapter(model.lesson(result.id)),stats=model.stats(ch.id);if(stats.done===stats.total){box.append(node('h3','',t('assess')),node('p','',t('assessHint')),button(t('openTest'),()=>bridge.assess(ch.id)))}}
     if(result.kind==='lesson'&&talkOk)box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
+    if(result.kind==='lesson'){const chId=chapter(model.lesson(result.id)).id,task=writeTasks(chId)[0];if(task){const b=button((WRITE_T[lang]||WRITE_T.uk)[2]+': '+task.title,()=>bridge.openWrite(task.id,chId));b.dataset.write=task.id;box.appendChild(b)}}
     box.appendChild(button(t('nextLesson'),()=>{const l=model.continueRoute();go(l?'intro':'home')},result.kind!=='lesson'));
     if(result.kind==='lesson')box.appendChild(button(t('repeat'),()=>begin(model.lesson(result.id))));
     root.appendChild(box);note();return;
@@ -137,7 +144,7 @@
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
   function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';syncCourse();if(screen!=='map'||!mapChapter)mapLevel=model.course;shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises();globalThis.LerenEmoji?.enhance(root)}
-  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
+  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
  }
  globalThis.LerenLearningPath.mount=mount;
 })();

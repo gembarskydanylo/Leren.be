@@ -61,10 +61,10 @@ assert.equal(new Set(wb.map(w=>w[0])).size,wb.length,'No word twice');
 // Dialogues, role play and speaking follow the course.
 const g=boot({}).c;vm.runInContext(script.slice(script.indexOf('const DIALOGUES=['),script.indexOf('const GAMES='))+';globalThis.G={DIALOGUES,SPEAK_Q}',g);
 const dlg=g.G.DIALOGUES.filter(d=>(d.lvl||'a11')==='a12'),speak=g.G.SPEAK_Q.filter(q=>(q.lvl||'a11')==='a12');
-assert.equal(dlg.length,12);assert.equal(speak.length,14);
+assert.equal(dlg.length,15);assert.equal(speak.length,33);
 for(const d of dlg){assert(d.lines.length>=6);for(const l of d.lines)assert(l[1]&&l[2]&&l[3],'Empty dialogue line '+d.id)}
 for(const q of speak)assert(q.q&&q.uk&&q.en&&q.m,'Empty speaking task');
-assert.equal(new Set(dlg.map(d=>d.id)).size,12);
+assert.equal(new Set(dlg.map(d=>d.id)).size,15);
 // Spell-the-word, blitz, memory and dictation keep answer texts and pairs unique.
 assert(script.includes('wrong=[...new Set(shuffle(s.pool.filter(x=>meaningFor(x)!==right)).map(meaningFor))].slice(0,3)'));
 assert(script.includes('seenNl.has(a)||seenTr.has(b)'));
@@ -75,7 +75,7 @@ vm.runInContext(read('modules/test-library/ui.js')+';if(typeof LerenTestLibrary=
 vm.runInContext(script.slice(script.indexOf('const DIPH_UI = '),script.indexOf('\nlet toetsId'))+'\n'+script.slice(script.indexOf('const BUILD_BANK='),script.indexOf('const SENT='))+'\nLerenTestLibrary.ensureCombined(TOETS);globalThis.T={TOETS,BUILD_BANK};',t);
 const cats=vm.runInContext('CATEGORIES.filter(c=>c.lvl==="a12")',t);assert.equal(cats.length,16,'All 16 A1.2 topics');
 for(const c of cats){
- assert(t.T.BUILD_BANK[c.id]?.some(r=>r[0]===1),'Sentence builder level 1: '+c.id);
+ assert(t.T.BUILD_BANK[c.id].filter(r=>r[0]===1).length>=6,'At least six beginner sentences: '+c.id);
  for(const tab of c.tabs){const items=vm.runInContext(`DATA[${JSON.stringify(tab)}].items`,t);assert(items.length>=4,tab);for(const x of items)for(const l of ['nl','uk','en','fr','ar'])assert(String(x[l]||'').trim(),'Empty '+x.id+' '+l)}
 }
 const tests=t.T.TOETS.filter(x=>x.lvl==='a12');
