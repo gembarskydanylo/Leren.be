@@ -6,7 +6,7 @@ const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.matc
 const fn=name=>{const a=script.indexOf('function '+name+'(');assert(a>=0,name);let i=script.indexOf('{',a),d=0;for(;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)break}return script.slice(a,i+1)+'\n'};
 const line=start=>{const a=script.indexOf(start);assert(a>=0,start);return script.slice(a,script.indexOf('\n',a))};
 const same=(a,b,msg)=>assert.equal(JSON.stringify(a),JSON.stringify(b),msg);
-const prefix=read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'));
+const prefix=read('modules/review/srs.js')+'\n'+read('modules/insights/core.js')+'\n'+read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'));
 const host=fn('lsGet')+fn('lsSet')+fn('levelById')+fn('levelUnlocked')+fn('levelCats')+fn('catLevel')+fn('itemsFor')+fn('gPool')+fn('switchCourse')+fn('saveStore')+fn('wbCourseWords')+'\n'+
  line('const allItems=')+'\n'+line('const levelItems=')+'\n'+fn('dueItems')+line('const learnedCount=')+'\n'+fn('stateFor')+line('const A11_ONLY_GAMES=')+'\n'+line('const gameForLevel=')+'\n'+
  line('const labelFor=')+'\n'+line('const meaningFor=')+'\n';

@@ -120,3 +120,7 @@
 @media(max-width:620px) and (max-height:680px){
  .lp-exercise .lp-word-art{display:none}
 }
+/* v174: a finished lesson is shown as a success; the daily goal is a quiet note under it */
+.lp-done{display:grid;gap:4px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--ok-soft,#e6f6ec);color:var(--ink)}
+.lp-done strong{font-size:18px;color:var(--ok-deep,#1d7a45)}.lp-goal-note{font-size:14px;color:var(--ink-2)}
+:root[data-theme="dark"] .lp-done strong{color:var(--ok)}

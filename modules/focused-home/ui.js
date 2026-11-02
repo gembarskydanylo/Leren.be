@@ -14,11 +14,12 @@
  }
  // Long topic names must never break inside a word (e.g. "Знайомств-о" with large phone text): shrink the title until it fits.
  function fitTitle(box){const run=()=>{const h=box.querySelector('h2');if(!h||!h.isConnected)return;h.style.fontSize='';let fs=parseFloat(getComputedStyle(h).fontSize)||27;let guard=0;while(guard++<20&&fs>16&&h.scrollWidth>h.clientWidth+1){fs-=1;h.style.fontSize=fs+'px'}};if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);if(!fitTitle.bound&&typeof addEventListener==='function'){fitTitle.bound=true;addEventListener('resize',()=>document.querySelectorAll('.fh-hero').forEach(b=>fitTitle(b)))}}
- function hero({lang,started,lesson,chapter,chapterId,level,part,totalParts,placing,allDone,onBegin,onPlacement,onMap,onFree,freeLabel,done,total}){
+ function hero({lang,plan,planBy,started,lesson,chapter,chapterId,level,part,totalParts,placing,allDone,onBegin,onPlacement,onMap,onFree,freeLabel,done,total}){
   const t=tr(lang),legacy=LerenCompanion.tr(lang),box=node('section','fh-hero'),content=node('div','fh-hero-content'),art=node('div','fh-hero-art'),cat=LerenCompanion.cat('welcome',true,lang);
   const greeting=node('span','fh-cat-caption',({uk:'Вчимося разом',en:'Learning together',fr:'On apprend ensemble',ar:'نتعلّم معاً'})[lang]);
   cat.onclick=()=>{cat.dataset.pose=cat.dataset.pose==='welcome'?'happy':'welcome';greeting.textContent=legacy.wave};art.append(cat,greeting);
   content.append(node('p','fh-eyebrow',(level||'A1.1')+' · '+t.next),node('h2','',allDone?t.doneAll:placing?({uk:'Знайдемо твій старт',en:'Find your starting point',fr:'Trouvons ton départ',ar:'لنحدّد بدايتك'})[lang]:chapter||t.first),node('p','fh-description',allDone?t.doneHint:placing?(started?t.resume:t.intro):(globalThis.LerenCurriculum?.topicInfo?.(chapterId,lang)?.description||(started?t.resume:t.intro))));
+  if(plan){const say=node('p','fh-plan');if(planBy)say.appendChild(node('strong','',planBy+': '));say.append(plan);content.append(say)}
   if(lesson&&!placing){const detail=node('div','fh-lesson-detail');detail.append(node('strong','',lesson),node('span','',t.time+(totalParts>1?' · '+t.part+' '+part+'/'+totalParts:'')));content.append(detail)}
   const actions=node('div','fh-main-action');actions.append(button(allDone?t.all:placing?({uk:'Продовжити перевірку старту',en:'Continue my starting check',fr:'Continuer le bilan de départ',ar:'تابع تحديد البداية'})[lang]:started?legacy.resume:legacy.start,allDone?onMap:onBegin,'fh-primary'));
   if(!started&&!placing&&onPlacement){const start=button(t.known+' →',onPlacement,'fh-alternative');start.title=t.newPlace;actions.appendChild(start)}

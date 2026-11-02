@@ -44,12 +44,19 @@
   function hero(){
    courseSwitch();
    const session=model.state.session,paused=session?.kind==='lesson'&&(session.phase<2||session.index<session.ids.length)&&chapter(model.lesson(session.lesson)).level===model.course?model.lesson(session.lesson):null,next=paused||model.recommended(),placing=!!model.state.placement,stats=model.stats(),started=placing||!!paused||stats.done>0||model.state.started&&model.course===model.levels[0],f=LerenFocus.tr(lang),ch=next&&chapter(next);
-   root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,onBegin(){if(placing){go('placement');return}if(next){if(!model.state.started)model.start();begin(next)}},onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
+   // Guided route: words that need review come first, as a short warm-up before the next lesson (once a day).
+   const due=bridge.due?bridge.due():[],warm=!placing&&!paused&&next&&model.warmupDue(due)?model.warmupIds(due).length:0;
+   root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,onBegin(){if(placing){go('placement');return}if(warm&&model.beginWarmup(due)){go('lesson');return}if(next){if(!model.state.started)model.start();begin(next)}},onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
    if(talkOpen()&&!paused){const card=node('div','fh-talk-resume');card.append(node('span','',talkText('resume')+' · '+(bridge.lessonLabel(model.lesson(conversation.state.lesson).tab,lang)||'')),LerenFocus.button('💬 '+talkText('resume')+' →',()=>beginTalk(conversation.state.lesson),'fh-talk-btn'));root.appendChild(card)}
+   // Peter's advice (from the learner's own results) right under the next step; it opens the exercise itself.
+   const advice=!warm&&!placing&&bridge.advice?bridge.advice():null;
+   if(advice){const card=node('div','fh-advice'),face=node('img','fh-advice-face');face.src=bridge.person?.().image||'./img/chars/peter.webp';face.alt='';face.width=44;face.height=44;const text=node('div','fh-advice-text');text.append(node('strong','',(bridge.person?.().name||'Peter')+':'),node('p','',advice.text));card.append(face,text,LerenFocus.button(advice.label,advice.run,'fh-advice-btn'));root.appendChild(card)}
    const overview=node('section','fh-overview'),heading=node('div','fh-section-heading');heading.append(node('h2','',f.topics),LerenFocus.button(f.all+' →',()=>openMap()));overview.append(heading);
    const tiles=node('div','fh-topic-grid fh-preview-grid'),own=course.chapters.filter(c=>c.level===model.course),start=Math.max(0,own.findIndex(c=>c.id===ch?.id)),preview=own.slice(start,start+2);for(const c of preview.length?preview:own.slice(0,2))tiles.appendChild(topicTile(c));overview.appendChild(tiles);root.appendChild(overview);
    const extras=node('div','fh-extras');extras.append(LerenFocus.button('✦ '+f.gifts,()=>bridge.rewards(),'fh-extra-link'),LerenFocus.button(f.about,()=>LerenFocus.about(lang),'fh-extra-link'));root.appendChild(extras);note();
   }
+  const WARM={uk:n=>'Спершу повторимо '+n+' '+(n<5?'слова':'слів')+', які ти починаєш забувати, потім — новий урок.',en:n=>'First we review '+n+' words you are starting to forget, then a new lesson.',fr:n=>'D’abord on révise '+n+' mots que tu commences à oublier, puis une nouvelle leçon.',ar:n=>'أولاً نراجع '+n+' كلمات بدأت تنساها، ثم درس جديد.'};
+  const warmPlan=n=>(WARM[lang]||WARM.uk)(n);
   function courseMap(){
    const f=LerenFocus.tr(lang),head=node('div','fh-map-heading');head.append(node('p','fh-eyebrow',f.course+' A1'),node('h2','',mapChapter?title(course.chapters.find(c=>c.id===mapChapter)):f.map),node('p','lp-caption',f.mapHint));root.appendChild(head);
    if(!mapChapter){const levels=node('div','fh-levels');levels.setAttribute('aria-label',f.levelHint);for(const level of model.levels){const b=LerenFocus.button(level,()=>{if(pickCourse(level))render()},'fh-level');b.setAttribute('aria-pressed',String(mapLevel===level));levels.appendChild(b)}root.appendChild(levels);const grid=node('div','fh-topic-grid');for(const ch of course.chapters.filter(c=>c.level===mapLevel))grid.appendChild(topicTile(ch));root.appendChild(grid);root.appendChild(LerenFocus.button(f.newPlace,()=>{model.place();go('placement')}));return}
@@ -106,6 +113,8 @@
    if(s.index===s.ids.length){
     if(s.phase<2){box.append(node('h3','',t('stepDone')),node('p','',t('phaseHint')[s.phase+1]),button(t('nextStep')+' → '+t(['study','listen','check'][s.phase+1]),()=>{model.nextPhase();render()},true));root.appendChild(box);return}
     const result=model.finish(),gain=result.kind==='lesson'?bridge.complete(result.id,result.correct,result.total):0;
+    // A finished lesson is a success on its own; the daily goal (minutes) is only shown as information.
+    if(result.kind==='lesson'&&bridge.goal){const g=bridge.goal(),c=bridge.goalText(g),ok=node('div','lp-done');ok.setAttribute('role','status');ok.append(node('strong','',c.done),node('span','lp-goal-note',c.goal));box.appendChild(ok)}
     box.append(node('h3','',t(result.kind==='lesson'?'result':'resultReview')),node('p','lp-result',result.correct+' / '+result.total),node('p','',t(result.correct/result.total>=.8?'good':'help')));
     if(gain)box.appendChild(node('p','lp-points','+'+gain+' '+t('points')));
     box.appendChild(node('p','',t('learned')));const list=node('ul');s.ids.forEach(id=>list.appendChild(node('li','',word(id).nl+' — '+translation(word(id)))));box.appendChild(list);
@@ -128,7 +137,7 @@
     const cp=!listen&&picture(w);if(cp)box.appendChild(cp);
     box.appendChild(node('p',listen?'lp-sound':'lp-word',listen?'🎧':translation(w)));
     if(listen)box.appendChild(listenButton(w.nl));
-    const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
+    const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2,listen);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
    }
    root.appendChild(box);note();
   }
@@ -144,7 +153,7 @@
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
   function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';syncCourse();if(screen!=='map'||!mapChapter)mapLevel=model.course;shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises();globalThis.LerenEmoji?.enhance(root)}
-  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
+  render();return {refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
  }
  globalThis.LerenLearningPath.mount=mount;
 })();

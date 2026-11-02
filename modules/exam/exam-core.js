@@ -40,17 +40,17 @@ function score(w,text,common,minDefault=5){
  const sents=t.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(x=>x.length>2&&x!==sign&&!/^(hallo|beste|dag|hoi|lieve|groetjes|groeten)\b/i.test(x)&&!/,$/.test(x)&&x.split(/\s+/).length>1);
  if(!w.form){const cap=sents.filter(x=>!/^[A-Z’'0-9]/.test(x)),dot=sents.filter(x=>!/[.!?]$/.test(x)),n=w.min||minDefault;
   items.push({ok:cap.length===0,label:X().cap},{ok:dot.length===0,label:X().dot},{ok:sents.length>=n,label:X().min(n,sents.length)},{ok:!!sign||/\n\s*[A-Z][a-z]+\s*$/.test(t)||/groetjes,?\s*\n?\s*\S+\s*$/i.test(t),label:X().name})}
- const tips=(common||[]).filter(([re])=>re.test(t)).map(([,m])=>tr(m)),ok=items.filter(x=>x.ok).length;
- return {items,ok,total:items.length,pct:Math.round(ok/items.length*100),tips};
+ const hits=(common||[]).filter(([re])=>re.test(t)),tips=hits.map(([,m])=>tr(m)),ok=items.filter(x=>x.ok).length;
+ return {items,ok,total:items.length,pct:Math.round(ok/items.length*100),tips,tipRes:hits.map(([re])=>re)};
 }
 function make(D){
 const {KEY,T,TEXTS,LEZEN,DLG,LUISTEREN,WOORDEN=[],GRAM,WRITE,COMMON=[],SPREKEN,MV=null,MV_PICK=null,OM=null,OM_MC=null,RULES={}}=D,OPT_UK=D.OPT_UK||{};
 // Exam copy: shared words from BASE, the exam's own title and parts from its data file (English as fallback).
 const U=()=>({...T.en,...BASE[L()],...(T[L()]||{})});
 function mkMV(m,i){const acc=m[2].split("|"),gap=m[0].replace("___","___ ("+m[1]+")"),full=m[0].replace("___",acc[0]);
- return i%2?{kind:"type",gap,acc,ok:acc[0],full,u:m[4],e:L()==="uk"?m[1]+" → "+acc.join(" / "):m[1]+" → "+acc[0]}:{kind:"mc",gap,o:[acc[0],...m[3]],ok:acc[0],full,u:m[4],e:m[1]+" → "+acc.join(" / "),nlOpts:true}}
-function mkOM(o){const w=o[1].replace(/\.$/,"").split(" ");return{kind:"order",prompt:o[0],promptU:o[2],w:w.map((x,i)=>i===w.length-1?x+".":x),a:o[1],u:o[3],e:tr(Q("Omdat → дієслово в кінці речення","Omdat → verb at the end"))}}
-function mkOMmc(o){return{kind:"mc",q:X().which,o:[o[0],...o[1]],ok:o[0],full:o[0],u:o[2],nlOpts:true,e:/^Want/.test(o[0])?tr(Q("want → звичайний порядок: підмет + дієслово","want → normal order")):tr(Q("omdat → дієслово(а) в кінці","omdat → verb(s) at the end"))}}
+ return i%2?{src:"meervoud",kind:"type",gap,acc,ok:acc[0],full,u:m[4],e:L()==="uk"?m[1]+" → "+acc.join(" / "):m[1]+" → "+acc[0]}:{src:"meervoud",kind:"mc",gap,o:[acc[0],...m[3]],ok:acc[0],full,u:m[4],e:m[1]+" → "+acc.join(" / "),nlOpts:true}}
+function mkOM(o){const w=o[1].replace(/\.$/,"").split(" ");return{src:"omdat",kind:"order",prompt:o[0],promptU:o[2],w:w.map((x,i)=>i===w.length-1?x+".":x),a:o[1],u:o[3],e:tr(Q("Omdat → дієслово в кінці речення","Omdat → verb at the end"))}}
+function mkOMmc(o){return{src:"omdat",kind:"mc",q:X().which,o:[o[0],...o[1]],ok:o[0],full:o[0],u:o[2],nlOpts:true,e:/^Want/.test(o[0])?tr(Q("want → звичайний порядок: підмет + дієслово","want → normal order")):tr(Q("omdat → дієслово(а) в кінці","omdat → verb(s) at the end"))}}
 function mkPick(){return{kind:"pick",ptext:MV_PICK.text,targets:MV_PICK.targets,ok:MV_PICK.targets.join(", "),textUk:MV_PICK.uk,e:tr(Q("heten, eten — дієслова, не множина іменників","heten, eten are verbs, not plural nouns"))}}
 // ---------------- HELPERS ----------------
 const st=()=>{try{const s=lsGet(KEY,{});return s&&typeof s==="object"?s:{}}catch(e){return{}}};
@@ -100,8 +100,8 @@ function home(){
 }
 
 // ---------------- QUIZ ENGINE ----------------
-function mkLezen(x){return{kind:"mc",text:TEXTS[x.t],q:tr(x.q),o:x.o,ok:x.o[0]}}
-function mkLuisteren(x){return{kind:"mc",dlg:DLG[x.d],q:tr(x.q),o:x.o,ok:x.o[0]}}
+function mkLezen(x){return{src:"lezen",kind:"mc",text:TEXTS[x.t],q:tr(x.q),o:x.o,ok:x.o[0]}}
+function mkLuisteren(x){return{src:"luisteren",kind:"mc",dlg:DLG[x.d],q:tr(x.q),o:x.o,ok:x.o[0]}}
 function wordPool(){ // the exam words + every word of the four "exam words" lessons (chapters 8-11)
  const seen=new Set(),out=[];const add=x=>{const k=x[0].toLowerCase();if(!seen.has(k)&&x[1]){seen.add(k);out.push(x)}};
  WOORDEN.forEach(add);
@@ -116,7 +116,7 @@ function mkWoord(w,i,all){
  return dir?{kind:"mc",pair:w,q:X().inNl(m(w)),o:[w[0],...others.map(x=>x[0])],ok:w[0],nlOpts:true}
   :{kind:"mc",pair:w,q:X().means(w[0]),o:[m(w),...others.map(m)],ok:m(w),nlQ:w[0]};
 }
-function mkGram(g){return g.w?{kind:"order",w:g.w,a:g.a,e:tr(g.e),u:g.u}:{kind:"mc",gap:g.s,full:fullGap(g),o:g.o,ok:g.o[0],e:tr(g.e),u:g.u,nlOpts:true}}
+function mkGram(g){return g.w?{src:"gram",kind:"order",w:g.w,a:g.a,e:tr(g.e),u:g.u}:{src:"gram",kind:"mc",gap:g.s,full:fullGap(g),o:g.o,ok:g.o[0],e:tr(g.e),u:g.u,nlOpts:true}}
 function build(part){
  if(part==="lezen")return LEZEN.map(mkLezen);
  if(part==="luisteren")return LUISTEREN.map(mkLuisteren);
@@ -187,6 +187,8 @@ function answer(ok,btn,box,orderAnswer){
  box.querySelectorAll("button").forEach(b=>{b.disabled=true;if(it.kind==="mc"&&b.textContent===it.ok)b.classList.add("correct")});
  if(btn&&!ok)btn.classList.add("incorrect");
  if(ok)s.right++;else s.miss.push(it);
+ // Progress by skill and grammar point (index.html: modules/insights).
+ if(typeof examLog==="function")examLog(KEY,it,ok);
  s.i++;qzSave();s.i--; // the answer counts even if the learner leaves now
  const fb=el("div","ex-fb "+(ok?"ok":"bad"));fb.appendChild(el("strong","",ok?u.right:u.wrong+" "));
  if(!ok&&it.kind!=="pick"){fb.appendChild(nl(it.kind==="order"?it.a:it.ok))}
@@ -240,6 +242,7 @@ function write(w,back){
   const r=score(w,ta.value,COMMON,D.min||5);res.replaceChildren(el("strong","",u.wTips));const ul=el("ul","ex-list");
   r.items.forEach(x=>ul.appendChild(el("li",x.ok?"ok":"bad",(x.ok?"✅ ":"⬜ ")+x.label)));res.appendChild(ul);
   if(r.tips.length){const tl=el("ul","ex-list warn");r.tips.forEach(m=>tl.appendChild(el("li","bad","⚠️ "+m)));res.appendChild(tl)}
+  if(typeof examLog==="function")r.tipRes.forEach(re=>examLog(KEY,{src:"tip",re},false));
   setBest("schrijven",r.pct);{const s=st();s.wbest=s.wbest||{};if(!(s.wbest[w.id]>=r.pct)){s.wbest[w.id]=r.pct;save(s)}}bar(r.ok/r.total);
   if(r.pct===100&&!r.tips.length)toast("🏆 "+r.pct+"%");
  };
@@ -265,7 +268,7 @@ function speak(topic,i){
  const mic=el("button","btn primary",u.sSpeak);mic.type="button";
  const hasSR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);if(!hasSR)mic.hidden=true;
  let job=null;
- const judge=alts=>{const said=alts[0]||"";const words=norm(qa[1]).split(" ").filter(w=>w.length>2),got=norm(alts.join(" "));const hit=words.filter(w=>got.includes(w)).length,good=hit/Math.max(1,words.length)>=.6;
+ const judge=alts=>{if(typeof examSpoke==="function")examSpoke(KEY);const said=alts[0]||"";const words=norm(qa[1]).split(" ").filter(w=>w.length>2),got=norm(alts.join(" "));const hit=words.filter(w=>got.includes(w)).length,good=hit/Math.max(1,words.length)>=.6;
   out.replaceChildren(el("small","",u.sHeard),nl(" «"+said+"» "),el("span",good?"ex-good":"ex-meh",good?" 👍":" 🙂"));model.hidden=false};
  mic.onclick=()=>{
   if(mic.classList.contains("rec")){job&&job.stop();return}
@@ -303,7 +306,7 @@ function chips(){return D.chips?D.chips(L()):[]}
 const tasks=()=>[...WRITE,...(D.LESSON_WRITE||[])];
 function writeTask(id,back){const w=tasks().find(x=>x.id===id);if(!w)return false;write(w,back);return true}
 const writeBest=id=>((st().wbest||{})[id]);
-return {open:home,texts,chips,speakScript,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},tasks,writeTask,writeBest,score:(w,t)=>score(w,t,COMMON,D.min||5),_current:()=>QZ&&QZ.items[QZ.i],_quiz:quiz,_write:write,_speak:speak};
+return {open:home,texts,chips,speakScript,data:{LEZEN,LUISTEREN,WOORDEN,GRAM,WRITE,SPREKEN,DLG,TEXTS},tasks,writeTask,writeBest,score:(w,t)=>score(w,t,COMMON,D.min||5),practice:part=>part==="spreken"?speakPick():part==="schrijven"?writePick():quiz(part,true),_current:()=>QZ&&QZ.items[QZ.i],_quiz:quiz,_write:write,_speak:speak};
 }
 globalThis.LerenExam={make,Q,score};
 })();
