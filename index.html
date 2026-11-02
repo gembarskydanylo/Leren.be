@@ -1032,7 +1032,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=177">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=176">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=178">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
@@ -2835,7 +2835,7 @@ function toast(msg,big){
 }
 function renderProgressPanel(){
  const u=getUI(),p=pgU(),box=$("progressPanel");if(!box)return;
- const {cur,next}=rankInfo(),st=streakState(),g=goalMin(),mins=minutesToday(),iu=LerenInsights.ui(uiLang);
+ const st=streakState(),g=goalMin(),mins=minutesToday(),iu=LerenInsights.ui(uiLang);
  box.replaceChildren();
  // row 1: streak + daily goal
  const r1=el("div","pp-row");
@@ -2845,16 +2845,15 @@ function renderProgressPanel(){
  const gt=el("span","pp-mini");const gi=el("i");gi.style.width=Math.min(100,Math.round(mins/g*100))+"%";gt.appendChild(gi);
  if(mins>=g)gb.classList.add("done");
  gb.append(gl,gt,gv);r1.append(sk,gb);box.appendChild(r1);
- // row 2: level bar
- const r2=el("div","pp-level");
- const from=el("span","pp-badge",cur.name);
+ // row 2: the course being studied (A1.1 or A1.2) and how much of its route is done; the next level on the right.
+ // (The old bar followed the highest open level, so a beginner in A1.1 saw "A1.2 → A2.1".)
+ const r2=el("div","pp-level"),L=levelById(curLevel)||LEVELS[0],nextL=LEVELS[LEVELS.indexOf(L)+1]||null;
+ const from=el("span","pp-badge",L.name);
  const track=el("div","pp-track");const fill=el("i");
- let label;
- if(next){const span=Math.max(1,next.need-cur.need),done=Math.max(0,Math.min(span,score-cur.need));fill.style.width=Math.round(done/span*100)+"%";
-  const left=Math.max(0,next.need-score);label=left>0?p.xpTo(left)+" "+next.name+(next.soon?" ("+p.soon+")":""):next.name+" · "+(next.soon?p.soon:p.unlockedBy);}
- else{fill.style.width="100%";label=cur.name}
- track.setAttribute("role","progressbar");track.setAttribute("aria-label",label);track.appendChild(fill);
- const to=el("span","pp-badge next"+(next&&next.soon?" soon":""),next?next.name+(next.soon?"":" 🔒"):"🏆");
+ const st2=learningPath?learningPath.model.courseStats(L.name):{done:0,total:0},pct=st2.total?Math.round(st2.done/st2.total*100):0;fill.style.width=pct+"%";
+ const label=({uk:st2.done+" з "+st2.total+" уроків "+L.name+" пройдено",en:st2.done+" of "+st2.total+" "+L.name+" lessons done",fr:st2.done+" leçons "+L.name+" sur "+st2.total+" terminées",ar:st2.done+" من "+st2.total+" دروس "+L.name+" مكتملة"})[uiLang]||st2.done+" / "+st2.total;
+ track.setAttribute("role","progressbar");track.setAttribute("aria-label",label);track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax","100");track.setAttribute("aria-valuenow",String(pct));track.appendChild(fill);
+ const to=el("span","pp-badge next"+(nextL&&nextL.soon?" soon":""),nextL?nextL.name:"🏆");
  r2.append(from,track,to);box.appendChild(r2);
  const cap=el("div","pp-cap");cap.append(el("span","",label));
  const stats=el("span","pp-stats");stats.append(p.learned+" ",el("strong","",String(learnedCount(curLevel)))," · "+p.review+" ",el("strong","",String(dueItems(curLevel).length)));
@@ -4910,7 +4909,7 @@ DX.search=(ix,raw,{lang="uk",pos="",limit=60}={})=>{
 // ========== DICTIONARY UI (data: dict/nl.json + lesson words; engine: DX) ==========
 const DICT_UI={
  uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",
-  words:n=>"У словнику "+n.toLocaleString("uk")+" слів · A1–A2",found:n=>"Знайдено: "+n,none:"Нічого не знайдено",did:"Можливо, ти мав на увазі:",
+  words:n=>"У словнику "+n.toLocaleString("uk")+" "+(n%10===1&&n%100!==11?"слово":n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?"слова":"слів")+" · A1–A2",found:n=>"Знайдено: "+n,none:"Нічого не знайдено",did:"Можливо, ти мав на увазі:",
   all:"Усі",pos:{n:"ім.",v:"дієсл.",adj:"прикм.",adv:"присл.",prep:"прийм.",conj:"спол.",pron:"займ.",num:"числ.",det:"займ.",int:"виг.",phr:"вираз"},
   filters:[["","Усі"],["n","Іменники"],["v","Дієслова"],["adj","Прикметники"],["phr","Вирази"]],
   formOf:(f,w)=>"«"+f+"» — форма слова "+w,pl:"мн.",sg:"одн.",deW:"de-слово",hetW:"het-слово",both:"de або het",
@@ -5445,7 +5444,7 @@ $("remindHour").addEventListener("change",e=>{const st=pushState();st.hour=Numbe
 
 // ========== GAMES: dialogue puzzle, role-play, speaking, blitz, memory, dictation, my day ==========
 const G_UI={
- uk:{games:"Ігри",story:"Een dag in België",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",ask:"Запитай {Пітера|Дафну} · AI",askS:"Граматика, слова, переклад, вправи: питай українською",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
+ uk:{games:"Ігри",story:"День у Бельгії",storyS:"{Nu} проведе тебе через день у Бельгії: кафе, магазин, аптека, комуна, вокзал, {сусід|сусідка}",ai:"Praat met {N} · AI",aiS:"Вільна розмова з AI: пиши або говори, {Nu} виправить помилки",ask:"Запитай {Пітера|Дафну} · AI",askS:"Граматика, слова, переклад, вправи: питай українською",title:"Ігри",sub:"Говори, слухай і грай — так, як на уроці в CVO",back:"← Ігри",best:"Рекорд",week:"Виклик тижня",weekT:"Зіграй 5 різних ігор цього тижня — отримаєш +100 балів",weekDone:"Виклик тижня виконано! +100 ⭐",nlOnly:"Ця гра — для нідерландської. Обери 🇧🇪 BE у налаштуваннях.",
   dlg:"Діалог-пазл",dlgS:"Розклади репліки в правильному порядку",rp:"Рольова гра",rpS:"Веди розмову: ти — одна з двох людей",sp:"Відповідай на питання",spS:"Скажи відповідь у мікрофон, як на уроці",bl:"Бліц 60 секунд",blS:"Скільки слів устигнеш за хвилину?",mm:"Мемо",mmS:"Знайди пари: слово й переклад",dc:"Диктант",dcS:"Послухай і напиши речення",md:"Мій день",mdS:"Розкажи про свій день: «Om 7 uur sta ik op»",
   pick:"Обери діалог",order:"Натискай репліки по порядку — від першої до останньої",check:"Перевірити",again:"Ще раз",wrongOrder:"Майже! Зелені репліки на місці, решту переставимо.",solved:"Правильно! Ось увесь діалог:",play:"▶ Прослухати діалог",clear:"Очистити",
   role:"Твоя роль",level:"Рівень",l1:"Вибрати",l2:"Скласти",l3:"Сказати",yourTurn:"Твоя черга:",choose:"Обери, що сказати",build:"Склади репліку з карток",say:"Натисни 🎤 і скажи",mic:"🎤 Говорити",listening:"Слухаю…",type:"⌨ Написати",send:"Готово",heard:"Почуто:",tryAgain:"Спробуй ще раз",noMic:"Розпізнавання мови недоступне тут — напиши відповідь.",micDenied:"Немає доступу до мікрофона. Дозволь його в налаштуваннях або напиши відповідь.",wellDone:"Чудова розмова! 🎉",
@@ -5454,7 +5453,7 @@ const G_UI={
   write:"Напиши, що почув(-ла)",slow:"🐢 Повільно",correctIs:"Правильно:",
   mdPick:"О котрій?",mdBuild:"Склади речення",mdRule:"Час на початку → спочатку дієслово, потім «ik»: Om zeven uur sta ik op.",mdAll:"Мій день",
   pts:n=>"+"+n+" ⭐"},
- en:{games:"Games",story:"Een dag in België",storyS:"{N} takes you through a day in Belgium: café, shop, pharmacy, town hall, station, neighbour",ai:"Praat met {N} · AI",aiS:"Free conversation with AI: write or speak, {N} corrects you",ask:"Ask {N} · AI",askS:"Grammar, words, translation, exercises: ask anything about the language",title:"Games",sub:"Speak, listen and play — like in class",back:"← Games",best:"Best",week:"Weekly challenge",weekT:"Play 5 different games this week to earn +100 points",weekDone:"Weekly challenge complete! +100 ⭐",nlOnly:"This game is for Dutch. Choose 🇧🇪 BE in Settings.",
+ en:{games:"Games",story:"A day in Belgium",storyS:"{N} takes you through a day in Belgium: café, shop, pharmacy, town hall, station, neighbour",ai:"Praat met {N} · AI",aiS:"Free conversation with AI: write or speak, {N} corrects you",ask:"Ask {N} · AI",askS:"Grammar, words, translation, exercises: ask anything about the language",title:"Games",sub:"Speak, listen and play — like in class",back:"← Games",best:"Best",week:"Weekly challenge",weekT:"Play 5 different games this week to earn +100 points",weekDone:"Weekly challenge complete! +100 ⭐",nlOnly:"This game is for Dutch. Choose 🇧🇪 BE in Settings.",
   dlg:"Dialogue puzzle",dlgS:"Put the lines in the right order",rp:"Role-play",rpS:"Hold the conversation: you are one of the two people",sp:"Answer the question",spS:"Say your answer into the microphone",bl:"60-second blitz",blS:"How many words in one minute?",mm:"Memory",mmS:"Find the pairs: word and translation",dc:"Dictation",dcS:"Listen and type the sentence",md:"My day",mdS:"Tell about your day: “Om 7 uur sta ik op”",
   pick:"Choose a dialogue",order:"Tap the lines in order — from first to last",check:"Check",again:"Again",wrongOrder:"Almost! Green lines are in place, let's fix the rest.",solved:"Correct! Here is the whole dialogue:",play:"▶ Play dialogue",clear:"Clear",
   role:"Your role",level:"Level",l1:"Choose",l2:"Build",l3:"Speak",yourTurn:"Your turn:",choose:"Choose what to say",build:"Build the line from cards",say:"Tap 🎤 and speak",mic:"🎤 Speak",listening:"Listening…",type:"⌨ Type",send:"Done",heard:"Heard:",tryAgain:"Try again",noMic:"Speech recognition isn't available here — type your answer.",micDenied:"No microphone access. Allow it in settings or type your answer.",wellDone:"Great conversation! 🎉",
@@ -5463,7 +5462,7 @@ const G_UI={
   write:"Type what you heard",slow:"🐢 Slow",correctIs:"Correct:",
   mdPick:"What time?",mdBuild:"Build the sentence",mdRule:"Time first → verb, then “ik”: Om zeven uur sta ik op.",mdAll:"My day",
   pts:n=>"+"+n+" ⭐"},
- fr:{games:"Jeux",story:"Een dag in België",storyS:"{N} t'emmène à travers une journée en Belgique : café, magasin, pharmacie, commune, gare, {voisin|voisine}",ai:"Praat met {N} · AI",aiS:"Conversation libre avec l'IA : {N} corrige tes erreurs",ask:"Demande à {N} · IA",askS:"Grammaire, mots, traduction, exercices : pose tes questions",title:"Jeux",sub:"Parle, écoute et joue — comme en classe",back:"← Jeux",best:"Record",week:"Défi de la semaine",weekT:"Joue à 5 jeux différents cette semaine : +100 points",weekDone:"Défi de la semaine réussi ! +100 ⭐",nlOnly:"Ce jeu est pour le néerlandais. Choisis 🇧🇪 BE dans les réglages.",
+ fr:{games:"Jeux",story:"Une journée en Belgique",storyS:"{N} t'emmène à travers une journée en Belgique : café, magasin, pharmacie, commune, gare, {voisin|voisine}",ai:"Praat met {N} · AI",aiS:"Conversation libre avec l'IA : {N} corrige tes erreurs",ask:"Demande à {N} · IA",askS:"Grammaire, mots, traduction, exercices : pose tes questions",title:"Jeux",sub:"Parle, écoute et joue — comme en classe",back:"← Jeux",best:"Record",week:"Défi de la semaine",weekT:"Joue à 5 jeux différents cette semaine : +100 points",weekDone:"Défi de la semaine réussi ! +100 ⭐",nlOnly:"Ce jeu est pour le néerlandais. Choisis 🇧🇪 BE dans les réglages.",
   dlg:"Puzzle de dialogue",dlgS:"Remets les répliques dans l'ordre",rp:"Jeu de rôle",rpS:"Mène la conversation : tu es l'une des deux personnes",sp:"Réponds à la question",spS:"Dis ta réponse au micro",bl:"Blitz 60 secondes",blS:"Combien de mots en une minute ?",mm:"Memory",mmS:"Trouve les paires : mot et traduction",dc:"Dictée",dcS:"Écoute et écris la phrase",md:"Ma journée",mdS:"Raconte ta journée : « Om 7 uur sta ik op »",
   pick:"Choisis un dialogue",order:"Touche les répliques dans l'ordre",check:"Vérifier",again:"Encore",wrongOrder:"Presque ! Les répliques vertes sont bien placées.",solved:"Correct ! Voici tout le dialogue :",play:"▶ Écouter le dialogue",clear:"Effacer",
   role:"Ton rôle",level:"Niveau",l1:"Choisir",l2:"Construire",l3:"Parler",yourTurn:"À toi :",choose:"Choisis quoi dire",build:"Construis la réplique",say:"Touche 🎤 et parle",mic:"🎤 Parler",listening:"J'écoute…",type:"⌨ Écrire",send:"OK",heard:"Entendu :",tryAgain:"Réessaie",noMic:"Reconnaissance vocale indisponible — écris ta réponse.",micDenied:"Pas d'accès au micro. Autorise-le ou écris ta réponse.",wellDone:"Belle conversation ! 🎉",
@@ -5472,7 +5471,7 @@ const G_UI={
   write:"Écris ce que tu entends",slow:"🐢 Lent",correctIs:"Correct :",
   mdPick:"À quelle heure ?",mdBuild:"Construis la phrase",mdRule:"L'heure d'abord → le verbe, puis « ik » : Om zeven uur sta ik op.",mdAll:"Ma journée",
   pts:n=>"+"+n+" ⭐"},
- ar:{games:"ألعاب",story:"Een dag in België",storyS:"{يأخذك|تأخذك} {Na} في يوم ببلجيكا: مقهى، متجر، صيدلية، بلدية، محطة، {جار|جارة}",ai:"Praat met {N} · AI",aiS:"محادثة حرة مع الذكاء الاصطناعي تصحح أخطاءك",ask:"اسأل {Na} · AI",askS:"القواعد والكلمات والترجمة والتمارين: اسأل عن اللغة",title:"ألعاب",sub:"تكلّم واستمع والعب — كما في الصف",back:"→ الألعاب",best:"الأفضل",week:"تحدّي الأسبوع",weekT:"العب 5 ألعاب مختلفة هذا الأسبوع لتربح 100 نقطة",weekDone:"أنجزت تحدّي الأسبوع! +100 ⭐",nlOnly:"هذه اللعبة للهولندية. اختر 🇧🇪 BE في الإعدادات.",
+ ar:{games:"ألعاب",story:"يوم في بلجيكا",storyS:"{يأخذك|تأخذك} {Na} في يوم ببلجيكا: مقهى، متجر، صيدلية، بلدية، محطة، {جار|جارة}",ai:"Praat met {N} · AI",aiS:"محادثة حرة مع الذكاء الاصطناعي تصحح أخطاءك",ask:"اسأل {Na} · AI",askS:"القواعد والكلمات والترجمة والتمارين: اسأل عن اللغة",title:"ألعاب",sub:"تكلّم واستمع والعب — كما في الصف",back:"→ الألعاب",best:"الأفضل",week:"تحدّي الأسبوع",weekT:"العب 5 ألعاب مختلفة هذا الأسبوع لتربح 100 نقطة",weekDone:"أنجزت تحدّي الأسبوع! +100 ⭐",nlOnly:"هذه اللعبة للهولندية. اختر 🇧🇪 BE في الإعدادات.",
   dlg:"لغز الحوار",dlgS:"رتّب الجمل بالترتيب الصحيح",rp:"لعب الأدوار",rpS:"أدِر الحوار: أنت أحد الشخصين",sp:"أجب عن السؤال",spS:"قل إجابتك في الميكروفون",bl:"تحدّي 60 ثانية",blS:"كم كلمة في دقيقة؟",mm:"الذاكرة",mmS:"اعثر على الأزواج: الكلمة والترجمة",dc:"إملاء",dcS:"استمع واكتب الجملة",md:"يومي",mdS:"احكِ عن يومك: «Om 7 uur sta ik op»",
   pick:"اختر حوارًا",order:"اضغط الجمل بالترتيب",check:"تحقّق",again:"مرة أخرى",wrongOrder:"تقريبًا! الجمل الخضراء في مكانها.",solved:"صحيح! هذا الحوار كاملًا:",play:"▶ استمع إلى الحوار",clear:"مسح",
   role:"دورك",level:"المستوى",l1:"اختيار",l2:"تركيب",l3:"نطق",yourTurn:"دورك:",choose:"اختر ما تقوله",build:"ركّب الجملة من البطاقات",say:"اضغط 🎤 وتكلّم",mic:"🎤 تكلّم",listening:"أستمع…",type:"⌨ اكتب",send:"تم",heard:"سمعت:",tryAgain:"حاول مرة أخرى",noMic:"التعرف على الكلام غير متاح هنا — اكتب إجابتك.",micDenied:"لا يوجد إذن للميكروفون. اسمح به أو اكتب إجابتك.",wellDone:"حوار رائع! 🎉",
@@ -5943,8 +5942,8 @@ function renderGamesHome(){
  GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
-  b.append(art,el("strong","",id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?cx(AI_TITLE[targetLang]||AI_TITLE.nl):g[id])+". "+(g[id+"S"]||""));
+  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  b.append(art,el("strong","",id==="ai"?aiTitle():g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?aiTitle():g[id])+". "+(g[id+"S"]||""));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
@@ -6616,6 +6615,8 @@ function storyAnswer(k,spoken,loose){
 // For local testing of tools/ai-worker.js: localStorage.leren_ai_endpoint="http://localhost:8787" (works on localhost only).
 const AI_ENDPOINT=(location.hostname==="localhost"&&lsGet("leren_ai_endpoint",""))||"https://leren-ai.gembarsky-d.workers.dev/";
 const AI_TITLE={nl:"Praat met {N} · AI",en:"Talk to {N} · AI",fr:"Parle avec {N} · IA"};
+// Game and chat title in the interface language (the conversation itself stays in Dutch).
+const aiTitle=()=>{const d=charId()==="dafna";return ({uk:"Розмова з "+(d?"Дафною":"Пітером")+" · AI",ar:"تحدّث مع "+(d?"دافنا":"بيتر")+" · AI",fr:cx(AI_TITLE.fr),en:cx(AI_TITLE.en)})[uiLang]||cx(AI_TITLE.en)};
 const AI_UI={uk:{sub:{nl:"Пиши або говори нідерландською",en:"Пиши або говори англійською",fr:"Пиши або говори французькою"},intro:"Говори зі мною просто, як на A1. Помилки я виправлю й поясню.",consentT:"Перед початком",consent:"Розмова з AI працює через інтернет. Текст твоїх повідомлень надсилається на сервер lerenbe.com і до AI-моделі, щоб {Nu} {міг|могла} відповісти. Розмови не зберігаються. Не пиши паролі, номери документів чи банківські дані. {Nu} запам’ятовує кілька фактів про тебе лише на цьому пристрої, щоб наступного разу продовжити розмову; їх можна переглянути й видалити.",adult:"Мені виповнилося 18 років",trShow:"🇺🇦 Перекласти українською",trHide:"Сховати переклад",memT:"🧠 Що {Nu} пам’ятає про тебе",memForget:"Забути все",memNote:"Зберігається лише на цьому пристрої.",report:"⚑ Поскаржитися",reportQ:"Поскаржитися на цю відповідь AI (образлива, небезпечна або хибна)? Текст відповіді буде надіслано розробнику.",reportOk:"Дякуємо! Скаргу надіслано.",agree:"Зрозуміло, почати",fix:"Краще сказати:",tr:"Переклад",err:"{Nu} зараз {недоступний|недоступна}. Перевір інтернет і спробуй ще раз.",limit:"На сьогодні розмов досить 🙂 Повертайся завтра!",limitHead:"На сьогодні розмов досить 🙂",limitAt:"Доступ відновиться {t}.",netLimit:"З цієї мережі Wi‑Fi сьогодні вже багато запитів 🙂",slowIn:"Забагато повідомлень за хвилину. Зачекай {s} с і надішли ще раз.",slow:"Забагато повідомлень за хвилину. Зачекай трохи й надішли ще раз.",
   askTitle:"Запитай {Пітера|Дафну} · AI",askSub:"Нідерландська, англійська, французька",askIntro:"Привіт! Я {Nu}. Питай мене про граматику, слова, переклад чи вимову, або попроси вправу.",askPh:"Твоє питання…",send:"Надіслати",ex:"Приклади (натисни, щоб послухати)",
   chips:{nl:["Коли «de», а коли «het»?","Поясни інверсію: «Om 7 uur sta ik op»","Як утворюється perfectum?","Дай мені вправу на дієслово «zijn»"],en:["Коли «do», а коли «does»?","Яка різниця між «a» і «the»?","Як утворюється Past Simple?","Дай мені вправу на «to be»"],fr:["Коли «le», а коли «la»?","Як відмінюється «être»?","Що таке «septante» і «nonante»?","Дай мені вправу на «avoir»"]}},
@@ -6685,7 +6686,7 @@ function aiConsent(title,go){
   const box=el("div","ai-consent");box.append(el("h3","",g.consentT),el("p","",g.consent));const age=el("label","ai-age");const cb=el("input");cb.type="checkbox";age.append(cb,el("span","",g.adult));box.appendChild(age);const ok=el("button","btn primary",g.agree);ok.disabled=true;cb.onchange=()=>{ok.disabled=!cb.checked};ok.onclick=()=>{if(!cb.checked)return;lsSet("leren_ai_consent18",true);go()};box.appendChild(ok);card.appendChild(box);return false}
 }
 function aiStart(scene){
- if(!aiConsent(cx(AI_TITLE[targetLang]||AI_TITLE.nl),()=>aiStart(scene)))return;
+ if(!aiConsent(aiTitle(),()=>aiStart(scene)))return;
  gState={chat:true,msgs:[],busy:false,draft:"",target:targetLang,lang:uiLang,view,scene:targetLang==="nl"&&scene&&scene.id||null,fromExam:!!(scene&&scene.fromExam),style:["talk","teacher","slow"].includes(lsGet("leren_ai_style","teacher"))?lsGet("leren_ai_style","teacher"):"teacher"};
  if(gState.scene==="exam11"&&window.EXAM11&&EXAM11.speakScript){
   const saved=!scene.fresh&&lsGet("leren_exam11_ai",null);
@@ -6695,7 +6696,7 @@ function aiStart(scene){
  aiRender();aiSend(null);
 }
 function aiRender(){
- const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(cx(AI_TITLE[targetLang]||AI_TITLE.nl),g.sub[targetLang]||g.sub.nl);card.classList.add("ai-chat-card");
+ const g=aiU(),s=gState;if(!aiCurrent(s))return;const card=gHead(aiTitle(),g.sub[targetLang]||g.sub.nl);card.classList.add("ai-chat-card");
  if(s.scene&&SCENE_ART[s.scene]){const b=el("div","st-banner sm");b.innerHTML=sceneArt(s.scene);card.appendChild(b)}
  if(s.exam){const ex=s.exam,n=ex.list.length,cur=ex.list[Math.min(ex.i,n-1)];const p=el("p","ex-progress",ex.done?(uiLang==="uk"?"✅ Пробний іспит завершено":"✅ Mock exam finished"):(uiLang==="uk"?"Тема ":"Topic ")+cur.ti+"/6 · "+cur.tn+" · "+(uiLang==="uk"?"питання ":"question ")+(ex.i+1)+"/"+n);if(!ex.done&&s.msgs.length>2){const rs=el("button","ex-restart",uiLang==="uk"?"↺ Почати заново":"↺ Start over");rs.type="button";rs.onclick=()=>aiStart({id:"exam11",fromExam:true,fresh:true});p.appendChild(rs)}card.appendChild(p);$("barfill").style.width=Math.round((ex.done?n:ex.i)/n*100)+"%"}
  if(!s.exam){
