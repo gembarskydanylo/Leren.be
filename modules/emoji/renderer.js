@@ -15,10 +15,12 @@
  function fileFor(value) {
   const key=strip(value),f=exact[key]||exact[value];return f?f+".png":null;
  }
- function make(value, className='lbe-emoji') {
+ function make(value, className='lbe-emoji', decorative=true) {
   // No pack match: our drawing for this emoji if there is one, else the neutral book (never a random cat).
   const A=globalThis.LerenCardArt?.A||{},file=fileFor(value),art=!file&&(A[value]||A[strip(value)]||A[strip(value)+'\uFE0F']);
-  const img=document.createElement('img');img.className=className;img.src=file?assetBase+file:art?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(art.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ')):assetBase+'animal-11.png';img.alt='';img.setAttribute('aria-hidden','true');img.decoding='async';return img;
+  const img=document.createElement('img');img.className=className;img.src=file?assetBase+file:art?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(art.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ')):assetBase+'animal-11.png';// The picture stands for the emoji: alt keeps the character (copy & paste, text readers, image-off). Next to words that
+  // already say it ("🎧 Послухати") screen readers skip it; on its own it is read like the emoji would be.
+  img.alt=value;if(decorative)img.setAttribute('aria-hidden','true');else img.setAttribute('role','img');img.decoding='async';return img;
  }
  const SKIP='script,style,textarea,input,select,option,[data-no-local-emoji]';
  function replaceTextNode(textNode) {
@@ -27,7 +29,9 @@
   if(!textNode.isConnected || !emojiPattern.test(textNode.data)){emojiPattern.lastIndex=0;return}
   emojiPattern.lastIndex=0;
   const fragment=document.createDocumentFragment();let start=0,match;
-  while((match=emojiPattern.exec(textNode.data))){if(match.index>start)fragment.appendChild(document.createTextNode(textNode.data.slice(start,match.index)));fragment.appendChild(make(match[0]));start=match.index+match[0].length}
+  // Decorative when the element has other words; meaningful when the emoji is all it says (e.g. a "🔊" button).
+  const words=(parent.textContent||'').replace(emojiPattern,'').trim();emojiPattern.lastIndex=0;const decorative=!!words||!!parent.closest('[aria-label]');
+  while((match=emojiPattern.exec(textNode.data))){if(match.index>start)fragment.appendChild(document.createTextNode(textNode.data.slice(start,match.index)));fragment.appendChild(make(match[0],'lbe-emoji',decorative));start=match.index+match[0].length}
   if(start<textNode.data.length)fragment.appendChild(document.createTextNode(textNode.data.slice(start)));
   textNode.replaceWith(fragment);
  }
