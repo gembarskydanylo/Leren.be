@@ -692,7 +692,7 @@ main[data-view="lesson"] #lerenbe-diphthongs-section{width:min(100%,760px);margi
 .ins-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.ins-pct{font-weight:800;color:var(--ink)}
 .ins-meter{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}.ins-meter i{display:block;height:100%;background:var(--oranje);border-radius:99px}
 .ins-line{font-size:14px;color:var(--ink-2)}.ins-note{font-size:13px;color:var(--ink-2);margin:10px 0 0;line-height:1.45}
-.goal-noloss{font-size:13px}.rw-reason{color:var(--ink-2)}
+.goal-noloss{font-size:13px}.ins-backup{padding:14px 16px;border:2px solid var(--amb);border-radius:var(--r-md);background:var(--surface);color:var(--ink)}.ins-backup p{margin:0 0 10px;line-height:1.5}.rw-reason{color:var(--ink-2)}
 .pv-tile strong{font:800 26px var(--font-display);font-variant-numeric:tabular-nums}
 .pv-tile span{color:var(--ink-2);font-size:13px;font-weight:800}
 .pv-toets h3{margin:6px 4px 8px;font-size:16px}
@@ -1037,7 +1037,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
   }
 }
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=174">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
 <link rel="stylesheet" href="./modules/focused-home/style.css?v=174">
@@ -2523,7 +2523,7 @@ function rewardFacts(){
   chapters:course.chapters.filter(c=>c.lessons.length&&c.lessons.every(l=>Object.hasOwn(done||{},l.id))).length,
   perfect:TOETS.filter(t=>best[t.id]===t.questions.length&&t.questions.length>0).length,streak:Math.max(streakState().n,streakState().best),
   // Words learned (2 right answers in a row), final exams passed (mock exam 60% or more), whole courses completed.
-  words:learnedCount(),exams:["leren_exam11","leren_exam12"].filter(k=>{const e=lsGet(k,{});return !!(e&&e.best&&e.best.proef>=60)}).length,
+  words:learnedCount(),exams:["leren_exam11","leren_exam12"].filter(k=>{const e=lsGet(k,{});return !!(e&&e.best&&e.best.proef>=LerenRewards.EXAM_BADGE_PCT)}).length,
   a11:full("A1.1")?1:0,a12:full("A1.2")?1:0};
 }
 function rewardCheck(celebrate=false){
@@ -2686,7 +2686,61 @@ function renderInsights(host){
  if(!adv.items.length){peter.appendChild(el("p","",pt.none));const b=el("button","btn primary",pt.noneBtn);b.type="button";b.onclick=()=>setView(targetLang==="nl"?"path":"lesson");peter.appendChild(b)}
  adv.items.forEach((r,i)=>{const it=el("div","ins-tip");it.dataset.kind=r.kind;if(r.tag)it.dataset.tag=r.tag;it.appendChild(el("p","",LerenInsights.say(r,uiLang,i===0?adv.strong:null)));
   const b=el("button","btn"+(i===0?" primary":""),LerenInsights.label(r,uiLang));b.type="button";b.onclick=()=>runAdvice(r.action);it.appendChild(b);peter.appendChild(it)});
- host.replaceChildren(peter,box);
+ const reminder=backupReminder();host.replaceChildren(...(reminder?[reminder]:[]),peter,box);
+}
+// ========== BACKUP of learning progress (v3) ==========
+// Progress lives in this browser (localStorage). Clearing the browser cache or an app update never touches it
+// (sw.js only replaces its own file caches), but "clear site data" / "delete cookies and site data" does.
+// The backup holds every progress key the account sync holds (syncSnapshot: words, points, route, tests, exams,
+// streak, skills, minutes, rewards…), as a file and in the clipboard. Restoring merges with what is already here
+// (syncMerge): the better value of each result is kept, so an old backup never erases newer progress.
+const BACKUP_UI={
+ uk:{saved:f=>"Резервну копію збережено: "+f+". Копія також у буфері обміну.",savedClip:"Резервну копію скопійовано в буфер обміну. Встав її в нотатки чи лист собі.",paste:"Встав резервну копію (текст):",restored:"Прогрес відновлено. Нові результати на цьому пристрої збережено.",bad:"Це не резервна копія Leren.be.",
+  warn:"Прогрес зберігається лише в цьому браузері. Очищення кешу його не видаляє, але «видалення даних сайту» видалить. Збережи резервну копію або увійди в акаунт — тоді копія буде в хмарі.",save:"💾 Зберегти копію",login:"Увійти"},
+ en:{saved:f=>"Backup saved: "+f+". It is also in the clipboard.",savedClip:"Backup copied to the clipboard. Paste it into a note or an e-mail to yourself.",paste:"Paste your backup (text):",restored:"Progress restored. Newer results on this device were kept.",bad:"This is not a Leren.be backup.",
+  warn:"Your progress is stored only in this browser. Clearing the cache does not remove it, but “delete site data” does. Save a backup or sign in to keep a cloud copy.",save:"💾 Save a backup",login:"Sign in"},
+ fr:{saved:f=>"Sauvegarde enregistrée : "+f+". Elle est aussi dans le presse-papiers.",savedClip:"Sauvegarde copiée dans le presse-papiers. Colle-la dans une note ou un e-mail.",paste:"Colle ta sauvegarde (texte) :",restored:"Progression restaurée. Les résultats plus récents de cet appareil sont gardés.",bad:"Ce n’est pas une sauvegarde Leren.be.",
+  warn:"Ta progression est enregistrée seulement dans ce navigateur. Vider le cache ne l’efface pas, mais « supprimer les données du site » oui. Fais une sauvegarde ou connecte-toi pour une copie dans le cloud.",save:"💾 Sauvegarder",login:"Se connecter"},
+ ar:{saved:f=>"تم حفظ النسخة الاحتياطية: "+f+". وهي أيضاً في الحافظة.",savedClip:"تم نسخ النسخة الاحتياطية إلى الحافظة. الصقها في ملاحظة أو رسالة لنفسك.",paste:"الصق نسختك الاحتياطية (نص):",restored:"تمت استعادة التقدّم. احتفظنا بالنتائج الأحدث على هذا الجهاز.",bad:"هذه ليست نسخة احتياطية من Leren.be.",
+  warn:"تقدّمك محفوظ في هذا المتصفح فقط. مسح ذاكرة التخزين المؤقت لا يحذفه، لكن «حذف بيانات الموقع» يحذفه. احفظ نسخة احتياطية أو سجّل الدخول لنسخة سحابية.",save:"💾 احفظ نسخة",login:"تسجيل الدخول"}};
+const backupU=()=>BACKUP_UI[uiLang]||BACKUP_UI.uk;
+function backupData(){saveStore();return {app:"leren.be",v:3,ts:Date.now(),keys:syncSnapshot()}}
+function backupExport(){
+ const txt=JSON.stringify(backupData()),name="leren-progress-"+dayStr()+".json",bu=backupU();
+ try{const url=URL.createObjectURL(new Blob([txt],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}catch(e){}
+ const done=msg=>{try{localStorage.setItem("leren_backup_at",String(Date.now()))}catch(e){}toast(msg,true);if(view==="progress")renderProgressView()};
+ try{navigator.clipboard.writeText(txt).then(()=>done(bu.saved(name))).catch(()=>done(bu.saved(name)))}catch(e){done(bu.saved(name))}
+ return txt;
+}
+// Restore: a v3 backup is merged key by key; an old v2 backup (words, points, route, rewards) goes the old way.
+function backupRestore(txt){
+ let data;try{data=JSON.parse(txt)}catch(e){return false}
+ if(data&&data.app==="leren.be"&&data.v===3&&data.keys&&typeof data.keys==="object"&&!Array.isArray(data.keys)){
+  const theirs={};Object.entries(data.keys).forEach(([k,v])=>{if(syncable(k)&&typeof v==="string")theirs[k]=v});
+  const merged=syncMerge({},syncSnapshot(),theirs);Object.entries(merged).forEach(([k,v])=>{try{if(localStorage.getItem(k)!==v)localStorage.setItem(k,v)}catch(e){}});return true;
+ }
+ if(data&&data.store&&typeof data.store==="object"&&!Array.isArray(data.store)&&Object.values(data.store).every(v=>v&&typeof v==="object"&&!Array.isArray(v))&&
+    (data.score===undefined||typeof data.score==="number"&&Number.isFinite(data.score)&&data.score>=0)){
+  if(data.v===2&&data.companion&&typeof data.companion==="object")for(const k of ["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"]){const value=data.companion[k];if(value&&typeof value==="object"&&!Array.isArray(value))lsSet(k,value)}
+  store=data.store;if(typeof data.score==="number")score=data.score;saveStore();return true;
+ }
+ return false;
+}
+function backupDone(ok){const bu=backupU();if(!ok){alert(bu.bad);return}queueProgressSync();alert(bu.restored);location.reload()}
+// Pick a backup file; closing the picker without a file offers pasting the text (older backups were clipboard text).
+function backupImportPick(){
+ const inp=document.createElement("input");inp.type="file";inp.accept=".json,.txt,application/json,text/plain";let used=false;
+ const paste=()=>{if(used)return;used=true;const txt=prompt(backupU().paste);if(txt)backupDone(backupRestore(txt))};
+ inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f){paste();return}used=true;f.text().then(t=>backupDone(backupRestore(t))).catch(()=>backupDone(false))};
+ inp.addEventListener("cancel",paste);inp.click();
+}
+// Ask the browser to keep this site's storage under storage pressure (no effect on a manual "delete site data").
+function askPersist(){try{if(lsGet("leren_persist_asked",false)||!(score>0)||!navigator.storage||!navigator.storage.persist)return;lsSet("leren_persist_asked",true);navigator.storage.persisted().then(p=>p||navigator.storage.persist()).catch(()=>{})}catch(e){}}
+// Progress screen: a reminder for guests with progress and no backup in the last 14 days.
+function backupReminder(){
+ if(acct.user||!(score>0))return null;const at=Number(lsGet("leren_backup_at",0));if(Date.now()-at<14*864e5)return null;
+ const bu=backupU(),box=el("div","ins-backup");box.id="insBackup";box.appendChild(el("p","",bu.warn));const row=el("div","row");
+ const s=el("button","btn primary",bu.save);s.type="button";s.onclick=backupExport;const l=el("button","btn",bu.login);l.type="button";l.onclick=()=>acctSignIn();row.append(s,l);box.appendChild(row);return box;
 }
 // XP for a correct answer: full for new/due words, small for words already mastered and not due
 function xpForCorrect(s){return (s.known&&s.due>Date.now())?2:10}
@@ -2810,32 +2864,8 @@ function updateHeader(){
   };
  }
  const exp=$("exportProgBtn"), imp=$("importProgBtn");
- if(exp){ exp.textContent=u.exportProg||"💾 Save progress";
-  exp.onclick=()=>{
-   const data={score,store,v:2,ts:Date.now(),companion:Object.fromEntries(["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"].map(k=>[k,lsGet(k,null)]))};
-   const txt=JSON.stringify(data);
-   try{
-    navigator.clipboard.writeText(txt).then(()=>alert("OK — progress copied. Paste on another device.")).catch(()=>{prompt("Copy this:", txt)});
-   }catch(e){prompt("Copy this:", txt)}
-  };
- }
- if(imp){ imp.textContent=u.importProg||"📥 Restore progress";
-  imp.onclick=()=>{
-   const txt=prompt("Paste progress JSON:");
-   if(!txt)return;
-   try{
-    const data=JSON.parse(txt);
-    if(data&&data.store&&typeof data.store==="object"&&!Array.isArray(data.store)&&
-       Object.values(data.store).every(v=>v&&typeof v==="object"&&!Array.isArray(v))&&
-       (data.score===undefined||typeof data.score==="number"&&Number.isFinite(data.score)&&data.score>=0)){
-     if(data.v===2&&data.companion&&typeof data.companion==="object")for(const k of ["leren_path_v1","leren_path_rewards_v1","leren_achievements_v1"]){const value=data.companion[k];if(value&&typeof value==="object"&&!Array.isArray(value))lsSet(k,value)}
-     store=data.store;
-     if(typeof data.score==="number")score=data.score;
-     saveStore();rewards.refresh();if(learningPath){learningPath=null;initLearningPath()}rewardCheck();queueProgressSync();updateStats();alert("OK");
-    }else alert("Invalid data");
-   }catch(e){alert("Invalid JSON")}
-  };
- }
+ if(exp){exp.textContent=u.exportProg||"💾 Save progress";exp.onclick=backupExport}
+ if(imp){imp.textContent=u.importProg||"📥 Restore progress";imp.onclick=backupImportPick}
  $("lblCat").textContent=u.lCat;
  $("lblSub").textContent=u.lSub;
  $("lblMode").textContent=u.lMode;
@@ -6756,7 +6786,7 @@ const ACCT_UI={
   keepQ:"في حسابك تقدّم سابق: {c} نقطة. على هذا الجهاز: {l} نقطة.\n\nموافق: استخدم التقدّم من الحساب.\nإلغاء: احتفظ بتقدّم هذا الجهاز (سيحل محل بيانات الحساب).",delLink:"لحذف حسابك، أكّد أنك أنت: أرسلنا رابطًا إلى {e}. افتحه على هذا الجهاز.",delCancel:"أُلغي الحذف. لم يُحذف شيء.",delAgain:"حُذفت بياناتك السحابية، لكن الحساب لم يُحذف بعد. اضغط «حذف الحساب» مرة أخرى.",delPending:"لم يكتمل الحذف: اضغط «حذف الحساب» مرة أخرى."}};
 const acctU=()=>ACCT_UI[uiLang]||ACCT_UI.en;
 // Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
-const SYNC_SKIP=new Set(["leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
+const SYNC_SKIP=new Set(["leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
  "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
@@ -6921,6 +6951,7 @@ function initLearningPath(){
   ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente",zorg:"huisarts",stad:"gemeente",openbaar:"station"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
   answer:(id,ok,final,listen)=>{skillLog(listen?"luisteren":"lezen",ok);if(!final)return;const s=stateFor(id);s.seen++;LerenSRS.update(s,ok);saveStore();updateStats()},
   due:()=>dueItems(curLevel).map(x=>x.id),
+  goal:()=>{actStep();return {min:minutesToday(),goal:goalMin()}},goalText:g=>{const iu=LerenInsights.ui(uiLang);return {done:iu.lessonDone,goal:g.min>=g.goal?iu.goalMet:iu.goalLeft(g.min,g.goal)}},
   // Peter's first piece of advice for the home screen (not the review, the route's warm-up covers it).
   advice:()=>{const r=adviceFor();const it=r.items.find(x=>x.kind!=="due");return it?{text:LerenInsights.say(it,uiLang,r.strong),label:LerenInsights.label(it,uiLang),run:()=>runAdvice(it.action)}:null},
   complete:recordPathResult,rewards:()=>setView("progress"),
@@ -6947,7 +6978,7 @@ function start(){
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
  const nav=$("modeButtons"),head=document.querySelector("main > header");if(nav&&head){head.after(nav);nav.setAttribute("role","navigation")}
- rewardCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
+ rewardCheck();askPersist();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
  // Desktop header (≥1024px): reminders bell and account. Language stays in Settings.
  if(window.LerenDesktop){const focusRow=(row,ctl)=>setTimeout(()=>{$(row)?.scrollIntoView({block:"center"});$(ctl)?.focus({preventScroll:true})},150);
   LerenDesktop.mount({language:()=>uiLang,setLanguage:l=>changeUiLang(l),user:()=>acct.user,canRemind:()=>{const r=$("remindRow");return !!r&&!r.hidden},
@@ -6970,7 +7001,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
 const RELEASE_VERSION="174";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Застосунок тепер бачить, що вдається, а що варто повторити.", "items": ["Розумне повторення: слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу. Раз на день маршрут дає коротку розминку перед уроком.", "Прогрес за навичками в «Прогресі»: читання, аудіювання, письмо й говоріння — окремо для A1.1 і A1.2.", "Щоденна мета в хвилинах (5–30, спочатку 10). Рахуємо лише час у вправах.", "Серія днів і нові нагороди: 3, 14 і 30 днів, 50 і 100 слів, 5 тем, перший іспит, курс A1.1 і A1.2. Пропущений день нічого не забирає.", "Пітер радить, що повторити, і одразу відкриває потрібну вправу."], "hint": "Відкрий «Прогрес», щоб побачити навички й поради Пітера.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The app now sees what goes well and what needs review.", "items": ["Smart review: a word comes back after 1, 3, 7, 14 and 30 days, and right away after a mistake. Once a day the route starts with a short warm-up.", "Progress by skill in Progress: reading, listening, writing and speaking — separately for A1.1 and A1.2.", "A daily goal in minutes (5–30, 10 to start). Only time in exercises counts.", "Streak and new rewards: 3, 14 and 30 days, 50 and 100 words, 5 topics, first exam, course A1.1 and A1.2. A missed day takes nothing away.", "Peter suggests what to review and opens the right exercise."], "hint": "Open Progress to see your skills and Peter’s advice.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "L’application voit maintenant ce qui va bien et ce qu’il faut réviser.", "items": ["Révision intelligente : un mot revient après 1, 3, 7, 14 et 30 jours, et tout de suite après une erreur. Une fois par jour, le parcours commence par un court échauffement.", "Progrès par compétence dans Progrès : lecture, écoute, écrit et oral — séparément pour A1.1 et A1.2.", "Un objectif du jour en minutes (5 à 30, 10 au départ). Seul le temps dans les exercices compte.", "Série et nouvelles récompenses : 3, 14 et 30 jours, 50 et 100 mots, 5 thèmes, premier examen, cours A1.1 et A1.2. Un jour manqué n’enlève rien.", "Peter te conseille quoi réviser et ouvre le bon exercice."], "hint": "Ouvre Progrès pour voir tes compétences et les conseils de Peter.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "التطبيق يرى الآن ما ينجح وما يحتاج إلى مراجعة.", "items": ["مراجعة ذكية: تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وفوراً بعد الخطأ. مرة في اليوم يبدأ المسار بتمرين قصير.", "التقدّم حسب المهارة في «التقدّم»: القراءة والاستماع والكتابة والتحدث، لكل من A1.1 وA1.2 على حدة.", "هدف يومي بالدقائق (من 5 إلى 30، و10 في البداية). نحسب فقط الوقت في التمارين.", "السلسلة ومكافآت جديدة: 3 و14 و30 يوماً، 50 و100 كلمة، 5 مواضيع، أول امتحان، دورة A1.1 وA1.2. اليوم الفائت لا يأخذ شيئاً.", "بيتر ينصحك بما تراجعه ويفتح التمرين المناسب مباشرة."], "hint": "افتح «التقدّم» لترى مهاراتك ونصائح بيتر.", "ok": "فهمت"}};
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Застосунок тепер бачить, що вдається, а що варто повторити.", "items": ["Розумне повторення: слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу. Раз на день маршрут дає коротку розминку перед уроком.", "Прогрес за навичками в «Прогресі»: читання, аудіювання, письмо й говоріння — окремо для A1.1 і A1.2.", "Щоденна мета в хвилинах (5–30, спочатку 10). Рахуємо лише час у вправах.", "Серія днів і нові нагороди: 3, 14 і 30 днів, 50 і 100 слів, 5 тем, перший іспит, курс A1.1 і A1.2. Пропущений день нічого не забирає.", "Пітер радить, що повторити, і одразу відкриває потрібну вправу.", "Повна резервна копія прогресу файлом: тести, іспити, серія й навички. Відновлення не стирає новіших результатів."], "hint": "Відкрий «Прогрес», щоб побачити навички й поради Пітера.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The app now sees what goes well and what needs review.", "items": ["Smart review: a word comes back after 1, 3, 7, 14 and 30 days, and right away after a mistake. Once a day the route starts with a short warm-up.", "Progress by skill in Progress: reading, listening, writing and speaking — separately for A1.1 and A1.2.", "A daily goal in minutes (5–30, 10 to start). Only time in exercises counts.", "Streak and new rewards: 3, 14 and 30 days, 50 and 100 words, 5 topics, first exam, course A1.1 and A1.2. A missed day takes nothing away.", "Peter suggests what to review and opens the right exercise.", "A full progress backup as a file: tests, exams, streak and skills. Restoring never erases newer results."], "hint": "Open Progress to see your skills and Peter’s advice.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "L’application voit maintenant ce qui va bien et ce qu’il faut réviser.", "items": ["Révision intelligente : un mot revient après 1, 3, 7, 14 et 30 jours, et tout de suite après une erreur. Une fois par jour, le parcours commence par un court échauffement.", "Progrès par compétence dans Progrès : lecture, écoute, écrit et oral — séparément pour A1.1 et A1.2.", "Un objectif du jour en minutes (5 à 30, 10 au départ). Seul le temps dans les exercices compte.", "Série et nouvelles récompenses : 3, 14 et 30 jours, 50 et 100 mots, 5 thèmes, premier examen, cours A1.1 et A1.2. Un jour manqué n’enlève rien.", "Peter te conseille quoi réviser et ouvre le bon exercice.", "Une sauvegarde complète en fichier : tests, examens, série et compétences. La restauration n’efface jamais les résultats plus récents."], "hint": "Ouvre Progrès pour voir tes compétences et les conseils de Peter.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "التطبيق يرى الآن ما ينجح وما يحتاج إلى مراجعة.", "items": ["مراجعة ذكية: تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وفوراً بعد الخطأ. مرة في اليوم يبدأ المسار بتمرين قصير.", "التقدّم حسب المهارة في «التقدّم»: القراءة والاستماع والكتابة والتحدث، لكل من A1.1 وA1.2 على حدة.", "هدف يومي بالدقائق (من 5 إلى 30، و10 في البداية). نحسب فقط الوقت في التمارين.", "السلسلة ومكافآت جديدة: 3 و14 و30 يوماً، 50 و100 كلمة، 5 مواضيع، أول امتحان، دورة A1.1 وA1.2. اليوم الفائت لا يأخذ شيئاً.", "بيتر ينصحك بما تراجعه ويفتح التمرين المناسب مباشرة.", "نسخة احتياطية كاملة للتقدّم كملف: الاختبارات والامتحانات والسلسلة والمهارات. الاستعادة لا تمحو النتائج الأحدث."], "hint": "افتح «التقدّم» لترى مهاراتك ونصائح بيتر.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{

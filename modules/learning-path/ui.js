@@ -113,6 +113,8 @@
    if(s.index===s.ids.length){
     if(s.phase<2){box.append(node('h3','',t('stepDone')),node('p','',t('phaseHint')[s.phase+1]),button(t('nextStep')+' → '+t(['study','listen','check'][s.phase+1]),()=>{model.nextPhase();render()},true));root.appendChild(box);return}
     const result=model.finish(),gain=result.kind==='lesson'?bridge.complete(result.id,result.correct,result.total):0;
+    // A finished lesson is a success on its own; the daily goal (minutes) is only shown as information.
+    if(result.kind==='lesson'&&bridge.goal){const g=bridge.goal(),c=bridge.goalText(g),ok=node('div','lp-done');ok.setAttribute('role','status');ok.append(node('strong','',c.done),node('span','lp-goal-note',c.goal));box.appendChild(ok)}
     box.append(node('h3','',t(result.kind==='lesson'?'result':'resultReview')),node('p','lp-result',result.correct+' / '+result.total),node('p','',t(result.correct/result.total>=.8?'good':'help')));
     if(gain)box.appendChild(node('p','lp-points','+'+gain+' '+t('points')));
     box.appendChild(node('p','',t('learned')));const list=node('ul');s.ids.forEach(id=>list.appendChild(node('li','',word(id).nl+' — '+translation(word(id)))));box.appendChild(list);

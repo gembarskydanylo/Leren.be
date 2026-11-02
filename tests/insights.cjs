@@ -87,11 +87,19 @@ assert.equal(I.goal(undefined),10);assert.equal(I.goal(15),15);assert.equal(I.go
  rctx.document={};vm.runInContext(read('modules/rewards/ui.js'),rctx);
  for(const l of ['uk','en','fr','ar'])for(const b of R.badges){assert(R.name(b,l),'name '+l+' '+b.id);assert(R.reason(b,l),'reason '+l+' '+b.id)}
  assert.equal(R.reason(R.badges.find(b=>b.id==='words-50'),'uk'),'Вивчено 50 слів (2 правильні відповіді поспіль)');
- assert.equal(R.reason(R.badges.find(b=>b.id==='exam-1'),'uk'),'Пробний іспит A1.1 або A1.2 складено на 60% і більше');
+ assert.equal(R.reason(R.badges.find(b=>b.id==='exam-1'),'uk'),'Пробний іспит у застосунку (A1.1 або A1.2) — 60% і більше. Це навчальна нагорода, а не офіційний результат іспиту');
+ assert.equal(R.EXAM_BADGE_PCT,60);assert.equal(R.name(R.badges.find(b=>b.id==='exam-1'),'uk'),'Перший складений іспит');
+ for(const l of ['en','fr','ar'])assert.match(R.reason(R.badges.find(b=>b.id==='exam-1'),l),/60/);
  assert.equal(R.reason(R.badges.find(b=>b.id==='chapter-1'),'uk'),'Завершено першу тему маршруту');}
 
 // 9. Wiring in the app: one source for the goal and the streak, counted in every skill.
 {const html=read('index.html');
+ // The reward threshold is the reward's own constant; exam scores are never compared with it elsewhere.
+ assert(html.includes('e.best.proef>=LerenRewards.EXAM_BADGE_PCT'));assert(!/proef>=60/.test(html+read('modules/exam/exam-core.js')));
+ // A finished lesson is a success whatever the daily goal: the result screen shows it before the goal note.
+ const lp=read('modules/learning-path/ui.js');assert(lp.indexOf("bridge.goalText(g)")<lp.indexOf("node('h3','',t(result.kind==='lesson'?'result':'resultReview'))"));
+ for(const l of ['uk','en','fr','ar']){const u=I.ui(l);assert(u.lessonDone&&u.goalMet&&u.goalLeft(4,10).includes('4'))}
+ assert.equal(I.ui('uk').goalLeft(4,10),'Мета дня: 4 з 10 хв. Урок зараховано — решту можна добрати пізніше.');
  assert(!/dailyGoal\(\)/.test(html),'the points goal is gone');assert(html.includes('<script src="./modules/insights/core.js?v=174"></script>'));assert(read('sw.js').includes('"./modules/insights/core.js?v=174"'));
  for(const hook of ['skillLog(mode==="audio"?"luisteren":"lezen",ok)','skillLog("schrijven",good)','slipLog("klinkers",ok)','slipLog("werkwoorden",ok)','slipLog("scheidbaar",ok)','slipLog("omdat",!s.tries)','listenOnce(a=>{skillSpoke();ok(a)}'])assert(html.includes(hook),hook);
  const core=read('modules/exam/exam-core.js');assert(core.includes('examLog(KEY,it,ok)')&&core.includes('examSpoke(KEY)')&&core.includes('practice:part=>'));}

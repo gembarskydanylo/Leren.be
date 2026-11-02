@@ -6,6 +6,9 @@
  const num=v=>Number.isFinite(Number(v))?Math.max(0,Number(v)):0;
  const parse=(s,f={})=>{try{const v=JSON.parse(s);return v??f}catch{return f}};
  const milestones=[100,250,500,1000,2500,5000,10000];
+ // The "first exam passed" badge: the app's own mock exam (part «proef») at 60% or more. This is a learning reward only;
+ // it is not an official exam result and does not change any exam score.
+ const EXAM_BADGE_PCT=60;
  const badges=[...milestones.map((xp,i)=>({id:'xp-'+xp,xp,hero:i%2?'dafna':'peter',pose:i>=2?'wow':'',kind:'xp',goal:xp})),
   {id:'lesson-1',kind:'lessons',goal:1,hero:'peter',pose:'wow'},
   {id:'lesson-5',kind:'lessons',goal:5,hero:'dafna',pose:'wow'},
@@ -50,5 +53,5 @@
   }return out;
  }
  function gameGain(storage,id,xp,day){if(!/^[a-z]+$/.test(id)||!/^\d{4}-\d{2}-\d{2}$/.test(day))return 0;let all=parse(storage.getItem(GAME_KEY));if(!obj(all))all={};if(!obj(all[day]))all[day]={};const best=Math.min(50,Math.floor(num(xp))),old=num(all[day][id]);all[day][id]=Math.max(old,best);for(const d of Object.keys(all).sort().slice(0,-30))delete all[d];storage.setItem(GAME_KEY,JSON.stringify(all));return Math.max(0,best-old)}
- window.LerenRewards={KEY,GAME_KEY,badges,milestones,create,clean,mergeSnapshots,gameGain};
+ window.LerenRewards={KEY,GAME_KEY,EXAM_BADGE_PCT,badges,milestones,create,clean,mergeSnapshots,gameGain};
 })();
