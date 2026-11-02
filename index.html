@@ -16,7 +16,8 @@
 <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<script src="./modules/learning-path/core.js?v=172"></script>
+<script src="./modules/review/srs.js?v=174"></script>
+<script src="./modules/learning-path/core.js?v=174"></script>
 <script src="./modules/rewards/core.js?v=102"></script>
 <script src="./modules/companion/ui.js?v=116"></script>
 <script src="./modules/scenes/map.js?v=165"></script>
@@ -29,7 +30,7 @@
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=102"></script>
 <script src="./modules/rewards/ui.js?v=102"></script>
-<script src="./modules/focused-home/ui.js?v=172"></script>
+<script src="./modules/focused-home/ui.js?v=174"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=173"></script>
 <script src="./modules/lesson-conversation/content.js?v=171"></script>
@@ -42,7 +43,7 @@
 <script src="./modules/emoji/variants.js?v=147"></script>
 <script src="./modules/emoji/renderer.js?v=142"></script>
 <script src="./modules/word-builder/game.js?v=172"></script>
-<script src="./modules/learning-path/ui.js?v=173"></script>
+<script src="./modules/learning-path/ui.js?v=174"></script>
 <script src="./modules/dialogues/translations.js?v=173"></script>
 <title>lerenbe.com — Nederlands A1.1 &amp; A1.2</title>
 <style>
@@ -1027,7 +1028,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/style.css?v=141">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=173">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=174">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
@@ -2544,7 +2545,8 @@ function stateFor(id){if(!store[id])store[id]={seen:0,correct:0,wrong:0,streak:0
 const allItems=()=>Object.values(DATA).flatMap(d=>d.items);
 // Words of one course (its topics); a word card belongs to the course of its topic.
 const levelItems=lv=>{const seen=new Set();return levelCats(lv).flatMap(c=>c.tabs).flatMap(t=>DATA[t]?.items||[]).filter(x=>x&&x.id&&!seen.has(x.id)&&seen.add(x.id))};
-function dueItems(lv){const now=Date.now();return (lv?levelItems(lv):allItems()).filter(x=>{const s=stateFor(x.id);return s.seen>0&&s.due<=now})}
+// Words to review, most urgent first (forgotten words before words that only reached their date): modules/review/srs.js.
+function dueItems(lv){return LerenSRS.due(lv?levelItems(lv):allItems(),stateFor)}
 const learnedCount=lv=>(lv?levelItems(lv):allItems()).filter(x=>stateFor(x.id).known).length;
 
 function updateStats(){
@@ -3289,9 +3291,8 @@ function renderStudyControls(card){
 function answer(ok,btn){
  if(locked)return;locked=true;
  const u=getUI(),s=stateFor(item.id);s.seen++;let gain=0;
- if(ok){gain=xpForCorrect(s);right++;roundPoints+=gain;addXP(gain);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
- else{s.wrong++;s.streak=0;s.due=Date.now()}
- s.known=s.streak>=2;
+ if(ok){gain=xpForCorrect(s);right++;roundPoints+=gain;addXP(gain);LerenSRS.update(s,true)}
+ else LerenSRS.update(s,false);
  saveStore();updateStats();
  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.ok==="1")b.classList.add("correct")});
  if(!ok)btn.classList.add("incorrect");
@@ -3473,9 +3474,9 @@ function klRender(){
 function klAnswer(ok,btn){
  if(locked)return;locked=true;
  const u=getUI(),k=klU(),s=stateFor(item.id);s.seen++;
- if(ok){const g=xpForCorrect(s);right++;roundPoints+=g;addXP(g);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
- else{s.wrong++;s.streak=0;s.due=Date.now()}
- s.known=s.streak>=2;saveStore();updateStats();
+ if(ok){const g=xpForCorrect(s);right++;roundPoints+=g;addXP(g);LerenSRS.update(s,true)}
+ else LerenSRS.update(s,false);
+ saveStore();updateStats();
  if(klLevel<3)klBoard[item.kind].push({w:item.nl,ok});
  klRender();
  if(klLevel===3){document.querySelectorAll(".opt").forEach(b=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok)b.classList.add("incorrect")})}
@@ -3656,9 +3657,9 @@ function vhRender(){
 function vhAnswer(ok,btn){
  if(locked)return;locked=true;
  const u=getUI(),g=item.g,s=stateFor(item.id);s.seen++;
- if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
- else{s.wrong++;s.streak=0;s.due=Date.now()}
- s.known=s.streak>=2;saveStore();updateStats();
+ if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);LerenSRS.update(s,true)}
+ else LerenSRS.update(s,false);
+ saveStore();updateStats();
  const chosen=btn.textContent;vhAns[g.n]={w:chosen,ok};
  vhRender();
  document.querySelectorAll("#card .opt").forEach(b=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok&&b.textContent===chosen)b.classList.add("incorrect")});
@@ -3734,9 +3735,9 @@ function sepRender(){
 function sepAnswer(ok,btn){
  if(locked)return;locked=true;
  const u=getUI(),d=item.sep,s=stateFor(item.id);s.seen++;
- if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);s.correct++;s.streak++;s.due=Date.now()+(s.streak>=3?3:1)*864e5}
- else{s.wrong++;s.streak=0;s.due=Date.now()}
- s.known=s.streak>=2;saveStore();updateStats();
+ if(ok){const x=xpForCorrect(s);right++;roundPoints+=x;addXP(x);LerenSRS.update(s,true)}
+ else LerenSRS.update(s,false);
+ saveStore();updateStats();
  const idx=[...btn.parentNode.children].indexOf(btn);
  sepRender();
  document.querySelectorAll("#card .opt").forEach((b,i)=>{if(b.dataset.ok==="1")b.classList.add("correct");else if(!ok&&i===idx)b.classList.add("incorrect")});
@@ -6831,7 +6832,8 @@ function initLearningPath(){
   listen:(ok,fail)=>listenOnce(ok,fail,"nl-BE"),
   stopListening:()=>{if(gRec)gRec.abort()},
   ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente",zorg:"huisarts",stad:"gemeente",openbaar:"station"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
-  answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;if(ok){s.correct++;s.streak++;s.due=Date.now()+864e5}else{s.wrong++;s.streak=0;s.due=Date.now()}s.known=s.streak>=2;saveStore();updateStats()},
+  answer:(id,ok,final)=>{if(!final)return;const s=stateFor(id);s.seen++;LerenSRS.update(s,ok);saveStore();updateStats()},
+  due:()=>dueItems(curLevel).map(x=>x.id),
   complete:recordPathResult,rewards:()=>setView("progress"),
   // Writing practice of an A1.2 topic: tasks from the A1.2 exam data, opened in the exam editor with "back to the lesson".
   writeTasks:(ch,lang)=>{const ids=(window.EXAM12_DATA&&EXAM12_DATA.TOPIC_WRITE[ch])||[];if(!window.EXAM12)return [];return ids.map(id=>EXAM12.tasks().find(w=>w.id===id)).filter(Boolean).map(w=>({id:w.id,title:w.title[lang]||w.title.en,best:EXAM12.writeBest(w.id)}))},
@@ -6878,8 +6880,8 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="173";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "A1.2 отримав фінальний іспит і більше практики.", "items": ["Фінальний іспит A1.2 у «Тестах»: читання, аудіювання, 13 письмових завдань із перевіркою, говоріння, слова, граматика й пробний іспит.", "Письмо в уроках A1.2: на сторінці кожної теми — коротке повідомлення або анкета з перевіркою.", "У кожній темі A1.2 щонайменше 6 речень для складання й вправи на кожне правило граматики.", "Нові діалоги й усні завдання: 2–3 на кожну тему.", "Діалоги перекладені французькою та арабською."], "hint": "Обери A1.2 і відкрий «Тести» → «Фінальний іспит A1.2».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A1.2 now has a final exam and more practice.", "items": ["Final exam A1.2 in Tests: reading, listening, 13 writing tasks with a checklist, speaking, words, grammar and a mock exam.", "Writing in A1.2 lessons: every topic page has a short message or form with a checklist.", "Every A1.2 topic has at least 6 sentences to build and exercises for each grammar rule.", "New dialogues and speaking tasks: 2–3 per topic.", "Dialogues are translated into French and Arabic."], "hint": "Choose A1.2 and open Tests → Final exam A1.2.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "A1.2 a maintenant un examen final et plus d’exercices.", "items": ["Examen final A1.2 dans Tests : lecture, écoute, 13 tâches d’écriture avec liste de contrôle, oral, vocabulaire, grammaire et examen blanc.", "L’écrit dans les leçons A1.2 : chaque thème propose un court message ou un formulaire avec liste de contrôle.", "Chaque thème A1.2 a au moins 6 phrases à construire et des exercices pour chaque règle.", "Nouveaux dialogues et tâches orales : 2 à 3 par thème.", "Les dialogues sont traduits en français et en arabe."], "hint": "Choisis A1.2 et ouvre Tests → Examen final A1.2.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبح لدورة A1.2 امتحان نهائي وتمارين أكثر.", "items": ["الامتحان النهائي A1.2 في الاختبارات: القراءة والاستماع و13 مهمة كتابة مع قائمة تحقق والتحدث والمفردات والقواعد وامتحان تجريبي.", "الكتابة في دروس A1.2: في كل موضوع رسالة قصيرة أو استمارة مع قائمة تحقق.", "في كل موضوع من A1.2 ست جمل على الأقل للتركيب وتمارين لكل قاعدة.", "حوارات ومهام تحدث جديدة: 2 إلى 3 لكل موضوع.", "الحوارات مترجمة إلى الفرنسية والعربية."], "hint": "اختر A1.2 وافتح الاختبارات ← الامتحان النهائي A1.2.", "ok": "فهمت"}};
+const RELEASE_VERSION="174";
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Маршрут тепер сам стежить за словами, які ти забуваєш.", "items": ["Розумне повторення: після правильних відповідей слово повертається через 1, 3, 7, 14 і 30 днів, а після помилки — одразу.", "Перед новим уроком маршрут раз на день пропонує коротку розминку з 3–5 слів, які пора повторити.", "Пітер на головному екрані пише план на сьогодні.", "Самостійне навчання лишається поруч: кнопка «Самостійно вивчати»."], "hint": "Натисни «Продовжити» на головному екрані.", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "The route now keeps track of words you are forgetting.", "items": ["Smart review: after right answers a word comes back in 1, 3, 7, 14 and 30 days; after a mistake, right away.", "Once a day, before a new lesson, the route offers a short warm-up of 3–5 words that are due for review.", "Peter writes today’s plan on the home screen.", "Free study stays one tap away: “Study on my own”."], "hint": "Tap “Continue” on the home screen.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Le parcours suit maintenant les mots que tu oublies.", "items": ["Révision intelligente : après de bonnes réponses, un mot revient dans 1, 3, 7, 14 et 30 jours ; après une erreur, tout de suite.", "Une fois par jour, avant une nouvelle leçon, le parcours propose un court échauffement de 3 à 5 mots à réviser.", "Peter écrit le programme du jour sur l’écran d’accueil.", "L’étude libre reste à portée de main."], "hint": "Touche « Continuer » sur l’écran d’accueil.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "المسار يتابع الآن الكلمات التي بدأت تنساها.", "items": ["مراجعة ذكية: بعد الإجابات الصحيحة تعود الكلمة بعد 1 و3 و7 و14 و30 يوماً، وبعد الخطأ فوراً.", "مرة في اليوم، قبل درس جديد، يقترح المسار تمريناً قصيراً من 3 إلى 5 كلمات حان وقت مراجعتها.", "بيتر يكتب خطة اليوم على الشاشة الرئيسية.", "التعلّم الحر يبقى متاحاً بنقرة واحدة."], "hint": "اضغط «تابع» على الشاشة الرئيسية.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
