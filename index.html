@@ -1250,7 +1250,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/card-art/more-people.js?v=135"></script>
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=174"></script>
-<script src="./modules/rewards/ui.js?v=178"></script>
+<script src="./modules/rewards/ui.js?v=179"></script>
 <script src="./modules/focused-home/ui.js?v=178"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=178"></script>
@@ -5236,7 +5236,7 @@ function renderShellText(){
  $("helpRowLabel").textContent=n.guide;$("helpBtn").textContent=n.guideBtn;
  $("dictTitle").textContent=n.dictTitle;$("dictHint").textContent=n.dictHint;$("progressTitle").textContent=n.progressTitle;$("toetsTitle").textContent=n.toetsTitle;
  const st=streakState(),sp=$("streakPill");sp.replaceChildren(ico("flame"),el("span","",String(st.n)));sp.classList.toggle("off",!st.n);sp.title=n.streakT(st.n);sp.setAttribute("aria-label",n.streakT(st.n));
- const guideText=LerenCompanion.tr(uiLang),route=$("headerRoute");route.replaceChildren(el("strong","","🐾 "+guideText.route),el("small","",guideText.routeHint));route.hidden=targetLang!=="nl";
+ const guideText=LerenCompanion.tr(uiLang),route=$("headerRoute");route.replaceChildren(el("strong","","🐾 "+guideText.route)," ",el("small","",guideText.routeHint));route.hidden=targetLang!=="nl";
  $("tagline").textContent=targetLang==="nl"?guideText.brand:({en:"English",fr:"Français"})[targetLang]||guideText.brand;
  const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)),el("span","comp-points-label",pgU().xp));sc.title=(u.points||"Points")+": "+score;
  const pathBack=$("pathReturn");if(pathBack)pathBack.textContent=({uk:"‹ До навчального маршруту",en:"‹ Back to my learning path",fr:"‹ Retour au parcours",ar:"العودة إلى مسار التعلّم ›"})[uiLang];
@@ -7113,13 +7113,44 @@ function recordPathResult(id,correct,total){
  pathSessionRewards[id]=correct;best[id]=correct;lsSet("leren_path_rewards_v1",best);addXP(gain,"p:"+id);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
 }
 
+// ========== TEXT GAPS: no glued words when the page is read as plain text ==========
+// Labels and hints, numbers and units, titles and counters are separate elements that the layout keeps apart (flex/grid
+// gaps, separate lines). Their markup has no space between them, so copy & paste, reader modes, search snippets, some
+// screen readers and text audits read them glued together: "0балів", "Автоозвученняслово", "(скоро)Вивчено", "ui1 / 3".
+// One ordinary space is added between such neighbours — only where the layout ignores it (a flex or grid parent, or two
+// block-level neighbours), so nothing moves on screen. It runs on the whole page and on everything the app renders later.
+const TEXT_GAP_SKIP=new Set(["SCRIPT","STYLE","TEXTAREA","INPUT","SELECT","OPTION","PRE","CODE","svg","SVG","BR"]);
+const TEXT_GAP_BLOCK=/^(block|flex|grid|list-item|table|flow-root)$/;
+function textGaps(root){
+ if(!root||root.nodeType!==1||TEXT_GAP_SKIP.has(root.nodeName)||root.isContentEditable)return;
+ const parents=[root,...root.querySelectorAll("*")];
+ for(const p of parents){
+  if(TEXT_GAP_SKIP.has(p.nodeName)||p.childElementCount<2||p.closest("svg,pre,textarea,[contenteditable]"))continue;
+  // The box that lays the children out: for display:contents it is the nearest ancestor with a box. A hidden parent's
+  // layout is unknown until it is shown, so there only two block-level neighbours get a space (invisible in any layout).
+  let lp=p,ld=getComputedStyle(p).display;while(ld==="contents"&&lp.parentElement){lp=lp.parentElement;ld=getComputedStyle(lp).display}
+  const layout=ld!=="none"&&/flex|grid/.test(ld);
+  // Neighbours with text; elements without text (icons, bars) in between are skipped over.
+  let prev=null,between=false;
+  for(let n=p.firstChild;n;n=n.nextSibling){
+   if(n.nodeType===3){if(n.textContent.trim())prev=null;else if(n.textContent.length)between=true;continue}
+   if(n.nodeType!==1||TEXT_GAP_SKIP.has(n.nodeName))continue;
+   const t=n.textContent;if(!t.trim())continue;
+   if(prev&&!between&&!/\s$/.test(prev.textContent)&&!/^\s/.test(t)&&(layout||TEXT_GAP_BLOCK.test(getComputedStyle(prev).display)&&TEXT_GAP_BLOCK.test(getComputedStyle(n).display)))p.insertBefore(document.createTextNode(" "),n);
+   prev=n;between=false;
+  }
+ }
+}
+let textGapQueue=new Set(),textGapFrame=0;
+function textGapsLater(node){if(node&&node.nodeType===1)textGapQueue.add(node.parentElement||node);if(!textGapFrame)textGapFrame=requestAnimationFrame(()=>{textGapFrame=0;const q=[...textGapQueue];textGapQueue.clear();for(const n of q)if(n.isConnected)textGaps(n)})}
+function textGapsWatch(){textGaps(document.body);new MutationObserver(list=>{for(const m of list){if(m.type==="characterData"){textGapsLater(m.target.parentElement);continue}if(m.type==="attributes"){textGapsLater(m.attributeName==="data-view"?document.body.firstElementChild:m.target.firstElementChild||m.target);continue}for(const n of m.addedNodes)if(n.nodeType===1)textGapsLater(n);else if(n.nodeType===3&&n.textContent.trim())textGapsLater(n.parentElement)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["hidden","data-view"]})}
 function start(){
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
  }catch(e){document.documentElement.dataset.theme="light"}
  const nav=$("modeButtons"),head=document.querySelector("main > header");if(nav&&head){head.after(nav);nav.setAttribute("role","navigation")}
- rewardCheck();askPersist();goalCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();
+ rewardCheck();askPersist();goalCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();textGapsWatch();
  // Desktop header (≥1024px): reminders bell and account. Language stays in Settings.
  if(window.LerenDesktop){const focusRow=(row,ctl)=>setTimeout(()=>{$(row)?.scrollIntoView({block:"center"});$(ctl)?.focus({preventScroll:true})},150);
   LerenDesktop.mount({language:()=>uiLang,setLanguage:l=>changeUiLang(l),user:()=>acct.user,canRemind:()=>{const r=$("remindRow");return !!r&&!r.hidden},
@@ -7348,7 +7379,7 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=176" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
-<script src="./modules/diphthongs/widget.js?v=87" defer></script>
+<script src="./modules/diphthongs/widget.js?v=176" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

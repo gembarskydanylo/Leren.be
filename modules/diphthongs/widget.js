@@ -22,7 +22,7 @@
     battleHint:['Послухай і вибери слово, яке прозвучало. Після відповіді порівняй обидві вимови.','Listen and choose the word you heard. After answering, compare both pronunciations.','Écoute et choisis le mot entendu. Après ta réponse, compare les deux prononciations.','استمع واختر الكلمة التي سمعتها. بعد الإجابة قارن نطق الكلمتين.'],
     dictHint:['Послухай та вибери групу звуків. ij/ei та ou/au мають спільні кнопки: однакове звучання, різне написання.','Listen and choose the sound group. ij/ei and ou/au share buttons: the same sound, different spellings.','Écoute et choisis le groupe sonore. ij/ei et ou/au partagent un bouton : même son, graphies différentes.','استمع واختر مجموعة الصوت. تشترك ij/ei وou/au في الأزرار: الصوت نفسه والكتابة مختلفة.'],
     quizHint:['У слові є один із трьох основних дифтонгів? Зверни увагу на пастки й окремі склади.','Does the word contain one of the three core diphthongs? Watch for single vowels and separate syllables.','Le mot contient-il une des trois diphtongues principales ? Attention aux voyelles simples et aux syllabes séparées.','هل تحتوي الكلمة على أحد الأصوات المزدوجة الثلاثة الأساسية؟ انتبه للصوائت المفردة والمقاطع المنفصلة.'],
-    listen:['🔊 Послухай','🔊 Listen','🔊 Écoute','🔊 استمع'],question:['Завдання {n}/{total}','Question {n}/{total}','Question {n}/{total}','السؤال {n}/{total}'],
+    listen:['🔊 Послухай','🔊 Listen','🔊 Écoute','🔊 استمع'],soundN:['Звук {n} з 3','Sound {n} of 3','Son {n} sur 3','الصوت {n} من 3'],question:['Завдання {n}/{total}','Question {n}/{total}','Question {n}/{total}','السؤال {n}/{total}'],
     correct:['Правильних: {n}','Correct: {n}','Bonnes réponses : {n}','الإجابات الصحيحة: {n}'],yes:['Є дифтонг','Diphthong','Une diphtongue','صوت مزدوج'],no:['Не дифтонг','No diphthong','Pas de diphtongue','ليس صوتاً مزدوجاً'],
     right:['✓ Правильно!','✓ Correct!','✓ Bien joué !','✓ صحيح!'],wrong:['Спробуй запам’ятати різницю','Remember this difference','Retiens cette différence','تذكّر هذا الفرق'],
     coreRule:['{group} — ковзний звук в одному складі.','{group} — a gliding vowel within one syllable.','{group} — une voyelle qui glisse dans une seule syllabe.','{group} — صوت صائت متحرك داخل مقطع واحد.'],
@@ -106,7 +106,7 @@
       model.groups.forEach(g=>{const b=button(g+(model.state.learned.includes(g)?' ✓':''),()=>{stop();model.sound(g);renderLearn()});b.setAttribute('aria-pressed',String(g===model.state.sound));tabs.appendChild(b)});
       const sound=sounds[model.state.sound],text=sound.text[langs.indexOf(lang)];
       $('[data-role=sound-title]').textContent=model.state.sound;
-      $('[data-role=sound-count]').textContent=model.state.learned.includes(model.state.sound)?tr('reviewed'):(model.groups.indexOf(model.state.sound)+1)+' / 3';
+      $('[data-role=sound-count]').textContent=model.state.learned.includes(model.state.sound)?tr('reviewed'):tr('soundN',{n:model.groups.indexOf(model.state.sound)+1});
       for(const [selector,value] of [['sound-rule',text[0]],['artic-start',text[1]],['artic-end',text[2]],['sound-tip',text[3]]])$('[data-role='+selector+']').textContent=value;
       const examples=$('[data-role=examples]');examples.replaceChildren(...sound.examples.map(example));
       $('[data-role=learn-next]').textContent=model.state.learned.filter(g=>g!==model.state.sound).length===2?tr('goListen'):tr('understood');

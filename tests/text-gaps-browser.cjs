@@ -1,0 +1,22 @@
+// Plain-text reading of the app (copy & paste, reader modes, search snippets, screen readers, audits) never glues words of
+// neighbouring elements: the reported examples ("0балів", "Автоозвученняслово", "(необов’язково)Прогрес", "ui1 / 3", …)
+// are gone, and no visible text of eight screens and the diphthong lesson has words glued together.
+// Needs Playwright with Chromium; skipped otherwise. Run: node tests/text-gaps-browser.cjs
+let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
+const assert=require('node:assert/strict');const http=require('http'),fs=require('fs'),path=require('path');const root=path.join(__dirname,'..');
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json'};
+const server=http.createServer((q,r)=>{const f=path.join(root,decodeURIComponent(new URL(q.url,'http://x').pathname));if(!fs.existsSync(f)||fs.statSync(f).isDirectory()){r.writeHead(404);r.end();return}r.writeHead(200,{'content-type':types[path.extname(f)]||'application/octet-stream'});fs.createReadStream(f).pipe(r)});
+(async()=>{await new Promise(r=>server.listen(0,r));const b=await chromium.launch(),p=await b.newPage({viewport:{width:390,height:844}});
+await p.addInitScript(()=>{if(sessionStorage.s)return;localStorage.setItem('leren_release_seen','"176"');localStorage.setItem('leren_char','"peter"');sessionStorage.s=1});
+await p.goto('http://127.0.0.1:'+server.address().port+'/index.html');await p.waitForFunction(()=>window.learningPath);
+const text=()=>{const c=document.body.cloneNode(true);c.querySelectorAll('script,style,svg').forEach(x=>x.remove());return c.textContent.replace(/\s+/g,' ')};
+const vis=()=>{const out=[];const re=/[а-яіїєґ’)»%][А-ЯІЇЄҐ]|[а-яіїєґ][0-9]|[0-9][а-яіїєґ]{2}|\)[А-ЯІЇЄҐа-яіїєґ]/u;for(const e of document.querySelectorAll('body *')){if(!e.checkVisibility||!e.checkVisibility()||e.closest('script,style,svg'))continue;if([...e.children].some(c=>c.checkVisibility&&c.checkVisibility()))continue;}const walk=n=>{if(n.nodeType===1&&(!n.checkVisibility()||/SCRIPT|STYLE|svg/.test(n.nodeName)))return '';if(n.nodeType===3)return n.textContent;return [...n.childNodes].map(walk).join('')};const t=walk(document.body).replace(/\s+/g,' ');const g=/[а-яіїєґ’)»%][А-ЯІЇЄҐ]|[а-яіїєґ][0-9]|[0-9][а-яіїєґ]{2}|\)[А-ЯІЇЄҐа-яіїєґ]/gu;let m;while((m=g.exec(t)))out.push(t.slice(Math.max(0,m.index-15),m.index+15));return out};const per={};const all=[];for(const fn of [()=>setView('path'),()=>setView('progress'),()=>openSheet('settingsSheet'),()=>{closeSheet('settingsSheet');setHomePref('free');setView('lesson')},()=>openSheet('topicsSheet'),()=>{closeSheet('topicsSheet');setView('toets')},()=>setView('games'),()=>setView('dict')]){await p.evaluate(fn);await p.waitForTimeout(300);all.push(await p.evaluate(text));per[all.length]=await p.evaluate(vis)}for(const [k,v] of Object.entries(per))assert.deepEqual(v,[],'screen '+k+': glued words in visible text');
+// diphthongs mini-lesson (Tests → Diphthongs)
+await p.evaluate(()=>{setView('toets');const b=[...document.querySelectorAll('#card button')].find(x=>/Дифтонги/.test(x.textContent));b&&b.click()});await p.waitForTimeout(1200);
+await p.evaluate(()=>{const b=[...document.querySelectorAll('button')].find(x=>/Відкрити мініурок|Звукова гірка/.test(x.textContent));b&&b.click()});await p.waitForTimeout(1500);
+await p.evaluate(()=>{const t=document.querySelector('[data-tab="learn"]');t&&t.click()});await p.waitForTimeout(500);all.push(await p.evaluate(text));
+const T=all.join(' || ');
+for(const bad of ['0балів','губиПідніми','(скоро)Вивчено','озвученняголос','Автоозвученняслово','Нагадуваннянагадаю','(необов’язково)Прогрес','ui1 / 3'])assert(!T.includes(bad),'still glued: '+bad);
+for(const good of ['Автоозвучення ','Нагадування ','(необов’язково) ','балів ','губи ','Звук 1 з 3'])assert(T.includes(good),'missing: '+good);
+console.log('PASS: no glued words in plain-text reading: the 8 reported examples fixed, visible text of 8 screens and the diphthong lesson clean');
+await b.close();server.close()})().catch(e=>{console.error(e);process.exit(1)});
