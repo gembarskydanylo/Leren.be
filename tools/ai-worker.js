@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-02-course-level-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-02-exam12-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -306,7 +306,7 @@ export default {
     const mode = ["ask", "memo"].includes(body.mode) ? body.mode : "chat";
     const memory = String(body.memory || "").replace(/[{}<>]/g, " ").slice(0, 600).trim();
     const target = TARGET[body.target] ? body.target : "nl"; // older app versions send no target → Dutch
-    const maxLen = mode === "chat" ? 400 : body.focus === "exam11" ? 1600 : 600;
+    const maxLen = mode === "chat" ? 400 : ["exam11", "exam12"].includes(body.focus) ? 1600 : 600;
     const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-WINDOW)
       .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
       .map(m => ({role: m.role, content: m.content.slice(0, maxLen)}));

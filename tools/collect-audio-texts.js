@@ -20,6 +20,7 @@ const {chromium}=require("playwright");const fs=require("fs");
   TOETS.forEach(t=>t.questions.forEach(q=>add(toetsSpoken(q))));
   add(speechSampleText());
   if(window.EXAM11)EXAM11.texts().forEach(add);
+  if(window.EXAM12)EXAM12.texts().forEach(add);
   OM_ALL.forEach(it=>{add(omText(it,"omdat"));add(omText(it,"want"));if(it.two)add(omText(it,"omdat",omOrder(it,true)))});
   for(const c of ["peter","dafna"]){lsSet("leren_char",c);cxDeep(SCENES).forEach(sc=>sc.turns.forEach(t=>{add(t[0]);t[3].forEach(o=>add(o[0]))}))}
   await dictLoad();DICT.ix.entries.forEach(e=>{add(dictSpeak(e));add(e.x)});

@@ -31,7 +31,7 @@
 <script src="./modules/rewards/ui.js?v=102"></script>
 <script src="./modules/focused-home/ui.js?v=172"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
-<script src="./modules/test-library/ui.js?v=171"></script>
+<script src="./modules/test-library/ui.js?v=173"></script>
 <script src="./modules/lesson-conversation/content.js?v=171"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
 <script src="./modules/lesson-conversation/ui.js?v=112"></script>
@@ -1176,7 +1176,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
-<script src="./course-curriculum.js?v=171"></script>
+<script src="./course-curriculum.js?v=173"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -3983,7 +3983,7 @@ function startToets(){
   $("barfill").style.width="0%";$("barfill").parentElement.setAttribute("aria-valuenow","0");
   LerenTestLibrary.render({card:$("card"),el,tests:TOETS,level:curLevel,lang:uiLang,best:lsGet("poly_toetsbest",{}),
     topicInfo:(id,lang)=>LerenCurriculum.topicInfo(id,lang),unlocked:levelUnlocked,
-    exam:curLevel==="a11"&&window.EXAM11?()=>EXAM11.open():null,
+    exam:curLevel==="a11"&&window.EXAM11?()=>EXAM11.open():curLevel==="a12"&&window.EXAM12?()=>EXAM12.open():null,
     changeLevel:id=>{if(!levelUnlocked(id)){$("card").classList.remove("test-library");showLevelLocked(levelById(id));return}curLevel=id;const c=levelCats()[0];currentCat=c.id;tab=c.tabs.find(tabVisible)||"all";saveStore();buildNav();startToets()},
     open:t=>{toetsId=t.id;toetsQ=0;toetsRight=0;toetsLocked=false;if(t.id==="diphthongs")diphTheory();else nextToetsQuestion()}
   });
@@ -5448,7 +5448,7 @@ function gHead(title,sub,keep){
  if(!keep)gStop();cardOwner="games";
  $("prog").textContent=title;$("rnd").textContent=sub||"";gBar(0);
  const card=$("card");card.replaceChildren();
- const top=el("div","g-top");const fromExam=gState&&gState.fromExam&&window.EXAM11;const back=el("button","g-back",fromExam?(uiLang==="uk"?"← Іспит":"← Exam"):gU().back);back.type="button";back.onclick=()=>{if(gState&&gState.fromExam&&window.EXAM11){if(gState.chat)aiRemember(gState);gStop();EXAM11.open()}else renderGamesHome()};top.appendChild(back);card.appendChild(top);
+ const top=el("div","g-top");const examBack=gState&&gState.fromExam?window[gState.fromExam===true?"EXAM11":gState.fromExam]:null,fromExam=!!examBack;const back=el("button","g-back",fromExam?(uiLang==="uk"?"← Іспит":"← Exam"):gU().back);back.type="button";back.onclick=()=>{if(examBack){if(gState.chat)aiRemember(gState);gStop();examBack.open()}else renderGamesHome()};top.appendChild(back);card.appendChild(top);
  return card;
 }
 function gBar(p){const value=String(Math.round(Math.max(0,Math.min(1,p))*100));$("barfill").style.width=value+"%";$("barfill").parentElement.setAttribute("aria-valuenow",value)}
@@ -6593,7 +6593,7 @@ function sayIn(text,lang){ // examples may be in another language than the one b
 }
 function askStart(opts){
  const g=aiU();if(!aiConsent(g.askTitle,()=>askStart(opts)))return;
- gState={ask:true,msgs:[],busy:false,focus:opts&&opts.focus||null,fromExam:!!(opts&&opts.focus==="exam11")};askRender();
+ gState={ask:true,msgs:[],busy:false,focus:opts&&opts.focus||null,fromExam:opts&&opts.focus==="exam11"?"EXAM11":opts&&opts.focus==="exam12"?"EXAM12":false};askRender();
  if(opts&&opts.send)askSend(opts.send);
 }
 function askRender(){
@@ -6613,7 +6613,7 @@ function askRender(){
  if(s.busy){const row=el("div","ai-row");const av=el("div","st-av xs");av.innerHTML=charSvg("think");row.append(av,el("div","g-bub them ai-typing","• • •"));chat.appendChild(row)}
  {const mb0=aiMemoryBox(askRender);if(mb0)card.appendChild(mb0)}card.appendChild(chat);
  if(s.err)card.appendChild(el("p","st-fb bad",s.err));
- if(!s.msgs.length){const chips=el("div","ai-chips");((s.focus==="exam11"&&window.EXAM11&&EXAM11.chips())||g.chips[targetLang]||g.chips.nl).forEach(q=>{const c=el("button","btn ai-chip",q);c.type="button";c.onclick=()=>askSend(q);chips.appendChild(c)});card.appendChild(chips)}
+ if(!s.msgs.length){const chips=el("div","ai-chips");((s.focus==="exam11"&&window.EXAM11&&EXAM11.chips())||(s.focus==="exam12"&&window.EXAM12&&EXAM12.chips())||g.chips[targetLang]||g.chips.nl).forEach(q=>{const c=el("button","btn ai-chip",q);c.type="button";c.onclick=()=>askSend(q);chips.appendChild(c)});card.appendChild(chips)}
  const form=el("form","g-type");const inp=el("input");inp.type="text";inp.autocomplete="off";inp.maxLength=s.focus==="exam11"?1600:600;inp.placeholder=g.askPh;inp.setAttribute("aria-label",g.askPh);if(s.askDraft){inp.value=s.askDraft;s.askDraft=""}
  const ok=el("button","btn primary",g.send);ok.type="submit";ok.disabled=s.busy;form.append(inp,ok);
  form.onsubmit=e=>{e.preventDefault();if(inp.value.trim())askSend(inp.value)};
@@ -6873,7 +6873,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
 const RELEASE_VERSION="173";
-const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "Діалоги тепер перекладені всіма мовами застосунку.", "items": ["Усі 24 діалоги A1.1 і A1.2 мають французький та арабський переклад кожної репліки.", "Ігри «Діалог» і «Рольова гра» показують переклад мовою, яку ти вибрав.", "Назви діалогів A1.1 тепер теж є французькою та арабською."], "hint": "Відкрий «Ігри» → «Діалог» або «Рольова гра».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "Dialogues are now translated into every app language.", "items": ["All 24 A1.1 and A1.2 dialogues have a French and Arabic translation for every line.", "The Dialogue and Role play games show the translation in your language.", "A1.1 dialogue titles are now in French and Arabic too."], "hint": "Open Games → Dialogue or Role play.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "Les dialogues sont maintenant traduits dans toutes les langues de l’application.", "items": ["Les 24 dialogues A1.1 et A1.2 ont une traduction française et arabe pour chaque réplique.", "Les jeux Dialogue et Jeu de rôle affichent la traduction en français.", "Les titres des dialogues A1.1 existent aussi en français et en arabe."], "hint": "Ouvre Jeux → Dialogue ou Jeu de rôle.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبحت الحوارات مترجمة إلى كل لغات التطبيق.", "items": ["كل الحوارات الـ24 في A1.1 وA1.2 لها ترجمة فرنسية وعربية لكل جملة.", "لعبتا «الحوار» و«لعب الأدوار» تعرضان الترجمة بالعربية.", "عناوين حوارات A1.1 أصبحت بالفرنسية والعربية أيضاً."], "hint": "افتح الألعاب ← الحوار أو لعب الأدوار.", "ok": "فهمت"}};
+const RELEASE_UI={"uk": {"title": "Що нового в Leren.be", "intro": "A1.2 отримав фінальний іспит і більше практики.", "items": ["Фінальний іспит A1.2 у «Тестах»: читання, аудіювання, 13 письмових завдань із перевіркою, говоріння, слова, граматика й пробний іспит.", "У кожній темі A1.2 щонайменше 6 речень для складання й вправи на кожне правило граматики.", "Нові діалоги й усні завдання: 2–3 на кожну тему.", "Діалоги перекладені французькою та арабською."], "hint": "Обери A1.2 і відкрий «Тести» → «Фінальний іспит A1.2».", "ok": "Зрозуміло"}, "en": {"title": "What’s new in Leren.be", "intro": "A1.2 now has a final exam and more practice.", "items": ["Final exam A1.2 in Tests: reading, listening, 13 writing tasks with a checklist, speaking, words, grammar and a mock exam.", "Every A1.2 topic has at least 6 sentences to build and exercises for each grammar rule.", "New dialogues and speaking tasks: 2–3 per topic.", "Dialogues are translated into French and Arabic."], "hint": "Choose A1.2 and open Tests → Final exam A1.2.", "ok": "Got it"}, "fr": {"title": "Nouveautés de Leren.be", "intro": "A1.2 a maintenant un examen final et plus d’exercices.", "items": ["Examen final A1.2 dans Tests : lecture, écoute, 13 tâches d’écriture avec liste de contrôle, oral, vocabulaire, grammaire et examen blanc.", "Chaque thème A1.2 a au moins 6 phrases à construire et des exercices pour chaque règle.", "Nouveaux dialogues et tâches orales : 2 à 3 par thème.", "Les dialogues sont traduits en français et en arabe."], "hint": "Choisis A1.2 et ouvre Tests → Examen final A1.2.", "ok": "Compris"}, "ar": {"title": "ما الجديد في Leren.be", "intro": "أصبح لدورة A1.2 امتحان نهائي وتمارين أكثر.", "items": ["الامتحان النهائي A1.2 في الاختبارات: القراءة والاستماع و13 مهمة كتابة مع قائمة تحقق والتحدث والمفردات والقواعد وامتحان تجريبي.", "في كل موضوع من A1.2 ست جمل على الأقل للتركيب وتمارين لكل قاعدة.", "حوارات ومهام تحدث جديدة: 2 إلى 3 لكل موضوع.", "الحوارات مترجمة إلى الفرنسية والعربية."], "hint": "اختر A1.2 وافتح الاختبارات ← الامتحان النهائي A1.2.", "ok": "فهمت"}};
 function showReleaseNotes(){
  const u=RELEASE_UI[uiLang]||RELEASE_UI.uk;
  popup((panel,close)=>{
@@ -7074,7 +7074,10 @@ if(targetLang!=="nl")setTimeout(firstRun,600);
 </script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam11.js?v=148" defer></script>
+<script src="./modules/exam/exam-core.js?v=173" defer></script>
+<script src="./modules/exam/exam11.js?v=173" defer></script>
+<script src="./modules/exam/exam12-data.js?v=173" defer></script>
+<script src="./modules/exam/exam12.js?v=173" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
 <script src="./modules/diphthongs/widget.js?v=87" defer></script>
 <!-- Cloudflare Web Analytics (cookieless visit statistics) --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3149b6230dac4574be45cc1c1a12cdbd"}'></script><!-- End Cloudflare Web Analytics -->
