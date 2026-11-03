@@ -34,7 +34,7 @@ const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
   const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage();page.on('pageerror',e=>errors.push(name+': '+e.message));page.on('dialog',d=>{page.lastDialog=d.message();d.type()==='confirm'?(page.confirmAnswer===false?d.dismiss():d.accept()):d.accept()});
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await ctx.route(/firestore\.googleapis\.com/,firestore);
   await page.addInitScript(([r,d])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',...d}))localStorage.setItem(k,v);sessionStorage.setItem('seeded','1')},[release,seed]);
-  await page.goto(base);await page.waitForFunction(()=>window.learningPath);return {ctx,page,name};
+  await page.goto(base);await page.waitForFunction(()=>window.learningPath&&document.readyState!=='loading');return {ctx,page,name};
  }
  // Sign in (a stand-in for Firebase Auth) and sync; a sync that changed local data reloads the page like in the app.
  const login=(p,uid='u1')=>p.page.evaluate(u=>{acct.user={uid:u,email:u+'@example.com',getIdToken:async()=>'token-'+u};acct.mod={signOut:async()=>{}};acctRender()},uid);
@@ -42,7 +42,7 @@ const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
  async function settle(p,uid='u1'){for(let i=0;i<4;i++)if(!await sync(p,uid))return}
  async function sync(p,uid='u1',how='pull'){let nav=false;const h=()=>{nav=true};p.page.on('framenavigated',h);await login(p,uid);
   await p.page.evaluate(h=>(h==='push'?syncPush():syncPull()).then(()=>true),how).catch(()=>{});await p.page.waitForTimeout(300);p.page.off('framenavigated',h);log('sync',p.name,how,'nav',nav,cloud.reads,cloud.writes);
-  if(nav){await p.page.waitForFunction(()=>window.learningPath);await login(p,uid)}return nav}
+  if(nav){await p.page.waitForFunction(()=>window.learningPath&&document.readyState!=='loading');await login(p,uid)}return nav}
  const state=p=>p.page.evaluate(()=>({score,status:syncStatus(),line:syncLine(),xp:LerenMerge.xpTotal(lsGet('leren_xp_v2',{})),path:Object.keys(lsGet('leren_path_v1',{}).completed||{}).sort(),
   skills:LerenMerge.skillsView(skillsStore()),minutes:minutesToday(),toets:lsGet('poly_toetsbest',{}),at:lsGet('leren_sync_at',0)}));
  try{
@@ -86,7 +86,7 @@ const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
   // ---- Old v2 backup on the computer: nothing lowered. A damaged v4 backup: nothing changed.
   log('backups');const before=await state(laptop);
   const v2=JSON.stringify({v:2,score:100,store:{c_hallo:{seen:1,correct:0,wrong:1,streak:0,due:0,known:false}},companion:{leren_path_v1:{version:1,started:true,completed:{[a11[0].id]:1},mistakes:[]}}});
-  const r2=await laptop.page.evaluate(t=>backupRestore(t),v2);assert(r2.ok);await laptop.page.reload();await laptop.page.waitForFunction(()=>window.learningPath);
+  const r2=await laptop.page.evaluate(t=>backupRestore(t),v2);assert(r2.ok);await laptop.page.reload();await laptop.page.waitForFunction(()=>window.learningPath&&document.readyState!=='loading');
   const after=await state(laptop);assert.equal(after.score,before.score,'points not lowered');assert.deepEqual(after.path,before.path);
   assert.equal(await laptop.page.evaluate(id=>lsGet('leren_path_v1',{}).completed[id],a11[0].id),5,'better lesson result kept');assert.equal(await laptop.page.evaluate(()=>stateFor('c_hallo').known),true,'newer word state kept');
   const good=await laptop.page.evaluate(()=>backupData().then(JSON.stringify)),snapBefore=await laptop.page.evaluate(()=>JSON.stringify(syncSnapshot()));

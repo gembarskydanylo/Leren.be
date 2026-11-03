@@ -22,6 +22,10 @@ assert(html.indexOf('<script src="./course-curriculum.js')<html.indexOf('<script
 const shell=html.slice(html.indexOf('<article class="seo-shell">'),html.indexOf('</article>'));
 assert.match(shell,/<h2>Нідерландська мова українською — курси A1\.1 і A1\.2<\/h2>/);assert.equal((shell.match(/<li><strong>/g)||[]).length,5+12+16,'5 sections + 12 + 16 topics');
 assert(shell.includes('href="./privacy.html"'));assert(html.includes('.js .seo-shell{display:none}'));
+// Hardening that works on GitHub Pages: a narrow CSP (no plugins, no <base> or form hijacking) and a referrer policy
+// on both pages; scripts, connections and frames stay unrestricted so sign-in, sync and AI keep working.
+for(const f of ['index.html','privacy.html']){const h=read(f);assert(h.includes(`<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">`),f);assert(h.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'),f)}
+const sec=read('.well-known/security.txt');assert.match(sec,/^Contact: mailto:\S+@\S+$/m);const exp=new Date(sec.match(/^Expires: (\S+)$/m)[1]);assert(exp>new Date()&&exp-new Date()<400*864e5,'security.txt Expires within a year');
 // robots.txt and sitemap.xml
 assert.match(read('robots.txt'),/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/lerenbe\.com\/sitemap\.xml\n$/);
 const sm=read('sitemap.xml');assert(sm.includes('<loc>https://lerenbe.com/</loc>')&&sm.includes('<loc>https://lerenbe.com/privacy.html</loc>'));
@@ -32,4 +36,4 @@ for(const f of ['index.html','privacy.html','manifest.webmanifest','modules/focu
 assert(read('privacy.html').includes('<title>lerenbe.com — Політика конфіденційності'));
 // Ukrainian defaults in the static footer
 assert(html.includes('<span id="footRights">Усі права захищено</span>')&&html.includes('id="footPrivacy">Конфіденційність</a>'));
-console.log('PASS: meta description, canonical, Open Graph, Twitter card, JSON-LD WebApplication, static summary with all 28 topics, robots.txt and sitemap.xml, manifest A1.1 & A1.2, lerenbe.com branding, no blocking scripts in <head>, Ukrainian footer');
+console.log('PASS: meta description, canonical, Open Graph, Twitter card, JSON-LD WebApplication, static summary with all 28 topics, robots.txt and sitemap.xml, manifest A1.1 & A1.2, lerenbe.com branding, no blocking scripts in <head>, Ukrainian footer, CSP and referrer meta, security.txt');
