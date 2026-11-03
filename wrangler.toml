@@ -37,6 +37,14 @@ namespace_id = "1002"
   limit = 300
   period = 60
 
+# Error reports from the app (POST /errors, tools/ai-worker.js): 20 a minute per network, separate from the AI limits.
+[[ratelimits]]
+name = "ERRS"
+namespace_id = "1004"
+  [ratelimits.simple]
+  limit = 20
+  period = 60
+
 # Workers Logs (AI_REPORT complaints are read here)
 [observability]
 enabled = true

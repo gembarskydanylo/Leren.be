@@ -1,5 +1,5 @@
 /* Leren.be offline cache. Relative paths support GitHub Pages project sites. */
-const CACHE_NAME = "leren-be-v179";
+const CACHE_NAME = "leren-be-v180";
 const APP_FILES = ["./course-curriculum.js?v=173", "./modules/card-art/art.js?v=147", "./modules/card-art/people.js?v=135", "./modules/card-art/food.js?v=135", "./modules/card-art/things.js?v=135", "./modules/card-art/places.js?v=135", "./modules/card-art/more-people.js?v=135", "./modules/card-art/more-things.js?v=135", "./modules/emoji/cards.js?v=146", "./modules/emoji/variants.js?v=147", "./modules/emoji/renderer.js?v=177", "./modules/clock/clock.js", "./modules/exam/exam-core.js?v=176", "./modules/exam/exam11.js?v=176", "./modules/exam/exam12-data.js?v=173", "./modules/exam/exam12.js?v=176", "./", "./index.html", "./manifest.webmanifest", "./favicon-32.png", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./privacy.html", "./fonts/nunito.woff", "./fonts/unbounded.woff", "./dict/nl.json", "./img/chars/peter.webp", "./img/chars/peter-wow.webp", "./img/chars/peter-think.webp", "./img/chars/peter-sad.webp", "./img/chars/dafna.webp", "./img/chars/dafna-wow.webp", "./img/chars/dafna-think.webp", "./img/chars/dafna-sad.webp", "./modules/clock/widget.html", "./modules/clock/widget.js", "./modules/diphthongs/widget.js?v=176", "./modules/diphthongs/widget.html?v=87", "./modules/diphthongs/widget.css?v=87", "./modules/diphthongs/words.json?v=87", "./img/topics/birthday.svg", "./img/topics/comm.svg", "./img/topics/contact.svg", "./img/topics/dag.svg", "./img/topics/food.svg", "./img/topics/forms.svg", "./img/topics/grammar.svg", "./img/topics/grammar2.svg", "./img/topics/health.svg", "./img/topics/holiday.svg", "./img/topics/nums.svg", "./img/topics/opening.svg", "./img/topics/past.svg", "./img/topics/people.svg", "./img/topics/plans.svg", "./img/topics/reading.svg", "./img/topics/service.svg", "./img/topics/shopping.svg", "./img/topics/travel.svg", "./img/topics/travelTime.svg", "./img/topics/wonen.svg", "./img/topics/daily.svg", "./img/topics/work.svg", "./img/topics/zorg.svg", "./img/topics/stad.svg", "./img/topics/school.svg", "./img/topics/vrijetijd.svg", "./img/topics/sociaal.svg", "./img/topics/future.svg", "./modules/diphthongs/lesson-core.js?v=87", "./modules/sync/merge.js?v=175", "./modules/review/srs.js?v=175", "./modules/insights/core.js?v=174", "./modules/learning-path/core.js?v=174", "./modules/rewards/core.js?v=174", "./modules/companion/ui.js?v=116", "./modules/rewards/gifts.js?v=174", "./modules/rewards/ui.js?v=179", "./modules/learning-path/ui.js?v=178", "./modules/dialogues/translations.js?v=173", "./modules/learning-path/style.css?v=177", "./modules/rewards/style.css?v=102", "./modules/companion/style.css?v=102", "./img/mascot/student-cat-v1.png", "./audio/nl/pronunciation-v105/7dc692a9.m4a", "./audio/nl/pronunciation-v105/c79493aa.m4a", "./audio/nl-f/pronunciation-v105/7dc692a9.m4a", "./audio/nl-f/pronunciation-v105/c79493aa.m4a", "./modules/focused-home/ui.js?v=178", "./modules/desktop-home/ui.js?v=150", "./modules/desktop-home/style.css?v=151", "./modules/focused-home/style.css?v=178", "./modules/test-library/ui.js?v=178", "./modules/test-library/style.css?v=109", "./img/tests/first-steps-v109.webp", "./img/tests/everyday-v109.webp", "./img/tests/practice-v109.webp", "./modules/game-gallery/style.css?v=111", "./img/games/story-v111.webp", "./img/games/ai-v111.webp", "./img/games/ask-v111.webp", "./img/games/dlg-v111.webp", "./img/games/rp-v111.webp", "./img/games/sp-v111.webp", "./img/games/bl-v111.webp", "./img/games/mm-v111.webp", "./img/games/dc-v111.webp", "./img/games/md-v111.webp", "./img/games/om-v111.webp", "./img/games/ks-v111.webp", "./modules/lesson-conversation/content.js?v=171", "./modules/lesson-conversation/core.js?v=112", "./modules/lesson-conversation/ui.js?v=112", "./modules/ai-coach/core.js?v=169", "./modules/ai-coach/ui.js?v=169", "./modules/word-builder/art.js?v=150", "./modules/word-builder/game.js?v=172", "./modules/word-builder/style.css?v=172", "./img/games/wb-v114.webp"];
 
 APP_FILES.push("./img/learning-path/wake-cat-v1.png");
@@ -12,6 +12,22 @@ for (const group of ["cat", "learn", "animal", "games", "weather", "places", "sy
     APP_FILES.push("./img/emoji/" + group + "-" + String(i).padStart(2, "0") + ".png");
   }
 }
+
+// Errors inside the service worker never reach the page: report them like the page does (POST /errors on lerenbe.com,
+// at most 5 different ones while this worker runs; only technical text).
+const swErrSeen = new Set();
+function swReport(msg, stack) {
+  msg = String(msg == null ? "" : msg).slice(0, 300);
+  if (!/^(www\.)?lerenbe\.com$/.test(self.location.hostname) || !msg || swErrSeen.size >= 5 || swErrSeen.has(msg)) return;
+  swErrSeen.add(msg);
+  try {
+    fetch("https://leren-ai.gembarsky-d.workers.dev/errors", {method: "POST", headers: {"Content-Type": "text/plain"},
+      body: JSON.stringify({kind: "sw", msg, src: CACHE_NAME, stack: String(stack || "").slice(0, 1500), v: CACHE_NAME.replace(/\D+/g, ""), page: "sw.js",
+        online: self.navigator ? self.navigator.onLine : true, ua: self.navigator ? String(self.navigator.userAgent).slice(0, 200) : ""})}).catch(() => {});
+  } catch (_) {}
+}
+self.addEventListener("error", e => swReport(e.message, e.error && e.error.stack));
+self.addEventListener("unhandledrejection", e => swReport(e.reason && e.reason.message || e.reason, e.reason && e.reason.stack));
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {

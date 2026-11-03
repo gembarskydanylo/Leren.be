@@ -28,7 +28,7 @@
 | **GitHub Pages** | той самий | Зібраний сайт з гілки `main` | Хостинг **lerenbe.com** (файл `CNAME`) | Безкоштовно |
 | **GitHub Actions** | той самий | `reminders.yml` (секрети `FIREBASE_SA`, `VAPID_PUBLIC`, `VAPID_PRIVATE`), `deploy-worker.yml` (секрет `CLOUDFLARE_API_TOKEN`) | Щогодини надсилає push-нагадування; деплоїть сервер AI в Cloudflare; збирає Pages | Безкоштовно |
 | **Cloudflare** — DNS | gembarsky.d@gmail.com | DNS-записи **lerenbe.com** → GitHub Pages (копія: `lerenbe.com.txt`) | Домен веде на сайт | Безкоштовно |
-| **Cloudflare Workers** — `leren-ai` | той самий | Код = `tools/ai-worker.js`; секрет `ANTHROPIC_KEY`; KV `leren-ai-rate` (binding `RATE`); журнали (скарги `AI_REPORT`) | Сервер AI-чату: інструкції для Claude, ліміт 60 повідомлень/день з IP, пам'ять, скарги. Адреса: `https://leren-ai.gembarsky-d.workers.dev/` | Безкоштовний тариф |
+| **Cloudflare Workers** — `leren-ai` | той самий | Код = `tools/ai-worker.js`; секрет `ANTHROPIC_KEY`; KV `leren-ai-rate` (binding `RATE`); журнали (скарги `AI_REPORT`, помилки застосунку `APP_ERROR`); ліміт звітів про помилки `ERRS` | Сервер AI-чату: інструкції для Claude, ліміт 60 повідомлень/день з IP, пам'ять, скарги; приймає звіти про помилки з телефонів (`POST /errors`). Адреса: `https://leren-ai.gembarsky-d.workers.dev/` | Безкоштовний тариф |
 | **Anthropic Console** — platform.claude.com | особистий акаунт | API-ключ `leren-be-worker`; кредити; місячний ліміт $10; автопоповнення вимкнене | Модель **Claude Haiku 5.5**, що відповідає в чаті | Оплата за використання (~$0.0003–0.0005 за повідомлення) |
 | **Firebase** — проєкт `leren-be` (тариф Spark) | gembarsky.d@gmail.com | Authentication (Google, Email link; домени lerenbe.com, www.lerenbe.com); Firestore `subs`, `users`; правила = `firestore.rules` | Акаунти, синхронізація прогресу й пам'яті AI, підписки на нагадування | Безкоштовно (Spark) |
 | **Google Play Console** | розробника | Застосунок **be.leren.app** (TWA-обгортка сайту); App signing | Публікація в Google Play; сторінка й форми — `store/store-listing.md` | Разовий внесок розробника |
@@ -59,3 +59,13 @@
 | Сторінка в Google Play | Тексти й відповіді — `store/store-listing.md`; графіка — `store/`, `screenshots/` |
 
 Детальніше: запуск і план відкату AI — `LAUNCH.md`; дизайн — `DESIGN.md`; рівні — `LEVELS.md`; загальний опис — `README.md`.
+
+## Звіти про помилки з телефонів (з v180)
+
+Застосунок і service worker надсилають технічні помилки (необроблені помилки, відхилені проміси, порушення CSP) на `https://leren-ai.gembarsky-d.workers.dev/errors`. Лише на lerenbe.com, не більше 5 різних за сторінку, без особистих даних (текст помилки, файл:рядок, версія, мова інтерфейсу, браузер). На сервері окремий ліміт `ERRS` — 20 звітів за хвилину з однієї мережі; ліміти AI не зачіпаються.
+
+**Де читати:** Cloudflare → Workers & Pages → `leren-ai` → **Logs** → пошук `APP_ERROR`. Журнали зберігаються кілька днів.
+
+## Заголовки безпеки (Cloudflare, з 03.11.2026)
+
+Записи A, AAAA і `www` для lerenbe.com проксійовані (помаранчева хмарка), SSL/TLS = **Full**. Правило **Rules → Transform Rules → «Security headers»** (усі запити) ставить: `Strict-Transport-Security: max-age=86400` (підняти до `31536000` після тижня без проблем, без `preload`/`includeSubDomains`), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy: geolocation=(), payment=(), usb=()` і `Content-Security-Policy` (список дозволених адрес — у самому правилі; нова зовнішня адреса в коді = додати її туди). Відкат: вимкнути правило. Оцінка securityheaders.com — A.
