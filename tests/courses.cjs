@@ -1,7 +1,7 @@
 // A1.1 and A1.2 as two independent courses; A2.1 announced but closed. Runs the real functions from index.html.
 // Run: node tests/courses.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 // Cut one function out of the app script by matching braces (strings and regexes in these functions hold no braces).
 const fn=name=>{const a=script.indexOf('function '+name+'(');assert(a>=0,name);let i=script.indexOf('{',a),d=0;for(;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)break}return script.slice(a,i+1)+'\n'};
 const line=start=>{const a=script.indexOf(start);assert(a>=0,start);return script.slice(a,script.indexOf('\n',a))};

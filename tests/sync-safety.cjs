@@ -2,7 +2,7 @@
 // repeated syncs, old (v2), current (v3) and checked (v4) backups, damaged backups, all-or-nothing writes.
 // Uses the real modules/sync/merge.js and the app's own syncMerge from index.html. Run: node tests/sync-safety.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const c=vm.createContext({console,TextEncoder,crypto:globalThis.crypto});c.globalThis=c;
 vm.runInContext(read('modules/sync/merge.js')+'\n'+script.slice(script.indexOf('const SYNC_SKIP='),script.indexOf('function syncApply('))+'\nglobalThis.S={syncable,syncMerge};',c);
 const M=c.LerenMerge,{syncMerge,syncable}=c.S,J=JSON.stringify,P=s=>JSON.parse(s),same=(a,b,m)=>assert.equal(J(a),J(b),m);

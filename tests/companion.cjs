@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),script=read('index.html').match(/<script>([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),script=require(__dirname+'/lib/app-source.cjs')().match(/<script>([\s\S]*?)<\/script>/)[1];
 class Element{constructor(tag){this.tag=tag;this.children=[];this.dataset={};this.attrs={};this.style={setProperty(){}};this.classList={add:()=>{},toggle:()=>{}};this.disabled=false;this.hidden=false;this.textContent=''}append(...xs){this.children.push(...xs)}appendChild(x){this.children.push(x);return x}replaceChildren(...xs){this.children=xs}setAttribute(k,v){this.attrs[k]=v}getAttribute(k){return this.attrs[k]}focus(){}scrollIntoView(){}}
 const flat=e=>[e,...e.children.filter(x=>typeof x==='object').flatMap(flat)],root=new Element('main'),disk=new Map();
 const c=vm.createContext({console,document:{createElement:tag=>new Element(tag),createElementNS:(_,tag)=>new Element(tag),getElementById:id=>flat(root).find(e=>e.id===id)},localStorage:{getItem:k=>disk.get(k)||null,setItem:(k,v)=>disk.set(k,v)}});c.window=c;

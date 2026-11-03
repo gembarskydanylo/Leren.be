@@ -69,3 +69,5 @@
 ## Заголовки безпеки (Cloudflare, з 03.11.2026)
 
 Записи A, AAAA і `www` для lerenbe.com проксійовані (помаранчева хмарка), SSL/TLS = **Full**. Правило **Rules → Transform Rules → «Security headers»** (усі запити) ставить: `Strict-Transport-Security: max-age=86400` (підняти до `31536000` після тижня без проблем, без `preload`/`includeSubDomains`), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy: geolocation=(), payment=(), usb=()` і `Content-Security-Policy` (список дозволених адрес — у самому правилі; нова зовнішня адреса в коді = додати її туди). Відкат: вимкнути правило. Оцінка securityheaders.com — A.
+
+**Без вбудованого коду (з v181).** Основний скрипт — `app.js`, звіти про помилки — `boot.js` (обидва з `?v=N` у `index.html` і в `sw.js`; змінив файл — підняти `N`). У HTML немає `<script>` без `src` (крім JSON-LD) і жодних `onclick="…"`; це перевіряє `tests/seo.cjs`, а `tests/csp-browser.cjs` проходить 27 екранів під CSP без `'unsafe-inline'` для скриптів. Тому в `script-src` правила Cloudflare `'unsafe-inline'` не потрібен (у `style-src` лишається).

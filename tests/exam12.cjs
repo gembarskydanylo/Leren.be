@@ -1,6 +1,6 @@
 // Final exam A1.2 and the shared exam engine. Run: node tests/exam12.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),sw=read('sw.js');
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),sw=read('sw.js');
 const ctx=vm.createContext({console,uiLang:'uk',lsGet:()=>({}),lsSet(){},shuffle:a=>a.slice(),window:{},DATA:{}});ctx.window=ctx;
 vm.runInContext(read('course-curriculum.js'),ctx);
 for(const f of ['exam-core','exam11','exam12-data','exam12'])vm.runInContext(read('modules/exam/'+f+'.js'),ctx);

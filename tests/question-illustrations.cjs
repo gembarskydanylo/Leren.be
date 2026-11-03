@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),start=html.indexOf('function questionPicture('),end=html.indexOf('\n}',start)+2;
+const html=require(__dirname+'/lib/app-source.cjs')(),start=html.indexOf('function questionPicture('),end=html.indexOf('\n}',start)+2;
 assert(start>=0&&end>start,'Question illustration resolver exists');
 const images=[];
 const context=vm.createContext({

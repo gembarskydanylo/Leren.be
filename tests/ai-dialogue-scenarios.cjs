@@ -172,7 +172,7 @@ async function load() {
   });
 
   t("app side: free talk shows a card only for major mistakes; exam and teacher show any reported one", async () => {
-    const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+    const html = require(__dirname+'/lib/app-source.cjs')();
     assert.match(html, /\(s\.exam\|\|s\.style!=="talk"\|\|j\.correction&&j\.correction\.severity==="major"\)&&j\.correction&&j\.correction\.has_error===true/);
     assert.match(html, /err=!!\(j\.correction&&j\.correction\.has_error\)/, "exam retry reads has_error");
   });

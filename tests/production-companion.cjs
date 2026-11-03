@@ -1,6 +1,6 @@
 // Production integration: keep resumable sessions local while merging course results.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 // Load the real merge functions, with the production key policy replaced only for this isolated fixture.
 const x=vm.createContext({syncable:()=>true});vm.runInContext(fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+script.slice(script.indexOf('const syncEq='),script.indexOf('function syncApply(')),x);
 const route=(completed,session)=>JSON.stringify({version:1,started:true,completed,mistakes:[],session});

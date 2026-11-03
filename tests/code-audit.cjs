@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
-const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const root=path.join(__dirname,'..'),html=require(__dirname+'/lib/app-source.cjs')();
 const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(script);
 // Validate the lesson database before any browser initialization runs.
 vm.runInNewContext(fs.readFileSync(path.join(root,'course-curriculum.js'),'utf8')+'\n'+script.slice(0,script.indexOf('function validStored'))+`

@@ -279,3 +279,12 @@
   $("clockQuizFeedback").textContent = u.wait;
   render();
 })();
+
+// Buttons name their action in data-call / data-arg (no inline onclick: the site's CSP allows no inline script).
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-call]");
+  const fn = b && window[b.dataset.call];
+  if (typeof fn !== "function") return;
+  const a = b.dataset.arg;
+  fn(a === undefined ? undefined : /^-?\d+$/.test(a) ? Number(a) : a);
+});

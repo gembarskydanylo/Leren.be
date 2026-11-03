@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const curriculum=fs.readFileSync('course-curriculum.js','utf8');
 const prefix=fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+curriculum+'\n'+script.slice(0,script.indexOf('function validStored'));
 const ctx=vm.createContext({assert,console,shuffle:a=>a});

@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
-const html = fs.readFileSync(require('node:path').join(__dirname, '../index.html'), 'utf8');
+const html = require(__dirname+'/lib/app-source.cjs')();
 function fn(name) {
   const start = html.indexOf('async function ' + name + '(');
   return html.slice(start, html.indexOf('\n}', start) + 2);

@@ -2,7 +2,7 @@
 // Nothing is summed: each side's better value is kept, both courses and all days survive, device-only keys stay local.
 // Run: node tests/sync-v174.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const c=vm.createContext({});vm.runInContext(fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+script.slice(script.indexOf('const SYNC_SKIP='),script.indexOf('function syncApply('))+'\nglobalThis.S={syncable,syncMerge};',c);const x=c.S;
 const J=JSON.stringify,P=s=>JSON.parse(s);
 // Last agreed copy (base), then each device studied on its own.

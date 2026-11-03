@@ -1,6 +1,6 @@
 // Full Q&A / picture audit guards: unique ids, no clashing distractors, exact clocks, tiles instead of wrong emoji.
 const fs=require('fs'),assert=require('assert');
-const html=fs.readFileSync('index.html','utf8');
+const html=require(__dirname+'/lib/app-source.cjs')();
 assert(html.includes('const cp=new Set(parts(correct))'),'distractors must skip options sharing a meaning part with the answer');
 for(const id of ['clk_4','clk_5','clk_14'])assert(html.includes(id+':['),'exact clock for '+id);
 assert(/it\.icon=num\(/.test(html)&&/it\.icon=cal\(/.test(html),'number and calendar tiles');

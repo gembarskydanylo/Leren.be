@@ -7,7 +7,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
 const root=path.join(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json','.webmanifest':'application/manifest+json'};
 const server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory()){res.writeHead(404);res.end();return}res.writeHead(200,{'content-type':types[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res)});
-const html=read('index.html'),release=html.match(/const RELEASE_VERSION="(\d+)"/)[1],script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),release=html.match(/const RELEASE_VERSION="(\d+)"/)[1],script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const log=(...a)=>{if(process.env.DEBUG)console.log(...a)};
 const pctx=vm.createContext({console});vm.runInContext(read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'))+'\nglobalThis.fixture={DATA,LerenCurriculum};',pctx);vm.runInContext(read('modules/learning-path/core.js'),pctx);
 const course=pctx.LerenLearningPath.catalog(pctx.fixture.DATA,pctx.fixture.LerenCurriculum),a11=course.lessons.filter(l=>course.chapters.find(c=>c.id===l.chapter).level==='A1.1'),a12=course.lessons.filter(l=>course.chapters.find(c=>c.id===l.chapter).level==='A1.2');

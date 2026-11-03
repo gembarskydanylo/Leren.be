@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 assert(fs.existsSync('img/mascot/fill-gap-cat.png'),'Gap questions have their own single-cat illustration');
 assert(script.includes('it?.type==="gap"||it?.gap')&&fs.readFileSync('sw.js','utf8').includes('./img/mascot/fill-gap-cat.png'),'Gap illustration is selected in questions and precached offline');
 function fn(name){const start=script.indexOf('function '+name+'(');return script.slice(start,script.indexOf('\n}',start)+2)}
