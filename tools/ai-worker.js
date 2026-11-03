@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-02-exam12-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-03-errors-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -258,6 +258,27 @@ async function chargeDaily(env, day, net, dev, state, delta = 1) {
   try { await env.RATE.put(`${day}:${net}`, JSON.stringify({n: Math.max(0, fresh.n + delta), d}), {expirationTtl: 90000}); } catch (e) { console.log("rate put", String(e)); }
 }
 
+// Error reports from the app (POST /errors): uncaught errors, unhandled promise rejections, CSP violations and service
+// worker errors, so we learn what breaks on learners' phones. Only technical text, no personal data. They have their own
+// rate limit (binding ERRS) and never touch the AI limits; read them in Cloudflare → leren-ai → Logs, search "APP_ERROR".
+const ERR_KINDS = ["error", "rejection", "csp", "sw"];
+async function errorReport(req, env, json) {
+  if (!env.ERRS) return json({error: "off"}, 503);
+  const secret = env.RATE_SALT || env.ANTHROPIC_KEY || env.GEMINI_KEY || "leren-be";
+  const net = await visitorKey(secret, "ip", req.headers.get("CF-Connecting-IP") || "x");
+  let ok = false; try { ok = (await env.ERRS.limit({key: "err:" + net})).success; } catch (e) { console.log("limiter", String(e)); }
+  if (!ok) return json({error: "slow"}, 429);
+  if (Number(req.headers.get("Content-Length") || 0) > 8000) return json({error: "too big"}, 413);
+  let raw; try { raw = await req.text(); } catch { return json({error: "bad body"}, 400); }
+  if (raw.length > 8000) return json({error: "too big"}, 413);
+  let b; try { b = JSON.parse(raw); } catch { return json({error: "bad json"}, 400); }
+  if (!b || typeof b !== "object" || Array.isArray(b) || !ERR_KINDS.includes(b.kind)) return json({error: "bad request"}, 400);
+  const str = (v, n) => String(v ?? "").replace(/[\u0000-\u001f]+/g, " ").slice(0, n);
+  console.log("APP_ERROR " + JSON.stringify({at: new Date().toISOString(), kind: b.kind, v: str(b.v, 10), msg: str(b.msg, 300), src: str(b.src, 200),
+    stack: String(b.stack ?? "").slice(0, 1500), page: str(b.page, 60), ui: str(b.ui, 5), online: b.online === true, ua: str(b.ua, 200), country: str(req.cf && req.cf.country, 2)}));
+  return json({ok: true});
+}
+
 export default {
   async fetch(req, env, ctx) {
     const origin = req.headers.get("Origin") || "";
@@ -265,6 +286,7 @@ export default {
     if (req.method === "OPTIONS") return new Response(null, {headers: cors});
     const json = (o, status = 200, extra = {}) => new Response(JSON.stringify(o), {status, headers: {...cors, "Content-Type": "application/json", "X-Leren-AI": WORKER_VERSION, ...extra}});
     if (req.method !== "POST" || !ALLOWED_ORIGINS.includes(origin)) return json({error: "forbidden"}, 403);
+    if (new URL(req.url).pathname === "/errors") return errorReport(req, env, json);
 
     // Emergency switch: set the variable AI_OFF = 1 in Cloudflare to stop all model calls at once.
     if (env.AI_OFF === "1") return json({error: "off"}, 503);
