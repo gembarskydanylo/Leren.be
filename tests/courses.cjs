@@ -29,10 +29,11 @@ assert(H.switchCourse('a11'));assert.equal(H.level,'a11');assert.equal(H.cat,'co
 ({H}=boot(ls));assert.equal(H.level,'a11');
 ({H}=boot({poly_level:'a12',poly_cat:'zorg',poly_tab:'apotheek',poly_score:'0'}));assert.equal(H.level,'a12');assert.equal(H.cat,'zorg','A saved A1.2 lesson reopens even with 0 points');assert.equal(H.tab,'apotheek');
 
-// 10. A2.1 is announced but cannot be opened.
-assert.equal(H.levelUnlocked('a21'),false);assert.equal(H.switchCourse('a21'),false);assert.equal(H.level,'a12');
-assert.equal(vm.runInContext('CATEGORIES.filter(c=>c.lvl==="a21").length',boot({}).c),0,'No A2.1 lessons exist yet');
-assert(vm.runInContext('LEVELS.find(l=>l.id==="a21").soon',boot({}).c));
+// 10. A2 (internal key a21) is an independent open course with its first chapter.
+assert.equal(H.levelUnlocked('a21'),true);assert(H.switchCourse('a21'));assert.equal(H.level,'a21');assert.equal(H.cat,'a2work');
+assert.equal(vm.runInContext('CATEGORIES.filter(c=>c.lvl==="a21").length',boot({}).c),1,'A2 starts with the work chapter');
+assert.equal(vm.runInContext('LEVELS.find(l=>l.id==="a21").name',boot({}).c),'A2');
+assert(!vm.runInContext('LEVELS.find(l=>l.id==="a21").soon',boot({}).c));assert(H.switchCourse('a12'));assert.equal(H.level,'a12');
 
 // 4–5. Independent progress per course; older saves keep their results.
 const old={poly_score:'1450',poly_level:'a12',poly_unlocked:'["a12"]',poly_toetsbest:JSON.stringify({course_comm_v2:9,lt_a12_course_v2:11,course_past_v2:8,course_travel_v2:10}),

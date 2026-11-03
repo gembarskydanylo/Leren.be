@@ -39,7 +39,7 @@ for(const [lang,label] of Object.entries(DIPH_TAB_LABELS)){
  if(UI[lang]){UI[lang].tabs.diphthongs=label;UI[lang].subs.diphthongs=label;}
 }
 // Levels: unlock by points (need) or by passing the level test
-const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2.1",need:3000,soon:true}];
+const LEVELS=[{id:"a11",name:"A1.1",need:0},{id:"a12",name:"A1.2",need:1000},{id:"a21",name:"A2",need:0}];
 const CATEGORIES=[
  {id:"comm",lvl:"a11", tabs:["phrases", "questions", "pronouns", "graag"]},
  {id:"grammar",lvl:"a11", tabs:["klanken", "diphthongs", "vervoegen", "verbs", "dehet", "adjectives"]},
@@ -1398,7 +1398,7 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 const dayStr=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const yesterdayStr=()=>{const d=new Date();d.setDate(d.getDate()-1);return dayStr(d)};
 function levelById(id){return LEVELS.find(l=>l.id===id)}
-function levelUnlocked(id){const L=levelById(id);if(!L||L.soon)return false;if(id==="a11"||id==="a12")return true; // A1.1 and A1.2 are two independent courses, no lock
+function levelUnlocked(id){const L=levelById(id);if(!L||L.soon)return false;if(id==="a11"||id==="a12"||id==="a21")return true; // A1.1, A1.2 and A2 are independent courses, no lock
  return score>=L.need||lsGet("poly_unlocked",[]).includes(id)}
 function levelCats(lv){lv=lv||curLevel;return CATEGORIES.filter(c=>c.lvl===lv)}
 function catLevel(id){return (CATEGORIES.find(c=>c.id===id)||{}).lvl||"a11"}
@@ -5904,7 +5904,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="181";
+const RELEASE_VERSION="182";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

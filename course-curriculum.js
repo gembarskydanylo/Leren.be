@@ -168,7 +168,8 @@ het glas|склянка, скло|glass|le verre|الكوب|🥛
   const [title,description]=row[{uk:0,en:1,fr:2,ar:3}[lang]??0];
   const chapter=chapters.findIndex(c=>c[0]===id),advancedIndex=advanced.findIndex(c=>c[0]===id);
   const dutch=chapter>=0?chapters[chapter][1]:advancedIndex>=0?advanced[advancedIndex][1].replace(/^\S+\s/,''):'Grammatica & uitspraak';
-  return {title,description,dutch,number:chapter>=0?chapter+1:advancedIndex>=0?advancedIndex+1:null,image:`./img/topics/${id}.svg`};
+  const a2Index=typeof a2!=='undefined'?a2.chapters.findIndex(c=>c[0]===id):-1;
+  return {title,description,dutch,number:chapter>=0?chapter+1:a2Index>=0?a2Index+1:advancedIndex>=0?advancedIndex+1:null,image:`./img/topics/${id}.svg`};
  }
  // Rows: Dutch | Ukrainian | English | French | Arabic.
  const lessons = {
@@ -902,13 +903,105 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
  advanced.push(...a12.chapters.map(([id,title,tabs])=>[id,title,[...tabs]]));
  for(const [id,tabs] of Object.entries(a12.extraTabs))advanced.find(c=>c[0]===id)[2].push(...tabs);
  Object.assign(topicLabels,a12.labels);
+ // ---- Course A2 (Nov 2026): connected text, subordinate clauses and the past tense. Internal key stays a21 (saved progress); the menu says "A2". ----
+ // Original Leren.be material (the nederlearn.nl A2 outline was used only as a topic checklist). Same line format as a12.lessons.
+ // Chapter 1 is the first vertical slice; chapters 2–8 follow the plan in COURSE-CURRICULUM.md.
+ const a2 = {
+  chapters: [
+   ['a2work','💼 Werk: contract en rooster',['a2contract','a2rooster','a2ziek','a2vroeger']]
+  ],
+  labels: {
+   a2work: [['Робота: договір і графік','Розумій трудовий договір, домовляйся про графік і правильно повідомляй про хворобу.'],['Work: contract and schedule','Understand your employment contract, agree on a schedule and report sick the right way.'],['Travail : contrat et horaire','Comprends ton contrat de travail, organise ton horaire et préviens correctement en cas de maladie.'],['العمل: العقد والجدول','افهم عقد العمل، واتفق على جدول الدوام، وأبلغ عن المرض بالطريقة الصحيحة.']]
+  },
+  lessons: {
+   a2contract: ['Договір і зарплата','Contract and pay','Contrat et salaire','العقد والراتب', `
+het arbeidscontract|трудовий договір|employment contract|le contrat de travail|عقد العمل|📜|Ik heb mijn arbeidscontract gelezen en ondertekend.|Я прочитав і підписав свій трудовий договір.
+het contract van onbepaalde duur|безстроковий договір|permanent contract|le contrat à durée indéterminée|عقد غير محدد المدة|📑|Met een contract van onbepaalde duur heb ik meer zekerheid.|З безстроковим договором у мене більше впевненості.
+het contract van bepaalde duur|строковий договір|fixed-term contract|le contrat à durée déterminée|عقد محدد المدة|📋|Mijn contract van bepaalde duur loopt tot eind juni.|Мій строковий договір діє до кінця червня.
+het brutoloon|зарплата до податків (брутто)|gross pay|le salaire brut|الراتب الإجمالي|💶|Het brutoloon is het bedrag voor de belastingen.|Брутто — це сума до податків.
+het nettoloon|зарплата на руки (нетто)|net pay|le salaire net|الراتب الصافي|💵|Mijn nettoloon staat op het einde van de maand op mijn rekening.|Моя нетто-зарплата надходить на рахунок наприкінці місяця.
+de opzegtermijn|термін попередження про звільнення|notice period|le délai de préavis|مدة الإشعار|⏱️|Hoe lang is mijn opzegtermijn?|Скільки триває мій термін попередження про звільнення?
+de vakantiedagen|дні відпустки|holiday days|les jours de congé|أيام الإجازة|🏖️|Ik heb twintig vakantiedagen per jaar.|У мене двадцять днів відпустки на рік.
+de maaltijdcheques|харчові чеки|meal vouchers|les titres-repas|قسائم الوجبات|🧾|Ik krijg maaltijdcheques van mijn werkgever.|Я отримую харчові чеки від роботодавця.
+`],
+   a2rooster: ['Графік і розмова з керівником','Schedule and talking to your manager','Horaire et discussion avec le responsable','الجدول والحديث مع المسؤول', `
+het werkrooster|робочий графік|work schedule|l’horaire de travail|جدول العمل|🗓️|Ik krijg mijn werkrooster elke vrijdag.|Я отримую робочий графік щоп’ятниці.
+de late ploeg|пізня зміна|late shift|l’équipe de l’après-midi|الوردية المسائية|🌆|Volgende week werk ik in de late ploeg.|Наступного тижня я працюю в пізню зміну.
+de nachtploeg|нічна зміна|night shift|l’équipe de nuit|الوردية الليلية|🌃|In de nachtploeg begin ik om tien uur ’s avonds.|У нічну зміну я починаю о десятій вечора.
+de overuren|надурочні години|overtime|les heures supplémentaires|ساعات العمل الإضافية|⌛|Vorige week heb ik tien overuren gewerkt.|Минулого тижня я відпрацював десять надурочних годин.
+van ploeg ruilen|помінятися змінами|to swap shifts|changer d’équipe|يبدّل الوردية|🔄|Kan ik van ploeg ruilen met mijn collega?|Чи можу я помінятися змінами з колегою?
+vrijaf nemen|взяти вихідний|to take time off|prendre congé|يأخذ يوم إجازة|🛋️|Mag ik donderdag vrijaf nemen?|Чи можна мені взяти вихідний у четвер?
+de leidinggevende|керівник|manager, supervisor|le responsable|المسؤول المباشر|🧑‍💼|Mijn leidinggevende is erg vriendelijk.|Мій керівник дуже привітний.
+te laat komen|запізнюватися|to be late|arriver en retard|يتأخر عن الموعد|⏰|Het spijt me dat ik te laat kom.|Мені шкода, що я запізнююся.
+`],
+   a2ziek: ['Хвороба й відсутність','Illness and absence','Maladie et absence','المرض والغياب', `
+zich ziek melden|повідомити про хворобу|to report sick|se déclarer malade|يبلّغ عن مرضه|📞|Ik moet me vandaag ziek melden.|Сьогодні мені треба повідомити про хворобу.
+het doktersattest|медична довідка від лікаря|doctor’s certificate|le certificat du médecin|شهادة الطبيب|📄|Mijn dokter geeft mij een doktersattest voor drie dagen.|Мій лікар дає мені медичну довідку на три дні.
+de werkgever verwittigen|попередити роботодавця|to notify the employer|prévenir l’employeur|إبلاغ صاحب العمل|📨|Verwittig je werkgever voor het werk begint.|Попередь роботодавця до початку роботи.
+thuisblijven|залишатися вдома|to stay at home|rester à la maison|يبقى في البيت|🏠|Ik blijf thuis, want ik heb koorts.|Я лишаюся вдома, бо в мене температура.
+de afwezigheid|відсутність|absence|l’absence|الغياب|🚫|Mijn afwezigheid duurt twee dagen.|Моя відсутність триває два дні.
+bereikbaar zijn|бути на зв’язку|to be reachable|être joignable|أن تكون متاحاً للتواصل|📱|Ben je bereikbaar op je gsm?|Ти на зв’язку за мобільним?
+vervangen|замінити (когось)|to replace, to cover for|remplacer|يحلّ محلّ|🔁|Wie kan mij volgende week vervangen?|Хто може мене замінити наступного тижня?
+terug aan het werk gaan|повернутися до роботи|to go back to work|reprendre le travail|العودة إلى العمل|↩️|Maandag ga ik weer aan het werk.|У понеділок я знову виходжу на роботу.
+`],
+   a2vroeger: ['Що я робив раніше (imperfectum)','What I used to do (imperfectum)','Ce que je faisais avant (imparfait)','ماذا كنت أفعل سابقاً (الماضي البسيط)', `
+In Oekraïne werkte ik als leraar.|В Україні я працював учителем.|In Ukraine I worked as a teacher.|En Ukraine, je travaillais comme enseignant.|في أوكرانيا كنت أعمل معلماً.|👨‍🏫
+Toen woonde ik in een klein dorp.|Тоді я жив у маленькому селі.|At that time I lived in a small village.|À l’époque, j’habitais dans un petit village.|في ذلك الوقت كنت أسكن في قرية صغيرة.|🏘️
+Mijn chef was heel streng.|Мій начальник був дуже суворим.|My boss was very strict.|Mon chef était très strict.|كان مديري صارماً جداً.|👔
+We hadden veel klanten.|У нас було багато клієнтів.|We had a lot of customers.|Nous avions beaucoup de clients.|كان لدينا زبائن كثيرون.|👥
+Ik ging elke dag met de bus naar het werk.|Щодня я їздив на роботу автобусом.|I went to work by bus every day.|Je allais au travail en bus tous les jours.|كنت أذهب إلى العمل بالحافلة كل يوم.|🚌
+Mijn collega’s spraken Engels.|Мої колеги говорили англійською.|My colleagues spoke English.|Mes collègues parlaient anglais.|كان زملائي يتحدثون الإنجليزية.|🗣️
+Ik kreeg elke maand mijn loon.|Щомісяця я отримував зарплату.|I got my pay every month.|Je recevais mon salaire chaque mois.|كنت أتقاضى راتبي كل شهر.|💶
+Na het werk kwam ik laat thuis.|Після роботи я приходив додому пізно.|After work I came home late.|Après le travail, je rentrais tard.|بعد العمل كنت أصل إلى البيت متأخراً.|🌃
+`]
+  },
+  notes: {
+   a2contract: ['bepaalde / onbepaalde duur: договір на визначений чи невизначений час; bruto → netto після податків','bepaalde / onbepaalde duur: fixed-term or permanent; gross → net after taxes','bepaalde / onbepaalde duur : durée déterminée ou indéterminée ; brut → net après impôts','bepaalde / onbepaalde duur: عقد محدد أو غير محدد المدة؛ الإجمالي ← الصافي بعد الضرائب'],
+   a2rooster: ['Підрядне речення: Het spijt me dat ik te laat kom. Після dat дієслово йде в кінець.','Subordinate clause: Het spijt me dat ik te laat kom. After dat the verb goes to the end.','Subordonnée : Het spijt me dat ik te laat kom. Après dat, le verbe va à la fin.','جملة فرعية: Het spijt me dat ik te laat kom. بعد dat يذهب الفعل إلى النهاية.'],
+   a2ziek: ['Хворий? Повідом роботодавця вчасно й запитай, чи потрібен doktersattest.','Ill? Tell your employer in time and ask whether you need a doktersattest.','Malade ? Préviens ton employeur à temps et demande si un doktersattest est nécessaire.','مريض؟ أبلغ صاحب العمل في الوقت المناسب واسأل هل تحتاج إلى doktersattest.'],
+   a2vroeger: ['Imperfectum: werk+te, woon+de (’t kofschip). Сильні: gaan–ging, komen–kwam, krijgen–kreeg, zijn–was.','Imperfectum: werk+te, woon+de (’t kofschip). Strong verbs: gaan–ging, komen–kwam, krijgen–kreeg, zijn–was.','Imparfait (imperfectum) : werk+te, woon+de (’t kofschip). Verbes forts : gaan–ging, komen–kwam, krijgen–kreeg, zijn–was.','الماضي البسيط: werk+te، woon+de (’t kofschip). أفعال قوية: gaan–ging، komen–kwam، krijgen–kreeg، zijn–was.']
+  },
+  gaps: {
+   a2work:['Vorig jaar ___ ik nog in een winkel.','werkte','werk','werkt','gewerkt']
+  },
+  // Sentence builder rows: cat, level, tiles, roles, uk, en, fr, ar, extra tile, final punctuation.
+  bank: [
+   ['a2work',1,'mag|ik|donderdag|vrijaf nemen','VSRI','Чи можна мені взяти вихідний у четвер?','Can I take Thursday off?','Puis-je prendre congé jeudi ?','هل يمكنني أخذ يوم الخميس إجازة؟','','?'],
+   ['a2work',1,'hoe lang|is|de opzegtermijn','QVS','Скільки триває термін попередження про звільнення?','How long is the notice period?','Combien de temps dure le délai de préavis ?','كم مدة الإشعار؟','','?'],
+   ['a2work',1,'volgende week|werk|ik|in de late ploeg','TVSR','Наступного тижня я працюю в пізню зміну.','Next week I work the late shift.','La semaine prochaine, je travaille l’après-midi.','الأسبوع القادم أعمل في الوردية المسائية.','werkt','.'],
+   ['a2work',2,'ik|moet|me|ziek melden','SVRI','Мені треба повідомити про хворобу.','I have to report sick.','Je dois me déclarer malade.','يجب أن أبلّغ عن مرضي.','','.'],
+   ['a2work',2,'in Oekraïne|werkte|ik|als leraar','TVSR','В Україні я працював учителем.','In Ukraine I worked as a teacher.','En Ukraine, je travaillais comme enseignant.','في أوكرانيا كنت أعمل معلماً.','werk','.'],
+   ['a2work',2,'mijn collega’s|spraken|Engels','SVR','Мої колеги говорили англійською.','My colleagues spoke English.','Mes collègues parlaient anglais.','كان زملائي يتحدثون الإنجليزية.','spreken','.'],
+   ['a2work',2,'ik|blijf|thuis|want|ik|heb|koorts','SVRRSVR','Я лишаюся вдома, бо в мене температура.','I’m staying at home because I have a fever.','Je reste à la maison, car j’ai de la fièvre.','أبقى في البيت لأن لدي حمّى.','is','.'],
+   ['a2work',2,'het spijt me|dat|ik|te laat|kom','RRSRI','Мені шкода, що я запізнююся.','I’m sorry that I’m late.','Je suis désolé d’arriver en retard.','آسف لأنني متأخر.','komt','.']
+  ],
+  dialogues: [
+   ['a2work','💼','Повідомлення про хворобу','Calling in sick','Se déclarer malade','إبلاغ عن مرض',[
+    ['Goedemorgen, met Pieter. Wat kan ik voor je doen?','Доброго ранку, Пітер слухає. Чим можу допомогти?','Good morning, Pieter speaking. What can I do for you?'],
+    ['Goedemorgen, met Olena. Ik ben ziek en ik kan vandaag niet werken.','Доброго ранку, це Олена. Я захворіла й не можу сьогодні працювати.','Good morning, this is Olena. I’m ill and I can’t work today.'],
+    ['Dat is jammer. Heb je koorts?','Шкода. У тебе температура?','That’s a pity. Do you have a fever?'],
+    ['Ja, ik heb 38 graden. Wie kan mij vervangen?','Так, у мене 38 градусів. Хто може мене замінити?','Yes, I have 38 degrees. Who can cover for me?'],
+    ['Dat regel ik. Stuur je het doktersattest morgen door?','Це я владнаю. Ти надішлеш медичну довідку завтра?','I’ll sort that out. Will you send the doctor’s certificate tomorrow?'],
+    ['Ja, ik mail het morgen. Bedankt!','Так, я надішлю її завтра е-поштою. Дякую!','Yes, I’ll email it tomorrow. Thanks!']]]
+  ],
+  speech: [
+   ['Wat doe je als je ziek bent?','Що ти робиш, коли хворієш?','What do you do when you are ill?','Ik bel mijn werkgever en ik blijf thuis.'],
+   ['Welk werk deed je vroeger?','Яку роботу ти виконував раніше?','What work did you do in the past?','Vroeger werkte ik als leraar.'],
+   ['Hoe kom je naar je werk?','Як ти добираєшся на роботу?','How do you get to work?','Ik neem elke dag de bus.'],
+   ['Waarom kom je te laat?','Чому ти запізнюєшся?','Why are you late?','Het spijt me dat ik te laat ben. Mijn bus had vertraging.'],
+   ['Je wilt vrijaf nemen. Wat vraag je aan je leidinggevende?','Ти хочеш узяти вихідний. Що запитаєш у керівника?','You want to take a day off. What do you ask your manager?','Mag ik vrijdag vrijaf nemen?']
+  ]
+ };
+ const a2Ids=new Set(a2.chapters.map(c=>c[0]));
+ advanced.push(...a2.chapters.map(([id,title,tabs])=>[id,title,[...tabs]]));
+ Object.assign(topicLabels,a2.labels);
  function apply({DATA,CATEGORIES,UI,R,LEVELS}) {
   const grammar = {...CATEGORIES.find(c=>c.id==='grammar')}; // Includes the untouched diphthongs lesson.
   grammar.tabs=grammar.tabs.filter(t=>t!=='adjectives');
   CATEGORIES.splice(0,CATEGORIES.length,
    ...chapters.map(([id,title,tabs],i)=>({id,lvl:'a11',chapter:i+1,tabs})),grammar,
-   ...advanced.map(([id,title,tabs])=>({id,lvl:'a12',tabs})));
-  LEVELS[0].name='A1.1'; LEVELS[1].name='A1.2'; LEVELS[2].name='A2.1';
+   ...advanced.map(([id,title,tabs])=>({id,lvl:a2Ids.has(id)?'a21':'a12',tabs})));
+  LEVELS[0].name='A1.1'; LEVELS[1].name='A1.2'; LEVELS[2].name='A2'; delete LEVELS[2].soon;
   for(const lang of Object.keys(UI)){
    UI[lang].tagline='A1 · A1.1 / A1.2';
    UI[lang].toetsTitle=UI[lang].modes.toets='Toets';
@@ -921,12 +1014,12 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    }));
    for(const [lang,label] of Object.entries({uk,en,fr,ar}))UI[lang].tabs[key]=UI[lang].subs[key]=label;
   }
-  for(const [key,[uk,en,fr,ar,text]] of Object.entries(a12.lessons)) {
+  for(const [key,[uk,en,fr,ar,text]] of Object.entries({...a12.lessons,...a2.lessons})) {
    DATA[key]=R(text.trim().split('\n').map((line,i)=>{
     const [nl,uk,en,fr,ar,icon,exNl,exUk]=line.split('|');
     return [`course_${key}_${i+1}`,nl,en,fr,uk,ar,icon||'📖',exNl||'',exUk||''];
    }));
-   const note=a12.notes[key];
+   const note=a12.notes[key]||a2.notes[key];
    for(const [i,[lang,label]] of Object.entries(Object.entries({uk,en,fr,ar}))){UI[lang].tabs[key]=label;UI[lang].subs[key]=note?.[i]||label;}
   }
   // Ordinals are explicit practice, not just mentioned in the chapter heading.
@@ -1010,7 +1103,7 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
    ['plans',2,'nee, het spijt me,|ik|moet|koken','RSVI','Ні, мені шкода, я маю готувати.','No, I’m sorry, I have to cook.','Non, désolé, je dois cuisiner.','لا، آسف، يجب أن أطبخ.','poetsen']
   ];
   for(const [cat,level,q,roles,uk,en,fr,ar,x] of statements)add(cat,[level,q,roles,uk,en,fr,ar,x||'','.']);
-  for(const [cat,level,q,roles,uk,en,fr,ar,x,p] of a12.bank)add(cat,[level,q,roles,uk,en,fr,ar,x,p]);
+  for(const [cat,level,q,roles,uk,en,fr,ar,x,p] of [...a12.bank,...a2.bank])add(cat,[level,q,roles,uk,en,fr,ar,x,p]);
  }
  const gaps={
   comm:['Hoe ___ jij?','heet','heten','heeft','heeten'],
@@ -1047,7 +1140,7 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
   const ambiguous=health.questions.find(q=>q.opts?.[0]==='Ik ga om elf uur slapen.');
   if(ambiguous)ambiguous.opts[1]='Ik gaat om elf uur slapen.';
   for(const [id,title,tabs] of [...chapters,...advanced]){
-   const lvl=chapters.some(c=>c[0]===id)?'a11':'a12',g=gaps[id];
+   const lvl=chapters.some(c=>c[0]===id)?'a11':a2Ids.has(id)?'a21':'a12',g=gaps[id]||a2.gaps[id];
    const pool=tabs.flatMap(t=>DATA[t]?.items||[]).filter(x=>x.id.startsWith('course_'));
    const fallback=tabs.flatMap(t=>DATA[t]?.items||[]);
    const src=(pool.length>=6?pool:fallback).filter(x=>x.nl&&x.uk&&!/[→:]/.test(x.nl));
@@ -1068,7 +1161,7 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
     if(i%2===0)questions.push({type:'mc',q:translated(`Що означає «${item.nl}»?`,`What does “${item.nl}” mean?`,`Que signifie « ${item.nl} » ?`,`ما معنى «${item.nl}»؟`),opts:cand.map(x=>translated(x.uk,x.en,x.fr,x.ar)),ok:0});
     else questions.push({type:'mc',q:translated(`Як нідерландською «${item.uk}»?`,`How do you say “${item.en}” in Dutch?`,`Comment dit-on « ${item.fr||item.en} » en néerlandais ?`,`كيف تقول «${item.ar||item.en}» بالهولندية؟`),opts:cand.map(x=>x.nl),ok:0});
    });
-   const no=lvl==='a11'?chapters.findIndex(c=>c[0]===id)+1:advanced.findIndex(c=>c[0]===id)+1,clean=title.replace(/^\S+\s/,m=>/\p{Extended_Pictographic}/u.test(m)?'':m);
+   const no=lvl==='a11'?chapters.findIndex(c=>c[0]===id)+1:lvl==='a21'?a2.chapters.findIndex(c=>c[0]===id)+1:advanced.findIndex(c=>c[0]===id)+1,clean=title.replace(/^\S+\s/,m=>/\p{Extended_Pictographic}/u.test(m)?'':m);
    tests.push({id:testId(id),lvl,group:'chapter',no,chapter:id,dutch:clean,title:translated(`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`),questions});
   }
   const levelTest=tests.find(t=>t.kind==='leveltest'&&t.unlocks==='a12');
@@ -1182,6 +1275,8 @@ ik heb afgesproken|я домовився|I arranged to meet|j’ai pris rendez-v
   ])speech.push({q,uk,en,m,lvl:'a12',open:true});
   for(const [id,icon,uk,en,fr,ar,lines] of a12.dialogues)dialogues.push({id:`course_${id}`,lvl:'a12',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'A1.2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
   for(const [q,uk,en,m] of a12.speech)speech.push({q,uk,en,m,lvl:'a12',open:true});
+  for(const [id,icon,uk,en,fr,ar,lines] of a2.dialogues)dialogues.push({id:`course_${id}`,lvl:'a21',icon,title:{uk,en,fr,ar},a:'Alex',b:'Sam',hint:'A2',lines:lines.map((row,i)=>[i%2?'B':'A',...row])});
+  for(const [q,uk,en,m] of a2.speech)speech.push({q,uk,en,m,lvl:'a21',open:true});
  }
- return {chapters,advanced,a12,lessons,topicInfo,testId,apply,buildBank,assessments,games};
+ return {chapters,advanced,a12,a2,a2Ids:[...a2Ids],lessons,topicInfo,testId,apply,buildBank,assessments,games};
 })();

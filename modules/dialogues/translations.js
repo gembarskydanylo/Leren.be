@@ -205,5 +205,12 @@ globalThis.LerenDialogueTr = {
   ['La bibliothèque est fermée lundi.', 'المكتبة مغلقة يوم الاثنين.'],
   ['Dommage. Et quand est-elle de nouveau ouverte ?', 'للأسف. ومتى تفتح من جديد؟'],
   ['Mardi à partir de neuf heures.', 'يوم الثلاثاء ابتداءً من الساعة التاسعة.'],
-  ['Alors je rapporte mes livres mardi.', 'إذن سأعيد كتبي يوم الثلاثاء.']]}
+  ['Alors je rapporte mes livres mardi.', 'إذن سأعيد كتبي يوم الثلاثاء.']]},
+ course_a2work: {lines: [
+  ['Bonjour, ici Pieter. Que puis-je faire pour toi ?', 'صباح الخير، معك بيتر. ماذا يمكنني أن أفعل لك؟'],
+  ['Bonjour, ici Olena. Je suis malade et je ne peux pas travailler aujourd’hui.', 'صباح الخير، معك أولينا. أنا مريضة ولا أستطيع العمل اليوم.'],
+  ['Dommage. Tu as de la fièvre ?', 'هذا مؤسف. هل لديك حمّى؟'],
+  ['Oui, j’ai 38 degrés. Qui peut me remplacer ?', 'نعم، حرارتي 38 درجة. من يمكنه أن يحل محلي؟'],
+  ['Je m’en occupe. Tu envoies le certificat médical demain ?', 'سأتولى الأمر. هل سترسل شهادة الطبيب غداً؟'],
+  ['Oui, je l’envoie par mail demain. Merci !', 'نعم، سأرسلها بالبريد الإلكتروني غداً. شكراً!']]}
 };

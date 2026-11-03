@@ -4,7 +4,7 @@ const ctx=vm.createContext({console});
 vm.runInContext(read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'))+'\nglobalThis.fixture={DATA,LerenCurriculum};',ctx);
 vm.runInContext(read('modules/learning-path/core.js'),ctx);
 const core=ctx.LerenLearningPath,course=core.catalog(ctx.fixture.DATA,ctx.fixture.LerenCurriculum);
-assert.equal(course.chapters.length,28);assert.equal(course.chapters.filter(c=>c.level==='A1.2').length,16);assert.equal(course.chapters.filter(c=>c.level==='A1.1').length,12);
+assert.equal(course.chapters.length,29);assert.equal(course.chapters.filter(c=>c.level==='A1.2').length,16);assert.equal(course.chapters.filter(c=>c.level==='A2').length,1);assert.equal(course.chapters.filter(c=>c.level==='A1.1').length,12);
 assert(course.chapters.every(c=>c.lessons.length));
 const expected=course.chapters.flatMap(c=>c.tabs.flatMap(t=>(ctx.fixture.DATA[t]?.items||[]).map(w=>w.id)));
 const actual=course.lessons.flatMap(l=>l.ids);
@@ -27,18 +27,18 @@ assert.equal(m.continueRoute().id,course.lessons[1].id);
 const same=(a,b,msg)=>assert.equal(JSON.stringify(a),JSON.stringify(b),msg);
 // Complete both courses: each route ends at the end of its own course (no silent jump from A1.1 into A1.2).
 const full=core.create(course,storage());full.start();let visited=0;
-const a11=course.lessons.filter(l=>course.chapters.find(c=>c.id===l.chapter).level==='A1.1').length,a12=course.lessons.length-a11;
-for(const level of ['A1.1','A1.2']){
+const cnt=lvl=>course.lessons.filter(l=>course.chapters.find(c=>c.id===l.chapter).level===lvl).length,a11=cnt('A1.1'),a12=cnt('A1.2'),a2=cnt('A2');assert(a2>0,'A2 has lessons on the route');
+for(const level of ['A1.1','A1.2','A2']){
  assert(full.setCourse(level));assert.equal(full.course,level);
  while(full.recommended()){
   const l=full.recommended();assert.equal(course.chapters.find(c=>c.id===l.chapter).level,level,'The route stays inside the selected course');full.begin(l.id);
   for(let phase=0;phase<3;phase++){while(full.current())full.advance(full.current().id,true);if(phase<2)full.nextPhase()}
   full.finish();visited++;assert(visited<=course.lessons.length);
  }
- same(full.courseStats(level),{done:level==='A1.1'?a11:a12,total:level==='A1.1'?a11:a12});
+ same(full.courseStats(level),{done:{'A1.1':a11,'A1.2':a12,A2:a2}[level],total:{'A1.1':a11,'A1.2':a12,A2:a2}[level]});
 }
-assert.equal(visited,course.lessons.length);same(full.stats(),{done:a12,total:a12},'Overall stats follow the selected course');
-assert.equal(full.setCourse('A2.1'),false,'A course without lessons cannot be selected');assert.equal(full.course,'A1.2');
+assert.equal(visited,course.lessons.length);same(full.stats(),{done:a2,total:a2},'Overall stats follow the selected course');
+assert.equal(full.setCourse('A3'),false,'A course without lessons cannot be selected');assert.equal(full.course,'A2');
 
 // Independent progress per course.
 {
@@ -84,6 +84,6 @@ const from=script.indexOf('function recordPathResult('),to=script.indexOf('\nfun
 function host(){const x=vm.createContext({learningPath:{model:m},lsGet:k=>ledger[k],lsSet:(k,v)=>ledger[k]=v,rewardCheck(){},queueProgressSync(){},addXP(){},saveStore(){},updateStats(){}});vm.runInContext('const pathSessionRewards={};'+script.slice(from,to),x);return x}
 let h=host();assert.equal(h.recordPathResult(first.id,2,first.ids.length),10);assert.equal(h.recordPathResult(first.id,2,first.ids.length),0);
 h=host();assert.equal(h.recordPathResult(first.id,2,first.ids.length),0);assert.equal(h.recordPathResult(first.id,5,first.ids.length),15);assert.equal(h.recordPathResult('bad',5,5),0);
-const files=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const file of ['core.js','ui.js','style.css'])assert(files.includes('./modules/learning-path/'+file+'?v='+({'core.js':'174','ui.js':'178','style.css':'177'})[file]));
+const files=JSON.parse(read('sw.js').match(/const APP_FILES = (\[[^;]+\]);/)[1]);for(const file of ['core.js','ui.js','style.css'])assert(files.includes('./modules/learning-path/'+file+'?v='+({'core.js':'175','ui.js':'179','style.css':'177'})[file]));
 new vm.Script(read('modules/learning-path/ui.js'));
 console.log(`PASS: ${course.chapters.length} chapters, ${course.lessons.length} lessons, all ${actual.length} course cards; phase-by-phase resume, stale answers, next lesson, targeted review, 12-question placement, corrupt/blocked storage, repeat-safe host XP and offline dependencies`);

@@ -16,7 +16,7 @@ for(const id of ids){
   assert(files.includes(info.image),`Illustration unavailable offline for ${id}`);
  }
 }
-assert.equal(new Set(ids.map(id=>vm.runInContext(`LerenCurriculum.topicInfo('${id}').image`,ctx))).size,29);
+assert.equal(new Set(ids.map(id=>vm.runInContext(`LerenCurriculum.topicInfo('${id}').image`,ctx))).size,30);
 // Execute the actual navigation callbacks: catalog -> topic -> lesson -> catalog.
 class Element{
  constructor(tag='',cls='',text=''){this.tag=tag;this.className=cls;this.textContent=text;this.children=[];this.attrs={};this.dataset={};this.hidden=false;this.scrollTop=300}
