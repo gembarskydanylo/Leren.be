@@ -1,6 +1,6 @@
 // Exercise real playback routing: bom and boom must keep their own clip and teacher.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 let voice='peter',last;
 class Audio {constructor(src){last=this;this.src=src}pause(){}play(){return Promise.resolve()}}
 const ctx=vm.createContext({Audio,targetLang:'nl',window:{speechSynthesis:{cancel(){}}},updateSpeechState(){},lsGet:(k,f)=>k==='leren_char'?voice:f});

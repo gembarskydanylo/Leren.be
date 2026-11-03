@@ -1,6 +1,6 @@
 // Regression coverage for top desktop navigation and real audio-button state.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const source=fs.readFileSync('index.html','utf8');
+const source=require(__dirname+'/lib/app-source.cjs')();
 function oneLine(name){const start=source.indexOf('function '+name+'(');assert(start>=0);return source.slice(start,source.indexOf('\n',start))}
 function scrollCase(position,dockTop,nextBottom){const moves=[],ctx=vm.createContext({innerHeight:800,setTimeout:f=>f(),getComputedStyle:()=>({position}),window:{scrollBy:value=>moves.push(value)},$:id=>id==='nx'?{closest:()=>null,getBoundingClientRect:()=>({bottom:nextBottom})}:{getBoundingClientRect:()=>({top:dockTop})}});vm.runInContext(oneLine('revealNext')+';revealNext()',ctx);return moves}
 assert.equal(scrollCase('sticky',100,700).length,0,'Top desktop navigation must not force a scroll after every answer');

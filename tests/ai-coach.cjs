@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
 const ctx=vm.createContext({console,AbortController,setTimeout,clearTimeout});vm.runInContext(read('modules/ai-coach/core.js'),ctx);const api=ctx.LerenAICoach;
 const element=tag=>({tag,children:[],attrs:{},textContent:'',append(...xs){this.children.push(...xs)},appendChild(x){this.children.push(x)},setAttribute(k,v){this.attrs[k]=v}});ctx.document={createElement:element};vm.runInContext(read('modules/ai-coach/ui.js'),ctx);
 const flat=e=>[e,...e.children.flatMap(flat)];

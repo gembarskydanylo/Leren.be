@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),sw=read('sw.js');
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),sw=read('sw.js');
 const ctx=vm.createContext({console,localStorage:{getItem:()=>null,setItem(){}}});
 vm.runInContext(read('modules/word-builder/art.js'),ctx);vm.runInContext(read('modules/word-builder/game.js'),ctx);
 const {LerenWordArt:art,LerenWordBuilder:wb}=ctx;

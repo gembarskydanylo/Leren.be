@@ -32,7 +32,7 @@ for(const raw of ['null','[]','true','"bad"','{','{"version":2,"learned":[],"bes
 }
 const blocked=make(storage({},true));blocked.start('battle');assert.equal(blocked.persistent,false);assert(blocked.current('battle'));
 // Execute the host's real XP function, independently from the lesson state.
-const html=fs.readFileSync('index.html','utf8'),source=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),source=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const start=source.indexOf('function recordDiphthongsResult('),end=source.indexOf('\nfunction renderDiphthongsProgress',start),ledger={};
 function host(){const h=vm.createContext({xp:0,lsGet:k=>ledger[k],lsSet:(k,v)=>ledger[k]=v,addXP(n){h.xp+=n},saveStore(){},updateStats(){}});vm.runInContext('const diphthongsSessionBest={};'+source.slice(start,end),h);return h}
 let h=host();assert.equal(h.recordDiphthongsResult('battle',3,6),15);assert.equal(h.recordDiphthongsResult('battle',3,6),0);assert.equal(h.recordDiphthongsResult('battle',6,6),15);

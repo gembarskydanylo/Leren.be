@@ -1,7 +1,7 @@
 // Every dialogue line has French and Arabic, and the games show the line in the learner's language.
 // Run: node tests/dialogue-translations.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const c=vm.createContext({console,window:{}});
 vm.runInContext(read('modules/dialogues/translations.js'),c);c.window.LerenDialogueTr=c.LerenDialogueTr;
 vm.runInContext(read('course-curriculum.js')+';var uiLang="uk";'+script.slice(script.indexOf('const gTr='),script.indexOf('\n',script.indexOf('const gTr=')))+'\n'+script.slice(script.indexOf('const DIALOGUES=['),script.indexOf('const GAMES='))+';globalThis.X={DIALOGUES,dlgLineTr,gTr,set:l=>uiLang=l};',c);

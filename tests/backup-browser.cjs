@@ -8,7 +8,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json','.webmanifest':'application/manifest+json','.m4a':'audio/mp4'};
 const server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory()){res.writeHead(404);res.end();return}res.writeHead(200,{'content-type':types[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res)});
-const release=fs.readFileSync(path.join(root,'index.html'),'utf8').match(/const RELEASE_VERSION="(\d+)"/)[1],SHOTS=process.env.SHOTS||os.tmpdir();
+const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1],SHOTS=process.env.SHOTS||os.tmpdir();
 const log=(...a)=>{if(process.env.DEBUG)console.log(...a)};
 const seed=(page,data)=>page.addInitScript(([r,d])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();const all={leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',...d};for(const [k,v] of Object.entries(all))localStorage.setItem(k,v);sessionStorage.setItem('seeded','1')},[release,data]);
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};

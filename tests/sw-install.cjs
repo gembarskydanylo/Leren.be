@@ -2,7 +2,7 @@
 // Run: node tests/sw-install.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('sw.js','utf8');
-const critical=['./','./index.html','./course-curriculum.js?v=173','./manifest.webmanifest'];
+const critical=['./','./index.html','./app.js?v=181','./boot.js?v=181','./course-curriculum.js?v=173','./manifest.webmanifest'];
 async function simulate(fail){
  const handlers={},added=[],opened=[],deleted=[];
  let waiting=0,claimed=0;
@@ -22,10 +22,10 @@ async function simulate(fail){
   return;
  }
  assert.equal(error,null);assert.equal(waiting,1);
- assert(opened.every(name=>name==='leren-be-v180'));
+ assert(opened.every(name=>name==='leren-be-v181'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));
- if(fail==='optional')assert(added.length<1007,'some optional files should fail');
- else assert.equal(added.length,1007);
+ if(fail==='optional')assert(added.length<1009,'some optional files should fail');
+ else assert.equal(added.length,1009);
  let activate;handlers.activate({waitUntil:p=>activate=p});await activate;
  assert.deepEqual(deleted,['leren-be-v167']);assert.equal(claimed,1);
 }

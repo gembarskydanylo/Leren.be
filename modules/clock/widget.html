@@ -9,14 +9,14 @@
     </div>
 
     <nav class="clock-tabs" aria-label="Режим годинника">
-      <button type="button" id="clockLearnTab" class="active" onclick="clockSetMode('learn')">🖐️ Навчання</button>
-      <button type="button" id="clockQuizTab" onclick="clockSetMode('quiz')">🎯 Вистав час</button>
+      <button type="button" id="clockLearnTab" class="active" data-call="clockSetMode" data-arg="learn">🖐️ Навчання</button>
+      <button type="button" id="clockQuizTab" data-call="clockSetMode" data-arg="quiz">🎯 Вистав час</button>
     </nav>
     <div id="clockQuizPanel" class="clock-quiz" hidden>
       <div class="clock-quiz-caption">Послухай або прочитай час і вистав стрілки</div>
       <strong id="clockTarget">half drie</strong>
       <div class="clock-quiz-actions">
-        <button type="button" onclick="clockSpeakTarget()">🔊 Послухати завдання</button>
+        <button type="button" data-call="clockSpeakTarget">🔊 Послухати завдання</button>
         <span id="clockScore">Правильно: 0 / 0</span>
       </div>
       <p id="clockQuizFeedback" aria-live="polite">Вистав час і відпусти стрілку — перевірка через 1 секунду.</p>
@@ -53,8 +53,8 @@
       <div class="lbe-time-row">
         <span class="lbe-digital-pill" id="digitalTime">14:20</span>
         <div class="lbe-quick-hours">
-          <button onclick="changeHour(-1)">−1 година</button>
-          <button onclick="changeHour(1)">+1 година</button>
+          <button data-call="changeHour" data-arg="-1">−1 година</button>
+          <button data-call="changeHour" data-arg="1">+1 година</button>
         </div>
       </div>
 
@@ -67,7 +67,7 @@
       </div>
 
       <div>
-        <button class="lbe-speak-btn" onclick="speakCurrentTime()">
+        <button class="lbe-speak-btn" data-call="speakCurrentTime">
           🔊 Послухати ще раз
         </button>
       </div>

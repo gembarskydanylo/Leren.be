@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const ctx=vm.createContext({assert});
 vm.runInContext(fs.readFileSync('course-curriculum.js','utf8')+'\n'+script.slice(0,script.indexOf('function validStored')),ctx);
 const files=JSON.parse(fs.readFileSync('sw.js','utf8').match(/const APP_FILES = (\[[^;]+\]);/)[1]);

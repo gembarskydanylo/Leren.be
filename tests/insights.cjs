@@ -93,7 +93,7 @@ assert.equal(I.goal(undefined),10);assert.equal(I.goal(15),15);assert.equal(I.go
  assert.equal(R.reason(R.badges.find(b=>b.id==='chapter-1'),'uk'),'Завершено першу тему маршруту');}
 
 // 9. Wiring in the app: one source for the goal and the streak, counted in every skill.
-{const html=read('index.html');
+{const html=require(__dirname+'/lib/app-source.cjs')();
  // The reward threshold is the reward's own constant; exam scores are never compared with it elsewhere.
  assert(html.includes('e.best.proef>=LerenRewards.EXAM_BADGE_PCT'));assert(!/proef>=60/.test(html+read('modules/exam/exam-core.js')));
  // A finished lesson is a success whatever the daily goal: the result screen shows it before the goal note.

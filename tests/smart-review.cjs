@@ -21,12 +21,12 @@ const card=()=>({seen:1,correct:0,wrong:0,streak:0,due:0,known:false});
 {const s={seen:4,correct:3,wrong:1,streak:3,due:now-1,known:true};S.update(s,true,now);assert.deepEqual(Object.keys(s).sort(),['correct','due','known','seen','streak','t','wrong']);assert.equal((s.due-now)/DAY,14);}
 
 // 5. The app uses the same rules everywhere (lessons, games and the guided route) and no old fixed interval is left.
-{const html=read('index.html');assert(!/\(s\.streak>=3\?3:1\)\*864e5/.test(html),'old fixed interval removed');
+{const html=require(__dirname+'/lib/app-source.cjs')();assert(!/\(s\.streak>=3\?3:1\)\*864e5/.test(html),'old fixed interval removed');
  assert.equal((html.match(/LerenSRS\.update\(s,/g)||[]).length,9,'4 lesson/game modes × right and wrong + the guided route');
  assert(html.includes('<script src="./modules/review/srs.js?v=175"></script>'));assert(read('sw.js').includes('"./modules/review/srs.js?v=175"'));}
 
 // 6. Guided route: warm-up of up to 5 words of the current course, route mistakes first, once a day, from 3 words.
-const html=read('index.html'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const pctx=vm.createContext({console});
 vm.runInContext(read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'))+'\nglobalThis.fixture={DATA,LerenCurriculum};',pctx);
 vm.runInContext(read('modules/learning-path/core.js'),pctx);

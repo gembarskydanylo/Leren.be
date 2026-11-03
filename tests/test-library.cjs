@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const read=p=>fs.readFileSync(p,'utf8'),html=read('index.html'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const c=vm.createContext({console,assert,shuffle:x=>x});
 vm.runInContext(read('modules/test-library/ui.js'),c);
 vm.runInContext(read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored')),c);

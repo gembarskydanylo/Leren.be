@@ -6,7 +6,7 @@ let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Pla
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json','.webmanifest':'application/manifest+json'};
 const server=http.createServer((req,res)=>{const file=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory()){res.writeHead(404);res.end();return}res.writeHead(200,{'content-type':types[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res)});
 const log=(...a)=>{if(process.env.DEBUG)console.log(...a)};
-const release=fs.readFileSync(path.join(root,'index.html'),'utf8').match(/const RELEASE_VERSION="(\d+)"/)[1];
+const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 // Runs inside the page: answers every question of one part correctly and returns the end screen.
 async function runPart(part){
  const w=ms=>new Promise(r=>setTimeout(r,ms)),card=document.getElementById('card');
