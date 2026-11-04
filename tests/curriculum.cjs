@@ -58,7 +58,7 @@ vm.runInContext(`
  const ds=[],ss=[];LerenCurriculum.games(ds,ss);
  const a2d=ds.filter(d=>d.lvl==='a21'),a2s=ss.filter(s=>s.lvl==='a21'),a12d=ds.filter(d=>d.lvl==='a12'),a12s=ss.filter(s=>s.lvl==='a12');
  assert.equal(a12d.length,15);assert.equal(a12s.length,33);assert.equal(new Set(ds.map(d=>d.id)).size,ds.length);assert(a12d.every(d=>d.lines.length>=6));
- assert.equal(a2d.length,9);assert.equal(a2s.length,32);assert(a2d.every(d=>d.lines.length>=6));
+ assert.equal(a2d.length,17);assert.equal(a2s.length,32);assert(a2d.every(d=>d.lines.length>=6));
  assert.equal(LerenCurriculum.a2.chapters.length,9,"A2 has nine chapters");assert(LerenCurriculum.a2.chapters.every(([id,t,tabs])=>tabs.length>=3&&CATEGORIES.find(c=>c.id===id).lvl==='a21'));
  console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, sixteen A1.2 chapters, fifteen A1.2 dialogues, 33 A1.2 speaking prompts, unique lesson ownership and sentence coverage');
 `,ctx);
