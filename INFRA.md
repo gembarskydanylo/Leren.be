@@ -77,4 +77,4 @@
 **Що лишається зробити вручну (не в коді):**
 - ✅ (4.11.2026, $10/міс.) Anthropic Console → Settings → Spend limits: місячний ліміт витрат для ключа `leren-ai` (воркер перевіряє лише заголовок `Origin`, який поза браузером підробляється; від витрат захищають тільки ліміти частоти).
 - ✅ (4.11.2026) Cloudflare → `leren-ai` → Settings → Variables and Secrets: окремий секрет `RATE_SALT` для хешування IP і кодів пристроїв.
-- Google Cloud Console → Credentials: обмежити Firebase API key за HTTP referrer (`lerenbe.com/*`, `www.lerenbe.com/*`, `leren-be.firebaseapp.com/*`); Firebase → App Check.
+- ✅ (перевірено 4.11.2026: «HTTP referrers, 4 APIs») Google Cloud Console → Credentials: обмежити Firebase API key за HTTP referrer (`lerenbe.com/*`, `www.lerenbe.com/*`, `leren-be.firebaseapp.com/*`); Firebase → App Check.
