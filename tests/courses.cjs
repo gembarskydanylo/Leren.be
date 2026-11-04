@@ -8,7 +8,7 @@ const line=start=>{const a=script.indexOf(start);assert(a>=0,start);return scrip
 const same=(a,b,msg)=>assert.equal(JSON.stringify(a),JSON.stringify(b),msg);
 const prefix=fs.readFileSync('modules/sync/merge.js','utf8')+'\n'+read('modules/review/srs.js')+'\n'+read('modules/insights/core.js')+'\n'+read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'));
 const host=fn('lsGet')+fn('lsSet')+fn('levelById')+fn('levelUnlocked')+fn('levelCats')+fn('catLevel')+fn('itemsFor')+fn('gPool')+fn('switchCourse')+fn('saveStore')+fn('wbCourseWords')+'\n'+
- line('const allItems=')+'\n'+line('const levelItems=')+'\n'+fn('dueItems')+line('const learnedCount=')+'\n'+fn('stateFor')+line('const A11_ONLY_GAMES=')+'\n'+line('const A2_ONLY_GAMES=')+'\n'+line('const gameForLevel=')+'\n'+
+ line('const allItems=')+'\n'+line('const levelItems=')+'\n'+fn('dueItems')+line('const learnedCount=')+'\n'+fn('stateFor')+line('const A11_ONLY_GAMES=')+'\n'+line('const A2_ONLY_GAMES=')+'\n'+line('const A1_ONLY_GAMES=')+'\n'+line('const gameForLevel=')+'\n'+
  line('const labelFor=')+'\n'+line('const meaningFor=')+'\n';
 // Startup: the saved course (poly_level) and lesson are read back exactly like the app does after a reload.
 const startup=script.slice(script.indexOf('function validStored'),script.indexOf('const el=(t,c,x)'));
@@ -50,8 +50,8 @@ same(JSON.parse(ls.poly_toetsbest),JSON.parse(old.poly_toetsbest),'Switching nev
 // 6. A1.2 games load A1.2 material only.
 const games=JSON.parse(line('const GAMES=').replace(/^const GAMES=/,'').replace(/;$/,'')).map(g=>g[0]);
 const forA12=games.filter(id=>H.gameForLevel(id,'a12')),forA11=games.filter(id=>H.gameForLevel(id,'a11'));
-same(forA11,games.filter(id=>id!=='kamer'),'Every game except the A2 room is available in A1.1');
-same(forA12,games.filter(id=>!['story','md','kamer'].includes(id)),'A1.2 hides the two A1.1 stories and the A2 room');assert(H.gameForLevel('kamer','a21')&&!H.gameForLevel('story','a21'),'A2 has Kamer van Pieter');
+same(forA11,games.filter(id=>!['kamer'].includes(id)),'Every game except the A2 room is available in A1.1');
+same(forA12,games.filter(id=>!['story','md','kamer'].includes(id)),'A1.2 hides the two A1.1 stories and the A2 room');assert(H.gameForLevel('kamer','a21')&&!H.gameForLevel('story','a21')&&!H.gameForLevel('kamer1','a21')&&H.gameForLevel('kamer1','a11')&&H.gameForLevel('kamer1','a12'),'A2 has Kamer van Pieter, A1 has Kamer van Pieter & Sam');
 assert(H.switchCourse('a12'));
 const pool=H.gPool();assert(pool.length>=300);assert(pool.every(x=>a12.has(x.id)),'Blitz, memory and dictation use A1.2 words in A1.2');
 assert(new Set(pool.map(x=>x.uk)).size>=4);
