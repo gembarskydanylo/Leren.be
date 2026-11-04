@@ -28,9 +28,11 @@ assert(html.indexOf('<script src="./course-curriculum.js')<html.indexOf('<script
 const shell=html.slice(html.indexOf('<article class="seo-shell">'),html.indexOf('</article>'));
 assert.match(shell,/<h2>Нідерландська мова українською — курси A1\.1 і A1\.2<\/h2>/);assert.equal((shell.match(/<li><strong>/g)||[]).length,5+12+16,'5 sections + 12 + 16 topics');
 assert(shell.includes('href="./privacy.html"'));assert(html.includes('.seo-shell{display:none}')&&html.includes('<noscript><style>.seo-shell{display:block}</style></noscript>'),'summary shown only without JavaScript');
-// Hardening that works on GitHub Pages: a narrow CSP (no plugins, no <base> or form hijacking) and a referrer policy
-// on both pages; scripts, connections and frames stay unrestricted so sign-in, sync and AI keep working.
-for(const f of ['index.html','privacy.html']){const h=read(f);assert(h.includes(`<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">`),f);assert(h.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'),f)}
+// Hardening: every page carries in a <meta> the same CSP that Cloudflare sends as a header (tests/csp-browser.cjs walks the
+// app under it), so the policy still holds if the Cloudflare rule is switched off. <meta> ignores frame-ancestors (boot.js
+// has a frame guard instead) and adds form-action. A new external address in the code = add it here, in csp-browser.cjs and in Cloudflare.
+const headerCsp=read('tests/csp-browser.cjs').match(/const CSP="([^"]+)"/)[1],metaCsp=headerCsp.replace("; frame-ancestors 'self'","")+"; form-action 'self'";
+for(const f of ['index.html','privacy.html','modules/clock/widget.html']){const h=read(f);assert(h.includes(`<meta http-equiv="Content-Security-Policy" content="${metaCsp}">`),f+': meta CSP = Cloudflare CSP');if(f.includes('widget'))continue;assert(h.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'),f)}
 const sec=read('.well-known/security.txt');assert.match(sec,/^Contact: mailto:\S+@\S+$/m);const exp=new Date(sec.match(/^Expires: (\S+)$/m)[1]);assert(exp>new Date()&&exp-new Date()<400*864e5,'security.txt Expires within a year');
 // robots.txt and sitemap.xml
 assert.match(read('robots.txt'),/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/lerenbe\.com\/sitemap\.xml\n$/);

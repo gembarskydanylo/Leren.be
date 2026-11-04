@@ -319,17 +319,26 @@ async function setup(env, origin) {
   return Response.json(Object.fromEntries(Object.entries(results).map(([k, v]) => [k, v.ok ? "ok" : v.description])));
 }
 
+// Constant-time secret check (a plain !== leaks, through timing, how much of a guess matched).
+function sameSecret(given, secret) {
+  if (!secret || typeof given !== "string") return false;
+  const enc = new TextEncoder(), a = enc.encode(given), b = enc.encode(secret);
+  if (a.length !== b.length) return false;
+  let diff = 0; for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === "/tg" && req.method === "POST") {
-      if (!env.WEBHOOK_SECRET || req.headers.get("x-telegram-bot-api-secret-token") !== env.WEBHOOK_SECRET) return new Response("forbidden", {status: 403});
+      if (!sameSecret(req.headers.get("x-telegram-bot-api-secret-token"), env.WEBHOOK_SECRET)) return new Response("forbidden", {status: 403});
       const update = await req.json().catch(() => ({}));
       // Answer Telegram at once; slow AI replies would otherwise make it resend the update.
       if (update.message) ctx.waitUntil(onMessage(env, update.message).catch(e => console.log("BOT_ERROR", String(e))));
       return new Response("ok");
     }
-    if (url.pathname === "/setup" && env.WEBHOOK_SECRET && url.searchParams.get("secret") === env.WEBHOOK_SECRET) return setup(env, url.origin);
+    if (url.pathname === "/setup" && sameSecret(url.searchParams.get("secret"), env.WEBHOOK_SECRET)) return setup(env, url.origin);
     return new Response("Leren.be Telegram bot");
   },
   async scheduled(event, env, ctx) {
