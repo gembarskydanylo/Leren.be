@@ -45,7 +45,7 @@
    const on=it.level===active,pct=it.total?Math.round(it.done/it.total*100):0,card=node('button','fh-course'+(on?' is-active':'')+(it.soon?' is-soon':''));card.type='button';card.dataset.level=it.level;
    card.setAttribute('aria-pressed',String(on));if(it.soon){card.disabled=true;card.setAttribute('aria-disabled','true')}else card.onclick=()=>{if(!on)onPick(it.level)};
    const top=node('span','fh-course-top'),mascot=node('img','fh-course-cat'),heading=node('span','fh-course-heading');
-   mascot.src='./img/mascot/level-'+(it.key==='a21'?'a2':it.key)+'.webp';mascot.alt='';mascot.decoding='async';mascot.setAttribute('aria-hidden','true');
+   mascot.src='./img/mascot/level-'+(it.key==='a21'?'a2':it.key)+'.webp';mascot.alt='🐱';mascot.decoding='async';mascot.setAttribute('aria-hidden','true');
    heading.append(node('strong','fh-course-name',it.level),node('span','fh-course-pct',it.soon?c.soon:pct+'%'));
    top.append(mascot,heading);card.append(top,node('span','fh-course-sub',c[it.key]||''));
    if(!it.soon){card.append(meter(it.done,it.total,it.level),node('span','fh-course-done',c.done(it.done,it.total)))}

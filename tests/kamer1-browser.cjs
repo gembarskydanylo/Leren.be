@@ -37,7 +37,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
      const txt=await page.locator('.k-pieter .k-nl').first().textContent();const noun=txt.replace('Waar is ','').replace('?','').split(' ')[1];
      await page.evaluate(n=>document.querySelector('[data-item="'+n+'"]').click(),noun);
     }else{
-     await page.waitForSelector('.k-choice');
+     await page.waitForSelector('.k-choices:not(.is-done) .k-choice');
      const right=await page.evaluate(i=>{const rows=[...document.querySelectorAll('.k-choice-nl')].map(n=>n.textContent);const hot=[...document.querySelectorAll('.k-obj.is-hint')][0]?.dataset.item;const O=LerenKamer.O;const col={tafel:'bruin',stoel:'rood',bed:'blauw'};
       if(i===0)return 'Dit is een '+O[hot][1]+'.';if(i===2)return 'Ik zie een '+O[hot][1]+'.';if(i===3)return col[hot];return O[hot][1]},ti);
      await page.locator('.k-choice',{hasText:right}).first().click();
