@@ -205,5 +205,61 @@ globalThis.LerenDialogueTr = {
   ['La bibliothèque est fermée lundi.', 'المكتبة مغلقة يوم الاثنين.'],
   ['Dommage. Et quand est-elle de nouveau ouverte ?', 'للأسف. ومتى تفتح من جديد؟'],
   ['Mardi à partir de neuf heures.', 'يوم الثلاثاء ابتداءً من الساعة التاسعة.'],
-  ['Alors je rapporte mes livres mardi.', 'إذن سأعيد كتبي يوم الثلاثاء.']]}
+  ['Alors je rapporte mes livres mardi.', 'إذن سأعيد كتبي يوم الثلاثاء.']]},
+ course_a2work: {lines: [
+  ['Bonjour, ici Pieter. Que puis-je faire pour toi ?', 'صباح الخير، معك بيتر. ماذا يمكنني أن أفعل لك؟'],
+  ['Bonjour, ici Olena. Je suis malade et je ne peux pas travailler aujourd’hui.', 'صباح الخير، معك أولينا. أنا مريضة ولا أستطيع العمل اليوم.'],
+  ['Dommage. Tu as de la fièvre ?', 'هذا مؤسف. هل لديك حمّى؟'],
+  ['Oui, j’ai 38 degrés. Qui peut me remplacer ?', 'نعم، حرارتي 38 درجة. من يمكنه أن يحل محلي؟'],
+  ['Je m’en occupe. Tu envoies le certificat médical demain ?', 'سأتولى الأمر. هل سترسل شهادة الطبيب غداً؟'],
+  ['Oui, je l’envoie par mail demain. Merci !', 'نعم، سأرسلها بالبريد الإلكتروني غداً. شكراً!']]},
+ course_a2wonen: {lines: [
+  ['Bonjour, je viens pour la visite de l’appartement.', 'صباح الخير، جئت لزيارة الشقة.'],
+  ['Bienvenue ! Entrez. Voici le salon et là, la cuisine.', 'أهلاً بك! تفضّل بالدخول. هذه غرفة المعيشة وهناك المطبخ.'],
+  ['Joli. Quel est le loyer ?', 'جميلة. كم هو الإيجار؟'],
+  ['750 euros par mois, hors charges.', '750 يورو في الشهر، دون المصاريف.'],
+  ['Et à combien s’élève la garantie locative ?', 'وكم تبلغ الضمانة الإيجارية؟'],
+  ['Deux mois de loyer. Je vous envoie le contrat de bail demain.', 'إيجار شهرين. سأرسل لك عقد الإيجار غداً.']]},
+ course_a2zorg: {lines: [
+  ['Cabinet De Linde, bonjour.', 'عيادة دي ليندا، صباح الخير.'],
+  ['Bonjour, j’ai un rendez-vous jeudi, mais je ne peux pas venir.', 'صباح الخير، لدي موعد يوم الخميس لكنني لا أستطيع الحضور.'],
+  ['Pas de problème. Vendredi à neuf heures, ça vous va ?', 'لا مشكلة. هل يناسبك الجمعة الساعة التاسعة؟'],
+  ['Oui, ça me va. Dois-je apporter quelque chose ?', 'نعم يناسبني. هل عليّ إحضار شيء؟'],
+  ['Apportez votre carte d’identité.', 'أحضر بطاقة هويتك.'],
+  ['Parfait, à vendredi. Merci beaucoup !', 'ممتاز، إلى الجمعة. شكراً جزيلاً!']]},
+ course_a2admin: {lines: [
+  ['Bonjour, en quoi puis-je vous aider ?', 'صباح الخير، كيف يمكنني مساعدتك؟'],
+  ['Bonjour, j’ai déménagé et je voudrais m’inscrire.', 'صباح الخير، انتقلت إلى سكن جديد وأريد التسجيل.'],
+  ['Avez-vous votre carte d’identité et votre contrat de bail ?', 'هل معك بطاقة الهوية وعقد الإيجار؟'],
+  ['Oui, les voici. Que se passe-t-il maintenant ?', 'نعم، ها هما. ماذا سيحدث الآن؟'],
+  ['Dans quelques semaines, l’agent de quartier passera pour vérifier votre adresse.', 'خلال أسابيع قليلة سيمرّ شرطي الحي للتحقق من عنوانك.'],
+  ['D’accord, merci beaucoup. Au revoir !', 'حسناً، شكراً جزيلاً. إلى اللقاء!']]},
+ course_a2school: {lines: [
+  ['Bonsoir, je suis la maman de Sofia. Comment ça se passe à l’école ?', 'مساء الخير، أنا والدة صوفيا. كيف حالها في المدرسة؟'],
+  ['Bien. Sofia travaille dur et fait toujours ses devoirs.', 'جيدة. صوفيا تجتهد وتؤدي واجباتها دائماً.'],
+  ['Et en néerlandais ? Elle parle ukrainien à la maison.', 'وماذا عن الهولندية؟ هي تتحدث الأوكرانية في البيت.'],
+  ['Elle fait beaucoup de progrès. Elle lit un petit livre chaque jour.', 'تحرز تقدماً كبيراً. تقرأ كتيّباً كل يوم.'],
+  ['Peut-elle recevoir une aide supplémentaire ?', 'هل يمكنها الحصول على مساعدة إضافية؟'],
+  ['Oui, le mercredi après-midi, il y a un accompagnement aux devoirs.', 'نعم، بعد ظهر الأربعاء يوجد دعم في الواجبات.']]},
+ course_a2geld: {lines: [
+  ['Service clientèle, bonjour. En quoi puis-je vous aider ?', 'خدمة العملاء، مساء الخير. كيف يمكنني مساعدتك؟'],
+  ['Bonjour, j’ai acheté un lave-linge la semaine dernière, mais il est défectueux.', 'مساء الخير، اشتريت غسالة الأسبوع الماضي لكنها معطّلة.'],
+  ['Je suis désolé. Avez-vous la preuve d’achat ?', 'أنا آسف. هل لديك إثبات الشراء؟'],
+  ['Oui, je vous l’envoie par e-mail.', 'نعم، سأرسله لك بالبريد الإلكتروني.'],
+  ['Bien. Nous passerons la semaine prochaine pour remplacer la machine.', 'حسناً. سنأتي الأسبوع القادم لاستبدال الغسالة.'],
+  ['Très bien. Merci pour votre aide.', 'ممتاز. شكراً على مساعدتك.']]},
+ course_a2nieuws: {lines: [
+  ['Tu as entendu la nouvelle ? Demain, il y a grève des trains.', 'هل سمعت الخبر؟ غداً إضراب في القطارات.'],
+  ['Non, je ne le savais pas. Comment vais-je aller au travail alors ?', 'لا، لم أكن أعلم. كيف سأصل إلى العمل إذن؟'],
+  ['Prends ton vélo, car il fera beau.', 'خذ دراجتك، لأن الطقس سيكون جميلاً.'],
+  ['Vraiment ? La météo annonçait de la pluie.', 'حقاً؟ النشرة الجوية توقعت مطراً.'],
+  ['C’était hier. Aujourd’hui, on annonce du soleil et pas de vent.', 'كان ذلك أمس. اليوم يقولون: شمس وبلا رياح.'],
+  ['Alors je prends mon vélo. Merci pour le conseil !', 'إذن سآخذ دراجتي. شكراً على النصيحة!']]},
+ course_a2samen: {lines: [
+  ['Bonjour voisine ! Il y a une fête de quartier samedi dans la rue.', 'مرحباً يا جارتي! يوم السبت حفلة للحي في الشارع.'],
+  ['Chouette ! À quelle heure ça commence ?', 'رائع! متى تبدأ؟'],
+  ['À trois heures. Chacun apporte quelque chose à manger.', 'في الثالثة. كل واحد يُحضر شيئاً للأكل.'],
+  ['Alors je fais une salade ukrainienne. Dois-je apporter des chaises moi-même ?', 'إذن سأحضّر سلطة أوكرانية. هل عليّ إحضار الكراسي بنفسي؟'],
+  ['Non, l’action de quartier s’occupe des chaises et des tables. Tu veux aider à ranger ?', 'لا، فريق الحي يتولى الكراسي والطاولات. هل تريدين المساعدة في الترتيب؟'],
+  ['Bien sûr, avec plaisir ! À samedi !', 'طبعاً، بكل سرور! إلى السبت!']]}
 };

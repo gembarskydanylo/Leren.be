@@ -38,7 +38,7 @@
   function openMap(ch=null){mapChapter=ch;if(ch)mapLevel=course.chapters.find(c=>c.id===ch)?.level||mapLevel;go('map')}
   function topicTile(ch){const stats=model.stats(ch.id);return LerenFocus.topic({chapter:ch,title:title(ch),lang,...stats,done:stats.done,total:stats.total,current:model.recommended()?.chapter===ch.id,onOpen:()=>openMap(ch.id)})}
   function courseSwitch(){
-   const items=[['A1.1','a11'],['A1.2','a12'],['A2.1','a21']].map(([level,key])=>({level,key,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0})}));
+   const items=[['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level,key])=>({level,key,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0})}));
    root.appendChild(LerenFocus.courses({lang,active:model.course,items,onPick(level){if(pickCourse(level))render()}}));
   }
   function hero(){

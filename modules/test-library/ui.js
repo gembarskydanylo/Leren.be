@@ -8,15 +8,16 @@ const COPY={
  ar:{title:'اختبر معرفتك',intro:'اختر جزءًا من الدورة، ثم اختبارًا شاملًا أو موضوعًا واحدًا.',first:'التعارف والمحادثات الأولى',second:'الهولندية في الحياة اليومية',firstHint:'التعارف والأشخاص والأرقام والوقت وأعياد الميلاد ومواعيد العمل.',secondHint:'الاستمارات والروتين والدعوات والصحة والطعام والتسوق.',advanced1:'التجارب والحياة اليومية',advanced2:'التواصل في مواقف مختلفة',advanced3:'البيت والعمل والصحة والمدينة',advanced4:'المدرسة ووقت الفراغ والناس والخطط',advancedHint:'راجع مواضيع هذا الجزء من الدورة.',range:(a,b)=>'المواضيع \u2066'+a+'–'+b+'\u2069',open:'افتح الجزء',back:'جميع أجزاء الاختبارات',topics:'اختبار موضوع واحد',combined:'اختبار شامل للجزء',combinedHint:'3 أسئلة من كل موضوع لمراجعة الجزء كاملًا.',done:(n,t)=>'تم اجتياز '+n+' من '+t+' مواضيع',best:'أفضل نتيجة',questions:n=>n+' أسئلة',passed:'ناجح',start:'ابدأ',exam:'الاستعداد للامتحان',examHint:'A1.1 · المواضيع 8–11 · القراءة والاستماع والكتابة والتحدث',exam12:'الامتحان النهائي A1.2',exam12Hint:'كل المواضيع الـ16 · القراءة والاستماع والكتابة والتحدث وامتحان تجريبي',extra:'اختبارات أخرى',extraHint:'المراجعة والنطق والانتقال إلى A1.2',level:'الدورة',empty:'لا توجد اختبارات بعد.',summary:'اختبارات المراجعة',pronunciation:'النطق',unlock:'الانتقال إلى A1.2'}
 };
 const tr=lang=>COPY[lang]||COPY.en;
-const ranges=level=>level==='a11'?[[1,6],[7,12]]:[[1,4],[5,8],[9,12],[13,16]];
+const ranges=level=>level==='a11'?[[1,6],[7,12]]:level==='a21'?[[1,8]]:[[1,4],[5,8],[9,12],[13,16]];
+const LEVEL_NAME={a11:'A1.1',a12:'A1.2',a21:'A2'};
 function blocks(tests,level){return ranges(level).map(([from,to],i)=>({id:level+'-'+from+'-'+to,from,to,index:i,tests:tests.filter(t=>t.group==='chapter'&&(t.lvl||'a11')===level&&t.no>=from&&t.no<=to).sort((a,b)=>a.no-b.no)}))}
 function ensureCombined(tests){
- for(const level of ['a11','a12'])for(const b of blocks(tests,level)){
+ for(const level of ['a11','a12','a21'])for(const b of blocks(tests,level)){
   // A1.2 blocks changed with topics 9–16 (Nov 2026): new IDs so earlier block results are kept but not counted again.
-  const id='block_'+b.id+(level==='a12'?'_v171':'_v109');if(tests.some(t=>t.id===id)||!b.tests.length)continue;
+  const id='block_'+b.id+(level==='a12'?'_v171':level==='a21'?'_v1':'_v109');if(tests.some(t=>t.id===id)||!b.tests.length)continue;
   // Stable, evenly spaced questions: one grammar item and two vocabulary items per topic.
   const questions=b.tests.flatMap(t=>[0,Math.floor(t.questions.length/2),t.questions.length-1].map(i=>t.questions[i])).filter(Boolean);
-  tests.push({id,lvl:level,kind:'block',block:b.id,title:Object.fromEntries(Object.keys(COPY).map(lang=>[lang,(level==='a11'?'A1.1':'A1.2')+' · '+tr(lang).range(b.from,b.to)])),questions});
+  tests.push({id,lvl:level,kind:'block',block:b.id,title:Object.fromEntries(Object.keys(COPY).map(lang=>[lang,LEVEL_NAME[level]+' · '+tr(lang).range(b.from,b.to)])),questions});
  }
 }
 let section=null,previousLevel=null;
@@ -42,7 +43,7 @@ function render(o){
  heading.appendChild(el('h2','',selected?u.range(selected.from,selected.to):section==='extra'?u.extra:u.title));
  if(!section){
   heading.appendChild(el('p','',u.intro));const levels=el('div','tl-levels');levels.setAttribute('aria-label',u.level);
-  for(const [id,label] of [['a11','A1.1'],['a12','A1.2']]){const b=button(label,'tl-level',()=>{section=null;changeLevel(id)});b.setAttribute('aria-pressed',String(level===id));levels.appendChild(b)}heading.appendChild(levels);
+  for(const [id,label] of [['a11','A1.1'],['a12','A1.2'],['a21','A2']]){const b=button(label,'tl-level',()=>{section=null;changeLevel(id)});b.setAttribute('aria-pressed',String(level===id));levels.appendChild(b)}heading.appendChild(levels);
  }
  card.appendChild(heading);
  if(selected){

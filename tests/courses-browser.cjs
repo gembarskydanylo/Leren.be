@@ -23,7 +23,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     const cards=page.locator('.fh-course');assert.equal(await cards.count(),3);
     const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),s=document.querySelector('.fh-courses');return [...r.children].find(e=>!e.hidden&&e.offsetHeight>0)===s});assert(first,'Course switcher sits right under the header');
     assert.equal(await cards.nth(0).getAttribute('aria-pressed'),'true');
-    const a21=cards.nth(2);assert(await a21.isDisabled(),'A2.1 cannot be opened');assert.match(await a21.innerText(),/Незабаром/);
+    const a21=cards.nth(2);assert(!(await a21.isDisabled()),'A2 can be opened');assert.match(await a21.innerText(),/A2/);assert.doesNotMatch(await a21.innerText(),/Незабаром/);
     const width=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);assert(width,'No horizontal scroll on '+name);
     for(const i of [0,1,2]){const b=await cards.nth(i).boundingBox();assert(b&&b.height>=44&&b.width>=90,'Card is large enough to tap')}
     await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),`courses-${name}-${theme}-a11.png`)});
@@ -59,5 +59,5 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    }
   }
  }finally{await browser.close();server.close()}
- console.log('PASS: course switcher on '+checked.join(', ')+': under the header, three cards, closed A2.1, one-tap switch, reload, paused lesson kept, A1.2 games and tests, old results kept');
+ console.log('PASS: course switcher on '+checked.join(', ')+': under the header, three cards, open A2, one-tap switch, reload, paused lesson kept, A1.2 games and tests, old results kept');
 })().catch(e=>{console.error(e);server.close();process.exit(1)});
