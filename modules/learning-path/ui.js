@@ -23,6 +23,12 @@
   const t=k=>copy[lang][k],word=id=>course.cards.get(id),translation=w=>w[lang]||w.uk,title=ch=>(names[ch.id]||['📖',ch.nl,ch.nl,ch.nl,ch.nl])[languages.indexOf(lang)+1],icon=ch=>(names[ch.id]||['📖'])[0];
   const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
   const button=(label,fn,primary=false)=>{const b=node('button',primary?'lp-button lp-primary':'lp-button',label);b.type='button';b.onclick=fn;return b};
+  const midLessonCall=globalThis.LerenMidLessonCall?.create({
+   active:()=>screen==='lesson'&&model.state.session?.kind==='lesson',
+   eligible:()=>Object.keys(model.state.completed).some(id=>model.state.completed[id]>0),
+   boundary:()=>{const s=model.state.session;return screen==='lesson'&&!feedback&&s?.kind==='lesson'&&s.index>0&&s.index<s.ids.length},
+   level:()=>model.course,language:()=>lang,speak:text=>bridge.speak(text)
+  });
   const lessonTitle=l=>(bridge.lessonLabel(l.tab,lang)||l.tab)+(l.parts>1?' · '+t('part')+' '+l.part+'/'+l.parts:'');
   const chapter=l=>course.chapters.find(c=>c.id===l.chapter);
   function go(next){talkView.cancel();if(screen==='talk'&&next!=='talk')conversation?.pause();bridge.stop();feedback=null;screen=next;render();root.ownerDocument?.defaultView?.scrollTo({top:0,behavior:'instant'});const heading=root.querySelector?.('h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
