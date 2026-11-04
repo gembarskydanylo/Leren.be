@@ -31,7 +31,7 @@ assert(H.switchCourse('a11'));assert.equal(H.level,'a11');assert.equal(H.cat,'co
 
 // 10. A2 (internal key a21) is an independent open course with its first chapter.
 assert.equal(H.levelUnlocked('a21'),true);assert(H.switchCourse('a21'));assert.equal(H.level,'a21');assert.equal(H.cat,'a2work');
-assert.equal(vm.runInContext('CATEGORIES.filter(c=>c.lvl==="a21").length',boot({}).c),1,'A2 starts with the work chapter');
+assert.equal(vm.runInContext('CATEGORIES.filter(c=>c.lvl==="a21").length',boot({}).c),8,'A2 has eight chapters');
 assert.equal(vm.runInContext('LEVELS.find(l=>l.id==="a21").name',boot({}).c),'A2');
 assert(!vm.runInContext('LEVELS.find(l=>l.id==="a21").soon',boot({}).c));assert(H.switchCourse('a12'));assert.equal(H.level,'a12');
 

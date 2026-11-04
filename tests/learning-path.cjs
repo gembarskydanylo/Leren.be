@@ -4,7 +4,7 @@ const ctx=vm.createContext({console});
 vm.runInContext(read('course-curriculum.js')+'\n'+script.slice(0,script.indexOf('function validStored'))+'\nglobalThis.fixture={DATA,LerenCurriculum};',ctx);
 vm.runInContext(read('modules/learning-path/core.js'),ctx);
 const core=ctx.LerenLearningPath,course=core.catalog(ctx.fixture.DATA,ctx.fixture.LerenCurriculum);
-assert.equal(course.chapters.length,29);assert.equal(course.chapters.filter(c=>c.level==='A1.2').length,16);assert.equal(course.chapters.filter(c=>c.level==='A2').length,1);assert.equal(course.chapters.filter(c=>c.level==='A1.1').length,12);
+assert.equal(course.chapters.length,36);assert.equal(course.chapters.filter(c=>c.level==='A1.2').length,16);assert.equal(course.chapters.filter(c=>c.level==="A2").length,8);assert.equal(course.chapters.filter(c=>c.level==='A1.1').length,12);
 assert(course.chapters.every(c=>c.lessons.length));
 const expected=course.chapters.flatMap(c=>c.tabs.flatMap(t=>(ctx.fixture.DATA[t]?.items||[]).map(w=>w.id)));
 const actual=course.lessons.flatMap(l=>l.ids);

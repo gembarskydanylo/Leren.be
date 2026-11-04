@@ -992,6 +992,412 @@ Na het werk kwam ik laat thuis.|Після роботи я приходив до
    ['Je wilt vrijaf nemen. Wat vraag je aan je leidinggevende?','Ти хочеш узяти вихідний. Що запитаєш у керівника?','You want to take a day off. What do you ask your manager?','Mag ik vrijdag vrijaf nemen?']
   ]
  };
+ // ---- A2 chapters 2–4 ----
+ const a2p1 = {
+  chapters: [
+   ['a2wonen','🏠 Wonen: zoeken en huren',['a2zoeken','a2huur','a2wonenzin']],
+   ['a2zorg','🩺 Gezondheid: ziekenfonds en specialist',['a2fonds','a2specialist','a2verleden']],
+   ['a2admin','🏛️ Administratie: gemeente en brieven',['a2loket','a2brief','a2omte']]
+  ],
+  labels: {
+   a2wonen: [['Житло: пошук і оренда','Читай оголошення, питай про умови оренди й розумій договір та рахунки за енергію.'],['Housing: searching and renting','Read listings, ask about rental terms and understand the contract and energy bills.'],['Logement : recherche et location','Lis les annonces, pose des questions sur les conditions et comprends le bail et les factures d’énergie.'],['السكن: البحث والإيجار','اقرأ الإعلانات، واسأل عن شروط الإيجار، وافهم العقد وفواتير الطاقة.']],
+   a2zorg: [['Здоров’я: лікарняна каса й спеціаліст','Розумій, як працює лікарняна каса, записуйся до спеціаліста й розповідай про минуле.'],['Health: insurance fund and specialist','Understand how the health insurance fund works, see a specialist and talk about the past.'],['Santé : mutualité et spécialiste','Comprends le fonctionnement de la mutualité, consulte un spécialiste et parle du passé.'],['الصحة: التعاضدية والأخصائي','افهم كيف يعمل صندوق التأمين الصحي، وراجع أخصائياً، وتحدّث عن الماضي.']],
+   a2admin: [['Адміністрація: громада й листи','Реєструйся за адресою, заповнюй форми й розумій листи від установ.'],['Administration: town hall and letters','Register at your address, fill in forms and understand letters from institutions.'],['Administration : commune et courriers','Inscris-toi à ton adresse, remplis des formulaires et comprends les courriers des services.'],['الإدارة: البلدية والرسائل','سجّل في عنوانك، واملأ الاستمارات، وافهم رسائل الجهات الرسمية.']]
+  },
+  lessons: {
+   a2zoeken: ['Пошук житла','Finding a home','Chercher un logement','البحث عن مسكن', `
+de huurwoning|житло в оренду|rental home|le logement à louer|مسكن للإيجار|🏠|Ik zoek een huurwoning in Brussel.|Я шукаю житло в оренду в Брюсселі.
+de advertentie|оголошення|advertisement, listing|l’annonce|الإعلان|📰|Ik heb de advertentie op internet gelezen.|Я прочитав оголошення в інтернеті.
+de bezichtiging|огляд житла|viewing|la visite|معاينة المسكن|🔍|De bezichtiging is zaterdag om elf uur.|Огляд житла в суботу об одинадцятій.
+de makelaar|ріелтор|estate agent|l’agent immobilier|الوسيط العقاري|🤝|De makelaar toont ons het appartement.|Ріелтор показує нам квартиру.
+de huurprijs|орендна плата|rent|le loyer|بدل الإيجار|💶|De huurprijs is 750 euro per maand.|Орендна плата — 750 євро на місяць.
+beschikbaar|доступний, вільний|available|disponible|متاح|✅|Het appartement is vanaf 1 maart beschikbaar.|Квартира доступна з 1 березня.
+de woonoppervlakte|житлова площа|living area|la surface habitable|مساحة السكن|📏|De woonoppervlakte is 65 vierkante meter.|Житлова площа — 65 квадратних метрів.
+de verdieping|поверх|floor, storey|l’étage|الطابق|🛗|Het appartement ligt op de derde verdieping.|Квартира на третьому поверсі.
+`],
+   a2huur: ['Договір оренди й енергія','Rental contract and energy','Bail et énergie','عقد الإيجار والطاقة', `
+het huurcontract|договір оренди|rental agreement|le contrat de bail|عقد الإيجار|📄|Ik moet het huurcontract eerst goed lezen.|Спершу я маю уважно прочитати договір оренди.
+de huurwaarborg|гарантійний депозит|rental deposit|la garantie locative|ضمانة الإيجار|💰|De huurwaarborg is twee maanden huur.|Депозит — це оренда за два місяці.
+de plaatsbeschrijving|акт про стан житла|inventory of fixtures|l’état des lieux|محضر وصف حالة المسكن|📋|Bij het inhuizen maken we een plaatsbeschrijving.|Під час в’їзду ми складаємо акт про стан житла.
+de verhuurder|орендодавець|landlord|le bailleur|المؤجّر|👤|De verhuurder woont in Gent.|Орендодавець живе в Генті.
+de huurder|орендар|tenant|le locataire|المستأجر|🧑|De huurder betaalt elke maand de huur.|Орендар платить оренду щомісяця.
+de energiefactuur|рахунок за енергію|energy bill|la facture d’énergie|فاتورة الطاقة|🧾|De energiefactuur komt elke maand.|Рахунок за енергію приходить щомісяця.
+de meterstand|показання лічильника|meter reading|le relevé du compteur|قراءة العدّاد|⏲️|Ik geef de meterstand door aan de leverancier.|Я передаю показання лічильника постачальнику.
+de verwarming|опалення|heating|le chauffage|التدفئة|🔥|De verwarming werkt niet.|Опалення не працює.
+`],
+   a2wonenzin: ['Речення з die / dat й er','Sentences with die / dat and er','Phrases avec die / dat et er','جمل مع die / dat وer', `
+Dit is het appartement dat ik zoek.|Це квартира, яку я шукаю.|This is the flat that I’m looking for.|C’est l’appartement que je cherche.|هذه هي الشقة التي أبحث عنها.|🏠
+De buurman die boven woont, is heel rustig.|Сусід, який живе нагорі, дуже спокійний.|The neighbour who lives upstairs is very quiet.|Le voisin qui habite à l’étage est très calme.|الجار الذي يسكن في الطابق العلوي هادئ جداً.|🧑
+Ik zoek een woning die dicht bij de school ligt.|Я шукаю житло, яке розташоване близько до школи.|I’m looking for a home that is close to the school.|Je cherche un logement qui se trouve près de l’école.|أبحث عن مسكن قريب من المدرسة.|🏫
+Het contract dat ik heb getekend, is voor één jaar.|Договір, який я підписав, на один рік.|The contract that I signed is for one year.|Le contrat que j’ai signé est pour un an.|العقد الذي وقّعته لمدة سنة.|📄
+Is er een tuin bij het huis?|Чи є сад біля будинку?|Is there a garden with the house?|Y a-t-il un jardin avec la maison ?|هل توجد حديقة مع البيت؟|🌳
+Ja, er is een kleine tuin.|Так, є невеликий сад.|Yes, there is a small garden.|Oui, il y a un petit jardin.|نعم، توجد حديقة صغيرة.|🌱
+Hoeveel kamers zijn er?|Скільки там кімнат?|How many rooms are there?|Combien y a-t-il de pièces ?|كم غرفة هناك؟|🔢
+Er zijn drie slaapkamers en een badkamer.|Є три спальні й ванна кімната.|There are three bedrooms and a bathroom.|Il y a trois chambres et une salle de bain.|توجد ثلاث غرف نوم وحمّام.|🛏️
+`],
+   a2fonds: ['Лікарняна каса й страховка','Health insurance fund and insurance','Mutualité et assurance','التعاضدية والتأمين', `
+de mutualiteit|лікарняна каса (mutualiteit)|health insurance fund|la mutualité|التعاضدية الصحية|🪪|Ik ben aangesloten bij een mutualiteit.|Я приєднаний до лікарняної каси.
+zich aansluiten|приєднатися|to join, to affiliate|s’affilier|ينتسب|🤝|Ik wil me aansluiten bij een ziekenfonds.|Я хочу приєднатися до лікарняної каси.
+het remgeld|власна частка пацієнта (доплата)|patient’s own share|le ticket modérateur|الحصة التي يدفعها المريض|💶|Bij elk bezoek betaal ik een deel zelf: het remgeld.|Під час кожного візиту я сам плачу частину — remgeld.
+de terugbetaling|відшкодування|reimbursement|le remboursement|استرداد المبلغ|↩️|De terugbetaling komt op mijn rekening.|Відшкодування надходить на мій рахунок.
+het getuigschrift|довідка про надану допомогу|certificate of care|l’attestation de soins|شهادة الرعاية|📄|Vraag een getuigschrift aan de dokter.|Попроси в лікаря довідку про надану допомогу.
+de hospitalisatieverzekering|страховка на лікування в лікарні|hospital insurance|l’assurance hospitalisation|تأمين الاستشفاء|🏥|Mijn hospitalisatieverzekering betaalt een deel van de kosten.|Моя страховка на лікарню покриває частину витрат.
+de verwijzing|направлення|referral|la référence|الإحالة|📨|Mijn huisarts geeft mij een verwijzing naar de specialist.|Мій сімейний лікар дає мені направлення до спеціаліста.
+de verzekering|страховка|insurance|l’assurance|التأمين|🔒|Ik heb een verzekering voor mijn gezin.|У мене є страховка для моєї сім’ї.
+`],
+   a2specialist: ['Спеціалісти й запис','Specialists and appointments','Spécialistes et rendez-vous','الأخصائيون والمواعيد', `
+de specialist|спеціаліст|specialist|le spécialiste|الأخصائي|🩺|De specialist onderzoekt mijn knie.|Спеціаліст оглядає моє коліно.
+de kinderarts|педіатр|paediatrician|le pédiatre|طبيب الأطفال|🧒|De kinderarts onderzoekt mijn zoon.|Педіатр оглядає мого сина.
+de tandarts|стоматолог|dentist|le dentiste|طبيب الأسنان|🦷|Ik heb morgen een afspraak bij de tandarts.|Завтра я записаний до стоматолога.
+de huisartsenwachtpost|черговий пункт сімейних лікарів|GP on-call service|le poste de garde|مركز الأطباء المناوب|🌃|In het weekend ga ik naar de huisartsenwachtpost.|На вихідних я йду до чергового пункту сімейних лікарів.
+de röntgenfoto|рентген-знімок|X-ray|la radiographie|صورة الأشعة|📸|De dokter wil een röntgenfoto laten maken.|Лікар хоче зробити рентген-знімок.
+het bloedonderzoek|аналіз крові|blood test|la prise de sang|تحليل الدم|💧|Voor het bloedonderzoek moet ik nuchter zijn.|Для аналізу крові я маю бути натще.
+een afspraak verzetten|перенести запис|to reschedule an appointment|reporter un rendez-vous|يؤجّل موعداً|📆|Ik wil mijn afspraak graag verzetten.|Я хотів би перенести свій запис.
+de wachtzaal|зала очікування|waiting room|la salle d’attente|غرفة الانتظار|🪑|Ik zit in de wachtzaal.|Я сиджу в залі очікування.
+`],
+   a2verleden: ['Минуле: perfectum чи imperfectum','Past: perfectum or imperfectum','Passé : perfectum ou imperfectum','الماضي: perfectum أم imperfectum', `
+Gisteren ben ik naar de dokter gegaan.|Учора я ходив до лікаря.|Yesterday I went to the doctor.|Hier, je suis allé chez le médecin.|ذهبت أمس إلى الطبيب.|🩺
+De dokter onderzocht mijn rug.|Лікар оглядав мою спину.|The doctor examined my back.|Le médecin a examiné mon dos.|فحص الطبيب ظهري.|🧑‍⚕️
+Ik had drie dagen koorts.|У мене три дні була температура.|I had a fever for three days.|J’ai eu de la fièvre pendant trois jours.|كانت لدي حمّى ثلاثة أيام.|🤒
+Toen ik klein was, was ik vaak ziek.|Коли я був малий, я часто хворів.|When I was little, I was often ill.|Quand j’étais petit, j’étais souvent malade.|عندما كنت صغيراً كنت أمرض كثيراً.|🤧
+Ik heb gisteren een tablet genomen.|Учора я випив таблетку.|I took a tablet yesterday.|J’ai pris un comprimé hier.|تناولت قرصاً أمس.|💊
+De apotheker legde alles uit.|Фармацевт усе пояснив.|The pharmacist explained everything.|Le pharmacien a tout expliqué.|شرح الصيدلي كل شيء.|💊
+Vorig jaar kreeg ik een nieuwe huisarts.|Минулого року я отримав нового сімейного лікаря.|Last year I got a new GP.|L’année dernière, j’ai eu un nouveau médecin généraliste.|في العام الماضي حصلت على طبيب عام جديد.|👨
+Ik ben een week thuis gebleven.|Я тиждень лишався вдома.|I stayed at home for a week.|Je suis resté une semaine à la maison.|بقيت أسبوعاً في البيت.|🏠
+`],
+   a2loket: ['У віконці громади','At the municipal desk','Au guichet de la commune','عند شباك البلدية', `
+het loket|віконце обслуговування|counter, service desk|le guichet|الشباك|🏛️|Ik ga naar het loket van de gemeente.|Я йду до віконця громади.
+de bevolkingsdienst|служба реєстрації населення|population register office|le service de la population|دائرة السكان|🏢|Bij de bevolkingsdienst schrijf ik me in.|У службі реєстрації населення я реєструюся.
+zich inschrijven|зареєструватися за адресою|to register|s’inscrire|يسجّل نفسه|✍️|Ik moet me inschrijven in mijn gemeente.|Я маю зареєструватися у своїй громаді.
+de verhuis|переїзд|move|le déménagement|الانتقال|🚚|Na de verhuis meld ik mijn nieuwe adres.|Після переїзду я повідомляю нову адресу.
+de identiteitskaart|посвідчення особи|identity card|la carte d’identité|بطاقة الهوية|🪪|Mijn identiteitskaart is nog drie jaar geldig.|Моє посвідчення особи дійсне ще три роки.
+het attest|довідка|certificate|l’attestation|الشهادة|📄|Ik haal een attest op bij de gemeente.|Я забираю довідку в громаді.
+de openingsuren|години роботи|opening hours|les heures d’ouverture|ساعات العمل|🕘|De openingsuren staan op de website.|Години роботи вказані на сайті.
+het rijksregisternummer|національний реєстраційний номер|national register number|le numéro de registre national|الرقم الوطني|🔢|Mijn rijksregisternummer staat op mijn kaart.|Мій національний номер вказаний на моїй картці.
+`],
+   a2brief: ['Листи від установ','Letters from institutions','Courriers des services','رسائل الجهات الرسمية', `
+het OCMW|OCMW, соціальна служба громади|OCMW (public social welfare centre)|le CPAS|OCMW، مركز الرعاية الاجتماعية|🤲|Het OCMW kan mij helpen met mijn aanvraag.|OCMW може допомогти мені із заявою.
+de aanvraag|заява|application|la demande|الطلب|📝|Ik dien een aanvraag in.|Я подаю заяву.
+het formulier|форма, анкета|form|le formulaire|الاستمارة|📋|Vul het formulier volledig in.|Заповни форму повністю.
+de bijlage|додаток до листа|attachment|la pièce jointe|المرفق|📎|Stuur een kopie als bijlage mee.|Надішли копію як додаток.
+de termijn|строк|deadline, period|le délai|المهلة|⏳|De termijn is dertig dagen.|Строк — тридцять днів.
+de herinnering|нагадування|reminder|le rappel|التذكير|⏰|Ik kreeg een herinnering voor mijn factuur.|Я отримав нагадування про свій рахунок.
+de beslissing|рішення|decision|la décision|القرار|✅|Ik wacht op de beslissing.|Я чекаю на рішення.
+bezwaar maken|оскаржити рішення|to object, to appeal|faire opposition|يعترض|🙋|Ik wil bezwaar maken tegen deze beslissing.|Я хочу оскаржити це рішення.
+`],
+   a2omte: ['Мета дії: om … te','Purpose: om … te','But de l’action : om … te','الغرض: om … te', `
+Ik ga naar de gemeente om mijn adres te wijzigen.|Я йду до громади, щоб змінити адресу.|I’m going to the municipality to change my address.|Je vais à la commune pour changer mon adresse.|أذهب إلى البلدية لتغيير عنواني.|🏛️
+Ik bel het OCMW om een afspraak te maken.|Я телефоную в OCMW, щоб записатися.|I call the OCMW to make an appointment.|J’appelle le CPAS pour prendre rendez-vous.|أتصل بـ OCMW لتحديد موعد.|📞
+Je moet een foto meebrengen om een identiteitskaart te krijgen.|Щоб отримати посвідчення, треба принести фото.|You have to bring a photo to get an identity card.|Il faut apporter une photo pour obtenir une carte d’identité.|يجب أن تُحضر صورة للحصول على بطاقة الهوية.|📸
+Ik vul het formulier in om hulp aan te vragen.|Я заповнюю форму, щоб попросити допомогу.|I fill in the form to ask for help.|Je remplis le formulaire pour demander de l’aide.|أملأ الاستمارة لطلب المساعدة.|📝
+Het is belangrijk om op tijd te antwoorden.|Важливо відповісти вчасно.|It is important to reply on time.|Il est important de répondre à temps.|من المهم الرد في الوقت المناسب.|⏱️
+Ik heb geen tijd om vandaag te komen.|У мене немає часу прийти сьогодні.|I have no time to come today.|Je n’ai pas le temps de venir aujourd’hui.|ليس لدي وقت للحضور اليوم.|⌛
+Ik probeer de brief te begrijpen.|Я намагаюся зрозуміти лист.|I try to understand the letter.|J’essaie de comprendre la lettre.|أحاول فهم الرسالة.|📨
+Vergeet niet de bijlage te versturen.|Не забудь надіслати додаток.|Don’t forget to send the attachment.|N’oublie pas d’envoyer la pièce jointe.|لا تنسَ إرسال المرفق.|📎
+`]
+  },
+  notes: {
+   a2zoeken: ['У оголошенні шукай: kamers, m², huurprijs, beschikbaar vanaf. Артикль вчи разом зі словом.','In a listing look for: kamers, m², huurprijs, beschikbaar vanaf. Learn the article with the word.','Dans une annonce, cherche : kamers, m², huurprijs, beschikbaar vanaf. Apprends l’article avec le mot.','في الإعلان ابحث عن: kamers وm² وhuurprijs وbeschikbaar vanaf. تعلّم أداة التعريف مع الكلمة.'],
+   a2huur: ['Перед підписом перевір: huurwaarborg, plaatsbeschrijving, opzegtermijn. Питай, якщо щось незрозуміло.','Before signing check: huurwaarborg, plaatsbeschrijving, opzegtermijn. Ask if something is unclear.','Avant de signer, vérifie : huurwaarborg, plaatsbeschrijving, opzegtermijn. Demande si quelque chose n’est pas clair.','قبل التوقيع تحقّق من: huurwaarborg وplaatsbeschrijving وopzegtermijn. اسأل إذا كان شيء غير واضح.'],
+   a2wonenzin: ['de-слова й множина → die, het-слова → dat; дієслово в кінці: het huis dat ik zoek. Er is / er zijn: є.','de-words and plurals → die, het-words → dat; verb at the end: het huis dat ik zoek. Er is / er zijn: there is / are.','Mots en de et pluriels → die, mots en het → dat ; verbe à la fin : het huis dat ik zoek. Er is / er zijn : il y a.','كلمات de والجمع ← die، كلمات het ← dat؛ الفعل في النهاية: het huis dat ik zoek. Er is / er zijn: يوجد.'],
+   a2fonds: ['Mutualiteit і ziekenfonds — майже те саме. Remgeld — твоя частка, terugbetaling — повернення решти.','Mutualiteit and ziekenfonds mean almost the same. Remgeld is your share, terugbetaling is the refund of the rest.','Mutualiteit et ziekenfonds, c’est presque pareil. Remgeld : ta part ; terugbetaling : le remboursement du reste.','Mutualiteit وziekenfonds بمعنى متقارب. Remgeld حصتك، وterugbetaling استرداد الباقي.'],
+   a2specialist: ['Запис: Ik wil mijn afspraak graag verzetten. Спершу привітайся, потім поясни причину.','Booking: Ik wil mijn afspraak graag verzetten. Greet first, then give the reason.','Rendez-vous : Ik wil mijn afspraak graag verzetten. Salue d’abord, puis explique la raison.','الموعد: Ik wil mijn afspraak graag verzetten. حيّ أولاً ثم اذكر السبب.'],
+   a2verleden: ['Perfectum — завершена подія (ik ben gegaan, ik heb genomen); imperfectum — опис і звичка (ik had, het was, toen ik klein was).','Perfectum — a finished event (ik ben gegaan, ik heb genomen); imperfectum — description and habit (ik had, het was, toen ik klein was).','Perfectum : événement terminé (ik ben gegaan, ik heb genomen) ; imperfectum : description et habitude (ik had, het was, toen ik klein was).','Perfectum: حدث منتهٍ (ik ben gegaan، ik heb genomen)؛ imperfectum: وصف وعادة (ik had، het was، toen ik klein was).'],
+   a2loket: ['Zich inschrijven: ik schrijf me in. Бери з собою identiteitskaart і huurcontract.','Zich inschrijven: ik schrijf me in. Take your identiteitskaart and huurcontract.','Zich inschrijven : ik schrijf me in. Apporte ta identiteitskaart et ton huurcontract.','Zich inschrijven: ik schrijf me in. خذ معك identiteitskaart وhuurcontract.'],
+   a2brief: ['У листі шукай: onderwerp, termijn, bijlage. Є рішення, яке не влаштовує? Bezwaar maken — у вказаний термін.','In a letter look for: onderwerp, termijn, bijlage. Do you disagree with a decision? Bezwaar maken — within the stated term.','Dans un courrier, cherche : onderwerp, termijn, bijlage. Décision contestable ? Bezwaar maken — dans le délai indiqué.','في الرسالة ابحث عن: onderwerp وtermijn وbijlage. لا توافق على قرار؟ bezwaar maken ضمن المهلة المذكورة.'],
+   a2omte: ['om … te + інфінітив у кінці: Ik bel om een afspraak te maken. Мета дії = «щоб».','om … te + infinitive at the end: Ik bel om een afspraak te maken. Purpose = “in order to”.','om … te + infinitif à la fin : Ik bel om een afspraak te maken. But = « pour ».','om … te + المصدر في النهاية: Ik bel om een afspraak te maken. الغرض = «من أجل».']
+  },
+  gaps: {
+   a2wonen:['Dit is het huis ___ ik zoek.','dat','die','wat','dit'],
+   a2zorg:['Toen ik klein ___, was ik vaak ziek.','was','ben','is','geweest'],
+   a2admin:['Ik bel de gemeente ___ een afspraak te maken.','om','voor','dat','door']
+  },
+  bank: [
+   ['a2wonen',1,'is|er|een tuin|bij het huis','VSRR','Чи є сад біля будинку?','Is there a garden with the house?','Y a-t-il un jardin avec la maison ?','هل توجد حديقة مع البيت؟','','?'],
+   ['a2wonen',1,'hoeveel kamers|zijn|er','QVS','Скільки там кімнат?','How many rooms are there?','Combien y a-t-il de pièces ?','كم غرفة هناك؟','','?'],
+   ['a2wonen',1,'de verwarming|werkt|niet','SVR','Опалення не працює.','The heating does not work.','Le chauffage ne fonctionne pas.','التدفئة لا تعمل.','werk','.'],
+   ['a2wonen',2,'ik|zoek|een woning|die|dicht bij school|ligt','SVRRRI','Я шукаю житло, яке розташоване близько до школи.','I’m looking for a home that is close to school.','Je cherche un logement qui se trouve près de l’école.','أبحث عن مسكن قريب من المدرسة.','dat','.'],
+   ['a2wonen',2,'vanaf 1 maart|is|het appartement|beschikbaar','TVSR','З 1 березня квартира доступна.','From 1 March the flat is available.','À partir du 1er mars, l’appartement est disponible.','اعتباراً من 1 مارس تكون الشقة متاحة.','zijn','.'],
+   ['a2wonen',2,'ik|moet|het huurcontract|lezen','SVRI','Я маю прочитати договір оренди.','I have to read the rental agreement.','Je dois lire le contrat de bail.','يجب أن أقرأ عقد الإيجار.','','.'],
+   ['a2zorg',1,'wanneer|is|mijn afspraak','QVS','Коли мій запис?','When is my appointment?','Quand est mon rendez-vous ?','متى موعدي؟','','?'],
+   ['a2zorg',1,'ik|wil|mijn afspraak|verzetten','SVRI','Я хочу перенести свій запис.','I want to reschedule my appointment.','Je veux reporter mon rendez-vous.','أريد تأجيل موعدي.','','.'],
+   ['a2zorg',1,'ik|ben|aangesloten|bij een mutualiteit','SVRR','Я приєднаний до лікарняної каси.','I am affiliated with a health insurance fund.','Je suis affilié à une mutualité.','أنا منتسب إلى تعاضدية صحية.','','.'],
+   ['a2zorg',2,'de dokter|onderzocht|mijn rug','SVR','Лікар оглядав мою спину.','The doctor examined my back.','Le médecin a examiné mon dos.','فحص الطبيب ظهري.','onderzoekt','.'],
+   ['a2zorg',2,'gisteren|ben|ik|naar de dokter|gegaan','TVSRI','Учора я ходив до лікаря.','Yesterday I went to the doctor.','Hier, je suis allé chez le médecin.','ذهبت أمس إلى الطبيب.','heb','.'],
+   ['a2admin',1,'waar|kan|ik|me|inschrijven','QVSRI','Де я можу зареєструватися?','Where can I register?','Où puis-je m’inscrire ?','أين يمكنني التسجيل؟','','?'],
+   ['a2admin',1,'wat|moet|ik|meebrengen','QVSI','Що мені треба принести?','What do I have to bring?','Qu’est-ce que je dois apporter ?','ماذا يجب أن أحضر؟','','?'],
+   ['a2admin',1,'de termijn|is|dertig dagen','SVR','Строк — тридцять днів.','The deadline is thirty days.','Le délai est de trente jours.','المهلة ثلاثون يوماً.','','.'],
+   ['a2admin',2,'ik|vul|het formulier|in','SVRI','Я заповнюю форму.','I fill in the form.','Je remplis le formulaire.','أملأ الاستمارة.','invullen','.'],
+   ['a2admin',2,'ik|bel|de gemeente|om|een afspraak|te maken','SVRRRI','Я телефоную до громади, щоб записатися.','I call the municipality to make an appointment.','J’appelle la commune pour prendre rendez-vous.','أتصل بالبلدية لتحديد موعد.','voor','.']
+  ],
+  dialogues: [
+   ['a2wonen','🏠','Огляд квартири','Viewing a flat','Visiter un appartement','معاينة شقة',[
+    ['Goedemiddag, ik kom voor de bezichtiging van het appartement.','Добрий день, я прийшов на огляд квартири.','Good afternoon, I’m here for the viewing of the flat.'],
+    ['Welkom! Kom binnen. Dit is de woonkamer en daar is de keuken.','Ласкаво просимо! Заходьте. Це вітальня, а там кухня.','Welcome! Come in. This is the living room and there is the kitchen.'],
+    ['Mooi. Hoe hoog is de huurprijs?','Гарно. Яка орендна плата?','Nice. How high is the rent?'],
+    ['Die is 750 euro per maand, zonder kosten.','Вона 750 євро на місяць, без додаткових витрат.','It is 750 euros a month, excluding costs.'],
+    ['En hoeveel bedraagt de huurwaarborg?','А який розмір депозиту?','And how much is the deposit?'],
+    ['Twee maanden huur. Ik stuur u het huurcontract morgen door.','Оренда за два місяці. Я надішлю вам договір завтра.','Two months’ rent. I’ll send you the contract tomorrow.']]],
+   ['a2zorg','🩺','Перенести запис до лікаря','Rescheduling a doctor’s appointment','Reporter un rendez-vous médical','تأجيل موعد طبي',[
+    ['Praktijk De Linde, goedemorgen.','Практика «Де Лінде», доброго ранку.','De Linde practice, good morning.'],
+    ['Goedemorgen, ik heb donderdag een afspraak, maar ik kan niet komen.','Доброго ранку, у мене в четвер запис, але я не зможу прийти.','Good morning, I have an appointment on Thursday, but I can’t come.'],
+    ['Geen probleem. Past vrijdag om negen uur?','Нічого страшного. Вам підходить п’ятниця о дев’ятій?','No problem. Does Friday at nine suit you?'],
+    ['Ja, dat past. Moet ik iets meenemen?','Так, підходить. Мені треба щось узяти з собою?','Yes, that suits me. Do I need to bring anything?'],
+    ['Neem uw identiteitskaart mee.','Візьміть із собою посвідчення особи.','Bring your identity card.'],
+    ['Prima, tot vrijdag. Dank u wel!','Чудово, до п’ятниці. Дякую!','Great, see you on Friday. Thank you!']]],
+   ['a2admin','🏛️','У віконці громади','At the municipal desk','Au guichet de la commune','عند شباك البلدية',[
+    ['Goedemorgen, waarmee kan ik u helpen?','Доброго ранку, чим можу допомогти?','Good morning, how can I help you?'],
+    ['Goedemorgen, ik ben verhuisd en ik wil me inschrijven.','Доброго ранку, я переїхав і хочу зареєструватися.','Good morning, I moved and I want to register.'],
+    ['Hebt u uw identiteitskaart en uw huurcontract bij u?','У вас із собою посвідчення особи й договір оренди?','Do you have your identity card and your rental contract with you?'],
+    ['Ja, hier zijn ze. Wat gebeurt er nu?','Так, ось вони. Що буде далі?','Yes, here they are. What happens now?'],
+    ['Binnen enkele weken komt de wijkagent langs om uw adres te controleren.','Протягом кількох тижнів до вас прийде дільничний, щоб перевірити адресу.','Within a few weeks the community police officer will come by to check your address.'],
+    ['Oké, dank u wel. Tot ziens!','Добре, дякую. До побачення!','OK, thank you. Goodbye!']]]
+  ],
+  speech: [
+   ['Welk soort woning zoek je?','Яке житло ти шукаєш?','What kind of home are you looking for?','Ik zoek een appartement met twee slaapkamers.'],
+   ['Wat vraag je tijdens een bezichtiging?','Що ти питаєш під час огляду житла?','What do you ask during a viewing?','Hoeveel is de huurprijs en hoeveel is de huurwaarborg?'],
+   ['Wat doe je als de verwarming niet werkt?','Що ти робиш, якщо не працює опалення?','What do you do if the heating does not work?','Ik bel de verhuurder en ik leg het probleem uit.'],
+   ['Bij welk ziekenfonds ben je aangesloten?','До якої лікарняної каси ти приєднаний?','Which health insurance fund are you affiliated with?','Ik ben aangesloten bij een mutualiteit.'],
+   ['Wat deed je de laatste keer bij de dokter?','Що ти робив востаннє в лікаря?','What did you do the last time at the doctor?','Ik kreeg een voorschrift en ik ging naar de apotheek.'],
+   ['Wat zeg je om een afspraak te verzetten?','Що ти скажеш, щоб перенести запис?','What do you say to reschedule an appointment?','Ik kan donderdag niet komen. Past vrijdag?'],
+   ['Waarom ga je naar de gemeente?','Чому ти йдеш до громади?','Why are you going to the municipality?','Ik ga naar de gemeente om mijn adres te wijzigen.'],
+   ['Wat neem je mee naar het loket?','Що ти береш із собою до віконця?','What do you bring to the counter?','Ik neem mijn identiteitskaart en mijn huurcontract mee.'],
+   ['Wat doe je als je een brief niet begrijpt?','Що ти робиш, якщо не розумієш лист?','What do you do if you don’t understand a letter?','Ik bel de dienst of ik vraag hulp aan het OCMW.']
+  ]
+ };
+ // ---- A2 chapters 5–8 ----
+ const a2p2 = {
+  chapters: [
+   ['a2school','🎓 School en opleiding',['a2regels','a2volwassen','a2zich']],
+   ['a2geld','💶 Geld: bank en klacht',['a2bank','a2rekening','a2klacht']],
+   ['a2nieuws','📰 Nieuws en weer',['a2nieuwsw','a2weer','a2superlatief']],
+   ['a2samen','🤝 Samen leven: feesten en clubs',['a2feesten','a2vrijwilliger','a2regelszin']]
+  ],
+  labels: {
+   a2school: [['Школа й навчання','Розумій листи зі школи, говори з учителем і записуйся на курси для дорослих.'],['School and learning','Understand school letters, talk to the teacher and sign up for adult courses.'],['École et formation','Comprends les courriers de l’école, parle à l’enseignant et inscris-toi à des cours pour adultes.'],['المدرسة والتعلّم','افهم رسائل المدرسة، وتحدّث مع المعلّم، وسجّل في دورات الكبار.']],
+   a2geld: [['Гроші: банк і скарга','Користуйся банком, розумій рахунки й упевнено подавай скаргу.'],['Money: bank and complaints','Use the bank, understand bills and file a complaint with confidence.'],['Argent : banque et réclamation','Utilise la banque, comprends les factures et dépose une réclamation avec assurance.'],['المال: المصرف والشكوى','استخدم المصرف، وافهم الفواتير، وقدّم شكوى بثقة.']],
+   a2nieuws: [['Новини й погода','Розумій короткі новини та прогноз, порівнюй і називай найкраще чи найгірше.'],['News and weather','Understand short news and forecasts, compare and name the best or the worst.'],['Actualités et météo','Comprends les brèves et la météo, compare et nomme le meilleur ou le pire.'],['الأخبار والطقس','افهم الأخبار القصيرة والنشرة الجوية، وقارن وسمِّ الأفضل أو الأسوأ.']],
+   a2samen: [['Спільне життя: свята й клуби','Святкуй із сусідами, вступай до клубу й пояснюй причини довшими реченнями.'],['Living together: celebrations and clubs','Celebrate with neighbours, join a club and give reasons in longer sentences.'],['Vivre ensemble : fêtes et clubs','Fête avec les voisins, rejoins un club et explique tes raisons avec des phrases plus longues.'],['العيش معاً: الأعياد والنوادي','احتفل مع الجيران، وانضم إلى نادٍ، وعلّل بجمل أطول.']]
+  },
+  lessons: {
+   a2regels: ['Школа: правила й повідомлення','School rules and messages','Règles et messages de l’école','قواعد المدرسة والرسائل', `
+het schoolreglement|шкільний регламент|school rules|le règlement scolaire|لائحة المدرسة|📋|Het schoolreglement staat op de website.|Шкільний регламент є на сайті.
+de leerkracht|вчитель|teacher|l’enseignant|المعلّم|👨‍🏫|De leerkracht stuurt een bericht via de app.|Вчитель надсилає повідомлення через застосунок.
+het rapport|табель|school report|le bulletin|الشهادة المدرسية|📓|Mijn dochter krijgt vandaag haar rapport.|Моя донька сьогодні отримує табель.
+de ouderavond|батьківські збори|parents’ evening|la réunion de parents|اجتماع أولياء الأمور|👪|De ouderavond is op woensdag om zeven uur.|Батьківські збори в середу о сьомій.
+het huiswerk|домашнє завдання|homework|les devoirs|الواجب المنزلي|✏️|Mijn zoon maakt zijn huiswerk na school.|Мій син робить домашнє завдання після школи.
+de schoolvakantie|шкільні канікули|school holiday|les vacances scolaires|العطلة المدرسية|🏖️|Tijdens de schoolvakantie gaan de kinderen niet naar school.|Під час шкільних канікул діти не ходять до школи.
+de schooltoeslag|шкільна доплата|school allowance|l’allocation scolaire|منحة مدرسية|💶|Ik vraag de schooltoeslag aan.|Я подаю заяву на шкільну доплату.
+de schoolagenda|шкільний щоденник|school planner|l’agenda scolaire|المفكرة المدرسية|📒|Ik teken de schoolagenda elke week.|Я підписую шкільний щоденник щотижня.
+`],
+   a2volwassen: ['Освіта дорослих і диплом','Adult education and diploma','Formation d’adultes et diplôme','تعليم الكبار والشهادة', `
+het volwassenenonderwijs|освіта дорослих|adult education|l’enseignement pour adultes|تعليم الكبار|🎓|Ik volg Nederlands in het volwassenenonderwijs.|Я вивчаю нідерландську в системі освіти дорослих.
+de cursist|слухач курсу|course participant|le cursiste|المتدرّب|🧑|De cursist komt elke dinsdag naar de les.|Слухач приходить на урок щовівторка.
+het inschrijvingsgeld|вартість реєстрації|enrolment fee|les frais d’inscription|رسوم التسجيل|💶|Het inschrijvingsgeld is vijftig euro.|Вартість реєстрації — п’ятдесят євро.
+het niveau|рівень|level|le niveau|المستوى|📊|Welk niveau heb jij?|Який у тебе рівень?
+het intakegesprek|вступна співбесіда|intake interview|l’entretien d’accueil|مقابلة القبول|🗣️|Eerst is er een intakegesprek.|Спершу відбувається вступна співбесіда.
+het diploma|диплом|diploma|le diplôme|الشهادة|📜|Mijn diploma komt uit Oekraïne.|Мій диплом з України.
+het diploma laten erkennen|визнати диплом|to have a diploma recognised|faire reconnaître un diplôme|الاعتراف بالشهادة|✅|Ik wil mijn diploma laten erkennen.|Я хочу визнати свій диплом.
+het examen|іспит|exam|l’examen|الامتحان|📝|Volgende maand heb ik een examen.|Наступного місяця в мене іспит.
+`],
+   a2zich: ['Зворотні дієслова','Reflexive verbs','Verbes pronominaux','الأفعال الانعكاسية', `
+Ik schrijf me in voor een cursus.|Я записуюся на курс.|I enrol for a course.|Je m’inscris à un cours.|أسجّل نفسي في دورة.|✍️
+Ik voel me vandaag goed.|Сьогодні я почуваюся добре.|I feel good today.|Je me sens bien aujourd’hui.|أشعر اليوم بأنني بخير.|😊
+Hij haast zich naar school.|Він поспішає до школи.|He hurries to school.|Il se dépêche d’aller à l’école.|يسرع إلى المدرسة.|🏃
+We melden ons aan bij de school.|Ми реєструємося в школі.|We register at the school.|Nous nous inscrivons à l’école.|نسجّل أنفسنا في المدرسة.|🏫
+Ik moet me goed voorbereiden op het examen.|Я мушу добре підготуватися до іспиту.|I have to prepare well for the exam.|Je dois bien me préparer à l’examen.|يجب أن أستعد جيداً للامتحان.|📚
+Mijn zoon wast zich elke ochtend.|Мій син вмивається щоранку.|My son washes every morning.|Mon fils se lave chaque matin.|ابني يغسل نفسه كل صباح.|🚿
+Ze verheugt zich op de vakantie.|Вона радіє канікулам.|She is looking forward to the holiday.|Elle se réjouit des vacances.|هي سعيدة بقدوم العطلة.|🎉
+Zij ontspannen zich in het weekend.|Вони відпочивають на вихідних.|They relax at the weekend.|Ils se détendent le week-end.|هم يرتاحون في عطلة نهاية الأسبوع.|😌
+`],
+   a2bank: ['Банк і рахунок','Bank and account','Banque et compte','المصرف والحساب', `
+de bankrekening|банківський рахунок|bank account|le compte bancaire|الحساب المصرفي|🏦|Ik open een bankrekening bij een bank in Gent.|Я відкриваю банківський рахунок у банку в Генті.
+de bankkaart|банківська картка|bank card|la carte bancaire|بطاقة الصرف|💳|Ik betaal met mijn bankkaart.|Я плачу банківською карткою.
+het rekeningnummer|номер рахунку|account number|le numéro de compte|رقم الحساب|🔢|Mijn rekeningnummer begint met BE.|Мій номер рахунку починається з BE.
+overschrijven|переказувати|to transfer|virer|يحوّل|📤|Ik schrijf het geld over naar mijn rekening.|Я переказую гроші на свій рахунок.
+het saldo|залишок на рахунку|balance|le solde|الرصيد|💰|Mijn saldo is vandaag laag.|Мій залишок на рахунку сьогодні низький.
+geld afhalen|зняти готівку|to withdraw cash|retirer de l’argent|يسحب نقداً|🏧|Ik haal geld af bij de bankautomaat.|Я знімаю гроші в банкоматі.
+de domiciliëring|автоматичне списання (домісиліювання)|direct debit|la domiciliation|الخصم المباشر|🔁|De huur betaal ik via domiciliëring.|Оренду я плачу автоматичним списанням.
+sparen|заощаджувати|to save|épargner|يدّخر|💰|Ik spaar elke maand vijftig euro.|Я заощаджую п’ятдесят євро щомісяця.
+`],
+   a2rekening: ['Рахунки й платежі','Bills and payments','Factures et paiements','الفواتير والدفعات', `
+de factuur|рахунок-фактура|invoice, bill|la facture|الفاتورة|🧾|Ik moet de factuur voor vrijdag betalen.|Я маю сплатити рахунок до п’ятниці.
+de vervaldatum|кінцева дата оплати|due date|la date d’échéance|تاريخ الاستحقاق|📅|De vervaldatum staat bovenaan.|Кінцева дата оплати вказана угорі.
+de betaling|платіж|payment|le paiement|الدفع|💸|De betaling is gelukt.|Платіж пройшов успішно.
+de mededeling|повідомлення в платежі|payment message|la communication|الرسالة في التحويل|📨|Vul de gestructureerde mededeling correct in.|Правильно вкажи структуроване повідомлення платежу.
+het bedrag|сума|amount|le montant|المبلغ|💶|Het bedrag is 85 euro.|Сума — 85 євро.
+de korting|знижка|discount|la réduction|الخصم|🏷️|Met deze kaart krijg ik korting.|З цією карткою я отримую знижку.
+de betalingsherinnering|нагадування про оплату|payment reminder|le rappel de paiement|تذكير بالدفع|⏰|Ik kreeg een betalingsherinnering.|Я отримав нагадування про оплату.
+de schuld|борг|debt|la dette|الدين|⚠️|Ik wil mijn schuld stap voor stap afbetalen.|Я хочу виплатити свій борг крок за кроком.
+`],
+   a2klacht: ['Скарга й гарантія','Complaint and warranty','Réclamation et garantie','الشكوى والضمان', `
+de klacht|скарга|complaint|la plainte|الشكوى|📝|Ik wil een klacht indienen.|Я хочу подати скаргу.
+de klantendienst|служба підтримки клієнтів|customer service|le service clientèle|خدمة العملاء|📞|Ik bel de klantendienst.|Я телефоную в службу підтримки.
+de garantie|гарантія|warranty|la garantie|الضمان|✅|Er is twee jaar garantie op dit toestel.|На цей пристрій діє дворічна гарантія.
+defect|несправний|faulty|défectueux|معطّل|🛠️|Het toestel is defect.|Пристрій несправний.
+terugbetalen|повернути гроші|to refund|rembourser|يعيد المال|↩️|Kunnen jullie mij het geld terugbetalen?|Чи можете ви повернути мені гроші?
+het aankoopbewijs|підтвердження покупки|proof of purchase|la preuve d’achat|إثبات الشراء|🧾|Ik heb het aankoopbewijs nog.|У мене ще є підтвердження покупки.
+vervangen|замінити|to replace|remplacer|يستبدل|🔁|Ze vervangen het toestel gratis.|Вони безкоштовно замінюють пристрій.
+tevreden|задоволений|satisfied|satisfait|راضٍ|🙂|Ik ben niet tevreden over de service.|Я не задоволений сервісом.
+`],
+   a2nieuwsw: ['Новини','News','Actualités','الأخبار', `
+het nieuws|новини|news|les nouvelles|الأخبار|📰|Ik lees het nieuws op mijn telefoon.|Я читаю новини на телефоні.
+de krant|газета|newspaper|le journal|الصحيفة|📰|Mijn buurman leest elke dag de krant.|Мій сусід щодня читає газету.
+het ongeval|нещасний випадок, ДТП|accident|l’accident|الحادث|🚧|Er is een ongeval op de snelweg.|На автомагістралі сталася ДТП.
+de staking|страйк|strike|la grève|الإضراب|✋|Morgen is er een staking bij de trein.|Завтра на залізниці страйк.
+de verkiezingen|вибори|elections|les élections|الانتخابات|📋|In België is stemmen bij verkiezingen verplicht.|У Бельгії голосування на виборах обов’язкове.
+het bericht|повідомлення, новина|report, message|le message|الخبر|📨|Dit bericht is belangrijk voor ons allemaal.|Ця новина важлива для всіх нас.
+de journalist|журналіст|journalist|le journaliste|الصحفي|🗣️|De journalist stelt een vraag.|Журналіст ставить запитання.
+de nieuwsbrief|розсилка новин|newsletter|la lettre d’information|النشرة الإخبارية|📧|Ik krijg elke week een nieuwsbrief van de gemeente.|Щотижня я отримую розсилку від громади.
+`],
+   a2weer: ['Погода й події','Weather and events','Météo et événements','الطقس والفعاليات', `
+de weersvoorspelling|прогноз погоди|weather forecast|la prévision météo|توقعات الطقس|🌤️|De weersvoorspelling is slecht voor zondag.|Прогноз погоди на неділю поганий.
+de storm|буря|storm|la tempête|العاصفة|💨|Morgen komt er een storm.|Завтра буде буря.
+de mist|туман|fog|le brouillard|الضباب|🌬️|Door de mist rijden we langzaam.|Через туман ми їдемо повільно.
+de vorst|мороз, заморозки|frost|le gel|الصقيع|❄️|Vannacht is er vorst.|Цієї ночі буде мороз.
+de zon|сонце|sun|le soleil|الشمس|☀️|De zon schijnt de hele dag.|Сонце світить цілий день.
+de regenbui|злива, короткий дощ|rain shower|l’averse|زخة مطر|🌧️|Er komt een regenbui aan.|Наближається злива.
+het evenement|захід, подія|event|l’événement|الحدث|🎉|Het evenement in het park is gratis.|Захід у парку безкоштовний.
+de kermis|ярмарок (kermis)|funfair|la kermesse|المعرض الشعبي|🎈|Zaterdag is er kermis in het dorp.|У суботу в селі ярмарок.
+`],
+   a2superlatief: ['Порівняння й найвищий ступінь','Comparing and superlatives','Comparatif et superlatif','المقارنة وصيغة التفضيل', `
+Dit is het mooiste park van de stad.|Це найгарніший парк міста.|This is the most beautiful park in the city.|C’est le plus beau parc de la ville.|هذه أجمل حديقة في المدينة.|🌳
+Vandaag is het warmer dan gisteren.|Сьогодні тепліше, ніж учора.|Today it is warmer than yesterday.|Aujourd’hui, il fait plus chaud qu’hier.|اليوم أدفأ من أمس.|☀️
+Januari is de koudste maand.|Січень — найхолодніший місяць.|January is the coldest month.|Janvier est le mois le plus froid.|يناير هو أبرد شهر.|❄️
+De trein is sneller dan de bus.|Потяг швидший за автобус.|The train is faster than the bus.|Le train est plus rapide que le bus.|القطار أسرع من الحافلة.|🚆
+Dit is het belangrijkste nieuws van de dag.|Це найважливіша новина дня.|This is the most important news of the day.|C’est la nouvelle la plus importante du jour.|هذا أهم خبر في اليوم.|📰
+Het weer is vandaag het slechtst van de week.|Сьогодні найгірша погода за тиждень.|The weather today is the worst of the week.|Le temps est aujourd’hui le pire de la semaine.|الطقس اليوم هو الأسوأ هذا الأسبوع.|🌧️
+Zaterdag is de gezelligste dag van de week.|Субота — найприємніший день тижня.|Saturday is the nicest day of the week.|Le samedi est le jour le plus agréable de la semaine.|السبت هو أكثر أيام الأسبوع متعة.|🎉
+Ik vind dit evenement het leukst.|Мені цей захід подобається найбільше.|I like this event the best.|C’est cet événement que je préfère.|هذه الفعالية هي المفضلة لدي.|🎈
+`],
+   a2feesten: ['Свята в Бельгії','Celebrations in Belgium','Fêtes en Belgique','الأعياد في بلجيكا', `
+Sinterklaas|Святий Миколай (6 грудня)|Saint Nicholas|la Saint-Nicolas|القديس نيقولاوس|🎁|Sinterklaas komt op 6 december.|Святий Миколай приходить 6 грудня.
+Kerstmis|Різдво|Christmas|Noël|عيد الميلاد|🎉|Met Kerstmis eten we samen met de familie.|На Різдво ми їмо разом із родиною.
+Nieuwjaar|Новий рік|New Year|le Nouvel An|رأس السنة|🎆|Op oudejaarsavond wensen we elkaar een gelukkig Nieuwjaar.|У переддень Нового року ми бажаємо одне одному щасливого Нового року.
+Pasen|Великдень|Easter|Pâques|عيد الفصح|🐇|Met Pasen zoeken de kinderen paaseieren.|На Великдень діти шукають великодні яйця.
+de feestdag|святковий день|public holiday|le jour férié|يوم العطلة الرسمية|📅|Op een feestdag zijn de winkels gesloten.|У святковий день магазини зачинені.
+de uitnodiging|запрошення|invitation|l’invitation|الدعوة|💌|Ik heb een uitnodiging voor het feest gekregen.|Я отримав запрошення на свято.
+het cadeau|подарунок|present|le cadeau|الهدية|🎁|Ik koop een cadeau voor de verjaardag.|Я купую подарунок на день народження.
+feliciteren|вітати|to congratulate|féliciter|يهنّئ|🎈|Wij feliciteren onze buurvrouw.|Ми вітаємо нашу сусідку.
+`],
+   a2vrijwilliger: ['Клуби й волонтерство','Clubs and volunteering','Clubs et bénévolat','النوادي والتطوع', `
+de vrijwilliger|волонтер|volunteer|le bénévole|المتطوّع|🤲|De vrijwilliger helpt bij de voedselbank.|Волонтер допомагає в продовольчому банку.
+de vereniging|об’єднання, асоціація|association|l’association|الجمعية|👥|Ik ben lid van een vereniging in de buurt.|Я член об’єднання поблизу.
+het lidgeld|членський внесок|membership fee|la cotisation|رسوم العضوية|💶|Het lidgeld is twintig euro per jaar.|Членський внесок — двадцять євро на рік.
+de training|тренування|training|l’entraînement|التدريب|🏃|De training begint om zeven uur.|Тренування починається о сьомій.
+de buurtwerking|робота з жителями району|neighbourhood work|l’action de quartier|العمل المجتمعي في الحي|🏘️|De buurtwerking organiseert een ontmoeting.|Організація району влаштовує зустріч.
+meehelpen|допомагати разом|to help out|donner un coup de main|يساعد معهم|🤝|Wil je meehelpen met het feest?|Хочеш допомогти зі святом?
+de ontmoeting|зустріч|meeting|la rencontre|اللقاء|🧑‍🤝‍🧑|De ontmoeting is elke tweede zaterdag.|Зустріч щодругої суботи.
+het taalcafé|мовне кафе|language café|le café linguistique|مقهى اللغة|☕|In het taalcafé oefen ik Nederlands.|У мовному кафе я практикую нідерландську.
+`],
+   a2regelszin: ['Довші речення: hoewel, zodat, zodra','Longer sentences: hoewel, zodat, zodra','Phrases plus longues : hoewel, zodat, zodra','جمل أطول: hoewel وzodat وzodra', `
+Hoewel het regent, gaan we naar het feest.|Хоча йде дощ, ми йдемо на свято.|Although it is raining, we are going to the party.|Bien qu’il pleuve, nous allons à la fête.|رغم أنها تمطر، نذهب إلى الحفلة.|🌧️
+Ik ruim op zodat de buren niet klagen.|Я прибираю, щоб сусіди не скаржилися.|I tidy up so that the neighbours do not complain.|Je range pour que les voisins ne se plaignent pas.|أرتّب كي لا يشتكي الجيران.|🧹
+Zowel mijn man als mijn dochter doen mee.|І мій чоловік, і моя донька беруть участь.|Both my husband and my daughter take part.|Mon mari comme ma fille participent.|يشارك زوجي وابنتي معاً.|👨‍👩‍👧
+Niet alleen de kinderen maar ook de ouders komen.|Приходять не лише діти, а й батьки.|Not only the children but also the parents are coming.|Non seulement les enfants, mais aussi les parents viennent.|لا يأتي الأطفال فقط بل الآباء أيضاً.|👪
+Zodra de les begint, zetten we onze gsm uit.|Щойно починається урок, ми вимикаємо мобільні.|As soon as the lesson starts, we switch off our phones.|Dès que le cours commence, nous éteignons nos portables.|بمجرد أن يبدأ الدرس نُطفئ هواتفنا.|📱
+Ik blijf thuis tenzij het stopt met regenen.|Я лишаюся вдома, хіба що дощ припиниться.|I stay at home unless it stops raining.|Je reste à la maison, sauf s’il arrête de pleuvoir.|أبقى في البيت إلا إذا توقف المطر.|🏠
+Het feest was leuk doordat iedereen hielp.|Свято було приємним, бо всі допомагали.|The party was fun because everyone helped.|La fête était sympa parce que tout le monde a aidé.|كانت الحفلة ممتعة لأن الجميع ساعد.|🥂
+Zolang we samenwerken, lukt het.|Поки ми працюємо разом, усе вдається.|As long as we work together, it works out.|Tant que nous travaillons ensemble, ça marche.|ما دمنا نعمل معاً ننجح.|✨
+`]
+  },
+  notes: {
+   a2regels: ['Читай повідомлення зі школи уважно: datum, uur, wat meenemen. Питай, якщо щось незрозуміло.','Read school messages carefully: datum, uur, wat meenemen. Ask if something is unclear.','Lis bien les messages de l’école : datum, uur, wat meenemen. Demande si quelque chose n’est pas clair.','اقرأ رسائل المدرسة بعناية: datum وuur وwat meenemen. اسأل إذا كان شيء غير واضح.'],
+   a2volwassen: ['Ik wil mijn diploma laten erkennen — готова фраза. Спитай у школі або в громаді, куди звернутися.','Ik wil mijn diploma laten erkennen — a ready phrase. Ask at school or the municipality where to go.','Ik wil mijn diploma laten erkennen — phrase toute faite. Demande à l’école ou à la commune où t’adresser.','Ik wil mijn diploma laten erkennen — عبارة جاهزة. اسأل في المدرسة أو البلدية إلى أين تتوجه.'],
+   a2zich: ['ik … me, jij … je, hij/zij … zich, wij … ons. Ik voel me goed. Voorbereiden, inschrijven — часто із zich.','ik … me, jij … je, hij/zij … zich, wij … ons. Ik voel me goed. Voorbereiden, inschrijven often go with zich.','ik … me, jij … je, hij/zij … zich, wij … ons. Ik voel me goed. Voorbereiden et inschrijven vont souvent avec zich.','ik … me، jij … je، hij/zij … zich، wij … ons. Ik voel me goed. غالباً مع zich: voorbereiden وinschrijven.'],
+   a2bank: ['Номер рахунку в Бельгії починається з BE (IBAN). Overschrijven = зробити переказ.','A Belgian account number starts with BE (IBAN). Overschrijven = make a transfer.','Un numéro de compte belge commence par BE (IBAN). Overschrijven = faire un virement.','رقم الحساب في بلجيكا يبدأ بـ BE (IBAN). Overschrijven = إجراء تحويل.'],
+   a2rekening: ['Gestructureerde mededeling (+++…+++) вказуй точно. Перед оплатою перевір vervaldatum.','Enter the gestructureerde mededeling (+++…+++) exactly. Check the vervaldatum before paying.','Indique exactement la gestructureerde mededeling (+++…+++). Vérifie la vervaldatum avant de payer.','اكتب gestructureerde mededeling (+++…+++) بدقة. تحقّق من vervaldatum قبل الدفع.'],
+   a2klacht: ['Скарга: опиши проблему й причину: Ik wil een klacht indienen omdat het toestel defect is.','Complaint: describe the problem and the reason: Ik wil een klacht indienen omdat het toestel defect is.','Réclamation : décris le problème et la raison : Ik wil een klacht indienen omdat het toestel defect is.','الشكوى: صف المشكلة والسبب: Ik wil een klacht indienen omdat het toestel defect is.'],
+   a2nieuwsw: ['У новинах короткі речення: хто? що сталося? де? Ключові слова: ongeval, staking, storm.','News uses short sentences: who? what happened? where? Key words: ongeval, staking, storm.','Les brèves sont courtes : qui ? que s’est-il passé ? où ? Mots clés : ongeval, staking, storm.','الأخبار جمل قصيرة: من؟ ماذا حدث؟ أين؟ كلمات مفتاحية: ongeval وstaking وstorm.'],
+   a2weer: ['Прогноз: Morgen wordt het … / Er komt … Додай температуру: tien graden.','Forecast: Morgen wordt het … / Er komt … Add the temperature: tien graden.','Prévisions : Morgen wordt het … / Er komt … Ajoute la température : tien graden.','التوقعات: Morgen wordt het … / Er komt … أضف الحرارة: tien graden.'],
+   a2superlatief: ['Вищий ступінь: warmer dan. Найвищий: de/het + -ste: de koudste, het mooiste.','Comparative: warmer dan. Superlative: de/het + -ste: de koudste, het mooiste.','Comparatif : warmer dan. Superlatif : de/het + -ste : de koudste, het mooiste.','المقارنة: warmer dan. التفضيل: de/het + -ste: de koudste, het mooiste.'],
+   a2feesten: ['Sinterklaas — 6 грудня, Kerstmis — 25 грудня. У feestdag магазини й установи часто зачинені.','Sinterklaas — 6 December, Kerstmis — 25 December. On a feestdag shops and offices are often closed.','Sinterklaas — 6 décembre, Kerstmis — 25 décembre. Un feestdag, magasins et administrations sont souvent fermés.','Sinterklaas — 6 ديسمبر، Kerstmis — 25 ديسمبر. في feestdag تُغلق المتاجر والدوائر غالباً.'],
+   a2vrijwilliger: ['Приєднатися: Ik wil graag meehelpen. Спитай: Wat is het lidgeld?','To join in: Ik wil graag meehelpen. Ask: Wat is het lidgeld?','Pour participer : Ik wil graag meehelpen. Demande : Wat is het lidgeld ?','للمشاركة: Ik wil graag meehelpen. اسأل: Wat is het lidgeld?'],
+   a2regelszin: ['Після hoewel, zodat, zodra, tenzij, doordat, zolang дієслово йде в кінець. Якщо підрядне на початку, головне починається з дієслова: Hoewel het regent, gaan we.','After hoewel, zodat, zodra, tenzij, doordat, zolang the verb goes to the end. If the subordinate clause comes first, the main clause starts with the verb: Hoewel het regent, gaan we.','Après hoewel, zodat, zodra, tenzij, doordat, zolang, le verbe va à la fin. Si la subordonnée est en tête, la principale commence par le verbe : Hoewel het regent, gaan we.','بعد hoewel وzodat وzodra وtenzij وdoordat وzolang يذهب الفعل إلى النهاية. إذا بدأت الجملة بالفرعية، تبدأ الرئيسية بالفعل: Hoewel het regent, gaan we.']
+  },
+  gaps: {
+   a2school:['Ik schrijf ___ in voor een cursus.','me','zich','jullie','hem'],
+   a2geld:['Ik wil een klacht indienen ___ het toestel defect is.','omdat','want','dus','maar'],
+   a2nieuws:['Januari is de ___ maand van het jaar.','koudste','kouder','koud','kouds'],
+   a2samen:['Hoewel het ___, gaan we naar het feest.','regent','regen','regenen','geregend']
+  },
+  bank: [
+   ['a2school',1,'ik|schrijf|me|in','SVRI','Я записуюся.','I enrol.','Je m’inscris.','أسجّل نفسي.','zich','.'],
+   ['a2school',1,'wanneer|is|de ouderavond','QVS','Коли батьківські збори?','When is the parents’ evening?','Quand a lieu la réunion de parents ?','متى اجتماع أولياء الأمور؟','','?'],
+   ['a2school',1,'mijn zoon|maakt|zijn huiswerk|na school','SVRR','Мій син робить домашнє завдання після школи.','My son does his homework after school.','Mon fils fait ses devoirs après l’école.','ابني يؤدي واجبه بعد المدرسة.','','.'],
+   ['a2school',2,'ik|voel|me|vandaag|goed','SVRRR','Сьогодні я почуваюся добре.','I feel good today.','Je me sens bien aujourd’hui.','أشعر اليوم بأنني بخير.','zich','.'],
+   ['a2school',2,'ik|moet|me|voorbereiden|op het examen','SVRRR','Я мушу підготуватися до іспиту.','I have to prepare for the exam.','Je dois me préparer à l’examen.','يجب أن أستعد للامتحان.','','.'],
+   ['a2geld',1,'ik|betaal|met mijn bankkaart','SVRR','Я плачу банківською карткою.','I pay with my bank card.','Je paie avec ma carte bancaire.','أدفع ببطاقتي المصرفية.','','.'],
+   ['a2geld',1,'wanneer|is|de vervaldatum','QVS','Коли кінцева дата оплати?','When is the due date?','Quelle est la date d’échéance ?','متى تاريخ الاستحقاق؟','','?'],
+   ['a2geld',1,'ik|wil|een klacht|indienen','SVRI','Я хочу подати скаргу.','I want to file a complaint.','Je veux déposer une réclamation.','أريد تقديم شكوى.','','.'],
+   ['a2geld',2,'het toestel|is|defect','SVR','Пристрій несправний.','The device is faulty.','L’appareil est défectueux.','الجهاز معطّل.','zijn','.'],
+   ['a2geld',2,'ik|ben|niet tevreden|omdat|het toestel|defect|is','SVRRRRI','Я не задоволений, бо пристрій несправний.','I am not satisfied because the device is faulty.','Je ne suis pas satisfait parce que l’appareil est défectueux.','لست راضياً لأن الجهاز معطّل.','want','.'],
+   ['a2nieuws',1,'wat|is|het nieuws','QVS','Які новини?','What is the news?','Quelles sont les nouvelles ?','ما الأخبار؟','','?'],
+   ['a2nieuws',1,'de trein|is|sneller|dan de bus','SVRR','Потяг швидший за автобус.','The train is faster than the bus.','Le train est plus rapide que le bus.','القطار أسرع من الحافلة.','','.'],
+   ['a2nieuws',1,'morgen|komt|er|een storm','TVSR','Завтра буде буря.','Tomorrow there will be a storm.','Demain, il y aura une tempête.','غداً ستأتي عاصفة.','komen','.'],
+   ['a2nieuws',2,'januari|is|de koudste maand','SVR','Січень — найхолодніший місяць.','January is the coldest month.','Janvier est le mois le plus froid.','يناير هو أبرد شهر.','kouder','.'],
+   ['a2nieuws',2,'vandaag|is|het|warmer|dan gisteren','TVSRR','Сьогодні тепліше, ніж учора.','Today it is warmer than yesterday.','Aujourd’hui, il fait plus chaud qu’hier.','اليوم أدفأ من أمس.','','.'],
+   ['a2samen',1,'ik|wil|graag|meehelpen','SVRI','Я хочу допомогти.','I would like to help out.','Je voudrais donner un coup de main.','أرغب في المساعدة.','','.'],
+   ['a2samen',1,'wat|is|het lidgeld','QVS','Який членський внесок?','What is the membership fee?','Quelle est la cotisation ?','كم رسوم العضوية؟','','?'],
+   ['a2samen',1,'ik|koop|een cadeau|voor de verjaardag','SVRR','Я купую подарунок на день народження.','I buy a present for the birthday.','J’achète un cadeau pour l’anniversaire.','أشتري هدية لعيد الميلاد.','','.'],
+   ['a2samen',2,'hoewel het regent|gaan|we|naar het feest','TVSR','Хоча йде дощ, ми йдемо на свято.','Although it is raining, we are going to the party.','Bien qu’il pleuve, nous allons à la fête.','رغم أنها تمطر، نذهب إلى الحفلة.','gaat','.'],
+   ['a2samen',2,'het feest|was|leuk|doordat|iedereen|hielp','SVRRSI','Свято було приємним, бо всі допомагали.','The party was fun because everyone helped.','La fête était sympa parce que tout le monde a aidé.','كانت الحفلة ممتعة لأن الجميع ساعد.','want','.']
+  ],
+  dialogues: [
+   ['a2school','🎓','Батьківська зустріч','Parent–teacher meeting','Rencontre parents-enseignant','لقاء أولياء الأمور والمعلّم',[
+    ['Goedenavond, ik ben de mama van Sofia. Hoe gaat het op school?','Добрий вечір, я мама Софії. Як справи в школі?','Good evening, I’m Sofia’s mum. How is she doing at school?'],
+    ['Goed. Sofia werkt hard en ze maakt altijd haar huiswerk.','Добре. Софія старанно працює й завжди робить домашнє завдання.','Well. Sofia works hard and always does her homework.'],
+    ['En met Nederlands? Ze spreekt thuis Oekraïens.','А з нідерландською? Вдома вона розмовляє українською.','And with Dutch? She speaks Ukrainian at home.'],
+    ['Ze maakt veel vooruitgang. Ze leest elke dag een boekje.','Вона робить великі успіхи. Щодня читає книжечку.','She is making a lot of progress. She reads a little book every day.'],
+    ['Kan ze extra hulp krijgen?','Чи може вона отримати додаткову допомогу?','Can she get extra help?'],
+    ['Ja, op woensdagmiddag is er huiswerkbegeleiding.','Так, у середу після обіду є допомога з домашніми завданнями.','Yes, on Wednesday afternoon there is homework supervision.']]],
+   ['a2geld','💶','Скарга в службу підтримки','A complaint to customer service','Une réclamation au service clientèle','شكوى إلى خدمة العملاء',[
+    ['Klantendienst, goedemiddag. Waarmee kan ik u helpen?','Служба підтримки, добрий день. Чим можу допомогти?','Customer service, good afternoon. How can I help you?'],
+    ['Goedemiddag, ik heb vorige week een wasmachine gekocht, maar ze is defect.','Добрий день, минулого тижня я купив пральну машину, але вона несправна.','Good afternoon, I bought a washing machine last week, but it is faulty.'],
+    ['Dat spijt me. Hebt u het aankoopbewijs?','Мені шкода. У вас є підтвердження покупки?','I’m sorry. Do you have the proof of purchase?'],
+    ['Ja, ik stuur het u per e-mail door.','Так, я надішлю його вам електронною поштою.','Yes, I’ll send it to you by email.'],
+    ['Goed. We komen volgende week langs om de machine te vervangen.','Добре. Наступного тижня ми приїдемо замінити машину.','Good. We’ll come by next week to replace the machine.'],
+    ['Prima. Dank u wel voor uw hulp.','Чудово. Дякую за допомогу.','Great. Thank you for your help.']]],
+   ['a2nieuws','📰','Новини й погода','News and weather','Actualités et météo','الأخبار والطقس',[
+    ['Heb je het nieuws gehoord? Morgen is er een staking bij de trein.','Ти чув новини? Завтра на залізниці страйк.','Did you hear the news? Tomorrow there is a train strike.'],
+    ['Nee, dat wist ik niet. Hoe kom ik dan op mijn werk?','Ні, я цього не знав. Як тоді мені дістатися до роботи?','No, I didn’t know that. How do I get to work, then?'],
+    ['Neem de fiets, want het weer wordt mooi.','Їдь велосипедом, бо погода буде гарна.','Take your bike, because the weather will be nice.'],
+    ['Echt? De weersvoorspelling zei regen.','Справді? Прогноз обіцяв дощ.','Really? The weather forecast said rain.'],
+    ['Dat was gisteren. Vandaag zegt men: zon en geen wind.','Це було вчора. Сьогодні кажуть: сонце й без вітру.','That was yesterday. Today they say: sun and no wind.'],
+    ['Dan neem ik de fiets. Bedankt voor de tip!','Тоді я поїду велосипедом. Дякую за пораду!','Then I’ll take my bike. Thanks for the tip!']]],
+   ['a2samen','🤝','Запрошення на свято вулиці','An invitation to the street party','Une invitation à la fête de quartier','دعوة إلى حفلة الحي',[
+    ['Hallo buurvrouw! Er is zaterdag een buurtfeest in de straat.','Привіт, сусідко! У суботу у нашій вулиці свято для сусідів.','Hello neighbour! There is a street party on Saturday.'],
+    ['Leuk! Hoe laat begint het?','Чудово! О котрій воно починається?','Nice! What time does it start?'],
+    ['Om drie uur. Iedereen brengt iets te eten mee.','О третій. Усі приносять щось поїсти.','At three. Everyone brings something to eat.'],
+    ['Dan maak ik een Oekraïense salade. Moet ik zelf stoelen meebrengen?','Тоді я приготую український салат. Мені самій принести стільці?','Then I’ll make a Ukrainian salad. Should I bring chairs myself?'],
+    ['Nee, de buurtwerking zorgt voor stoelen en tafels. Wil je meehelpen met opruimen?','Ні, організація району подбає про стільці й столи. Хочеш допомогти з прибиранням?','No, the neighbourhood group will provide chairs and tables. Do you want to help clear up?'],
+    ['Natuurlijk, graag! Tot zaterdag!','Звісно, залюбки! До суботи!','Of course, gladly! See you Saturday!']]]
+  ],
+  speech: [
+   ['Wat zeg je tegen de leerkracht van je kind?','Що ти скажеш вчителю своєї дитини?','What do you say to your child’s teacher?','Goedemorgen, mijn zoon is vandaag ziek. Hij komt niet naar school.'],
+   ['Waar volg je Nederlandse les?','Де ти вчиш нідерландську?','Where do you take Dutch lessons?','Ik volg Nederlands in het volwassenenonderwijs.'],
+   ['Hoe bereid je je voor op het examen?','Як ти готуєшся до іспиту?','How do you prepare for the exam?','Ik oefen elke dag en ik herhaal de woorden.'],
+   ['Hoe betaal je meestal?','Як ти зазвичай платиш?','How do you usually pay?','Ik betaal meestal met mijn bankkaart.'],
+   ['Wat doe je als je een factuur niet begrijpt?','Що ти робиш, якщо не розумієш рахунок?','What do you do if you do not understand a bill?','Ik bel het bedrijf en ik vraag uitleg.'],
+   ['Waarom dien je een klacht in?','Чому ти подаєш скаргу?','Why are you filing a complaint?','Ik dien een klacht in omdat het toestel defect is.'],
+   ['Hoe volg je het nieuws?','Як ти стежиш за новинами?','How do you follow the news?','Ik lees het nieuws op mijn telefoon.'],
+   ['Wat zegt de weersvoorspelling voor morgen?','Що каже прогноз погоди на завтра?','What does the weather forecast say for tomorrow?','Morgen is het zonnig en tien graden.'],
+   ['Wat is de mooiste plaats in jouw stad?','Яке місце в твоєму місті найгарніше?','What is the most beautiful place in your city?','Het mooiste is het park bij de rivier.'],
+   ['Welk feest vier je graag?','Яке свято ти любиш святкувати?','Which celebration do you like to celebrate?','Ik vier graag Kerstmis met mijn familie.'],
+   ['Waarom ben je lid van een vereniging?','Чому ти член об’єднання?','Why are you a member of an association?','Ik ben lid omdat ik nieuwe mensen wil ontmoeten.'],
+   ['Wat zeg je als je wilt meehelpen?','Що ти кажеш, якщо хочеш допомогти?','What do you say if you want to help?','Ik wil graag meehelpen.']
+  ]
+ };
+ for(const part of [a2p1,a2p2]){
+  a2.chapters.push(...part.chapters);
+  Object.assign(a2.labels,part.labels);
+  Object.assign(a2.lessons,part.lessons);
+  Object.assign(a2.notes,part.notes);
+  Object.assign(a2.gaps,part.gaps);
+  a2.bank.push(...part.bank);
+  a2.dialogues.push(...part.dialogues);
+  a2.speech.push(...part.speech);
+ }
  const a2Ids=new Set(a2.chapters.map(c=>c[0]));
  advanced.push(...a2.chapters.map(([id,title,tabs])=>[id,title,[...tabs]]));
  Object.assign(topicLabels,a2.labels);
