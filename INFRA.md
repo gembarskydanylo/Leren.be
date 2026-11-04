@@ -75,6 +75,6 @@
 **Резервний захист у самих сторінках (листопад 2026).** `index.html`, `privacy.html` і `modules/clock/widget.html` мають у `<meta http-equiv="Content-Security-Policy">` ту саму політику, що й правило Cloudflare (рядок `CSP` у `tests/csp-browser.cjs`; `<meta>` не підтримує `frame-ancestors`, тому замість нього — `form-action 'self'`). Якщо правило Cloudflare вимкнуть, CSP усе одно діє. Нова зовнішня адреса в коді = додати її в **три** місця: правило Cloudflare, `tests/csp-browser.cjs` і meta в трьох сторінках (`tests/seo.cjs` перевіряє, що meta = CSP з тесту). Замість `X-Frame-Options` на випадок вимкненого правила `boot.js` не показує застосунок у `<iframe>` чужого сайту — лише посилання «lerenbe.com ↗» на всю вкладку (`tests/frame-guard-browser.cjs`).
 
 **Що лишається зробити вручну (не в коді):**
-- Anthropic Console → Limits: місячний ліміт витрат для ключа `leren-ai` (воркер перевіряє лише заголовок `Origin`, який поза браузером підробляється; від витрат захищають тільки ліміти частоти).
-- Cloudflare → `leren-ai` → Settings → Variables and Secrets: окремий секрет `RATE_SALT` (інакше ключем для хешування IP слугує `ANTHROPIC_KEY`).
+- ✅ (4.11.2026, $10/міс.) Anthropic Console → Settings → Spend limits: місячний ліміт витрат для ключа `leren-ai` (воркер перевіряє лише заголовок `Origin`, який поза браузером підробляється; від витрат захищають тільки ліміти частоти).
+- ✅ (4.11.2026) Cloudflare → `leren-ai` → Settings → Variables and Secrets: окремий секрет `RATE_SALT` для хешування IP і кодів пристроїв.
 - Google Cloud Console → Credentials: обмежити Firebase API key за HTTP referrer (`lerenbe.com/*`, `www.lerenbe.com/*`, `leren-be.firebaseapp.com/*`); Firebase → App Check.
