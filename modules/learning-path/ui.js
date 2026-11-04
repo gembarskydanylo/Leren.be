@@ -27,7 +27,7 @@
    active:()=>screen==='lesson'&&model.state.session?.kind==='lesson',
    eligible:()=>Object.keys(model.state.completed).some(id=>model.state.completed[id]>0),
    boundary:()=>{const s=model.state.session;return screen==='lesson'&&!feedback&&s?.kind==='lesson'&&s.index>0&&s.index<s.ids.length},
-   language:()=>lang,speak:text=>bridge.speak(text)
+   level:()=>model.course,language:()=>lang,speak:text=>bridge.speak(text)
   });
   const lessonTitle=l=>(bridge.lessonLabel(l.tab,lang)||l.tab)+(l.parts>1?' · '+t('part')+' '+l.part+'/'+l.parts:'');
   const chapter=l=>course.chapters.find(c=>c.id===l.chapter);
