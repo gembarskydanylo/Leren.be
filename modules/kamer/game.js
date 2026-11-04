@@ -26,6 +26,11 @@
   fles:['de','fles','пляшка','bottle','bouteille','زجاجة','Ik heb een fles water.','У мене є пляшка води.','I have a bottle of water.','J’ai une bouteille d’eau.','لدي زجاجة ماء.','🥤'],
   rugzak:['de','rugzak','рюкзак','backpack','sac à dos','حقيبة ظهر','Mijn rugzak is zwaar.','Мій рюкзак важкий.','My backpack is heavy.','Mon sac à dos est lourd.','حقيبتي الظهرية ثقيلة.','🎒'],
   trui:['de','trui','светр','sweater','pull','كنزة','Ik draag een warme trui.','Я ношу теплий светр.','I am wearing a warm sweater.','Je porte un pull chaud.','أرتدي كنزة دافئة.','👕'],
+  laptop:['de','laptop','ноутбук','laptop','ordinateur portable','حاسوب محمول','Mijn laptop staat op de tafel.','Мій ноутбук стоїть на столі.','My laptop is on the table.','Mon ordinateur portable est sur la table.','حاسوبي المحمول على الطاولة.','💻'],
+  schrift:['het','schrift','зошит','notebook','cahier','دفتر','Ik schrijf in mijn schrift.','Я пишу у своєму зошиті.','I write in my notebook.','J’écris dans mon cahier.','أكتب في دفتري.','📓'],
+  koptelefoon:['de','koptelefoon','навушники','headphones','casque','سماعات الرأس','Ik luister naar muziek met mijn koptelefoon.','Я слухаю музику в навушниках.','I listen to music with my headphones.','J’écoute de la musique avec mon casque.','أستمع إلى الموسيقى بسماعات الرأس.','🎧'],
+  sneakers:['de','sneakers','кросівки','sneakers','baskets','أحذية رياضية','Mijn sneakers staan bij de deur.','Мої кросівки стоять біля дверей.','My sneakers are by the door.','Mes baskets sont près de la porte.','حذائي الرياضي بجانب الباب.','👟'],
+  plant:['de','plant','рослина','plant','plante','نبتة','De plant staat bij het raam.','Рослина стоїть біля вікна.','The plant is by the window.','La plante est près de la fenêtre.','النبتة بجانب النافذة.','🌱'],
   jas:['de','jas','куртка','coat','manteau','معطف','Ik trek mijn jas aan.','Я вдягаю куртку.','I put on my coat.','J’enfile mon manteau.','أرتدي معطفي.','🧥']
  };
  const L=(o,lang)=>o[2+Math.max(0,LANGS.indexOf(lang))],EX=(o,lang)=>o[7+Math.max(0,LANGS.indexOf(lang))];
@@ -95,7 +100,9 @@
   things.push(billboard('lamp',58,13,2,30,pic('lamp')),billboard('boeken',6,17,12,28,pic('boeken')),billboard('kopje',32,20,26,22,pic('kopje')),billboard('sleutels',22,24,-4,18,pic('sleutels')));
   things.push(billboard('fles',8,-24,-100,24,pic('fles')));
   things.push(billboard('rugzak',-18,69,78,30,pic('rugzak')),billboard('trui',48,70,70,30,pic('trui')));
-  const shown=opts.keep?things.filter(t=>opts.keep.has(t.dataset.item)):things;
+  things.push(billboard('laptop',22,14,8,32,pic('laptop')),billboard('schrift',46,22,24,20,pic('schrift')),billboard('koptelefoon',-70,43,-30,24,pic('koptelefoon')),billboard('sneakers',-95,72,48,26,pic('sneakers')),billboard('plant',100,66,62,28,pic('plant')));
+  const A1X=new Set(['laptop','schrift']);
+  const shown=opts.keep?things.filter(t=>opts.keep.has(t.dataset.item)):things.filter(t=>!A1X.has(t.dataset.item));
   shown.forEach(t=>{const id=t.dataset.item;t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',O[id][0]+' '+O[id][1]);room.appendChild(t)});
   if(opts.sam)room.appendChild(buildSam(host));
   return room;
@@ -214,7 +221,7 @@
   menu();
  }
  // ================= A1 version: "Kamer van Pieter & Sam" (buttons only, 7 objects, 5 tasks, 8 talks with Sam) =================
- const A1_OBJ=['bed','tafel','stoel','kast','raam','deur','lamp'];
+ const A1_OBJ=['bed','tafel','stoel','kast','raam','deur','lamp','laptop','kopje','schrift','rugzak'];
  const A1_KEY='leren_kamer1_v1';
  const A1T={
   uk:{title:'Kamer van Pieter & Sam',sub:'Кімната Пітера й друг Sam: слова, прості питання, діалоги',talk:'Розмова з Sam',talkS:'8 коротких діалогів: вибирай відповіді кнопками',stars:'Зірки',tapSam:'Klik op Sam om te praten.',tapSamT:'Натисни на Sam, щоб поговорити.',q:'?',showTr:'Переклад',samSays:'Sam',choose:'Обери відповідь',round:'Питання',again:'Ще раз',great:'Je kent de kamer nu.',greatT:'Тепер ти знаєш кімнату.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Тепер ти добре розмовляєш із Sam!',ok:['Goed zo!','Добре!'],ok2:['Heel goed!','Дуже добре!'],no:['Probeer nog een keer.','Спробуй ще раз.'],passed:'Завдання виконано! +1 зірка',notYet:'Ще трохи практики. Спробуй знову.',talkStar:'Розмову завершено! +1 зірка',next:'Далі',list:'До списку'},
