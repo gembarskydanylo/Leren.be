@@ -4371,7 +4371,7 @@ const MYDAY=[
 
 // --- shared state & helpers ---
 let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
-const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true],["wb","🔤",true]];
+const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true],["wb","🔤",true],["kamer","🏠",true]];
 const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
 function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
 function gRecords(){return lsGet("leren_games",{})}
@@ -4527,6 +4527,14 @@ function wbStart(){
  LerenWordBuilder.start({lang:()=>uiLang,words:()=>wbCourseWords(),picture:icon=>{if(String(icon).startsWith('<')){const d=el("div","wb-emoji");d.innerHTML=icon;return d}return window.LerenEmoji?LerenEmoji.make(icon,'wb-emoji'):null},head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),mistake:t=>logMistake(t,"wb"),
   done:xp=>{if(xp)toast(gU().pts(xp));gameDone("wb",xp)},home:renderGamesHome});
 }
+// --- 13. Kamer van Pieter: CSS-3D room (A2, modules/kamer) ---
+Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.tr(l);G_UI[l].kamer=k.title;G_UI[l].kamerS=k.sub});
+function kamerStart(){
+ if(!window.LerenKamer){toast(gU().nlOnly);return}
+ gState={kamer:1};
+ LerenKamer.start({lang:()=>uiLang,head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),icon:e=>window.LerenEmoji?LerenEmoji.make(e,"k-pic"):null,mistake:t=>logMistake(t,"kamer"),
+  done:xp=>{if(xp)toast(gU().pts(xp));gameDone("kamer",xp)},home:renderGamesHome});
+}
 const ksU=()=>KS_UI[uiLang]||KS_UI.en;
 const KS_SETS={
  top:["zijn","hebben","gaan","komen","doen","maken","eten","drinken","werken","wonen"],
@@ -4655,7 +4663,8 @@ th:first-child,td:first-child{width:31%}.fold{display:flex;justify-content:flex-
 // --- games home ---
 // "Een dag in België" and "Mijn dag" are A1.1 stories; the verb sheet and want/omdat are grammar of both courses.
 const A11_ONLY_GAMES=["story","md"];
-const gameForLevel=(id,lv=curLevel)=>lv==="a11"||!A11_ONLY_GAMES.includes(id);
+const A2_ONLY_GAMES=["kamer"];
+const gameForLevel=(id,lv=curLevel)=>A2_ONLY_GAMES.includes(id)?lv==="a21":(lv==="a11"||!A11_ONLY_GAMES.includes(id));
 // Spell-the-word words of the selected course: nouns with a verified picture ([word, article, plural, uk, en, fr, ar, picture]).
 function wbCourseWords(lv=curLevel){
  if(lv==="a11")return null;const seen=new Set();
@@ -4674,14 +4683,14 @@ function renderGamesHome(){
  GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
   b.append(art,el("strong","",id==="ai"?aiTitle():g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?aiTitle():g[id])+". "+(g[id+"S"]||""));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story")b.classList.add("wide");
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart})[id]()};
   grid.appendChild(b);
  });
  card.appendChild(grid);
@@ -5904,7 +5913,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="186";
+const RELEASE_VERSION="187";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
