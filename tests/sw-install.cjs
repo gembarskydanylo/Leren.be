@@ -2,7 +2,7 @@
 // Run: node tests/sw-install.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('sw.js','utf8');
-const critical=['./','./index.html','./app.js?v=184','./boot.js?v=184','./course-curriculum.js?v=176','./manifest.webmanifest'];
+const critical=['./','./index.html','./app.js?v=185','./boot.js?v=185','./course-curriculum.js?v=177','./manifest.webmanifest'];
 async function simulate(fail){
  const handlers={},added=[],opened=[],deleted=[];
  let waiting=0,claimed=0;
@@ -22,7 +22,7 @@ async function simulate(fail){
   return;
  }
  assert.equal(error,null);assert.equal(waiting,1);
- assert(opened.every(name=>name==='leren-be-v184'));
+ assert(opened.every(name=>name==='leren-be-v185'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));
  if(fail==='optional')assert(added.length<1018,'some optional files should fail');
  else assert.equal(added.length,1018);
