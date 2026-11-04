@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-03-errors-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-03-security-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 const SCENES = {
@@ -360,7 +360,7 @@ export default {
         if (j.stop_reason === "refusal") return json({error: "refusal"}, 502);
         text = (j.content || []).filter(c => c.type === "text").map(c => c.text).join("");
       } else if (provider === "gemini") {
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${env.MODEL || "gemini-3.5-flash-lite"}:generateContent`, {method: "POST", headers: {"Content-Type": "application/json", "x-goog-api-key": env.GEMINI_KEY},
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${env.MODEL || "gemini-3.5-flash-lite"}:generateContent`, {method: "POST", signal: ctl.signal, headers: {"Content-Type": "application/json", "x-goog-api-key": env.GEMINI_KEY},
           body: JSON.stringify({systemInstruction: {parts: [{text: sys + "\nReturn ONLY valid JSON matching this schema: " + JSON.stringify(schema)}]}, contents: msgs.map(m => ({role: m.role === "assistant" ? "model" : "user", parts: [{text: m.content}]})), generationConfig: {maxOutputTokens: 1200, temperature: 0.6, responseMimeType: "application/json"}})});
         const j = await r.json(); text = j?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") || "";
       } else {

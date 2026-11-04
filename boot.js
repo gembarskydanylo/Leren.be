@@ -1,4 +1,12 @@
 /* lerenbe.com: loaded before every other script (end of <body>), so it sees their errors. */
+// Clickjacking guard: GitHub Pages cannot send X-Frame-Options / frame-ancestors (and <meta> CSP ignores frame-ancestors),
+// so a page on another site that puts the app in an <iframe> gets only a link that opens lerenbe.com in the whole tab.
+// Same-origin frames (our own widgets, tests) are left alone.
+(()=>{if(window.top===window.self)return;let same=false;try{same=!!window.top.location.href}catch(e){}if(same)return;
+ try{window.top.location.replace(location.href)}catch(e){}
+ const st=document.createElement("style");st.textContent="body>*:not(#lbeFramed){display:none!important}#lbeFramed{display:block;margin:40px 16px;font:600 18px/1.4 system-ui,sans-serif;text-align:center}";
+ const a=document.createElement("a");a.id="lbeFramed";a.href=location.href;a.target="_top";a.rel="noopener";a.textContent="lerenbe.com ↗";
+ document.head.appendChild(st);document.body.appendChild(a)})();
 // Error reports: uncaught errors, unhandled promise rejections and CSP violations on lerenbe.com go to the AI server's
 // log (POST /errors), at most 5 different ones per page. Only technical text: no answers, names, e-mail or progress.
 (()=>{let on=/^(www\.)?lerenbe\.com$/.test(location.hostname);try{on=on||localStorage.getItem("leren_err_test")==="1"}catch(e){}if(!on)return;
