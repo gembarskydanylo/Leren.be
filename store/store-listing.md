@@ -1,4 +1,6 @@
-# Leren.be — Google Play: сторінка застосунку й форми Play Console
+# lerenbe.com — Google Play: сторінка застосунку й форми Play Console
+
+Оновлено 04.11.2026: бренд lerenbe.com, рівень A2, пробні іспити, звіти про помилки в Data safety.
 
 Ліміти Google Play: назва ≤ 30 символів, короткий опис ≤ 80, повний опис ≤ 4000.
 Основна мова сторінки — українська; нідерландську та англійську додай як переклади («Переклади» → «Додати мову»).
@@ -23,13 +25,13 @@
 ## 🇺🇦 Українська (uk-UA)
 
 **Назва:**
-Leren.be — Nederlands A1
+lerenbe.com — Nederlands A1–A2
 
 **Короткий опис:**
-Нідерландська A1 для українців: уроки, тести, Toets і AI-викладач Пітер.
+Нідерландська A1–A2 для українців: уроки, тести, іспити й AI-викладач Пітер.
 
 **Повний опис:**
-Leren.be — тренажер нідерландської мови рівнів A1.1 і A1.2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
+lerenbe.com — тренажер нідерландської мови рівнів A1.1, A1.2 і A2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
 
 🤖 AI-ВИКЛАДАЧ ПІТЕР
 • «Praat met Peter»: розмовляй письмово або голосом — Пітер відповідає простою нідерландською, виправляє помилки й пояснює правило українською.
@@ -39,8 +41,9 @@ Leren.be — тренажер нідерландської мови рівнів
 • Можна практикувати також англійську та французьку.
 AI-чат — для дорослих, працює онлайн; на будь-яку відповідь можна поскаржитися кнопкою «⚑».
 
-📈 ДВА РІВНІ: A1.1 І A1.2
+📈 ТРИ РІВНІ: A1.1, A1.2 І A2
 Збирай бали, виконуй ціль дня, тримай серію днів 🔥 і відкривай наступний рівень. Якщо вже знаєш матеріал, склади тест на рівень і переходь одразу.
+A2 — окремий курс із 8 розділів про життя в Бельгії: робота, житло, здоров’я й ziekenfonds, gemeente й офіційні листи, школа, гроші й банк, новини й погода, свята й клуби. Граматика: imperfectum, die / dat, om … te, зворотні дієслова, hoewel / zodat / zodra.
 
 📚 УРОКИ ЗА ТЕМАМИ
 Привітання, питання, займенники, дієслова, артиклі de/het, числа й години, погода, сім’я, професії, тіло й лікар, дім, покупки, місто й транспорт, муніципалітет, школа CVO, робота й банк; на рівні A1.2 — мій день, модальні дієслова, perfectum, житло, телефон і лист.
@@ -49,11 +52,11 @@ AI-чат — для дорослих, працює онлайн; на будь-
 🎮 ІГРИ
 «Een dag in België» — історія дня в Бельгії, діалоги-пазли, рольова гра, «Відповідай на питання» голосом, Бліц, Memory, Диктант, Kort / lang для довгих і коротких голосних.
 
-📝 TOETS A1
-Міні-іспити як на курсі: вибір відповіді, пропущене слово, читання. Результат «склав» від 70 %.
+📝 TOETS І ПРОБНІ ІСПИТИ
+Міні-іспити як на курсі: вибір відповіді, пропущене слово, читання. Результат «склав» від 70 %. Пробні підсумкові іспити A1.1 і A1.2 з аудіюванням, читанням, письмом і говорінням.
 
 ✨ ТАКОЖ
-• Словник: понад 2700 слів з артиклем, формами й озвученням
+• Словник: понад 2900 слів з артиклем, формами й озвученням
 • Записане бельгійське озвучення або голос твого телефона
 • Уроки працюють без інтернету
 • Пояснення українською, англійською, французькою або арабською
@@ -62,7 +65,7 @@ AI-чат — для дорослих, працює онлайн; на будь-
 🔒 ПРИВАТНІСТЬ
 Без реклами. Реєстрація не потрібна: без входу прогрес зберігається лише на пристрої. Необов’язковий акаунт (Google або e-mail) синхронізує прогрес між пристроями; його можна будь-коли видалити в налаштуваннях.
 
-Leren.be — незалежний навчальний проєкт і не пов’язаний з CVO, Agentschap Integratie en Inburgering чи іншими організаціями.
+lerenbe.com — незалежний навчальний проєкт і не пов’язаний з CVO, Agentschap Integratie en Inburgering чи іншими організаціями.
 
 Маєте ідею або знайшли помилку? Напишіть: gembarsky.d@gmail.com
 
@@ -71,13 +74,13 @@ Leren.be — незалежний навчальний проєкт і не по
 ## 🇧🇪 Nederlands (nl-NL)
 
 **Naam:**
-Leren.be — Nederlands A1
+lerenbe.com — Nederlands A1–A2
 
 **Korte beschrijving:**
-Nederlands A1: lessen, quizzen, toetsen en AI-leraar Peter die fouten uitlegt.
+Nederlands A1–A2: lessen, toetsen, examens en AI-leraar Peter legt fouten uit.
 
 **Volledige beschrijving:**
-Leren.be is een oefenapp voor Nederlands op niveau A1.1 en A1.2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
+lerenbe.com is een oefenapp voor Nederlands op niveau A1.1, A1.2 en A2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
 
 🤖 AI-LERAAR PETER
 • “Praat met Peter”: schrijf of spreek — Peter antwoordt in eenvoudig Nederlands, verbetert je fouten en legt de regel uit in jouw taal.
@@ -87,8 +90,9 @@ Leren.be is een oefenapp voor Nederlands op niveau A1.1 en A1.2, gemaakt door ee
 • Je kunt ook Engels en Frans oefenen.
 De AI-chat is voor volwassenen en werkt online; elk antwoord kun je melden met “⚑”.
 
-📈 TWEE NIVEAUS: A1.1 EN A1.2
+📈 DRIE NIVEAUS: A1.1, A1.2 EN A2
 Verzamel punten, haal je dagdoel, houd je reeks 🔥 vol en ontgrendel het volgende niveau. Ken je het al? Doe de niveautest.
+A2 is een aparte cursus met 8 hoofdstukken over het leven in België: werk, wonen, gezondheid en ziekenfonds, de gemeente en officiële brieven, school, geld en bank, nieuws en weer, feesten en clubs. Grammatica: imperfectum, die / dat, om … te, wederkerende werkwoorden, hoewel / zodat / zodra.
 
 📚 LESSEN PER THEMA
 Begroetingen, vragen, voornaamwoorden, werkwoorden, de/het, getallen en de klok, het weer, familie, beroepen, lichaam en dokter, het huis, boodschappen, de stad en vervoer, de gemeente, school (CVO), werk en bank; op A1.2 ook mijn dag, modale werkwoorden, het perfectum, wonen, telefoon en mail.
@@ -97,11 +101,11 @@ Oefenvormen: Leren · Quiz · Luisteren · Zinnen bouwen · Herhalen.
 🎮 SPELLETJES
 “Een dag in België”, dialoogpuzzels, rollenspel, vragen beantwoorden met je stem, Blitz, Memory, dictee en Kort / lang.
 
-📝 TOETS A1
-Mini-toetsen zoals in de klas: meerkeuze, aanvulzinnen en lezen. “Geslaagd” vanaf 70 %.
+📝 TOETSEN EN OEFENEXAMENS
+Mini-toetsen zoals in de klas: meerkeuze, aanvulzinnen en lezen. “Geslaagd” vanaf 70 %. Oefenexamens A1.1 en A1.2 met luisteren, lezen, schrijven en spreken.
 
 ✨ VERDER
-• Woordenboek met meer dan 2700 woorden, met lidwoord, vormen en uitspraak
+• Woordenboek met meer dan 2900 woorden, met lidwoord, vormen en uitspraak
 • Opgenomen Vlaamse uitspraak of de stem van je toestel
 • Lessen werken offline
 • Donker thema en dagelijkse herinneringen
@@ -109,7 +113,7 @@ Mini-toetsen zoals in de klas: meerkeuze, aanvulzinnen en lezen. “Geslaagd” 
 🔒 PRIVACY
 Geen reclame. Geen account nodig: zonder inloggen blijft je voortgang alleen op je toestel. Met een optioneel account (Google of e-mail) synchroniseer je je voortgang; je kunt het altijd verwijderen in de instellingen.
 
-Leren.be is een onafhankelijk leerproject en is niet verbonden aan CVO, het Agentschap Integratie en Inburgering of andere organisaties.
+lerenbe.com is een onafhankelijk leerproject en is niet verbonden aan CVO, het Agentschap Integratie en Inburgering of andere organisaties.
 
 Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 
@@ -118,13 +122,13 @@ Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 ## 🇬🇧 English (en-US)
 
 **Title:**
-Leren.be — Nederlands A1
+lerenbe.com — Nederlands A1–A2
 
 **Short description:**
-Learn Dutch A1: lessons, quizzes, exams and AI tutor Peter who fixes mistakes.
+Dutch A1–A2: lessons, quizzes, exams and AI tutor Peter who fixes mistakes.
 
 **Full description:**
-Leren.be is a Dutch practice app for levels A1.1 and A1.2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
+lerenbe.com is a Dutch practice app for levels A1.1, A1.2 and A2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
 
 🤖 AI TUTOR PETER
 • “Praat met Peter”: write or speak — Peter answers in simple Dutch, corrects your mistakes and explains the rule in your language.
@@ -134,8 +138,9 @@ Leren.be is a Dutch practice app for levels A1.1 and A1.2, made by a Ukrainian w
 • You can also practise English and French.
 The AI chat is for adults and works online; you can report any answer with “⚑”.
 
-📈 TWO LEVELS: A1.1 AND A1.2
+📈 THREE LEVELS: A1.1, A1.2 AND A2
 Collect points, hit your daily goal, keep your 🔥 streak and unlock the next level. Already know it? Take the level test.
+A2 is a separate course with 8 chapters about life in Belgium: work, housing, health and ziekenfonds, the municipality and official letters, school, money and bank, news and weather, celebrations and clubs. Grammar: imperfectum, die / dat, om … te, reflexive verbs, hoewel / zodat / zodra.
 
 📚 LESSONS BY TOPIC
 Greetings, questions, pronouns, verbs, de/het, numbers and time, weather, family, jobs, body and doctor, home, shopping, the city and transport, the municipality, school (CVO), work and bank; at A1.2 also my day, modal verbs, the perfect tense, housing, phone and e-mail.
@@ -144,11 +149,11 @@ Modes: Study · Quiz · Listen · Build sentences · Review.
 🎮 GAMES
 “Een dag in België”, dialogue puzzles, role play, answer questions with your voice, Blitz, Memory, dictation and Kort / lang.
 
-📝 TOETS A1
-Mini exams like in class: multiple choice, fill in the gap and reading. “Passed” from 70%.
+📝 TOETS AND PRACTICE EXAMS
+Mini exams like in class: multiple choice, fill in the gap and reading. “Passed” from 70%. Practice final exams A1.1 and A1.2 with listening, reading, writing and speaking.
 
 ✨ ALSO
-• Dictionary with 2700+ words, with article, forms and audio
+• Dictionary with 2900+ words, with article, forms and audio
 • Recorded Belgian Dutch audio or your phone's voice
 • Lessons work offline
 • Dark mode and daily reminders
@@ -156,7 +161,7 @@ Mini exams like in class: multiple choice, fill in the gap and reading. “Passe
 🔒 PRIVACY
 No ads. No account needed: without signing in, your progress stays on your device only. An optional account (Google or e-mail) syncs your progress between devices; you can delete it any time in Settings.
 
-Leren.be is an independent learning project and is not affiliated with CVO, the Agentschap Integratie en Inburgering or any other organisation.
+lerenbe.com is an independent learning project and is not affiliated with CVO, the Agentschap Integratie en Inburgering or any other organisation.
 
 Ideas or found a mistake? Email gembarsky.d@gmail.com
 
@@ -208,8 +213,9 @@ URL: **https://lerenbe.com/privacy.html**
 | Активність у застосунку → **Взаємодія із застосунком** | прогрес, бали, налаштування, слова, журнал помилок (з акаунтом); **знеособлена статистика відвідувань Cloudflare Web Analytics** (сторінка, джерело переходу, тип пристрою, країна; без cookies та ідентифікаторів) | **Обов’язково** (статистику відвідувань не можна вимкнути) | Функціональність застосунку; **Аналітика** |
 | Активність у застосунку → **Історія пошуку в додатку** | останні пошуки в словнику (синхронізуються з акаунтом) | Необов’язково | Функціональність застосунку |
 | Активність у застосунку → **Інший створений користувачем вміст** | повідомлення в AI-чаті, навчальний профіль, скарги «⚑» | Необов’язково | Функціональність застосунку |
-| Інформація про додаток і його роботу → **Діагностика** | швидкість завантаження сторінок (Core Web Vitals) з Cloudflare Web Analytics, знеособлено | **Обов’язково** | Аналітика |
-| Пристрій або інші ідентифікатори | адреса push-підписки (нагадування); IP-адреса для денного ліміту AI (до 25 год) | Необов’язково | Функціональність (нагадування); Запобігання шахрайству, безпека |
+| Інформація про додаток і його роботу → **Діагностика** | швидкість завантаження сторінок (Core Web Vitals) з Cloudflare Web Analytics, знеособлено; технічні звіти про помилки (див. «Журнали збоїв») | **Обов’язково** | Аналітика |
+| Інформація про додаток і його роботу → **Журнали збоїв** (Crash logs) | технічні звіти про помилки з 03.11.2026: текст помилки, файл:рядок, версія, мова інтерфейсу, браузер, країна; без імені, e-mail і прогресу, до 5 за сторінку | **Обов’язково** | Аналітика (виправлення помилок) |
+| Пристрій або інші ідентифікатори | адреса push-підписки (нагадування); IP-адреса й випадковий код пристрою для лімітів AI (лише як односторонній хеш, до 25 год) | Необов’язково | Функціональність (нагадування); Запобігання шахрайству, безпека |
 
 **Не збираються:** місцезнаходження, контакти, фото й відео, фінансова інформація, здоров’я, файли, календар, веб-історія. **Аудіо — Ні**: розпізнавання мовлення виконує служба браузера/системи, застосунок отримує лише текст (згадано в політиці конфіденційності).
 **Ефемерна обробка:** не відмічай для повідомлень AI-чату — постачальник AI може тимчасово зберігати запити згідно зі своєю політикою.
