@@ -4,7 +4,8 @@
  const KEY='leren_path_v1';
  const phases=['study','listen','check'];
  function catalog(data,curriculum){
-  const chapters=[...curriculum.chapters,...curriculum.advanced].map(([id,nl,tabs],index)=>({id,nl,tabs,index,level:index<12?'A1.1':'A1.2',lessons:[]}));
+  const a2ids=new Set(curriculum.a2Ids||[]);
+  const chapters=[...curriculum.chapters,...curriculum.advanced].map(([id,nl,tabs],index)=>({id,nl,tabs,index,level:a2ids.has(id)?'A2':index<12?'A1.1':'A1.2',lessons:[]}));
   const lessons=[],cards=new Map();
   for(const chapter of chapters)for(const tab of chapter.tabs){
    const items=(data[tab]?.items||[]).filter(w=>w.id&&w.nl&&w.uk);

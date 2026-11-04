@@ -56,7 +56,10 @@ vm.runInContext(`
  assert.equal(TOETS.find(t=>t.id==='t5').lvl,'a11');
  assert.equal(TOETS.find(t=>t.id==='t10_course_v2').lvl,'a11');
  const ds=[],ss=[];LerenCurriculum.games(ds,ss);
- assert.equal(ds.length,15);assert.equal(ss.length,33);assert.equal(new Set(ds.map(d=>d.id)).size,15);assert(ds.every(d=>d.lvl==='a12'&&d.lines.length>=6));
+ const a2d=ds.filter(d=>d.lvl==='a21'),a2s=ss.filter(s=>s.lvl==='a21'),a12d=ds.filter(d=>d.lvl==='a12'),a12s=ss.filter(s=>s.lvl==='a12');
+ assert.equal(a12d.length,15);assert.equal(a12s.length,33);assert.equal(new Set(ds.map(d=>d.id)).size,ds.length);assert(a12d.every(d=>d.lines.length>=6));
+ assert.equal(a2d.length,8);assert.equal(a2s.length,26);assert(a2d.every(d=>d.lines.length>=6));
+ assert.equal(LerenCurriculum.a2.chapters.length,8,"A2 has eight chapters");assert(LerenCurriculum.a2.chapters.every(([id,t,tabs])=>tabs.length>=3&&CATEGORIES.find(c=>c.id===id).lvl==='a21'));
  console.log('PASS: 12 chapters, '+added+' new cards, all legacy IDs retained, '+TOETS.length+' tests, sixteen A1.2 chapters, fifteen A1.2 dialogues, 33 A1.2 speaking prompts, unique lesson ownership and sentence coverage');
 `,ctx);
 // Execute actual startup migration with old saved locations and earned progress.

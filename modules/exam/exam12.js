@@ -34,7 +34,7 @@ const T={
 };
 const D=window.EXAM12_DATA;
 // Words and phrases of every A1.2 lesson (the engine picks 25 at a time and keeps sentences apart from words).
-const tabs=()=>{try{return LerenCurriculum.advanced.flatMap(c=>c[2])}catch(e){return []}};
+const tabs=()=>{try{return LerenCurriculum.advanced.filter(c=>!(LerenCurriculum.a2Ids||[]).includes(c[0])).flatMap(c=>c[2])}catch(e){return []}};
 window.EXAM12=LerenExam.make({KEY:"leren_exam12",T,...D,wordTabs:tabs(),focus:"exam12",examName:"examen A1.2",ai:null,proefGram:6,min:4,
  chips:L=>L==="uk"?["Перевір мій лист орендодавцю","Потренуй мене: perfectum з hebben чи zijn","5 речень з omdat про мій день","Як написати скаргу в магазин?"]:["Check my message to the landlord","Practise the perfect: hebben or zijn","5 sentences with omdat about my day","How do I write a complaint to a shop?"]});
 })();
