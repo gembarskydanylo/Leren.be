@@ -145,9 +145,11 @@
 
 **Відмінність від A1.2:** A1.2 — короткі готові речення про власні потреби й одна дія за раз; A2 — зв’язний текст із кількох речень, підрядні речення як граматика, а не готові фрази, офіційний регістр листів і спонтанна реакція в розмові.
 
-## A2: вісім розділів (v183)
+## A2: дев’ять розділів (v184)
 
 **Розділи A2 (v183):** 1 Werk (contract en rooster), 2 Wonen (zoeken en huren), 3 Gezondheid (ziekenfonds en specialist), 4 Administratie (gemeente en brieven), 5 School en opleiding, 6 Geld (bank en klacht), 7 Nieuws en weer, 8 Samen leven (feesten en clubs). Кожен розділ: 3 уроки по 8 карток, речення-конструктор, діалог, мовні завдання, сценарій розмови, тема-картинка. Граматика: imperfectum, dat/die, om…te, zich, найвищий ступінь, hoewel/zodat/zodra.
+
+**Розділ 9 «📘 Grammatica» (v184):** 10 граматичних тем по 8 прикладів із поясненням 4 мовами: imperfectum (правильні й сильні дієслова), perfectum чи imperfectum, пасив worden, відносні die/dat, er, als/wanneer/toen, порядок слів у підрядних, прийменники in/op/naar/uit, закінчення -e прикметників. До розділу: 30 рядків для складання речень, діалог, 6 питань, сценарій розмови.
 
 - Рівень називається просто **A2** (не A2.1). Дані в `course-curriculum.js`, блок `a2` (формат як у `a12`: chapters, labels, lessons, notes, gaps, bank, dialogues, speech).
 - Розділ 1 «💼 Werk: contract en rooster»: 4 теми (contract, rooster, ziek, vroeger = imperfectum), 32 картки з прикладами, діалог «Ziekmelding», 5 питань для говоріння, 8 речень для складання, сценарій розмови, тест розділу.

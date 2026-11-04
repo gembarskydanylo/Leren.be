@@ -6,7 +6,7 @@ const c=vm.createContext({console,window:{}});
 vm.runInContext(read('modules/dialogues/translations.js'),c);c.window.LerenDialogueTr=c.LerenDialogueTr;
 vm.runInContext(read('course-curriculum.js')+';var uiLang="uk";'+script.slice(script.indexOf('const gTr='),script.indexOf('\n',script.indexOf('const gTr=')))+'\n'+script.slice(script.indexOf('const DIALOGUES=['),script.indexOf('const GAMES='))+';globalThis.X={DIALOGUES,dlgLineTr,gTr,set:l=>uiLang=l};',c);
 const {DIALOGUES,dlgLineTr,gTr}=c.X,arabic=/[؀-ۿ]/,cyr=/[Ѐ-ӿ]/;
-assert.equal(DIALOGUES.length,35);assert.equal(JSON.stringify(Object.keys(c.LerenDialogueTr).sort()),JSON.stringify(DIALOGUES.map(d=>d.id).sort()),'One translation entry per dialogue');
+assert.equal(DIALOGUES.length,36);assert.equal(JSON.stringify(Object.keys(c.LerenDialogueTr).sort()),JSON.stringify(DIALOGUES.map(d=>d.id).sort()),'One translation entry per dialogue');
 let lines=0;
 for(const d of DIALOGUES){
  for(const lang of ['uk','en','fr','ar'])assert(d.title[lang]&&d.title[lang].trim(),'Title '+lang+' '+d.id);

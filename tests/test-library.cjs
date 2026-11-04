@@ -7,8 +7,8 @@ const start=script.indexOf('const DIPH_UI = '),end=script.indexOf('\nlet toetsId
 vm.runInContext(script.slice(start,end)+'\n'+script.slice(script.indexOf('const BUILD_BANK='),script.indexOf('const SENT='))+'\nglobalThis.fixture={TOETS,LerenCurriculum};',c);
 const api=c.LerenTestLibrary,tests=c.fixture.TOETS,original=tests.filter(t=>t.kind!=='block'),snapshot=JSON.stringify(original);
 api.ensureCombined(tests);api.ensureCombined(tests);
-assert.equal(tests.filter(t=>t.kind==='block').length,7,'Idempotent combined banks');
-assert(['block_a11-1-6_v109','block_a11-7-12_v109','block_a12-1-4_v171','block_a12-5-8_v171','block_a12-9-12_v171','block_a12-13-16_v171','block_a21-1-8_v1'].every(id=>tests.some(t=>t.id===id)),'A1.1 block IDs unchanged; changed A1.2 blocks get new IDs');
+assert.equal(tests.filter(t=>t.kind==='block').length,8,'Idempotent combined banks');
+assert(['block_a11-1-6_v109','block_a11-7-12_v109','block_a12-1-4_v171','block_a12-5-8_v171','block_a12-9-12_v171','block_a12-13-16_v171','block_a21-1-5_v1','block_a21-6-9_v1'].every(id=>tests.some(t=>t.id===id)),'A1.1 block IDs unchanged; changed A1.2 blocks get new IDs');
 for(const level of ['a11','a12']){
  const blocks=api.blocks(tests,level),all=blocks.flatMap(b=>b.tests);
  assert.equal(all.length,level==='a11'?12:16);assert.equal(new Set(all.map(t=>t.id)).size,all.length);

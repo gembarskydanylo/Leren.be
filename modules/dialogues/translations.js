@@ -261,5 +261,12 @@ globalThis.LerenDialogueTr = {
   ['À trois heures. Chacun apporte quelque chose à manger.', 'في الثالثة. كل واحد يُحضر شيئاً للأكل.'],
   ['Alors je fais une salade ukrainienne. Dois-je apporter des chaises moi-même ?', 'إذن سأحضّر سلطة أوكرانية. هل عليّ إحضار الكراسي بنفسي؟'],
   ['Non, l’action de quartier s’occupe des chaises et des tables. Tu veux aider à ranger ?', 'لا، فريق الحي يتولى الكراسي والطاولات. هل تريدين المساعدة في الترتيب؟'],
-  ['Bien sûr, avec plaisir ! À samedi !', 'طبعاً، بكل سرور! إلى السبت!']]}
+  ['Bien sûr, avec plaisir ! À samedi !', 'طبعاً، بكل سرور! إلى السبت!']]},
+ course_a2gram: {lines: [
+  ['Où habitais-tu avant ?', 'أين كنت تسكن سابقاً؟'],
+  ['J’habitais à Kyiv. J’y ai travaillé dix ans dans un studio.', 'كنت أسكن في كييف. عملت هناك عشر سنوات في استوديو.'],
+  ['Et quand es-tu venu en Belgique ?', 'ومتى جئت إلى بلجيكا؟'],
+  ['Quand la guerre a commencé, je suis parti avec ma famille.', 'عندما بدأت الحرب غادرت مع عائلتي.'],
+  ['Que fais-tu ici maintenant ?', 'ماذا تفعل هنا الآن؟'],
+  ['J’apprends le néerlandais, parce que je veux travailler ici.', 'أتعلم الهولندية لأنني أريد العمل هنا.']]}
 };
