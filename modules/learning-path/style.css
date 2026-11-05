@@ -149,3 +149,20 @@
 .lp-check-row .lp-word{flex:1;min-width:0;margin:0;font-size:clamp(22px,6vw,30px);line-height:1.15;overflow-wrap:break-word;hyphens:auto}
 .lp-exercise.lp-check-phase .lp-listen-row .lp-word-art.lp-listen-pic{height:76px;max-width:none;margin:0}
 @media(max-width:360px){.lp-exercise.lp-check-phase .lp-listen-row .lp-word-art.lp-listen-pic{width:64px;height:64px}}
+
+/* Topic complete: celebration card on top of the lesson result */
+.lp-topic-done{display:grid;justify-items:center;gap:6px;margin:0 0 16px;padding:20px 16px 18px;border-radius:20px;text-align:center;background:var(--ok-soft,#e6f6ec);color:var(--ink);animation:lp-td-in .35s ease-out}
+.lp-topic-done .lp-td-icon{font-size:44px;line-height:1}
+.lp-topic-done .lp-td-title{margin:4px 0 0;font-size:26px;font-weight:900;color:var(--ok-deep,#1d7a45)}
+.lp-topic-done .lp-td-name{margin:0;font-size:19px;font-weight:800}
+.lp-topic-done .lp-td-well{margin:0;color:var(--ink-2)}
+.lp-topic-done .lp-td-next{display:grid;gap:2px;margin:10px 0 4px;font-size:15px;color:var(--ink-2)}
+.lp-topic-done .lp-td-next strong{font-size:18px;color:var(--ink)}
+.lp-topic-done .lp-button{width:100%;max-width:360px;margin-top:6px}
+.lp-topic-done.lp-block-done{background:linear-gradient(160deg,#fff3d6,#ffe2b8)}
+.lp-topic-done.lp-block-done .lp-td-title{color:#b45309}
+:root[data-theme="dark"] .lp-topic-done .lp-td-title{color:var(--ok)}
+:root[data-theme="dark"] .lp-topic-done.lp-block-done{background:linear-gradient(160deg,#4a3714,#3b2a10)}
+:root[data-theme="dark"] .lp-topic-done.lp-block-done .lp-td-title{color:#fbbf24}
+@keyframes lp-td-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.lp-topic-done{animation:none}}
