@@ -63,7 +63,7 @@ const server=http.createServer((req,res)=>{const file=path.join(root,decodeURICo
   for(const [name,viewport] of [['phone',{width:390,height:844}],['desktop',{width:1366,height:900}]]){
    const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
    // A learner who started the route and has 6 words of "Знайомство" past their review date (one answered wrong 3 times).
-   await page.addInitScript(([r,ids])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('leren_home_v1','path');localStorage.setItem('poly_ui','uk');
+   await page.addInitScript(([r,ids])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('leren_home_v1','path');localStorage.setItem('poly_ui','uk');
     const store={};ids.forEach((id,i)=>store[id]={seen:2,correct:1,wrong:i===4?3:0,streak:i===4?0:1,due:Date.now()-864e5,known:false});localStorage.setItem('poly_progress',JSON.stringify(store));
     localStorage.setItem('leren_path_v1',JSON.stringify({version:1,started:true,entry:'comm:basis:0',completed:{'comm:basis:0':5},mistakes:[],session:null,placement:null}));sessionStorage.setItem('seeded','1')},[release,course.lessons.filter(l=>l.chapter==='comm').flatMap(l=>l.ids).slice(0,6)]);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>setView('path'));

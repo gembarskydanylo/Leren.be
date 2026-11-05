@@ -15,7 +15,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-    await page.addInitScript(([release,theme])=>{if(!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_release_seen',JSON.stringify(release));localStorage.setItem('poly_theme',theme);
+    await page.addInitScript(([release,theme])=>{if(!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(release));localStorage.setItem('poly_theme',theme);
      localStorage.setItem('poly_toetsbest',JSON.stringify({course_comm_v2:9,course_travel_v2:10}));sessionStorage.setItem('seeded','1')}},[release,theme]);
     await page.goto(base);await page.waitForSelector('.fh-courses');
     if(theme==='dark')await page.evaluate(()=>{document.documentElement.dataset.theme='dark'});

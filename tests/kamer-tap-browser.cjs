@@ -23,7 +23,7 @@ const probe=()=>{const res={};for(const n of document.querySelectorAll('.k-room 
   for(const [w,h,touch,level,game] of [[390,844,true,'a11','kamer1'],[412,915,true,'a11','kamer1'],[1536,960,false,'a11','kamer1'],[390,844,true,'a21','kamer']]){
    const ctx=await browser.newContext({viewport:{width:w,height:h},hasTouch:touch,isMobile:touch,serviceWorkers:'block'}),page=await ctx.newPage();
    page.on('pageerror',e=>errors.push(w+'x'+h+': '+e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-   await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
+   await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);
    await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');
    if(game==='kamer')await page.waitForSelector('.k-menu').then(()=>page.click('.k-big'));
