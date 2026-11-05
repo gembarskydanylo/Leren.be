@@ -3954,7 +3954,8 @@ $("lhTopic").addEventListener("click",()=>openSheet("topicsSheet",true)); // str
 $("sheetRoute").addEventListener("click",()=>{closeSheet("topicsSheet");setHomePref("path");setView("path");if(learningPath)learningPath.home()});
 $("settingsBtn").addEventListener("click",()=>{acctRender();openSheet("settingsSheet")});
 // Logo = home: the start screen the learner chose (route, or the lesson page after "Вільна практика").
-function goHome(){setView(homePref==="free"?"lesson":"path");if(homePref!=="free"&&learningPath)learningPath.home();window.scrollTo({top:0})}
+// The logo always opens the main page, also for learners who chose free study: from there "Самостійно вивчати" is one tap away.
+function goHome(){setHomePref("path");setView("path");if(learningPath)learningPath.home();window.scrollTo({top:0})}
 $("brandHome").addEventListener("click",goHome);
 $("brandHome").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();goHome()}});
 $("headerRoute").addEventListener("click",()=>{setHomePref("path");setView("path");if(learningPath)learningPath.home()});
@@ -5932,7 +5933,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="196";
+const RELEASE_VERSION="197";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
