@@ -63,7 +63,9 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
    const ry1=parseFloat((await page.evaluate(measure)).ry);assert(ry1>-24+40,'drag turns the room ('+ry1+')');
    await page.mouse.move(c.l+c.w*.1,c.t+c.h*.92);await page.mouse.down();await page.mouse.move(c.l+c.w*.1+1500,c.t+c.h*.92,{steps:8});await page.mouse.up();await page.waitForTimeout(800);
    assert(parseFloat((await page.evaluate(measure)).ry)<=50.01,'turning is limited');
-   await page.click('.k-reset');await page.waitForTimeout(900);const mr=await page.evaluate(measure);assert.equal(parseFloat(mr.ry),-22,'reset view');assert(Math.abs(scaleOf(mr.tf)-s0)<.01,'reset zoom');
+   await page.click('.k-reset');
+   // The camera eases a share of the way per frame, so on a slow machine it needs more frames: wait until it has arrived.
+   await page.waitForFunction(()=>parseFloat(document.querySelector('.k-room').style.getPropertyValue('--ry'))===-22,null,{timeout:5000}).catch(()=>{});await page.waitForTimeout(200);const mr=await page.evaluate(measure);assert.equal(parseFloat(mr.ry),-22,'reset view');assert(Math.abs(scaleOf(mr.tf)-s0)<.01,'reset zoom');
    // a drag must not count as a tap on an object
    assert.equal(await page.locator('.k-react').count(),0);
    // wrong answer: soft red, the right one is shown, the score stays; right answer: green, spoken, +1
