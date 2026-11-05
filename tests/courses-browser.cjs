@@ -21,7 +21,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     if(theme==='dark')await page.evaluate(()=>{document.documentElement.dataset.theme='dark'});
     // The switcher is the first thing under the header, with three cards.
     const cards=page.locator('.fh-course');assert.equal(await cards.count(),3);
-    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),s=document.querySelector('.fh-courses');return [...r.children].find(e=>!e.hidden&&e.offsetHeight>0)===s});assert(first,'Course switcher sits right under the header');
+    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),s=document.querySelector('.fh-courses');return [...r.children].filter(e=>!e.hidden&&e.offsetHeight>0&&!e.classList.contains('fh-banner')).at(0)===s});assert(first,'Course switcher sits right under the header (the motivation banner may come first)');
     assert.equal(await cards.nth(0).getAttribute('aria-pressed'),'true');
     const a21=cards.nth(2);assert(!(await a21.isDisabled()),'A2 can be opened');assert.match(await a21.innerText(),/A2/);assert.doesNotMatch(await a21.innerText(),/Незабаром/);
     const width=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);assert(width,'No horizontal scroll on '+name);

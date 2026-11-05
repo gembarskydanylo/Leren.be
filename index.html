@@ -1035,7 +1035,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <link rel="stylesheet" href="./modules/learning-path/invitation.css?v=1">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
 <link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=199">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=200">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
 <link rel="stylesheet" href="./modules/home-showcase/style.css?v=196">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
@@ -1056,6 +1056,9 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 </style>
 </head>
 <body>
+<style>#splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#fff1de;cursor:pointer;transition:opacity .3s ease}#splash[hidden]{display:none}#splash.out{opacity:0;pointer-events:none}#splash img{width:100%;height:100%;object-fit:contain;display:block}.splash-on{overflow:hidden}@media(prefers-reduced-motion:reduce){#splash{transition:none}}</style>
+<div id="splash" role="img" aria-label="lerenbe.com" hidden><img alt="" decoding="async" fetchpriority="high"></div>
+<script src="./splash.js?v=201"></script>
 <main data-view="path">
   <header>
     <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="lerenbe.com — на головну"><h1 id="appTitle">lerenbe.com</h1><p id="tagline"></p></div>
@@ -1257,7 +1260,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/card-art/more-things.js?v=135"></script>
 <script src="./modules/rewards/gifts.js?v=174"></script>
 <script src="./modules/rewards/ui.js?v=179"></script>
-<script src="./modules/focused-home/ui.js?v=199"></script>
+<script src="./modules/focused-home/ui.js?v=200"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=180"></script>
 <script src="./modules/lesson-conversation/content.js?v=174"></script>
@@ -1273,10 +1276,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/kamer/game.js?v=198"></script>
 <script src="./modules/learning-path/invitation.js?v=2"></script>
 <script src="./modules/home-showcase/ui.js?v=198"></script>
-<script src="./modules/learning-path/ui.js?v=199"></script>
+<script src="./modules/learning-path/ui.js?v=200"></script>
 <script src="./modules/dialogues/translations.js?v=177"></script>
 <script src="./course-curriculum.js?v=178"></script>
-<script src="./app.js?v=199"></script>
+<script src="./app.js?v=201"></script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
 <script src="./modules/exam/exam-core.js?v=176" defer></script>

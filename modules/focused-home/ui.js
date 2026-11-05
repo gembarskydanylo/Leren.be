@@ -91,9 +91,16 @@
   if(total)box.appendChild(node('p','fh-pcard-lessons',c.lessons(done,total)));
   return box;
  }
+ // Bold motivational banner at the top of the home screen: Ukrainian first, then Dutch and English.
+ const BANNER=[['uk','Українська','Вчити нідерландську складно. Важко. Але ти зможеш — я в це вірю! 💪'],['nl','Nederlands','Nederlands leren is moeilijk. Zwaar. Maar jij kunt het — ik geloof in jou!'],['en','English','Learning Dutch is hard. Tough. But you can do it — I believe in you!']];
+ function banner(){
+  const box=node('section','fh-banner');box.setAttribute('aria-label','Motivation');
+  BANNER.forEach(([lang,name,text],i)=>{const p=node('p','fh-banner-line'+(i?' is-small':''),text);p.lang=lang;box.appendChild(p)});
+  return box;
+ }
  function about(lang){
   const t=tr(lang),d=node('dialog','fh-about');d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';d.setAttribute('aria-labelledby','fhAboutTitle');const h=node('h2','','lerenbe.com');h.id='fhAboutTitle';d.append(h,node('p','',t.aboutText),node('p','',t.teachers),node('p','',t.aboutAi));const links=node('div','fh-about-links'),privacy=node('a','',t.privacy),contact=node('a','',t.contact);privacy.href='./privacy.html';contact.href='mailto:gembarsky.d@gmail.com';links.append(privacy,contact);d.append(links,button(t.close,()=>d.close(),'fh-primary'));const previous=document.activeElement;d.addEventListener('close',()=>{d.remove();if(previous?.isConnected)previous.focus()},{once:true});document.body.append(d);d.showModal();return d;
  }
  courses.open=false;
- window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,progressCard,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
+ window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,progressCard,banner,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
 })();
