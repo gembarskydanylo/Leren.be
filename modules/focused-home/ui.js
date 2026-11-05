@@ -92,15 +92,37 @@
   return box;
  }
  // Bold motivational banner at the top of the home screen: Ukrainian first, then Dutch and English.
- const BANNER=[['uk','Українська','Вчити нідерландську складно. Важко. Але ти зможеш — я в це вірю! 💪'],['nl','Nederlands','Nederlands leren is moeilijk. Zwaar. Maar jij kunt het — ik geloof in jou!'],['en','English','Learning Dutch is hard. Tough. But you can do it — I believe in you!']];
+ // A new message on every visit: chosen once per page load, never the same one as last time.
+ const BANNER=[
+  ['Вчити нідерландську складно. Важко. Але ти зможеш — я в це вірю! 💪','Nederlands leren is moeilijk. Zwaar. Maar jij kunt het — ik geloof in jou!','Learning Dutch is hard. Tough. But you can do it — I believe in you!'],
+  ['Зараз важко. Потім буде легше. 💛','Nu is het moeilijk. Straks wordt het makkelijker.','It is hard now. It gets easier.'],
+  ['Не ідеально — але вже нідерландською!','Niet perfect — maar al in het Nederlands!','Not perfect — but already in Dutch!'],
+  ['Кожен експерт колись був нулем.','Elke expert was ooit een beginner.','Every expert was once a beginner.'],
+  ['Маленькі кроки. Велика гордість. 🌷','Kleine stapjes. Grote trots.','Small steps. Big pride.'],
+  ['Помилки — це доказ, що ти пробуєш.','Fouten maken bewijst dat je het probeert.','Mistakes prove that you are trying.'],
+  ['10 хвилин на день — і за місяць ти скажеш більше, ніж сьогодні.','Tien minuten per dag — en over een maand zeg je meer dan nu.','Ten minutes a day — and in a month you will say more than today.'],
+  ['Ти вже зробив найважче — почав. ✨','Het moeilijkste heb je al gedaan: beginnen.','You have already done the hardest part: starting.'],
+  ['Говори навіть з акцентом. Тебе зрозуміють!','Praat, ook met een accent. Ze begrijpen je wel!','Speak, even with an accent. They will understand you!'],
+  ['Сьогодні одне нове слово — завтра ціла розмова.','Vandaag één nieuw woord, morgen een heel gesprek.','One new word today, a whole conversation tomorrow.'],
+  ['Навіть повільний крок — це крок уперед.','Zelfs een langzame stap is een stap vooruit.','Even a slow step is a step forward.'],
+  ['«De» чи «het»? Не хвилюйся — навіть бельгійці іноді сумніваються.','“De” of “het”? Geen zorgen — zelfs Belgen twijfelen soms.','“De” or “het”? Do not worry — even locals hesitate sometimes.']
+ ];
+ let bannerPick=-1;
+ function pickBanner(){
+  if(bannerPick>=0)return bannerPick;
+  let last=-1;try{last=Number(localStorage.getItem('leren_banner_last'))}catch(e){}
+  let n=Math.floor(Math.random()*BANNER.length);if(BANNER.length>1&&n===last)n=(n+1+Math.floor(Math.random()*(BANNER.length-1)))%BANNER.length;
+  try{localStorage.setItem('leren_banner_last',String(n))}catch(e){}
+  return bannerPick=n;
+ }
  function banner(){
   const box=node('section','fh-banner');box.setAttribute('aria-label','Motivation');
-  BANNER.forEach(([lang,name,text],i)=>{const p=node('p','fh-banner-line'+(i?' is-small':''),text);p.lang=lang;box.appendChild(p)});
+  ['uk','nl','en'].forEach((lang,i)=>{const p=node('p','fh-banner-line'+(i?' is-small':''),BANNER[pickBanner()][i]);p.lang=lang;box.appendChild(p)});
   return box;
  }
  function about(lang){
   const t=tr(lang),d=node('dialog','fh-about');d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';d.setAttribute('aria-labelledby','fhAboutTitle');const h=node('h2','','lerenbe.com');h.id='fhAboutTitle';d.append(h,node('p','',t.aboutText),node('p','',t.teachers),node('p','',t.aboutAi));const links=node('div','fh-about-links'),privacy=node('a','',t.privacy),contact=node('a','',t.contact);privacy.href='./privacy.html';contact.href='mailto:gembarsky.d@gmail.com';links.append(privacy,contact);d.append(links,button(t.close,()=>d.close(),'fh-primary'));const previous=document.activeElement;d.addEventListener('close',()=>{d.remove();if(previous?.isConnected)previous.focus()},{once:true});document.body.append(d);d.showModal();return d;
  }
  courses.open=false;
- window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,progressCard,banner,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
+ window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,progressCard,banner,bannerCount:()=>BANNER.length,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
 })();

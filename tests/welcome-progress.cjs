@@ -54,3 +54,18 @@ for(const lang of ['uk','en','fr','ar']){
 assert(fs.readFileSync('modules/learning-path/ui.js','utf8').includes('LerenFocus.progressCard'));
 assert(script.includes('stats:()=>({streak:streakState().n,min:minutesToday(),goal:goalMin(),points:score})'));
 console.log('PASS: welcome screen in four languages shown once, then level question; home progress card with streak, goal, points and link to full progress');
+// 5. Banner: 12 messages in uk/nl/en, a new one on every visit (never the same twice in a row), stable within one page load.
+{
+ const src2=fs.readFileSync('modules/focused-home/ui.js','utf8'),store={};
+ const mkEl=tag=>({tag,className:'',textContent:'',lang:'',children:[],append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)},setAttribute(){}});
+ const seen=new Set();let prev=-1;
+ for(let visit=0;visit<60;visit++){
+  const win={};const ctx=vm.createContext({window:win,localStorage:{getItem:k=>store[k]??null,setItem:(k,v)=>{store[k]=v}},document:{createElement:mkEl,createElementNS:()=>({setAttribute(){},appendChild(){}})},globalThis:{},requestAnimationFrame(){},addEventListener(){}});
+  vm.runInContext(src2,ctx);const F=win.LerenFocus;assert(F.bannerCount()>=10,'at least ten banner messages');
+  const a=F.banner(),b=F.banner();assert.equal(a.children[0].textContent,b.children[0].textContent,'same message within one page load');
+  assert.deepEqual(a.children.map(c=>c.lang),['uk','nl','en']);assert(a.children.every(c=>c.textContent.length>10),'three languages filled');
+  const idx=Number(store.leren_banner_last);assert.notEqual(idx,prev,'never the same message twice in a row');prev=idx;seen.add(idx);
+ }
+ assert(seen.size>=8,'messages rotate across visits');
+}
+console.log('PASS: banner with 12 uk/nl/en messages, new one on each visit, no immediate repeat');

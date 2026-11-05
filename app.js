@@ -5675,7 +5675,7 @@ function syncLine(){const u=acctU(),st=syncStatus(),at=Number(lsGet("leren_sync_
  if(st==="error")return u.error+": "+(u.why[acct.err]||acct.err)+(acct.err==="size"||acct.err==="denied"?"":" — "+u.retry);
  if(st==="pending")return u.pending;return u.synced+(at?" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"")}
 // Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
-const SYNC_SKIP=new Set(["leren_device_id","leren_sync_uid","leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
+const SYNC_SKIP=new Set(["leren_banner_last","leren_device_id","leren_sync_uid","leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
  "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1"]);
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
@@ -5963,7 +5963,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="202";
+const RELEASE_VERSION="203";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
