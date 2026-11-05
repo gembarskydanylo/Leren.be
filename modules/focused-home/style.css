@@ -154,3 +154,26 @@
 .fh-pp-list{margin:4px 0 0;padding-inline-start:20px;font:700 15px/1.5 var(--font-body)}
 .fh-pp-none{margin:0;font:600 14px/1.4 var(--font-body);color:var(--mut)}
 @media(prefers-reduced-motion:reduce){.fh-course-arrow{transition:none}}
+
+/* Home progress card */
+.fh-pcard{margin:18px 0 0;padding:16px;border:1.5px solid var(--line);border-radius:20px;background:var(--surface)}
+.fh-pcard-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
+.fh-pcard-head h2{margin:0;font:800 18px/1.2 var(--font-display,inherit)}
+.fh-pcard-more{white-space:nowrap}
+.fh-pcard-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fh-pcard-tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding:10px 12px;border-radius:14px;background:var(--bg)}
+.fh-pcard-tile.is-off{opacity:.8}
+.fh-pcard-icon{font-size:20px;line-height:1}
+.fh-pcard-tile strong{font:900 20px/1.2 var(--font-display,inherit);color:var(--ink)}
+.fh-pcard-tile small{font-size:12px;font-weight:700;line-height:1.3;color:var(--ink-2);overflow-wrap:anywhere}
+.fh-pcard-goal{display:flex;flex-direction:column;gap:6px;margin:12px 0 0}
+.fh-pcard-goal>.fh-meter{width:100%;max-width:none;height:10px}
+.fh-pcard-goal>span,.fh-pcard-lessons{font-size:13px;font-weight:800;color:var(--ink-2)}
+.fh-pcard-lessons{margin:8px 0 0}
+@media(max-width:380px){.fh-pcard-tiles{grid-template-columns:1fr 1fr}}
+/* Welcome screen */
+.welcome-panel .welcome-list{list-style:none;margin:14px 0;padding:0;display:grid;gap:10px;text-align:start}
+.welcome-panel .welcome-list li{padding:12px 14px;border-radius:14px;background:var(--bg);font:700 15px/1.4 var(--font-body,inherit);color:var(--ink)}
+.welcome-panel .welcome-meta{margin:0 0 14px;font-weight:800}
+.welcome-panel .btn.primary{width:100%;min-height:52px}
+.welcome-panel .tour-skip{display:block;margin:12px auto 0;min-height:44px}

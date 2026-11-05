@@ -4020,9 +4020,28 @@ function startLevelTest(){
  const lt=TOETS.find(t=>t.kind==="leveltest"&&t.unlocks==="a12");if(!lt||levelUnlocked("a12"))return;
  view="toets";mode="toets";updateModeButtons();applyView();toetsId=lt.id;toetsQ=0;toetsRight=0;toetsLocked=false;nextToetsQuestion();window.scrollTo({top:0});
 }
+// One welcome screen for brand-new learners: what they will be able to do after a week, then the level question.
+const WELCOME_UI={
+ uk:{title:"Що ти вмітимеш через 7 днів",sub:"По 10 хвилин на день, з поясненнями українською.",items:["👋 Привітатися, представитися й розповісти про сім’ю","🔢 Назвати числа, ціни та час","🏥 Зрозуміти прості фрази в магазині, у лікаря й у gemeente"],meta:"Безкоштовно · без реєстрації · працює офлайн",start:"Почати",tour:"Показати, як усе працює"},
+ en:{title:"What you’ll be able to do in 7 days",sub:"10 minutes a day, with explanations in your language.",items:["👋 Greet people, introduce yourself and talk about your family","🔢 Say numbers, prices and the time","🏥 Understand simple phrases in a shop, at the doctor’s and at the gemeente"],meta:"Free · no sign-up · works offline",start:"Start",tour:"Show me how it works"},
+ fr:{title:"Ce que tu sauras faire dans 7 jours",sub:"10 minutes par jour, avec des explications dans ta langue.",items:["👋 Saluer, te présenter et parler de ta famille","🔢 Dire les nombres, les prix et l’heure","🏥 Comprendre des phrases simples au magasin, chez le médecin et à la commune"],meta:"Gratuit · sans inscription · fonctionne hors ligne",start:"Commencer",tour:"Montre-moi comment ça marche"},
+ ar:{title:"ماذا ستتقن بعد 7 أيام",sub:"10 دقائق يوميًا مع شرح بلغتك.",items:["👋 التحية والتعريف بنفسك والحديث عن عائلتك","🔢 قول الأرقام والأسعار والوقت","🏥 فهم عبارات بسيطة في المتجر وعند الطبيب وفي البلدية"],meta:"مجاني · بلا تسجيل · يعمل دون إنترنت",start:"ابدأ",tour:"أرِني كيف يعمل"}
+};
+function welcomeScreen(then,onTour){
+ const w=WELCOME_UI[uiLang]||WELCOME_UI.uk;
+ popup((panel,close,m)=>{
+  m.dataset.lock="1";panel.classList.add("welcome-panel");
+  const list=el("ul","welcome-list");w.items.forEach(t=>list.appendChild(el("li","",t)));
+  const go=el("button","btn primary",w.start);go.type="button";go.onclick=()=>{lsSet("leren_welcome_seen",true);close();setTimeout(then,200)};
+  const tour=el("button","tour-skip",w.tour);tour.type="button";tour.onclick=()=>{lsSet("leren_welcome_seen",true);lsSet("leren_level_asked",true);close();setTimeout(onTour,200)};
+  panel.append(el("h2","goal-title",w.title),el("p","goal-hint",w.sub),list,el("p","goal-hint welcome-meta",w.meta),go,tour);
+  setTimeout(()=>{try{go.focus({preventScroll:true})}catch(e){}},30);
+ });
+}
 function firstRun(){
  if(lsGet("leren_tour_done",false)){lsSet("leren_level_asked",true);return}
  if(lsGet("leren_level_asked",false)){startTour();return}
+ if(!lsGet("leren_welcome_seen",false)){welcomeScreen(firstRun,startTour);return}
  const g=growU();
  popup((panel,close,m)=>{
   m.dataset.lock="1";
@@ -4030,7 +4049,7 @@ function firstRun(){
   const list=el("div","goal-list");
   [[g.lvlNew,g.lvlNewS,false],[g.lvlKnow,g.lvlKnowS.replace("{n}",String(TOETS.find(t=>t.kind==="leveltest"&&t.unlocks==="a12")?.questions.length||0)),true]].forEach(([t,sub,test])=>{
    const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
-   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(startTour),250)};list.appendChild(b)});
+   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(()=>{lsSet("leren_tour_done",true);afterTourEnd()}),250)};list.appendChild(b)});
   panel.appendChild(list);
  });
 }
@@ -5858,6 +5877,7 @@ function initLearningPath(){
   ai:chapter=>{const ids={comm:"buren",people:"buren",nums:"super",travelTime:"station",forms:"gemeente",health:"huisarts",food:"cafe",shopping:"super",travel:"station",service:"super",wonen:"gemeente",contact:"gemeente",zorg:"huisarts",stad:"gemeente",openbaar:"station"};setView("games");aiStart(SCENES.find(sc=>sc.id===(ids[chapter]||"buren")))},
   answer:(id,ok,final,listen)=>{skillLog(listen?"luisteren":"lezen",ok);if(!final)return;const s=stateFor(id);s.seen++;LerenSRS.update(s,ok);saveStore();updateStats()},
   due:()=>dueItems(curLevel).map(x=>x.id),
+  stats:()=>({streak:streakState().n,min:minutesToday(),goal:goalMin(),points:score}),
   goal:()=>{actStep();return {min:minutesToday(),goal:goalMin()}},goalText:g=>{const iu=LerenInsights.ui(uiLang);return {done:iu.lessonDone,goal:g.min>=g.goal?iu.goalMet:iu.goalLeft(g.min,g.goal)}},
   // Peter's first piece of advice for the home screen (not the review, the route's warm-up covers it).
   advice:()=>{const r=adviceFor();const it=r.items.find(x=>x.kind!=="due");return it?{text:LerenInsights.say(it,uiLang,r.strong),label:LerenInsights.label(it,uiLang),run:()=>runAdvice(it.action)}:null},
@@ -5938,7 +5958,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="198";
+const RELEASE_VERSION="199";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

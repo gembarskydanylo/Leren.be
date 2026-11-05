@@ -76,9 +76,24 @@
   if(detail&&activeCard){panel=node('section','fh-course-panel');panel.setAttribute('aria-label',(PANEL_COPY[lang]||PANEL_COPY.uk).open);panel.hidden=!courses.open;if(courses.open)panel.appendChild(detail());nav.appendChild(panel)}
   return nav;
  }
+ // Home progress card: streak, today's goal and points at a glance, one tap to the full progress screen.
+ const PCARD={uk:{title:'Мій прогрес',streak:'днів поспіль',streak0:'Почни серію сьогодні',today:'Сьогодні',min:'хв',points:'балів',lessons:(d,t)=>d+' з '+t+' уроків рівня',met:'Ціль дня виконано 🎉',left:n=>'Ще '+n+' хв до цілі дня',more:'Весь прогрес →'},
+  en:{title:'My progress',streak:'days in a row',streak0:'Start your streak today',today:'Today',min:'min',points:'points',lessons:(d,t)=>d+' of '+t+' lessons in this level',met:'Daily goal reached 🎉',left:n=>n+' min left to your daily goal',more:'All progress →'},
+  fr:{title:'Ma progression',streak:'jours d’affilée',streak0:'Commence ta série aujourd’hui',today:'Aujourd’hui',min:'min',points:'points',lessons:(d,t)=>d+' leçons sur '+t+' dans ce niveau',met:'Objectif du jour atteint 🎉',left:n=>'Encore '+n+' min pour l’objectif du jour',more:'Toute la progression →'},
+  ar:{title:'تقدّمي',streak:'أيام متتالية',streak0:'ابدأ سلسلتك اليوم',today:'اليوم',min:'د',points:'نقطة',lessons:(d,t)=>d+' من '+t+' دروس في هذا المستوى',met:'تم تحقيق هدف اليوم 🎉',left:n=>'بقي '+n+' د لهدف اليوم',more:'كل التقدّم ←'}};
+ function progressCard({lang,streak,min,goal,points,done,total,onMore}){
+  const c=PCARD[lang]||PCARD.uk,box=node('section','fh-pcard'),head=node('div','fh-pcard-head');
+  box.setAttribute('aria-label',c.title);head.append(node('h2','',c.title),button(c.more,onMore,'fh-link fh-pcard-more'));box.appendChild(head);
+  const tiles=node('div','fh-pcard-tiles'),tile=(icon,value,label,cls)=>{const d=node('div','fh-pcard-tile'+(cls?' '+cls:''));d.append(node('span','fh-pcard-icon',icon),node('strong','',String(value)),node('small','',label));return d};
+  const shown=Math.min(min,goal);
+  tiles.append(tile('🔥',streak,streak?c.streak:c.streak0,streak?'':'is-off'),tile('🎯',shown+' / '+goal,c.today+', '+c.min),tile('⭐',points,c.points));box.appendChild(tiles);
+  const goalRow=node('div','fh-pcard-goal');goalRow.append(meter(shown,goal,c.today),node('span','',min>=goal?c.met:c.left(goal-min)));box.appendChild(goalRow);
+  if(total)box.appendChild(node('p','fh-pcard-lessons',c.lessons(done,total)));
+  return box;
+ }
  function about(lang){
   const t=tr(lang),d=node('dialog','fh-about');d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';d.setAttribute('aria-labelledby','fhAboutTitle');const h=node('h2','','lerenbe.com');h.id='fhAboutTitle';d.append(h,node('p','',t.aboutText),node('p','',t.teachers),node('p','',t.aboutAi));const links=node('div','fh-about-links'),privacy=node('a','',t.privacy),contact=node('a','',t.contact);privacy.href='./privacy.html';contact.href='mailto:gembarsky.d@gmail.com';links.append(privacy,contact);d.append(links,button(t.close,()=>d.close(),'fh-primary'));const previous=document.activeElement;d.addEventListener('close',()=>{d.remove();if(previous?.isConnected)previous.focus()},{once:true});document.body.append(d);d.showModal();return d;
  }
  courses.open=false;
- window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
+ window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,progressCard,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
 })();
