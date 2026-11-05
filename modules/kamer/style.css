@@ -87,7 +87,10 @@ html:has(main[data-view="games"] .k-stage){overflow:hidden}
 :root[data-theme="dark"] .k-scene{background:radial-gradient(70% 60% at 50% 42%,#33465e 0%,#1d2a3a 60%,#121a25 100%)}
 .k-scene.is-dragging{cursor:grabbing}
 .k-scene:focus-visible{box-shadow:inset 0 0 0 3px var(--oranje)}
-.k-room{position:relative;width:240px;height:170px;flex:none;transform-style:preserve-3d}
+.k-room{position:relative;width:240px;height:170px;flex:none;transform-style:preserve-3d;pointer-events:none}
+/* Taps: the room box and each furniture box are 3D planes of their own. Left hittable, the room plane covered the bed, wardrobe,
+   table and window for real fingers and mice (element.click() in tests never noticed). Only objects and their faces take taps. */
+.k-obj{pointer-events:auto}.k-box{pointer-events:none}.k-box>.k-face:not(.k-shadow){pointer-events:auto}
 .k-cam{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:18px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--line);box-shadow:0 8px 24px rgba(20,30,50,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:1}
 .k-cam-btn{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:13px;background:transparent;color:var(--ink);cursor:pointer;transition:background .15s}
 .k-cam-btn:hover{background:var(--surface-2)}.k-cam-btn:active{background:var(--oranje-soft,#ffe9d2)}
