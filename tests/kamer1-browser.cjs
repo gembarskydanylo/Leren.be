@@ -1,4 +1,4 @@
-// "Kamer van Pieter & Sam" (A1 game): tile in A1.1/A1.2 only, 7 objects + Sam, 5 button tasks, 8 dialogues, stars.
+// "Kamer van Pieter & Sam" (A1 game): tile in A1.1/A1.2 only, 11 objects + Sam, 5 button tasks, 8 dialogues, stars.
 // Needs Playwright with Chromium; skipped otherwise. Run: node tests/kamer-browser.cjs
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
@@ -18,7 +18,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
   await page.evaluate(()=>{curLevel='a11';setView('games');renderGamesHome()});await page.click('[data-game="kamer1"]');await page.waitForSelector('.k-menu');
   assert.equal(await page.locator('.k-task').count(),5);
   await page.click('.k-big');await page.waitForSelector('.k-room');
-  assert.equal(await page.locator('.k-room [data-item]:not([data-item=sam])').count(),7,'7 objects');
+  assert.equal(await page.locator('.k-room [data-item]:not([data-item=sam])').count(),11,'11 objects');
   assert.equal(await page.locator('.k-room [data-item=sam]').count(),1,'Sam');
   await page.evaluate(()=>document.querySelector('[data-item="bed"]').click());
   assert.match(await page.locator('.k-word-nl').textContent(),/het bed/);

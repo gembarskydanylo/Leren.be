@@ -1961,6 +1961,7 @@ function ttsSpeak(list,retried){
  if(s.speaking||s.pending){try{s.cancel()}catch(e){}setTimeout(go,120)}else go();
  return true;
 }
+const TTS_FEMALE_RX=/\b(female|vrouw|ellen|claire|colette|fenna|dena|laura|lotte|saskia|nora|marijke|lize|google nederlands)\b/i,TTS_MALE_RX=/\b(male|man|xander|maarten|arnaud|frank|ruben|jasper|bart)\b/i;
 function sayTTS(text,button,onDone){
  try{
   if(audioEl){audioEl.pause();audioEl=null}
@@ -1971,9 +1972,15 @@ function sayTTS(text,button,onDone){
   u.lang=speechLang();u.rate=.75;u.volume=1;
   const voices=speechVoices.length?speechVoices:(refreshSpeechVoices(),speechVoices),pre=u.lang.toLowerCase().split("-")[0];
   const saved=lsGet("leren_voice_"+targetLang,"");
-  const v=voices.find(x=>speechVoiceKey(x)===saved)||voices.find(x=>x.lang.toLowerCase()===u.lang.toLowerCase())||voices.find(x=>x.lang.toLowerCase().startsWith(pre));
+  const byLang=voices.filter(x=>x.lang.toLowerCase().startsWith(pre)),exact=byLang.filter(x=>x.lang.toLowerCase()===u.lang.toLowerCase());
+  const wantF=targetLang==="nl"&&recVoice()==="f",gOf=x=>TTS_FEMALE_RX.test(x.name)?"f":TTS_MALE_RX.test(x.name)?"m":"";
+  const pickG=list=>list.find(x=>gOf(x)===(wantF?"f":"m"));
+  const chosen=voices.find(x=>speechVoiceKey(x)===saved);
+  const v=chosen||(targetLang==="nl"&&(pickG(exact)||pickG(byLang)))||exact[0]||byLang[0];
   if(voices.length&&!v){showSpeechNote();return}
   if(v){u.voice=v;u.lang=v.lang}
+  // The teacher's voice must differ even on devices with one Dutch voice: nudge the pitch unless a voice of the right gender was found.
+  if(targetLang==="nl"&&!chosen&&(!v||gOf(v)!==(wantF?"f":"m")))u.pitch=wantF?1.25:.8;
   u.onstart=()=>{if(token===speechToken)updateSpeechState(true,button)};
   const done=()=>{if(token===speechToken){updateSpeechState(false);if(onDone)onDone()}};
   u.onend=done;
@@ -5143,7 +5150,7 @@ function charPicker(onPick){
   const b=el("button","ch-card"+(on?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("role","radio");b.setAttribute("aria-checked",on?"true":"false");
   const fig=el("div","ch-fig ch-"+id);fig.innerHTML=c.svg("happy",true);
   b.append(fig,el("strong","",c.n),el("span","",u[id]));if(on)b.appendChild(el("em","ch-badge","✓ "+u.chosen));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");onPick&&onPick(id)};wrap.appendChild(b)});
+  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");onPick&&onPick(id)};wrap.appendChild(b)});
  return wrap;
 }
 function pickCharPopup(then){
@@ -5154,7 +5161,7 @@ function renderCharRow(){
  const box=$("charSeg");box.replaceChildren();
  Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");b.setAttribute("aria-label",uiLang==="uk"?c.u:uiLang==="ar"?c.a:c.n);
   const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
+  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
 }
 const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
 const SCENE_ART={
@@ -5921,7 +5928,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="190";
+const RELEASE_VERSION="194";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

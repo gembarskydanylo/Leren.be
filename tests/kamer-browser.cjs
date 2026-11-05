@@ -18,9 +18,9 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
   assert.equal(await tile('a11'),false,'no Kamer tile in A1.1');assert.equal(await tile('a12'),false,'no Kamer tile in A1.2');assert.equal(await tile('a21'),true,'Kamer tile in A2');
   await page.click('[data-game="kamer"]');await page.waitForSelector('.k-menu');
   assert.equal(await page.locator('.k-task').count(),5,'five tasks');
-  // explore: the room has 15 objects and tapping shows article + noun + translation
+  // explore: the room has 18 objects and tapping shows article + noun + translation
   await page.click('.k-big');await page.waitForSelector('.k-room');
-  assert.equal(await page.locator('.k-room [data-item]').count(),15,'15 objects');
+  assert.equal(await page.locator('.k-room [data-item]').count(),18,'18 objects');
   const preserved=await page.evaluate(()=>['.k-room','.k-obj','.k-box'].every(s=>getComputedStyle(document.querySelector(s)).transformStyle==='preserve-3d')&&getComputedStyle(document.querySelector('.k-scene')).perspective!=='none');
   assert(preserved,'preserve-3d and perspective are set');
   await page.evaluate(()=>document.querySelector('[data-item="kast"]').click());
@@ -51,6 +51,6 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
   // stars are saved
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_kamer_v1')).stars);assert.deepEqual(saved,{t1:3,t2:2,t3:3,t4:3,t5:3});
   assert.deepEqual(errors,[],'no page errors');
-  console.log('PASS: Kamer van Pieter: A2-only tile, 3D room with 15 objects, rotate/tap, five tasks graded and saved');
+  console.log('PASS: Kamer van Pieter: A2-only tile, 3D room with 18 objects, rotate/tap, five tasks graded and saved');
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

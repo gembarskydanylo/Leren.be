@@ -27,7 +27,7 @@
    active:()=>screen==='lesson'&&model.state.session?.kind==='lesson',
    eligible:()=>Object.keys(model.state.completed).some(id=>model.state.completed[id]>0),
    boundary:()=>{const s=model.state.session;return screen==='lesson'&&!feedback&&s?.kind==='lesson'&&s.index>0&&s.index<s.ids.length},
-   language:()=>lang,speak:text=>bridge.speak(text)
+   level:()=>model.course,language:()=>lang,speak:text=>bridge.speak(text)
   });
   const lessonTitle=l=>(bridge.lessonLabel(l.tab,lang)||l.tab)+(l.parts>1?' · '+t('part')+' '+l.part+'/'+l.parts:'');
   const chapter=l=>course.chapters.find(c=>c.id===l.chapter);
@@ -43,16 +43,22 @@
   function note(){root.appendChild(node('p','lp-caption',t(model.persistent?'saved':'memory')))}
   function openMap(ch=null){mapChapter=ch;if(ch)mapLevel=course.chapters.find(c=>c.id===ch)?.level||mapLevel;go('map')}
   function topicTile(ch){const stats=model.stats(ch.id);return LerenFocus.topic({chapter:ch,title:title(ch),lang,...stats,done:stats.done,total:stats.total,current:model.recommended()?.chapter===ch.id,onOpen:()=>openMap(ch.id)})}
-  function courseSwitch(){
+  function courseSwitch(detail){
    const items=[['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level,key])=>({level,key,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0})}));
-   root.appendChild(LerenFocus.courses({lang,active:model.course,items,onPick(level){if(pickCourse(level))render()}}));
+   root.appendChild(LerenFocus.courses({lang,active:model.course,items,detail,onPick(level){if(pickCourse(level))render()}}));
   }
   function hero(){
-   courseSwitch();
    const session=model.state.session,paused=session?.kind==='lesson'&&(session.phase<2||session.index<session.ids.length)&&chapter(model.lesson(session.lesson)).level===model.course?model.lesson(session.lesson):null,next=paused||model.recommended(),placing=!!model.state.placement,stats=model.stats(),started=placing||!!paused||stats.done>0||model.state.started&&model.course===model.levels[0],f=LerenFocus.tr(lang),ch=next&&chapter(next);
+   const beginNext=()=>{if(placing){go('placement');return}if(warm&&model.beginWarmup(due)){go('lesson');return}if(next){if(!model.state.started)model.start();begin(next)}};
+   function panelContent(){
+    const key={'A1.1':'a11','A1.2':'a12',A2:'a21'}[model.course]||'a11',cs=model.courseStats(model.course),st2=ch?model.stats(ch.id):{done:0,total:0},legacy2=LerenCompanion.tr(lang);
+    const seen=new Set(),canDo=[];for(const id of Object.keys(model.state.completed).reverse()){const l=model.lesson(id);if(!l||chapter(l).level!==model.course)continue;const label=bridge.lessonLabel(l.tab,lang)||'';if(!label||seen.has(label))continue;seen.add(label);canDo.push(label);if(canDo.length>=3)break}
+    return LerenFocus.progressPanel({lang,level:model.course,name:LerenFocus.courseName(lang,key),pct:cs.total?Math.round(cs.done/cs.total*100):0,chapter:ch?title(ch):'',done:st2.done,total:st2.total,canDo,allDone:!next&&!placing,startLabel:started?legacy2.resume:legacy2.start,onContinue:beginNext});
+   }
    // Guided route: words that need review come first, as a short warm-up before the next lesson (once a day).
    const due=bridge.due?bridge.due():[],warm=!placing&&!paused&&next&&model.warmupDue(due)?model.warmupIds(due).length:0;
-   root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,onBegin(){if(placing){go('placement');return}if(warm&&model.beginWarmup(due)){go('lesson');return}if(next){if(!model.state.started)model.start();begin(next)}},onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
+   courseSwitch(()=>panelContent());
+   root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,onBegin:beginNext,onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
    if(talkOpen()&&!paused){const card=node('div','fh-talk-resume');card.append(node('span','',talkText('resume')+' · '+(bridge.lessonLabel(model.lesson(conversation.state.lesson).tab,lang)||'')),LerenFocus.button('💬 '+talkText('resume')+' →',()=>beginTalk(conversation.state.lesson),'fh-talk-btn'));root.appendChild(card)}
    // Peter's advice (from the learner's own results) right under the next step; it opens the exercise itself.
    const advice=!warm&&!placing&&bridge.advice?bridge.advice():null;
