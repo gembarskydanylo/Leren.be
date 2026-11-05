@@ -14,6 +14,13 @@ function clock(){
  dial.handlers.pointerup(event(350));for(const f of timers.values())f();timers.clear();assert.equal(spoken.at(-1)[1],true);
  window.speakCurrentTime();assert.equal(spoken.at(-1)[1],false);
  dial.handlers.pointerdown(event(10));dial.handlers.pointermove(event(330));assert.equal(get('digitalTime').textContent,'14:55');dial.handlers.pointercancel();
+ // The short hand moves the hours and keeps the minutes: at 14:55 it points at 87.5°; drag it on by two hours.
+ const near=(a,r)=>({clientX:100+r*Math.sin(a*Math.PI/180),clientY:100-r*Math.cos(a*Math.PI/180),pointerId:2,isPrimary:true,button:0,preventDefault(){}});
+ dial.handlers.pointerdown(near(87.5,40));dial.handlers.pointermove(near(117.5,40));assert.equal(get('digitalTime').textContent,'15:55','hour hand: +1 hour');
+ dial.handlers.pointermove(near(150,40));assert.equal(get('digitalTime').textContent,'16:55','hour hand: +2 hours, minutes stay');
+ dial.handlers.pointermove(near(60,40));assert.equal(get('digitalTime').textContent,'13:55','hour hand goes back too');dial.handlers.pointercancel();
+ // a touch far from the hour hand still takes the minute hand
+ dial.handlers.pointerdown(near(270,80));assert.equal(get('digitalTime').textContent,'13:45','minute hand');dial.handlers.pointercancel();
  assert.equal(document.documentElement.lang,'fr');assert.match(get('clockQuizTab').textContent,/Régler/);
  window.clockSetMode('quiz');assert.equal(get('clockQuizPanel').hidden,false);
  window.clockSetMode('learn');assert.equal(get('clockLearnOutput').hidden,false);

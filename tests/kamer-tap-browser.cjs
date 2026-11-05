@@ -25,8 +25,10 @@ const probe=()=>{const res={};for(const n of document.querySelectorAll('.k-room 
    page.on('pageerror',e=>errors.push(w+'x'+h+': '+e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
    await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);
-   await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');await page.waitForSelector('.k-menu');
-   await page.click('.k-big');await page.waitForSelector('.k-stage .k-room');await page.waitForTimeout(900);
+   await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');
+   if(game==='kamer')await page.waitForSelector('.k-menu').then(()=>page.click('.k-big'));
+   await page.waitForSelector('.k-stage .k-room');await page.waitForTimeout(900);
+   await page.evaluate(()=>{window.__said=[];const o=window.say;window.say=(t,...a)=>{window.__said.push(t);return o&&o(t,...a)}});
    const views=[await page.evaluate(probe)];
    for(let i=0;i<2;i++){await page.evaluate(()=>{const s=document.querySelector('.k-scene');s.focus();s.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}))});await page.waitForTimeout(700);views.push(await page.evaluate(probe))}
    for(const [vi,v] of views.entries())for(const [item,{ok,all}] of Object.entries(v)){
@@ -38,7 +40,8 @@ const probe=()=>{const res={};for(const n of document.querySelectorAll('.k-room 
    const top=await page.evaluate(()=>{let best=null;for(const f of document.querySelectorAll('[data-item="bed"] .k-face:not(.k-shadow)')){const q=f.getBoundingClientRect();const x=q.left+q.width/2,y=q.top+q.height/2,hit=document.elementFromPoint(x,y);if(hit&&hit.closest('[data-item="bed"]')&&(!best||q.width*q.height>best.a))best={x,y,a:q.width*q.height}}return best});
    assert(top,`${w}x${h}: no tappable bed face`);
    if(touch)await page.touchscreen.tap(top.x,top.y);else await page.mouse.click(top.x,top.y);
-   await page.waitForSelector('.k-word-nl',{timeout:3000});assert.match(await page.locator('.k-word-nl').textContent(),/het bed/);
+   // A1 room (no free exploring any more): the tapped object says its word.
+   await page.waitForFunction(()=>window.__said.some(t=>/het bed/.test(t)),null,{timeout:3000});
    report.push(`${w}x${h} ${touch?'touch':'mouse'}: bed ${views[0].bed.ok}/${views[0].bed.all}, wardrobe ${views[0].kast.ok}/${views[0].kast.all}`);
    await ctx.close();
   }

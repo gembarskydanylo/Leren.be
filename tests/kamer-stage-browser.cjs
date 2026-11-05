@@ -24,7 +24,9 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
   await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);
-  await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');await page.waitForSelector('.k-menu');
+  await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');
+  // the A1 room opens straight into the first task; the A2 room still has its menu
+  if(game==='kamer1')await page.waitForSelector('.k-choice');else await page.waitForSelector('.k-menu');
   return{ctx,page};
  };
  try{
@@ -32,7 +34,7 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
   const report=[];
   for(const [w,h] of SIZES){
    const {ctx,page}=await open(w,h,{touch:w<700});
-   await page.locator('.k-task').first().click();await page.waitForSelector('.k-choice');await page.waitForTimeout(400);
+   await page.waitForSelector('.k-choice');await page.waitForTimeout(400);
    const m=await page.evaluate(measure);
    assert.equal(m.stage.w,w,'stage uses the full width');assert.equal(m.stage.h,h,'stage uses the full height');
    assert.equal(m.hscroll,false,'no horizontal scroll');assert.equal(m.htmlOverflow,'hidden','page behind the game does not scroll');
@@ -52,7 +54,7 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
   // 2. camera, answers, sound, full screen, close, reload (desktop, mouse)
   {
    const {ctx,page}=await open(1536,960);
-   await page.locator('.k-task').first().click();await page.waitForSelector('.k-choice');await page.waitForTimeout(300);
+   await page.waitForSelector('.k-choice');await page.waitForTimeout(300);
    const m0=await page.evaluate(measure),s0=scaleOf(m0.tf);
    await page.click('.k-zoom-in');await page.waitForTimeout(600);const s1=scaleOf((await page.evaluate(measure)).tf);assert(s1>s0*1.1,'zoom in');
    await page.click('.k-zoom-out');await page.click('.k-zoom-out');await page.waitForTimeout(600);const s2=scaleOf((await page.evaluate(measure)).tf);assert(s2<s0,'zoom out');
@@ -92,18 +94,18 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
    }
    // task result, then the menu button and the close button
    await page.waitForSelector('.k-result');assert.equal(await page.locator('.k-stage').count(),1);
-   await page.click('.k-hud-menu');await page.waitForSelector('.k-menu');assert.equal(await page.locator('.k-stage').count(),0);
+   // the menu button of the A1 room goes back to the games list (there is no task menu any more)
+   await page.click('.k-hud-menu');await page.waitForSelector('[data-game="kamer1"]');assert.equal(await page.locator('.k-stage').count(),0);
    assert.notEqual(await page.evaluate(()=>getComputedStyle(document.documentElement).overflow),'hidden','page scrolls again');
-   await page.click('.k-big');await page.waitForSelector('.k-stage');await page.click('.k-close');await page.waitForSelector('[data-game="kamer1"]');
+   await page.click('[data-game="kamer1"]');await page.waitForSelector('.k-stage');await page.click('.k-close');await page.waitForSelector('[data-game="kamer1"]');
    assert.equal(await page.locator('.k-stage').count(),0);
    // other games still open in the normal card
    await page.click('[data-game="mm"]');await page.waitForTimeout(400);assert.equal(await page.locator('.k-stage').count(),0);
    assert(await page.evaluate(()=>document.querySelector('#card').getBoundingClientRect().width<innerWidth),'memo game keeps its card');
-   // reload: the game opens again with the saved stars
+   // reload: the game opens again at the saved place (task 1 was finished but "Next" not pressed, so task 1)
    await page.reload();await page.waitForFunction(()=>window.learningPath);
-   await page.evaluate(()=>{curLevel='a11';setView('games');renderGamesHome()});await page.click('[data-game="kamer1"]');await page.waitForSelector('.k-menu');
-   await page.click('.k-big');await page.waitForSelector('.k-stage .k-room');await page.evaluate(()=>document.querySelector('[data-item="bed"]').click());
-   assert.match(await page.locator('.k-word-nl').textContent(),/het bed/);
+   await page.evaluate(()=>{curLevel='a11';setView('games');renderGamesHome()});await page.click('[data-game="kamer1"]');await page.waitForSelector('.k-stage .k-room');
+   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.leren_kamer1_v1).at),0);assert.match(await page.locator('.k-title, .k-stage').first().textContent(),/Wat is dit/);
    await ctx.close();
   }
   // 3. A2 room on a phone: stage, input task, keyboard-free layout

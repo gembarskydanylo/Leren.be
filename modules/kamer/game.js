@@ -330,10 +330,10 @@
  const A1_OBJ=['bed','tafel','stoel','kast','raam','deur','lamp','laptop','kopje','schrift','rugzak'];
  const A1_KEY='leren_kamer1_v1';
  const A1T={
-  uk:{title:'Kamer van Pieter & Sam',sub:'Кімната Пітера й друг Sam: слова, прості питання, діалоги',talk:'Розмова з Sam',talkS:'8 коротких діалогів: вибирай відповіді кнопками',stars:'Зірки',tapSam:'Klik op Sam om te praten.',tapSamT:'Натисни на Sam, щоб поговорити.',q:'?',showTr:'Переклад',samSays:'Sam',choose:'Обери відповідь',round:'Питання',again:'Ще раз',great:'Je kent de kamer nu.',greatT:'Тепер ти знаєш кімнату.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Тепер ти добре розмовляєш із Sam!',ok:['Goed zo!','Добре!'],ok2:['Heel goed!','Дуже добре!'],no:['Probeer nog een keer.','Спробуй ще раз.'],passed:'Завдання виконано! +1 зірка',notYet:'Ще трохи практики. Спробуй знову.',talkStar:'Розмову завершено! +1 зірка',next:'Далі',list:'До списку'},
-  en:{title:'Kamer van Pieter & Sam',sub:'Pieter’s room and his friend Sam: words, simple questions, dialogues',talk:'Talk to Sam',talkS:'8 short dialogues: choose your answers with buttons',stars:'Stars',tapSam:'Klik op Sam om te praten.',tapSamT:'Tap Sam to talk.',q:'?',showTr:'Translation',samSays:'Sam',choose:'Choose an answer',round:'Question',again:'Again',great:'Je kent de kamer nu.',greatT:'Now you know the room.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Now you can talk well with Sam!',ok:['Goed zo!','Well done!'],ok2:['Heel goed!','Very good!'],no:['Probeer nog een keer.','Try once more.'],passed:'Task done! +1 star',notYet:'A bit more practice. Try again.',talkStar:'Dialogue finished! +1 star',next:'Next',list:'Back to the list'},
-  fr:{title:'Kamer van Pieter & Sam',sub:'La chambre de Pieter et son ami Sam : mots, questions simples, dialogues',talk:'Parler avec Sam',talkS:'8 courts dialogues : choisis tes réponses avec les boutons',stars:'Étoiles',tapSam:'Klik op Sam om te praten.',tapSamT:'Touche Sam pour parler.',q:'?',showTr:'Traduction',samSays:'Sam',choose:'Choisis une réponse',round:'Question',again:'Encore',great:'Je kent de kamer nu.',greatT:'Maintenant, tu connais la chambre.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Tu parles maintenant bien avec Sam !',ok:['Goed zo!','Bien !'],ok2:['Heel goed!','Très bien !'],no:['Probeer nog een keer.','Essaie encore une fois.'],passed:'Mission réussie ! +1 étoile',notYet:'Encore un peu d’entraînement. Réessaie.',talkStar:'Dialogue terminé ! +1 étoile',next:'Suivant',list:'Retour à la liste'},
-  ar:{title:'Kamer van Pieter & Sam',sub:'غرفة بيتر وصديقه Sam: كلمات وأسئلة بسيطة وحوارات',talk:'تحدّث مع Sam',talkS:'8 حوارات قصيرة: اختر إجاباتك بالأزرار',stars:'النجوم',tapSam:'Klik op Sam om te praten.',tapSamT:'المس Sam لتتحدث معه.',q:'؟',showTr:'الترجمة',samSays:'Sam',choose:'اختر إجابة',round:'سؤال',again:'مرة أخرى',great:'Je kent de kamer nu.',greatT:'الآن تعرف الغرفة.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'الآن تتحدث جيداً مع Sam!',ok:['Goed zo!','أحسنت!'],ok2:['Heel goed!','جيد جداً!'],no:['Probeer nog een keer.','حاول مرة أخرى.'],passed:'أنجزت المهمة! +1 نجمة',notYet:'تدرّب قليلاً بعد. حاول مجدداً.',talkStar:'انتهى الحوار! +1 نجمة',next:'التالي',list:'العودة إلى القائمة'}
+  uk:{title:'Kamer van Pieter & Sam',sub:'Кімната Пітера й друг Sam: слова, прості питання, діалоги',talk:'Розмова з Sam',talkS:'8 коротких діалогів: вибирай відповіді кнопками',stars:'Зірки',tapSam:'Klik op Sam om te praten.',tapSamT:'Натисни на Sam, щоб поговорити.',q:'?',showTr:'Переклад',samSays:'Sam',choose:'Обери відповідь',round:'Питання',again:'Ще раз',great:'Je kent de kamer nu.',greatT:'Тепер ти знаєш кімнату.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Тепер ти добре розмовляєш із Sam!',ok:['Goed zo!','Добре!'],ok2:['Heel goed!','Дуже добре!'],no:['Probeer nog een keer.','Спробуй ще раз.'],passed:'Завдання виконано! +1 зірка',notYet:'Ще трохи практики. Спробуй знову.',talkStar:'Розмову завершено! +1 зірка',next:'Далі',list:'До списку',step:'Крок',allDone:'Усі завдання пройдено!',again2:'Пройти все ще раз',games:'До списку ігор'},
+  en:{title:'Kamer van Pieter & Sam',sub:'Pieter’s room and his friend Sam: words, simple questions, dialogues',talk:'Talk to Sam',talkS:'8 short dialogues: choose your answers with buttons',stars:'Stars',tapSam:'Klik op Sam om te praten.',tapSamT:'Tap Sam to talk.',q:'?',showTr:'Translation',samSays:'Sam',choose:'Choose an answer',round:'Question',again:'Again',great:'Je kent de kamer nu.',greatT:'Now you know the room.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Now you can talk well with Sam!',ok:['Goed zo!','Well done!'],ok2:['Heel goed!','Very good!'],no:['Probeer nog een keer.','Try once more.'],passed:'Task done! +1 star',notYet:'A bit more practice. Try again.',talkStar:'Dialogue finished! +1 star',next:'Next',list:'Back to the list',step:'Step',allDone:'All tasks done!',again2:'Play everything again',games:'Back to the games'},
+  fr:{title:'Kamer van Pieter & Sam',sub:'La chambre de Pieter et son ami Sam : mots, questions simples, dialogues',talk:'Parler avec Sam',talkS:'8 courts dialogues : choisis tes réponses avec les boutons',stars:'Étoiles',tapSam:'Klik op Sam om te praten.',tapSamT:'Touche Sam pour parler.',q:'?',showTr:'Traduction',samSays:'Sam',choose:'Choisis une réponse',round:'Question',again:'Encore',great:'Je kent de kamer nu.',greatT:'Maintenant, tu connais la chambre.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'Tu parles maintenant bien avec Sam !',ok:['Goed zo!','Bien !'],ok2:['Heel goed!','Très bien !'],no:['Probeer nog een keer.','Essaie encore une fois.'],passed:'Mission réussie ! +1 étoile',notYet:'Encore un peu d’entraînement. Réessaie.',talkStar:'Dialogue terminé ! +1 étoile',next:'Suivant',list:'Retour à la liste',step:'Étape',allDone:'Toutes les missions sont faites !',again2:'Tout rejouer',games:'Retour aux jeux'},
+  ar:{title:'Kamer van Pieter & Sam',sub:'غرفة بيتر وصديقه Sam: كلمات وأسئلة بسيطة وحوارات',talk:'تحدّث مع Sam',talkS:'8 حوارات قصيرة: اختر إجاباتك بالأزرار',stars:'النجوم',tapSam:'Klik op Sam om te praten.',tapSamT:'المس Sam لتتحدث معه.',q:'؟',showTr:'الترجمة',samSays:'Sam',choose:'اختر إجابة',round:'سؤال',again:'مرة أخرى',great:'Je kent de kamer nu.',greatT:'الآن تعرف الغرفة.',talkDone:'Je kunt nu goed praten met Sam!',talkDoneT:'الآن تتحدث جيداً مع Sam!',ok:['Goed zo!','أحسنت!'],ok2:['Heel goed!','جيد جداً!'],no:['Probeer nog een keer.','حاول مرة أخرى.'],passed:'أنجزت المهمة! +1 نجمة',notYet:'تدرّب قليلاً بعد. حاول مجدداً.',talkStar:'انتهى الحوار! +1 نجمة',next:'التالي',list:'العودة إلى القائمة',step:'الخطوة',allDone:'أنجزت كل المهام!',again2:'العب كل شيء مرة أخرى',games:'العودة إلى الألعاب'}
  };
  const a1tr=lang=>A1T[lang]||A1T.uk;
  // five tasks: title + instruction in four languages
@@ -359,7 +359,7 @@
  ];
  const shuffle=a=>{const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r};
  const pickN=(arr,n,not)=>shuffle(arr.filter(x=>x!==not)).slice(0,n);
- function loadA1(){try{const v=JSON.parse(localStorage.getItem(A1_KEY)||'{}');return {tasks:v.tasks&&typeof v.tasks==='object'?v.tasks:{},talks:v.talks&&typeof v.talks==='object'?v.talks:{}}}catch{return {tasks:{},talks:{}}}}
+ function loadA1(){try{const v=JSON.parse(localStorage.getItem(A1_KEY)||'{}');return {tasks:v.tasks&&typeof v.tasks==='object'?v.tasks:{},talks:v.talks&&typeof v.talks==='object'?v.talks:{},at:Number.isInteger(v.at)&&v.at>=0?v.at:0}}catch{return {tasks:{},talks:{},at:0}}}
  function saveA1(v){try{localStorage.setItem(A1_KEY,JSON.stringify(v))}catch{}}
  function buildSam(host){
   const g=el('div','k-obj k-sam');g.dataset.item='sam';g.style.transform='translate3d(96px,85px,34px) rotateY(-28deg)';
@@ -375,15 +375,21 @@
   const award=(kind,id)=>{if(st[kind][id])return false;st[kind][id]=1;saveA1(st);host.done(3);return true};
   const pieterRow=(nl,locText)=>{const row=el('div','k-pieter');const img=el('img','k-avatar');img.src='./img/chars/peter.webp';img.alt=u.pieter;img.width=44;img.height=44;const bub=el('div','k-bubble');const n=el('strong','k-nl',nl);n.lang='nl';n.dir='ltr';bub.appendChild(n);if(locText)bub.appendChild(el('span','k-loc',locText));row.append(img,bub);return row};
   const samRow=(nl,locArr)=>{const row=el('div','k-pieter k-samrow');const av=el('div','k-avatar k-sam-av','S');const bub=el('div','k-bubble');const n=el('strong','k-nl',nl);n.lang='nl';n.dir='ltr';bub.appendChild(n);const tr=el('span','k-loc',tl(locArr,lang));tr.hidden=true;const q=btn(a.q,'k-q',()=>{tr.hidden=!tr.hidden;q.setAttribute('aria-pressed',String(!tr.hidden))});q.setAttribute('aria-label',a.showTr);q.setAttribute('aria-pressed','false');bub.append(tr);row.append(av,bub,q);return row};
-  function menu(){
-   closeStage();const card=host.head(a.title,a.sub);host.bar(stars10()/10);const box=el('section','k k-menu');box.dir=dir;
-   const s=stars10();const sr=el('p','k-stars k-total',a.stars+': '+'★'.repeat(s)+'☆'.repeat(10-s)+'  '+s+' / 10');box.appendChild(sr);
-   box.appendChild(pieterRow(s>=8?a.great:'Klik op Sam om te praten.',s>=8?a.greatT:a.tapSamT));
-   const ex=btn('','k-big',()=>play('explore'));ex.append(el('strong','',u.explore),el('small','',u.exploreS));box.appendChild(ex);
-   box.appendChild(el('h3','k-h',u.tasks));const list=el('div','k-tasks');
-   A1_TASKS.forEach((t,i)=>{const b=btn('','k-task',()=>play('task',i));const c=el('span','k-task-copy');const n=el('strong','',(i+1)+'. '+t.nl);n.lang='nl';n.dir='ltr';c.append(n,el('small','',tl(t.ins,lang)));const d=el('span','k-stars',st.tasks[t.id]?'★':'☆');b.append(c,d);list.appendChild(b)});box.appendChild(list);
-   const tk=btn('','k-big k-talk',()=>play('talk'));tk.append(el('strong','',a.talk+'  '+Object.keys(st.talks).length+' / '+TALKS.length),el('small','',a.talkS));box.appendChild(tk);card.appendChild(box);
+  // One route, no menu: the five tasks, then the eight talks with Sam. The place is saved, so the game goes on
+  // where the learner stopped; a task that was not passed keeps its empty star and comes back on the next round.
+  const STEPS=[...A1_TASKS.map((_,i)=>['task',i]),...TALKS.map((_,i)=>['talk',i])];
+  function go(i){
+   if(i>=STEPS.length){st.at=0;saveA1(st);finale();return}
+   st.at=i;saveA1(st);host.bar(i/STEPS.length);const [kind,j]=STEPS[i];if(kind==='task')task(j);else talk(j);
   }
+  const nextStep=i=>()=>go(i+1);
+  function finale(){
+   closeStage();const card=host.head(a.title,a.sub);host.bar(1);const box=el('section','k k-menu k-finale');box.dir=dir;
+   const s=stars10();box.appendChild(el('p','k-stars k-total',a.stars+': '+'★'.repeat(s)+'☆'.repeat(10-s)+'  '+s+' / 10'));
+   box.appendChild(pieterRow(a.great,a.allDone));
+   const row=el('div','row');row.append(btn(a.games,'btn',()=>host.home()),btn(a.again2,'btn primary',()=>go(0)));box.appendChild(row);card.appendChild(box);
+  }
+  const menu=()=>host.home();
   function mount(titleText,titleNl){
    const card=host.head(a.title,a.sub);
    const S=stage(host,{card,lang,dir,title:titleText,titleNl,sub:a.title,room:buildRoom(host,{keep:new Set(A1_OBJ),sam:true}),onMenu:menu,yaw:-22});
@@ -395,12 +401,6 @@
    return api;
   }
   const word=id=>O[id][0]+' '+O[id][1];
-  function explore(){
-   const m=mount(u.explore);const p=m.panel;p.appendChild(pieterRow('Klik op Sam om te praten.',a.tapSamT));
-   m.onTap=id=>{if(id==='sam'){talk();return}const o=O[id];p.replaceChildren();m.clearMarks('is-hot');m.mark(id,'is-hot');
-    const w=el('div','k-word');const n=el('strong','k-word-nl',word(id));n.lang='nl';n.dir='ltr';w.append(n,el('span','k-word-tr',L(o,lang)));
-    const ex=el('p','k-ex');const exn=el('span','',o[6]);exn.lang='nl';exn.dir='ltr';ex.append(exn,el('small','',EX(o,lang)));p.append(w,ex,btn(u.listen,'btn',()=>host.say(word(id)+'. '+o[6])))};
-  }
   // ---- tasks ----
   function task(ti){
    const t=A1_TASKS[ti],m=mount((ti+1)+'. '+t.nl,true),p=m.panel,S=m.stage;let round=0,right=0;const N=3;const objs=shuffle(A1_OBJ);
@@ -412,7 +412,7 @@
     const r=ok?(round%2?a.ok2:a.ok):a.no;const msg=el('div','k-react '+(ok?'is-ok':'is-no'));msg.append(pieterRow(r[0],r[1]));p.appendChild(msg);msg.scrollIntoView?.({block:'nearest',behavior:'smooth'});if(ok)gotIt();
     host.say((good&&good.querySelector('.k-choice-nl')?.textContent)||r[0]);setTimeout(after,ok?1100:1700)};
    const finish=()=>{p.replaceChildren();const passed=right>=2;if(passed)award('tasks',t.id);const box=el('div','k-result');box.append(el('div','k-bigstars',passed?'★':'☆'),pieterRow(passed?a.ok2[0]:a.no[0],passed?a.passed:a.notYet));
-    const row=el('div','row');row.append(btn(a.again,'btn',()=>task(ti)),btn(ti<A1_TASKS.length-1?a.next:a.list,'btn primary',()=>ti<A1_TASKS.length-1?task(ti+1):menu()));box.appendChild(row);p.appendChild(box);host.bar((ti+1)/A1_TASKS.length)};
+    const row=el('div','row');row.append(btn(a.again,'btn',()=>task(ti)),btn(a.next,'btn primary',nextStep(ti)));box.appendChild(row);p.appendChild(box);host.bar((ti+1)/STEPS.length)};
    const next=()=>{round++;if(round>=N)finish();else ask()};
    const target=()=>objs[round%objs.length];
    function ask(){
@@ -435,7 +435,7 @@
   }
   // ---- talks with Sam ----
   function talk(startAt){
-   let ti=startAt!=null?startAt:TALKS.findIndex((_,i)=>!st.talks['d'+(i+1)]);if(ti<0)ti=0;
+   const ti=startAt;
    const d=TALKS[ti];const m=mount(a.talk+' · '+(ti+1)+' / '+TALKS.length);const p=m.panel;m.stage.progress(ht(lang).talk+' '+(ti+1)+' / '+TALKS.length);m.stage.score('★ '+stars10()+' / 10');m.room.querySelector('[data-item="sam"]').classList.add('talking');
    m.onTap=()=>{};if(d[5])m.mark(d[5],'is-hint');
    p.appendChild(samRow(d[0],d[1]));host.say(d[0]);
@@ -446,12 +446,11 @@
      p.querySelector('.k-react')?.remove();const msg=el('div','k-react');msg.appendChild(samRow(d[3],d[4]));p.appendChild(msg);const got=award('talks','d'+(ti+1));
      const done=el('div','k-result');if(got)done.appendChild(el('p','k-msg2 ok',a.talkStar));
      const all=Object.keys(st.talks).length>=5&&stars10()>=8;if(all)done.appendChild(pieterRow(a.talkDone,a.talkDoneT));
-     const r2=el('div','row');r2.append(btn(a.list,'btn',menu),btn(ti<TALKS.length-1?a.next:a.list,'btn primary',()=>ti<TALKS.length-1?talk(ti+1):menu()));done.appendChild(r2);p.appendChild(done);host.bar(stars10()/10);m.stage.score('★ '+stars10()+' / 10');if(got)m.stage.bump()};
+     const r2=el('div','row');r2.append(btn(a.next,'btn primary',nextStep(A1_TASKS.length+ti)));done.appendChild(r2);p.appendChild(done);host.bar((A1_TASKS.length+ti+1)/STEPS.length);m.stage.score('★ '+stars10()+' / 10');if(got)m.stage.bump()};
     row.appendChild(b)});
    p.appendChild(row);
   }
-  function play(kind,i){if(kind==='explore')explore();else if(kind==='task')task(i);else talk()}
-  menu();
+  go(st.at<STEPS.length?st.at:0);
  }
 
  globalThis.LerenKamer={start,startA1,A1T:a1tr,grade,tr,T,O,TASKS,KEY,A1_OBJ,A1_TASKS,TALKS,A1_KEY};

@@ -11,10 +11,21 @@
  const catAlt={uk:'Рудий котик із книжкою',en:'Orange cat with a book',fr:'Chat roux avec un livre',ar:'قطة برتقالية مع كتاب'};
  // A space between pieces keeps words apart for screen readers and copied text.
  const add=(parent,...kids)=>kids.forEach((kid,i)=>{if(i)parent.append(' ');parent.append(kid)});
+ // Four games in random order, chosen again on every page load but kept while the page is open,
+ // so the cards do not jump when the home screen redraws (after a sync, a lesson, etc.).
+ const picks={};
+ function pickGames(level,gameCards){
+  const all=(gameCards&&gameCards())||[];
+  if(!all.length)return gamesFor(level).map(([id,file])=>{const key=id==='kamer1'?'kamer':id;return {id,art:'./img/games/'+file,title:current[key],text:current[key+'Text']}});
+  const ids=all.map(g=>g.id),kept=picks[level];
+  if(!kept||!kept.every(id=>ids.includes(id))){const order=[...ids];for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}picks[level]=order.slice(0,4)}
+  return picks[level].map(id=>all.find(g=>g.id===id));
+ }
+ let current=copy.uk;
  const el=(tag,cls,content)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(content!=null)n.textContent=content;return n};
  const button=(label,fn,cls)=>{const b=el('button',cls,label);b.type='button';b.onclick=fn;return b};
- function create({lang,level,onGames,onGame,onClock,onChat,onRoute}){
-  const t=copy[lang]||copy.uk;
+ function create({lang,level,gameCards,onGames,onGame,onClock,onChat,onRoute}){
+  const t=copy[lang]||copy.uk;current=t;
   const intro=el('section','hs-intro');intro.setAttribute('aria-label',t.eyebrow);
   const introCopy=el('div','hs-intro-copy');add(introCopy,el('p','hs-kicker',t.eyebrow),el('h2','hs-display',t.title),el('p','hs-lead',t.intro));
   const introActions=el('div','hs-actions');add(introActions,button(t.play,onGames,'hs-button hs-button-light'),button(t.talk,()=>onChat('peter'),'hs-button hs-button-outline'),button(t.route,onRoute,'hs-text-link'));introCopy.appendChild(introActions);
@@ -22,7 +33,7 @@
 
   const features=el('div','hs-features');
   const gameSection=el('section','hs-section hs-games');gameSection.id='hsGames';add(gameSection,el('p','hs-section-kicker',t.gamesTag),el('h2','',t.gamesTitle),el('p','hs-section-intro',t.gamesIntro));
-  const grid=el('div','hs-game-grid');for(const [id,file] of gamesFor(level)){const key=id==='kamer1'?'kamer':id,card=button('',()=>onGame(id),'hs-game-card'),img=el('img','hs-game-art');img.src='./img/games/'+file;img.alt=t[key];img.loading='lazy';img.width=600;img.height=400;const body=el('span','hs-game-copy');add(body,el('strong','',t[key]),el('small','',t[key+'Text']),el('span','hs-game-cta',t.gameGo));add(card,img,body);grid.appendChild(card)}gameSection.appendChild(grid);features.appendChild(gameSection);
+  const grid=el('div','hs-game-grid');for(const game of pickGames(level,gameCards)){const card=button('',()=>onGame(game.id),'hs-game-card'),img=el('img','hs-game-art');img.src=game.art;img.alt=game.title;img.loading='lazy';img.width=600;img.height=400;const body=el('span','hs-game-copy');add(body,el('strong','',game.title),el('small','',game.text),el('span','hs-game-cta',t.gameGo));add(card,img,body);grid.appendChild(card)}gameSection.appendChild(grid);features.appendChild(gameSection);
 
   const pair=el('div','hs-feature-pair');const clock=el('section','hs-clock');add(clock,el('p','hs-section-kicker',t.clockTag),el('h2','',t.clockTitle),el('p','hs-section-intro',t.clockIntro));
   const details=el('details','hs-clock-details'),summary=el('summary','',t.clockTry),frame=el('iframe','hs-clock-frame');frame.title=t.clockTitle;frame.loading='lazy';frame.dataset.homeClock='1';add(details,summary,frame);if(typeof matchMedia==='function'&&matchMedia('(min-width: 900px)').matches)details.open=true;const loadClock=()=>{if(details.open&&!frame.src)frame.src='./modules/clock/widget.html'};details.addEventListener('toggle',loadClock);loadClock();add(clock,details,button(t.clockOpen,onClock,'hs-inline-link'));pair.appendChild(clock);

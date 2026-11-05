@@ -4686,6 +4686,10 @@ function wbCourseWords(lv=curLevel){
  if(lv==="a11")return null;const seen=new Set();
  return levelItems(lv).flatMap(x=>{const m=/^(de|het) ([a-zë]{3,11})$/.exec(String(x.nl||""));const pic=String(x.icon||""),verified=pic.startsWith('<img class="card-3d"')||!!(window.LerenCard3D&&LerenCard3D[pic]);if(!m||seen.has(m[2])||!verified)return [];seen.add(m[2]);return [[m[2],m[1],"",x.uk,x.en,x.fr,x.ar,x.icon]]});
 }
+const gameStart=id=>({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart,kamer1:kamer1Start})[id];
+const gameArt=id=>id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":id==="kamer1"?"./img/games/kamer1-v196.jpg":"./img/games/"+id+"-v111.webp";
+// Games of the current level that open right now (not the AI chat: the home page has its own Peter and Dafna block).
+function gameCards(){const g=gU();return GAMES.filter(([id,,nl])=>id!=="ai"&&gameForLevel(id)&&!(nl&&targetLang!=="nl")&&!(id==="ask"&&!AI_ENDPOINT)).map(([id])=>({id,title:g[id],text:g[id+"S"]||"",art:gameArt(id)}))}
 function renderGamesHome(){
  if(gState&&gState.chat)aiRemember(gState); // leaving the AI chat: save what was learned about the learner
  gStop();gState=null;cardOwner="games";document.querySelector("main").dataset.ghome="1";const g=gU(),rec=gRecords(),w=weekState();
@@ -4699,14 +4703,14 @@ function renderGamesHome(){
  GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":id==="kamer1"?"./img/games/kamer1-v196.jpg":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  const art=el("img","g-art");art.src=gameArt(id);art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
   b.append(art,el("strong","",id==="ai"?aiTitle():g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?aiTitle():g[id])+". "+(g[id+"S"]||""));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story")b.classList.add("wide");
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart,kamer1:kamer1Start})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}gameStart(id)()};
   grid.appendChild(b);
  });
  card.appendChild(grid);
@@ -5843,7 +5847,8 @@ function initLearningPath(){
   speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setHomePref("free");setView("lesson");newRound()},
   games:()=>setView("games"),
-  game:id=>{if(id==="kamer1"&&curLevel==="a21")switchCourse("a11");setView("games");({om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart,kamer1:kamer1Start})[id]?.()},
+  gameCards:()=>gameCards(),
+  game:id=>{if(id==="kamer1"&&curLevel==="a21")switchCourse("a11");setView("games");gameStart(id)?.()},
   clock:()=>{switchCourse("a11");currentCat="nums";tab="clock";saveStore();buildNav();setView("lesson");newRound()},
   chat:id=>{lsSet("leren_char",id==="dafna"?"dafna":"peter");lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();setView("games");aiStart()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
@@ -5933,7 +5938,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="197";
+const RELEASE_VERSION="198";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

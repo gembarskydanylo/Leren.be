@@ -87,6 +87,8 @@
     raw = total,
     previous = 0,
     pointer = null,
+    hand = "minute",
+    grabMinutes = 0,
     mode = "learn",
     target = 150,
     answered = false,
@@ -193,12 +195,40 @@
       360
     );
   };
+  // Which hand the finger took: the hour hand only when the touch is near it (and not nearer the minute hand);
+  // anywhere else the minute hand, as before. When both point the same way, the inner part of the dial is the
+  // short hour hand and the outer part the long minute hand.
+  function grabHand(e) {
+    const r = dial.getBoundingClientRect(),
+      a = angle(e),
+      t = LerenClock.timeInfo(total),
+      gap = (h) => Math.abs(((a - h + 540) % 360) - 180),
+      toMinute = gap(t.m * 6),
+      toHour = gap(((t.h % 12) * 30 + t.m / 2) % 360),
+      dist =
+        Math.hypot(
+          e.clientX - r.left - r.width / 2,
+          e.clientY - r.top - r.height / 2,
+        ) /
+        (r.width / 2);
+    if (toHour > 30) return "minute";
+    if (toMinute - toHour >= 25) return "hour";
+    return dist < 0.62 ? "hour" : "minute";
+  }
   function move(e) {
     if (e.pointerId !== pointer) return;
     const a = angle(e);
-    raw = LerenClock.dragTime(raw, previous, a);
+    if (hand === "hour") {
+      // The hour hand turns 1 degree per 2 minutes; the minutes stay as they are and the hour snaps.
+      raw = LerenClock.dragTime(raw, previous, a, 2);
+      total = LerenClock.timeInfo(
+        Math.round((raw - grabMinutes) / 60) * 60 + grabMinutes,
+      ).total;
+    } else {
+      raw = LerenClock.dragTime(raw, previous, a);
+      total = LerenClock.timeInfo(raw).total;
+    }
     previous = a;
-    total = LerenClock.timeInfo(raw).total;
     render();
   }
   dial.addEventListener("pointerdown", (e) => {
@@ -212,9 +242,16 @@
     cancelTimers();
     stopSpeech();
     pointer = e.pointerId;
+    hand = grabHand(e);
     previous = angle(e);
-    raw = Math.floor(total / 60) * 60 + previous / 6;
-    total = LerenClock.timeInfo(raw).total;
+    if (hand === "hour") {
+      grabMinutes = total % 60;
+      raw = total;
+    } else {
+      raw = Math.floor(total / 60) * 60 + previous / 6;
+      total = LerenClock.timeInfo(raw).total;
+    }
+    $(hand === "hour" ? "hourHand" : "minuteHand").classList.toggle("is-grabbed", true);
     dial.setPointerCapture(pointer);
     render();
     e.preventDefault();
@@ -223,12 +260,14 @@
   dial.addEventListener("pointerup", (e) => {
     if (e.pointerId !== pointer) return;
     move(e);
-    pointer = null;
+    cancelPointer();
     dial.releasePointerCapture(e.pointerId);
     schedule();
   });
   const cancelPointer = () => {
     pointer = null;
+    $("hourHand").classList.toggle("is-grabbed", false);
+    $("minuteHand").classList.toggle("is-grabbed", false);
   };
   dial.addEventListener("pointercancel", cancelPointer);
   dial.addEventListener("lostpointercapture", cancelPointer);
