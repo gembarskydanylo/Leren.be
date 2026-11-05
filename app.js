@@ -2050,8 +2050,8 @@ function syncDiphthongsLesson(){
 }
 window.addEventListener('message',event=>{
  if(event.origin!==window.location.origin||!event.data||event.data.type!=='lerenbe-clock-height')return;
- const frame=document.querySelector('#card iframe[data-clock]');
- if(frame&&event.source===frame.contentWindow){
+ const frame=[document.querySelector('#card iframe[data-clock]'),document.querySelector('#learningPath iframe[data-home-clock]')].find(f=>f&&event.source===f.contentWindow);
+ if(frame){
   const height=Number(event.data.height);
   if(Number.isFinite(height)&&height>250&&height<2000)frame.style.height=`${height+12}px`;
  }
@@ -4698,7 +4698,7 @@ function renderGamesHome(){
  GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":id==="kamer1"?"./img/games/kamer1-v187.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":id==="kamer1"?"./img/games/kamer1-v196.jpg":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
   b.append(art,el("strong","",id==="ai"?aiTitle():g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?aiTitle():g[id])+". "+(g[id+"S"]||""));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
@@ -5841,6 +5841,10 @@ function initLearningPath(){
   dark:()=>document.documentElement.dataset.theme==="dark",
   speak:(text,button,onDone)=>window.LerenLessonWidgets.speak(text,false,button,onDone),autoSpeak:(text,button)=>window.LerenLessonWidgets.speak(text,true,button),stop:()=>window.LerenLessonWidgets.stop(),
   free:()=>{setHomePref("free");setView("lesson");newRound()},
+  games:()=>setView("games"),
+  game:id=>{if(id==="kamer1"&&curLevel==="a21")switchCourse("a11");setView("games");({om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart,kamer1:kamer1Start})[id]?.()},
+  clock:()=>{switchCourse("a11");currentCat="nums";tab="clock";saveStore();buildNav();setView("lesson");newRound()},
+  chat:id=>{lsSet("leren_char",id==="dafna"?"dafna":"peter");lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();setView("games");aiStart()},
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
   listen:(ok,fail)=>listenOnce(a=>{skillSpoke();ok(a)},fail,"nl-BE"),
@@ -5928,7 +5932,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="195";
+const RELEASE_VERSION="196";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

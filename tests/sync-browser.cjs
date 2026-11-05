@@ -40,7 +40,7 @@ const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
  const login=(p,uid='u1')=>p.page.evaluate(u=>{acct.user={uid:u,email:u+'@example.com',getIdToken:async()=>'token-'+u};acct.mod={signOut:async()=>{}};acctRender()},uid);
  // Sync until nothing changes any more (the app also syncs again after the reload a merge causes).
  async function settle(p,uid='u1'){for(let i=0;i<4;i++)if(!await sync(p,uid))return}
- async function sync(p,uid='u1',how='pull'){let nav=false;const h=()=>{nav=true};p.page.on('framenavigated',h);await login(p,uid);
+ async function sync(p,uid='u1',how='pull'){let nav=false;const h=f=>{if(f===p.page.mainFrame())nav=true};p.page.on('framenavigated',h);await login(p,uid);
   await p.page.evaluate(h=>(h==='push'?syncPush():syncPull()).then(()=>true),how).catch(()=>{});await p.page.waitForTimeout(300);p.page.off('framenavigated',h);log('sync',p.name,how,'nav',nav,cloud.reads,cloud.writes);
   if(nav){await p.page.waitForFunction(()=>window.learningPath&&document.readyState!=='loading');await login(p,uid)}return nav}
  const state=p=>p.page.evaluate(()=>({score,status:syncStatus(),line:syncLine(),xp:LerenMerge.xpTotal(lsGet('leren_xp_v2',{})),path:Object.keys(lsGet('leren_path_v1',{}).completed||{}).sort(),
@@ -79,7 +79,9 @@ const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
   if(s.status!=='synced'){await sync(phone,'u1','push');s=await state(phone)}assert.equal(s.status,'synced','synced again after coming online');assert.equal(cloudData('u1').poly_score,String(expected+5));
   // ---- Server errors: 403, 429, 500 shown, retried; then success.
   log('server errors');for(const [code,re] of [[403,/немає доступу/],[429,/сервер зайнятий/],[500,/помилка сервера/]]){await phone.page.evaluate(()=>addXP(1));cloud.fail.push(code);await sync(phone,'u1','push');s=await state(phone);assert.equal(s.status,'error',code);assert.match(s.line,re)}
-  await phone.page.evaluate(()=>{acct.err="";});await sync(phone,'u1','push');assert.equal((await state(phone)).status,'synced');
+  await phone.page.evaluate(()=>{acct.err="";});await sync(phone,'u1','push');
+  // The 5-second study-time tick may add minutes right after the push; that is new progress, so push it too.
+  if((await state(phone)).status!=='synced')await sync(phone,'u1','push');assert.equal((await state(phone)).status,'synced');
   // ---- The 900,000-character limit: not sent, shown as an error, progress kept on the device.
   log('size');const writes=cloud.writes;await phone.page.evaluate(()=>localStorage.setItem('leren_big_test','x'.repeat(900000)));await sync(phone,'u1','push');s=await state(phone);
   assert.equal(s.status,'error');assert.match(s.line,/завеликий/);assert.equal(cloud.writes,writes,'nothing sent');await phone.page.evaluate(()=>{localStorage.removeItem('leren_big_test');acct.err=""});await sync(phone,'u1','push');assert.equal((await state(phone)).status,'synced');

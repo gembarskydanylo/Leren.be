@@ -57,12 +57,15 @@
    }
    // Guided route: words that need review come first, as a short warm-up before the next lesson (once a day).
    const due=bridge.due?bridge.due():[],warm=!placing&&!paused&&next&&model.warmupDue(due)?model.warmupIds(due).length:0;
+   const showcase=globalThis.LerenShowcase?.create({lang,level:model.course,onGames:()=>bridge.games?.(),onGame:id=>bridge.game?.(id),onClock:()=>bridge.clock?.(),onChat:id=>bridge.chat?.(id),onRoute:()=>root.querySelector('.fh-hero')?.scrollIntoView({behavior:'smooth',block:'start'})});
    courseSwitch(()=>panelContent());
+   if(showcase)root.appendChild(showcase.intro);
    root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,onBegin:beginNext,onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
    if(talkOpen()&&!paused){const card=node('div','fh-talk-resume');card.append(node('span','',talkText('resume')+' · '+(bridge.lessonLabel(model.lesson(conversation.state.lesson).tab,lang)||'')),LerenFocus.button('💬 '+talkText('resume')+' →',()=>beginTalk(conversation.state.lesson),'fh-talk-btn'));root.appendChild(card)}
    // Peter's advice (from the learner's own results) right under the next step; it opens the exercise itself.
    const advice=!warm&&!placing&&bridge.advice?bridge.advice():null;
    if(advice){const card=node('div','fh-advice'),face=node('img','fh-advice-face');face.src=bridge.person?.().image||'./img/chars/peter.webp';face.alt=bridge.person?.().name||'Peter';face.width=44;face.height=44;const text=node('div','fh-advice-text');text.append(node('strong','',(bridge.person?.().name||'Peter')+':'),node('p','',advice.text));card.append(face,text,LerenFocus.button(advice.label,advice.run,'fh-advice-btn'));root.appendChild(card)}
+   if(showcase)root.appendChild(showcase.features);
    const overview=node('section','fh-overview'),heading=node('div','fh-section-heading');heading.append(node('h2','',f.topics),LerenFocus.button(f.all+' →',()=>openMap()));overview.append(heading);
    const tiles=node('div','fh-topic-grid fh-preview-grid'),own=course.chapters.filter(c=>c.level===model.course),start=Math.max(0,own.findIndex(c=>c.id===ch?.id)),others=own.filter(c=>c.id!==ch?.id),preview=[...own.slice(start+1),...own.slice(0,start)].filter(c=>c.id!==ch?.id).slice(0,2);for(const c of preview.length?preview:others.slice(0,2))tiles.appendChild(topicTile(c));overview.appendChild(tiles);root.appendChild(overview);
    const extras=node('div','fh-extras');extras.append(LerenFocus.button('✦ '+f.gifts,()=>bridge.rewards(),'fh-extra-link'),LerenFocus.button(f.about,()=>LerenFocus.about(lang),'fh-extra-link'));root.appendChild(extras);note();
