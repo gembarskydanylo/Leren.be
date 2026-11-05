@@ -1,4 +1,4 @@
-// Splash screen on app open: one of the motivation posters for about 3 seconds, then the home screen.
+// Splash screen on app open: one of the motivation posters for about 4 seconds, then the home screen.
 // Once per browser session (a PWA launch is a new session). Tap, Enter or Escape skips it. Skipped for automated browsers.
 (function(){
  var box=document.getElementById("splash");if(!box)return;
@@ -12,5 +12,5 @@
  function close(){if(closing||!box)return;closing=true;document.documentElement.classList.remove("splash-on");box.classList.add("out");setTimeout(drop,320)}
  box.addEventListener("click",close);
  document.addEventListener("keydown",function(e){if(e.key==="Escape"||e.key==="Enter"||e.key===" ")close()});
- setTimeout(close,3000);
+ setTimeout(close,4000);
 })();
