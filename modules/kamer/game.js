@@ -77,26 +77,30 @@
   f('k-t',w,d,'rotateX(90deg) translateZ('+h/2+'px)',null,(h-d)/2);
   return r;
  }
- const group=(id,x,y,z,kids,extra)=>{const g=el('div','k-obj'+(extra?' '+extra:''));g.dataset.item=id;g.style.transform='translate3d('+x+'px,'+y+'px,'+z+'px)';kids.forEach(k=>g.appendChild(k));return g};
+ const HI=4;// pictures (emoji images) are laid out HI× larger and scaled by 1/HI: sharp at any camera zoom
+ const shadow=(w,d,y=0)=>{const e=el('div','k-shadow');e.style.width=w+'px';e.style.height=d+'px';e.style.marginLeft=-w/2+'px';e.style.marginTop=-d/2+'px';e.style.transform='translateY('+(y-.5)+'px) rotateX(90deg)';return e};
+ const group=(id,x,y,z,kids,extra,sh)=>{const g=el('div','k-obj'+(extra?' '+extra:''));g.dataset.item=id;g.style.transform='translate3d('+x+'px,'+y+'px,'+z+'px)';if(sh)g.appendChild(shadow(sh[0],sh[1]));kids.forEach(k=>g.appendChild(k));return g};
  function wallItem(id,x,y,z,rot,w,h,cls,kids=[]){const g=el('div','k-obj k-wall');g.dataset.item=id;g.style.transform='translate3d('+x+'px,'+y+'px,'+z+'px) rotateY('+rot+'deg)';const f=el('div','k-face k-flat '+cls);f.style.width=w+'px';f.style.height=h+'px';f.style.marginLeft=-w/2+'px';f.style.marginTop=-h/2+'px';kids.forEach(k=>f.appendChild(k));g.appendChild(f);return g}
- function billboard(id,x,y,z,size,pic){const g=el('div','k-obj k-bb-wrap');g.dataset.item=id;g.style.transform='translate3d('+x+'px,'+y+'px,'+z+'px)';const b=el('div','k-bb');b.style.width=size+'px';b.style.height=size+'px';b.style.marginLeft=-size/2+'px';b.style.marginTop=-size/2+'px';const p=pic();if(p){p.classList?.add('k-pic');b.appendChild(p)}else b.textContent=O[id][11];g.appendChild(b);return g}
+ function billboard(id,x,y,z,size,pic){const g=el('div','k-obj k-bb-wrap');g.dataset.item=id;g.style.transform='translate3d('+x+'px,'+y+'px,'+z+'px)';const b=el('div','k-bb'),S=size*HI;b.style.width=S+'px';b.style.height=S+'px';b.style.marginLeft=-S/2+'px';b.style.marginTop=-S/2+'px';const p=pic();if(p){p.classList?.add('k-pic');b.appendChild(p)}else b.textContent=O[id][11];g.append(shadow(size*.8,size*.4,size/2),b);return g}
  function buildRoom(host,opts={}){
   const room=el('div','k-room');
   const face=(cls,w,h,tf,left,top)=>{const e=el('div','k-face k-shell '+cls);e.style.width=w+'px';e.style.height=h+'px';e.style.transform=tf;if(left!=null)e.style.left=left+'px';if(top!=null)e.style.top=top+'px';room.appendChild(e)};
   face('k-floor',240,240,'rotateX(90deg) translateZ(-85px)',0,-35);face('k-back',240,170,'translateZ(-120px)');face('k-left',240,170,'rotateY(90deg) translateZ(-120px)');
+  face('k-rug',130,100,'rotateX(90deg) translateZ(-84.6px) translate3d(8px,28px,0)',55,35);face('k-sun',70,92,'rotateX(90deg) translateZ(-84.7px) translate3d(-68px,-52px,0) skewY(-14deg)',85,39);
+  face('k-skirt',240,8,'translateZ(-119.5px)',0,162);face('k-skirt',240,8,'rotateY(90deg) translateZ(-119.5px)',0,162);
   const pic=e=>()=>host.icon?host.icon(O[e][11]):null;const things=[];
-  things.push(group('bed',-78,85,-62,[box(70,14,112,'#8b6b4a',0,-7,0),box(66,12,104,'#5b8def',0,-20,0),box(50,8,22,'#ffffff',0,-30,-38)]));
-  things.push(group('kast',75,85,-98,[box(60,120,40,'#c08a5a',0,-60,0),box(4,16,4,'#5c4033',-7,-62,21),box(4,16,4,'#5c4033',7,-62,21)]));
-  things.push(group('koelkast',8,85,-100,[box(42,96,36,'#e6edf2',0,-48,0),box(3,26,3,'#8fa0ab',14,-62,19)]));
+  things.push(group('bed',-78,85,-62,[box(70,14,112,'#8b6b4a',0,-7,0),box(66,12,104,'#5b8def',0,-20,0),box(50,8,22,'#ffffff',0,-30,-38)],null,[86,128]));
+  things.push(group('kast',75,85,-98,[box(60,120,40,'#c08a5a',0,-60,0),box(4,16,4,'#5c4033',-7,-62,21),box(4,16,4,'#5c4033',7,-62,21)],null,[76,54]));
+  things.push(group('koelkast',8,85,-100,[box(42,96,36,'#e6edf2',0,-48,0),box(3,26,3,'#8fa0ab',14,-62,19)],null,[56,48]));
   const leg=(lx,lz)=>box(5,50,5,'#7a5232',lx,-25,lz);
-  things.push(group('tafel',30,85,12,[box(84,6,52,'#a8764b',0,-53,0),leg(-36,-21),leg(36,-21),leg(-36,21),leg(36,21)]));
+  things.push(group('tafel',30,85,12,[box(84,6,52,'#a8764b',0,-53,0),leg(-36,-21),leg(36,-21),leg(-36,21),leg(36,21)],null,[100,68]));
   const sl=(lx,lz)=>box(4,26,4,'#8c2f3c',lx,-13,lz);
-  things.push(group('stoel',-8,85,52,[box(30,5,30,'#d1495b',0,-27,0),sl(-12,-12),sl(12,-12),sl(-12,12),sl(12,12),box(30,28,4,'#d1495b',0,-43,-13)]));
+  things.push(group('stoel',-8,85,52,[box(30,5,30,'#d1495b',0,-27,0),sl(-12,-12),sl(12,-12),sl(-12,12),sl(12,12),box(30,28,4,'#d1495b',0,-43,-13)],null,[40,40]));
   const win=[el('i','k-cross-v'),el('i','k-cross-h')];
   things.push(wallItem('raam',-119,-18,-62,90,64,54,'k-window',win));
   things.push(wallItem('deur',-119,25,72,90,50,120,'k-door',[el('i','k-knob')]));
   const clockPic=host.icon?host.icon(O.klok[11]):null;if(clockPic)clockPic.classList?.add('k-pic');
-  things.push(wallItem('klok',15,-48,-119,0,36,36,'k-clock',clockPic?[clockPic]:[]));
+  things.push(wallItem('klok',15,-48,-119,0,36*HI,36*HI,'k-clock k-hi',clockPic?[clockPic]:[]));
   things.push(billboard('lamp',58,13,2,30,pic('lamp')),billboard('boeken',6,17,12,28,pic('boeken')),billboard('kopje',32,20,26,22,pic('kopje')),billboard('sleutels',22,24,-4,18,pic('sleutels')));
   things.push(billboard('fles',8,-24,-100,24,pic('fles')));
   things.push(billboard('rugzak',-18,69,78,30,pic('rugzak')),billboard('trui',48,70,70,30,pic('trui')));
@@ -108,15 +112,129 @@
   return room;
  }
 
+ // ================= game stage: full-screen layout, HUD and camera (shared by the A2 and A1 rooms) =================
+ const HT={
+  uk:{menu:'Меню',close:'До списку ігор',soundOn:'Вимкнути звук',soundOff:'Увімкнути звук',full:'На весь екран',fullExit:'Вийти з повноекранного режиму',zoomIn:'Наблизити',zoomOut:'Віддалити',reset:'Початковий ракурс',left:'Повернути вліво',right:'Повернути вправо',hint:'Торкнися предмета · тягни, щоб повернути · щипок або коліщатко — масштаб',task:'Завдання',talk:'Розмова',score:'Рахунок',view:'Камера'},
+  en:{menu:'Menu',close:'Back to the games',soundOn:'Turn sound off',soundOff:'Turn sound on',full:'Full screen',fullExit:'Exit full screen',zoomIn:'Zoom in',zoomOut:'Zoom out',reset:'Starting view',left:'Turn left',right:'Turn right',hint:'Tap an object · drag to turn · pinch or scroll to zoom',task:'Task',talk:'Talk',score:'Score',view:'Camera'},
+  fr:{menu:'Menu',close:'Retour aux jeux',soundOn:'Couper le son',soundOff:'Activer le son',full:'Plein écran',fullExit:'Quitter le plein écran',zoomIn:'Zoomer',zoomOut:'Dézoomer',reset:'Vue de départ',left:'Tourner à gauche',right:'Tourner à droite',hint:'Touche un objet · glisse pour tourner · pince ou molette pour zoomer',task:'Mission',talk:'Dialogue',score:'Score',view:'Caméra'},
+  ar:{menu:'القائمة',close:'العودة إلى الألعاب',soundOn:'كتم الصوت',soundOff:'تشغيل الصوت',full:'ملء الشاشة',fullExit:'الخروج من ملء الشاشة',zoomIn:'تكبير',zoomOut:'تصغير',reset:'الزاوية الأولى',left:'تدوير لليسار',right:'تدوير لليمين',hint:'المس شيئاً · اسحب للتدوير · قرّب بإصبعين أو بالعجلة للتكبير',task:'مهمة',talk:'حوار',score:'النتيجة',view:'الكاميرا'}
+ };
+ const ht=lang=>HT[lang]||HT.uk;
+ const MUTE_KEY='leren_kamer_mute';
+ const muted=()=>{try{return localStorage.getItem(MUTE_KEY)==='1'}catch{return false}};
+ // Every spoken line goes through here, so the sound button silences the whole game.
+ const quiet=host=>({...host,say:t=>{if(!muted())host.say(t)}});
+ const SVG={
+  back:'<path d="M15 5l-7 7 7 7"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  on:'<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>',off:'<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/>',
+  full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',exit:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',reset:'<path d="M4 12a8 8 0 108-8 8 8 0 00-6 2.7"/><path d="M4 4v4h4"/>',
+  left:'<path d="M15 5l-7 7 7 7"/>',right:'<path d="M9 5l7 7-7 7"/>'
+ };
+ const icon=name=>{const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('aria-hidden','true');s.setAttribute('focusable','false');s.innerHTML=SVG[name];return s};
+ const iconBtn=(name,cls,label,fn)=>{const b=btn('',cls,fn);b.appendChild(icon(name));b.setAttribute('aria-label',label);b.title=label;return b};
+ let activeStage=null;
+ const closeStage=()=>{if(activeStage){activeStage.destroy();activeStage=null}};
+ const REDUCE=()=>typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+ // Orbit camera over the CSS-3D room: yaw/pitch/zoom eased towards a target; the room is scaled (in all three axes) and the
+ // perspective grows with it, so the room is framed the same way on a phone and on a 1920px screen.
+ function camera(scene,room,yaw0){
+  const HOME={yaw:yaw0,pitch:-24,zoom:1},cam={...HOME},cur={...HOME};let fit=1,raf=0;
+  const LIM={yaw:[-50,50],pitch:[-40,-8],zoom:[.8,2.2]};
+  const clamp=()=>{for(const k in LIM)cam[k]=Math.max(LIM[k][0],Math.min(LIM[k][1],cam[k]))};
+  const apply=()=>{const s=fit*cur.zoom;room.style.setProperty('--ry',cur.yaw.toFixed(2)+'deg');
+   room.style.transform='translate('+(10*fit).toFixed(1)+'px,'+(-17*fit).toFixed(1)+'px) scale3d('+s.toFixed(4)+','+s.toFixed(4)+','+s.toFixed(4)+') rotateX('+cur.pitch.toFixed(2)+'deg) rotateY('+cur.yaw.toFixed(2)+'deg)'};
+  const tick=()=>{raf=0;let moving=false;for(const k in cam){const d=cam[k]-cur[k],eps=k==='zoom'?.001:.04;if(Math.abs(d)>eps){cur[k]+=d*.22;moving=true}else cur[k]=cam[k]}apply();if(moving)raf=requestAnimationFrame(tick)};
+  const go=()=>{clamp();if(REDUCE()||!scene.isConnected){Object.assign(cur,cam);apply();return}if(!raf)raf=requestAnimationFrame(tick)};
+  const measure=()=>{const r=scene.getBoundingClientRect();if(!r.width||!r.height)return;
+   // what you see of the room at scale 1 (default view) measures about 325×280 px; keep a margin around it
+   fit=Math.max(.7,Math.min(r.width/345,r.height/300)*.95);scene.style.perspective=Math.round(900*fit)+'px';apply()};
+  return{cam,go,measure,apply,
+   turn:d=>{cam.yaw+=d;go()},tilt:d=>{cam.pitch+=d;go()},zoom:f=>{cam.zoom*=f;go()},
+   reset:()=>{Object.assign(cam,HOME);go()},
+   set yawNow(v){cam.yaw=v;clamp();cur.yaw=cam.yaw;apply()},
+   stop:()=>{if(raf)cancelAnimationFrame(raf);raf=0}};
+ }
+
+ // Builds the full-screen game: HUD on top, the 3D scene as the main area, the question panel at the side (wide screens)
+ // or below (phones). Returns the pieces the game logic needs.
+ function stage(host,{card,lang,dir,title,titleNl,sub,room,onMenu,yaw=-24}){
+  const h=ht(lang);card.classList.add('k-host');
+  const root=el('section','k k-stage k-play');root.dir=dir;root.setAttribute('aria-label',title);
+  // HUD
+  const hud=el('div','k-hud');
+  const back=btn('','k-back-btn k-hud-btn k-hud-menu',()=>{closeStage();onMenu()});back.append(icon('back'),el('span','',h.menu));back.setAttribute('aria-label',h.menu);
+  const head=el('div','k-hud-title');const tt=el('strong','k-title',title);if(titleNl){tt.lang='nl';tt.dir='ltr'}head.append(tt,el('small','',sub));
+  const chips=el('div','k-hud-chips');const prog=el('span','k-chip k-chip-prog');prog.hidden=true;const score=el('span','k-chip k-chip-score');score.hidden=true;score.setAttribute('aria-live','polite');chips.append(prog,score);
+  const tools=el('div','k-hud-tools');
+  const snd=iconBtn(muted()?'off':'on','k-hud-btn k-icon-btn k-sound',muted()?h.soundOff:h.soundOn,()=>{const m=!muted();try{localStorage.setItem(MUTE_KEY,m?'1':'0')}catch{}
+   if(m)try{speechSynthesis.cancel()}catch{}snd.replaceChildren(icon(m?'off':'on'));snd.setAttribute('aria-label',m?h.soundOff:h.soundOn);snd.title=m?h.soundOff:h.soundOn;snd.setAttribute('aria-pressed',String(m))});
+  snd.setAttribute('aria-pressed',String(muted()));
+  const canFull=!!(document.fullscreenEnabled&&root.requestFullscreen);
+  const full=iconBtn('full','k-hud-btn k-icon-btn k-full',h.full,()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else root.requestFullscreen({navigationUI:'hide'}).catch(()=>{})});full.hidden=!canFull;
+  const close=iconBtn('close','k-hud-btn k-icon-btn k-close',h.close,()=>{closeStage();host.home()});
+  tools.append(snd,full,close);hud.append(back,head,chips,tools);
+  // scene + camera controls
+  const body=el('div','k-body');
+  const scene=el('div','k-scene');scene.tabIndex=0;scene.setAttribute('role','group');scene.setAttribute('aria-label',title);scene.appendChild(room);
+  const cam=camera(scene,room,yaw);
+  const ctl=el('div','k-cam');ctl.setAttribute('role','toolbar');ctl.setAttribute('aria-label',h.view);
+  const lb=iconBtn('left','k-rot k-cam-btn',h.left,()=>cam.turn(-15)),rb=iconBtn('right','k-rot k-cam-btn',h.right,()=>cam.turn(15));
+  ctl.append(lb,iconBtn('minus','k-cam-btn k-zoom-out',h.zoomOut,()=>cam.zoom(1/1.2)),iconBtn('reset','k-cam-btn k-reset',h.reset,()=>cam.reset()),iconBtn('plus','k-cam-btn k-zoom-in',h.zoomIn,()=>cam.zoom(1.2)),rb);
+  const hint=el('p','k-hint',h.hint);
+  const view=el('div','k-view');view.append(scene,ctl,hint);
+  const panel=el('div','k-panel');panel.setAttribute('aria-live','polite');
+  const side=el('aside','k-side');side.appendChild(panel);
+  body.append(view,side);root.append(hud,body);card.appendChild(root);
+  // pointer: one finger/mouse turns (and tilts), two fingers pinch-zoom. No pointer capture, so taps still reach the objects.
+  const pts=new Map();let drag=null,pinch=null,moved=false;
+  const used=()=>view.classList.add('k-used');setTimeout(used,7000);
+  scene.addEventListener('pointerdown',e=>{if(e.button>0)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(pts.size===1){drag={x:e.clientX,y:e.clientY,yaw:cam.cam.yaw,pitch:cam.cam.pitch};moved=false}
+   else if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,zoom:cam.cam.zoom};drag=null;moved=true}});
+  const mv=e=>{if(!root.isConnected){destroy();return}const p=pts.get(e.pointerId);if(!p)return;p.x=e.clientX;p.y=e.clientY;
+   if(pinch&&pts.size>=2){const [a,b]=[...pts.values()];cam.cam.zoom=pinch.zoom*Math.hypot(a.x-b.x,a.y-b.y)/pinch.d;cam.go();used();return}
+   if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!moved&&Math.hypot(dx,dy)>7){moved=true;scene.classList.add('is-dragging');used()}
+   if(moved){cam.cam.yaw=drag.yaw+dx*.28;cam.cam.pitch=drag.pitch-dy*.18;cam.go()}};
+  const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(!pts.size){drag=null;scene.classList.remove('is-dragging')}};
+  const wheel=e=>{e.preventDefault();cam.zoom(Math.exp(-Math.max(-60,Math.min(60,e.deltaY))*.004));used()};
+  scene.addEventListener('wheel',wheel,{passive:false});
+  scene.addEventListener('keydown',e=>{if(e.target!==scene)return;const k={ArrowLeft:()=>cam.turn(-10),ArrowRight:()=>cam.turn(10),ArrowUp:()=>cam.tilt(-5),ArrowDown:()=>cam.tilt(5),'+':()=>cam.zoom(1.15),'=':()=>cam.zoom(1.15),'-':()=>cam.zoom(1/1.15),'0':()=>cam.reset()}[e.key];if(k){e.preventDefault();k();used()}});
+  const onFull=()=>{const on=document.fullscreenElement===root;full.replaceChildren(icon(on?'exit':'full'));full.setAttribute('aria-label',on?h.fullExit:h.full);full.title=on?h.fullExit:h.full;root.classList.toggle('is-full',on);requestAnimationFrame(cam.measure)};
+  window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+  document.addEventListener('fullscreenchange',onFull);
+  const ro=typeof ResizeObserver==='function'?new ResizeObserver(()=>{if(!root.isConnected){destroy();return}cam.measure()}):null;
+  if(ro)ro.observe(scene);else window.addEventListener('resize',cam.measure);
+  // tapping: ignore the click that ends a drag
+  let onTap=()=>{};
+  const tap=e=>{if(moved){moved=false;return}const n=e.target.closest('[data-item]');if(!n||!room.contains(n))return;used();onTap(n.dataset.item,n)};
+  scene.addEventListener('click',tap);
+  scene.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset?.item){e.preventDefault();tap(e)}});
+  let dead=false;
+  function destroy(){if(dead)return;dead=true;cam.stop();window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+   window.removeEventListener('resize',cam.measure);document.removeEventListener('fullscreenchange',onFull);if(ro)ro.disconnect();
+   if(document.fullscreenElement===root)document.exitFullscreen().catch(()=>{})}
+  const api={root,panel,scene,room,cam,destroy,
+   set onTap(f){onTap=f},get onTap(){return onTap},
+   progress:text=>{prog.hidden=text==null;prog.textContent=text||''},
+   score:text=>{score.hidden=text==null;score.textContent=text||''},
+   bump:()=>{score.classList.remove('is-bump');void score.offsetWidth;score.classList.add('is-bump')},
+   title:(text,nl)=>{tt.textContent=text;if(nl){tt.lang='nl';tt.dir='ltr'}else{tt.removeAttribute('lang');tt.removeAttribute('dir')}}};
+  activeStage=api;
+  cam.measure();requestAnimationFrame(cam.measure);
+  return api;
+ }
+
  function start(host){
-  const lang=host.lang(),u=tr(lang);let st=load();st.stars=st.stars||{};let xpTotal=0;
+  host=quiet(host);const lang=host.lang(),u=tr(lang);let st=load();st.stars=st.stars||{};let xpTotal=0;
   const root=()=>host.head(u.title,u.sub);
   const dir=lang==='ar'?'rtl':'ltr';
   const pieterRow=(nl,locText)=>{const row=el('div','k-pieter');const img=el('img','k-avatar');img.src='./img/chars/peter.webp';img.alt=u.pieter;img.width=44;img.height=44;
    const bub=el('div','k-bubble');const n=el('strong','k-nl',nl);n.lang='nl';n.dir='ltr';bub.appendChild(n);if(locText)bub.appendChild(el('span','k-loc',locText));row.append(img,bub);return row};
 
   function menu(){
-   const card=root();host.bar(0);const box=el('section','k k-menu');box.dir=dir;
+   closeStage();const card=root();host.bar(0);const box=el('section','k k-menu');box.dir=dir;
    box.appendChild(pieterRow('Welkom in mijn kamer!',tl(['Ласкаво просимо до моєї кімнати!','Welcome to my room!','Bienvenue dans ma chambre !','مرحباً بك في غرفتي!'],lang)));
    const ex=btn('','k-big',()=>play(null));ex.append(el('strong','',u.explore),el('small','',u.exploreS));box.appendChild(ex);
    box.appendChild(el('h3','k-h',u.tasks));box.appendChild(el('p','k-sub',u.tasksS));
@@ -126,28 +244,16 @@
   }
 
   function play(ti){
-   const t=ti==null?null:TASKS[ti];const card=root();host.bar(ti==null?0:ti/TASKS.length);card.classList.add('k-host');
-   const box=el('section','k k-play');box.dir=dir;
-   const top=el('div','k-top');top.append(btn(u.menu,'k-back-btn',menu),el('strong','k-title',t?(ti+1)+'. '+t.nl:u.explore));top.lastChild.lang=t?'nl':lang;box.appendChild(top);
-   const scene=el('div','k-scene');const room=buildRoom(host);scene.appendChild(room);box.appendChild(scene);
-   const nav=el('div','k-nav');let ry=-24;const setRy=v=>{ry=Math.max(-50,Math.min(50,v));room.style.setProperty('--ry',ry+'deg')};setRy(ry);
-   const lb=btn('‹','k-rot',()=>setRy(ry-15));lb.setAttribute('aria-label',u.left);const rb=btn('›','k-rot',()=>setRy(ry+15));rb.setAttribute('aria-label',u.right);
-   const hint=el('span','k-hint',u.tapHint);nav.append(lb,hint,rb);box.appendChild(nav);
-   const panel=el('div','k-panel');panel.setAttribute('aria-live','polite');box.appendChild(panel);card.appendChild(box);
-   // drag to rotate (no pointer capture, so taps still reach the objects)
-   let drag=null,moved=false;
-   scene.addEventListener('pointerdown',e=>{drag={x:e.clientX,r:ry};moved=false});
-   const mv=e=>{if(!box.isConnected){cleanup();return}if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>6)moved=true;if(moved)setRy(drag.r+dx*.35)};const up=()=>{drag=null};
-   window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
-   function cleanup(){window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up)}
+   const t=ti==null?null:TASKS[ti];const card=root();host.bar(ti==null?0:ti/TASKS.length);
+   const S=stage(host,{card,lang,dir,title:t?(ti+1)+'. '+t.nl:u.explore,titleNl:!!t,sub:u.title,room:buildRoom(host),onMenu:menu});
+   const {panel,room}=S;
+   if(t){S.progress(ht(lang).task+' '+(ti+1)+' / '+TASKS.length);S.score(stars(st.stars[t.id]||0))}
    const items=()=>[...room.querySelectorAll('[data-item]')];
    const mark=(id,cls,on=true)=>items().forEach(n=>{if(n.dataset.item===id)n.classList.toggle(cls,on)});
    const clearMarks=cls=>items().forEach(n=>n.classList.remove(cls));
    const tag=id=>{const o=O[id];panel.querySelector('.k-tag')?.remove();const g=el('div','k-tag');const n=el('strong','',o[0]+' '+o[1]);n.lang='nl';g.append(n,el('span','',' · '+L(o,lang)));return g};
    let onTap=()=>{};
-   const tap=e=>{if(moved){moved=false;return}const n=e.target.closest('[data-item]');if(!n)return;onTap(n.dataset.item);host.say(O[n.dataset.item][0]+' '+O[n.dataset.item][1])};
-   scene.addEventListener('click',tap);
-   scene.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset?.item){e.preventDefault();tap(e)}});
+   S.onTap=id=>{onTap(id);host.say(O[id][0]+' '+O[id][1])};
 
    // ---- free exploring ----
    if(!t){
@@ -170,7 +276,7 @@
     const wrap=el('div','k-formwrap');wrap.append(f,msg,ex);setTimeout(()=>inp.focus({preventScroll:true}),50);return wrap;
    };
    const result=(starsN,text,tipModel)=>{
-    const best=st.stars[t.id]||0,gain=Math.max(0,starsN-best)*5;if(starsN>best){st.stars[t.id]=starsN;save(st)}xpTotal+=gain;
+    const best=st.stars[t.id]||0,gain=Math.max(0,starsN-best)*5;if(starsN>best){st.stars[t.id]=starsN;save(st)}xpTotal+=gain;S.score(stars(Math.max(best,starsN)));if(starsN>best)S.bump();
     panel.replaceChildren();const r=el('div','k-result');const re=starsN>=3?u.r3:starsN===2?u.r2:u.r1;
     const big=el('div','k-bigstars',stars(starsN));big.setAttribute('aria-label',starsN+' / 3 '+u.star);r.appendChild(big);
     r.appendChild(pieterRow(re[0],re[1]));
@@ -260,17 +366,17 @@
   const inner=el('div','k-sam-in');inner.style.transformStyle='preserve-3d';
   [box(7,22,8,'#2c3e50',-5,-11,0),box(7,22,8,'#2c3e50',5,-11,0),box(18,22,10,'#4a90e2',0,-33,0),box(5,20,6,'#f1c27d',-12,-33,0),box(5,20,6,'#f1c27d',12,-33,0),
    box(15,15,15,'#f1c27d',0,-52,0),box(16,5,16,'#5b3a1e',0,-61,0),box(3,3,1,'#222',-3.5,-53,8),box(3,3,1,'#222',3.5,-53,8),box(6,1,1,'#b5523b',0,-47,8)].forEach(b=>inner.appendChild(b));
-  const bub=el('div','k-bb k-chat');bub.style.width='22px';bub.style.height='22px';bub.style.marginLeft='-11px';bub.style.marginTop='-104px';const ic=host.icon?host.icon('💬'):null;if(ic){ic.classList?.add('k-pic');bub.appendChild(ic)}else bub.textContent='💬';
+  const bub=el('div','k-bb k-chat');bub.style.width=22*HI+'px';bub.style.height=22*HI+'px';bub.style.marginLeft=-11*HI+'px';bub.style.marginTop=(-93-11*HI)+'px';const ic=host.icon?host.icon('💬'):null;if(ic){ic.classList?.add('k-pic');bub.appendChild(ic)}else bub.textContent='💬';
   g.append(inner,bub);g.tabIndex=0;g.setAttribute('role','button');g.setAttribute('aria-label','Sam');return g;
  }
  function startA1(host){
-  const lang=host.lang(),u=tr(lang),a=a1tr(lang),dir=lang==='ar'?'rtl':'ltr';let st=loadA1();
+  host=quiet(host);const lang=host.lang(),u=tr(lang),a=a1tr(lang),dir=lang==='ar'?'rtl':'ltr';let st=loadA1();
   const stars10=()=>Math.min(10,Object.keys(st.tasks).length+Object.keys(st.talks).length);
   const award=(kind,id)=>{if(st[kind][id])return false;st[kind][id]=1;saveA1(st);host.done(3);return true};
   const pieterRow=(nl,locText)=>{const row=el('div','k-pieter');const img=el('img','k-avatar');img.src='./img/chars/peter.webp';img.alt=u.pieter;img.width=44;img.height=44;const bub=el('div','k-bubble');const n=el('strong','k-nl',nl);n.lang='nl';n.dir='ltr';bub.appendChild(n);if(locText)bub.appendChild(el('span','k-loc',locText));row.append(img,bub);return row};
   const samRow=(nl,locArr)=>{const row=el('div','k-pieter k-samrow');const av=el('div','k-avatar k-sam-av','S');const bub=el('div','k-bubble');const n=el('strong','k-nl',nl);n.lang='nl';n.dir='ltr';bub.appendChild(n);const tr=el('span','k-loc',tl(locArr,lang));tr.hidden=true;const q=btn(a.q,'k-q',()=>{tr.hidden=!tr.hidden;q.setAttribute('aria-pressed',String(!tr.hidden))});q.setAttribute('aria-label',a.showTr);q.setAttribute('aria-pressed','false');bub.append(tr);row.append(av,bub,q);return row};
   function menu(){
-   const card=host.head(a.title,a.sub);host.bar(stars10()/10);const box=el('section','k k-menu');box.dir=dir;
+   closeStage();const card=host.head(a.title,a.sub);host.bar(stars10()/10);const box=el('section','k k-menu');box.dir=dir;
    const s=stars10();const sr=el('p','k-stars k-total',a.stars+': '+'★'.repeat(s)+'☆'.repeat(10-s)+'  '+s+' / 10');box.appendChild(sr);
    box.appendChild(pieterRow(s>=8?a.great:'Klik op Sam om te praten.',s>=8?a.greatT:a.tapSamT));
    const ex=btn('','k-big',()=>play('explore'));ex.append(el('strong','',u.explore),el('small','',u.exploreS));box.appendChild(ex);
@@ -279,21 +385,13 @@
    const tk=btn('','k-big k-talk',()=>play('talk'));tk.append(el('strong','',a.talk+'  '+Object.keys(st.talks).length+' / '+TALKS.length),el('small','',a.talkS));box.appendChild(tk);card.appendChild(box);
   }
   function mount(titleText,titleNl){
-   const card=host.head(a.title,a.sub);card.classList.add('k-host');const box=el('section','k k-play');box.dir=dir;
-   const top=el('div','k-top');const tt=el('strong','k-title',titleText);if(titleNl)tt.lang='nl';top.append(btn(u.menu,'k-back-btn',menu),tt);box.appendChild(top);
-   const scene=el('div','k-scene');const room=buildRoom(host,{keep:new Set(A1_OBJ),sam:true});scene.appendChild(room);box.appendChild(scene);
-   let ry=-22;const setRy=v=>{ry=Math.max(-50,Math.min(50,v));room.style.setProperty('--ry',ry+'deg')};setRy(ry);
-   const nav=el('div','k-nav');const lb=btn('‹','k-rot',()=>setRy(ry-15));lb.setAttribute('aria-label',u.left);const rb=btn('›','k-rot',()=>setRy(ry+15));rb.setAttribute('aria-label',u.right);nav.append(lb,el('span','k-hint',u.tapHint),rb);box.appendChild(nav);
-   const panel=el('div','k-panel');panel.setAttribute('aria-live','polite');box.appendChild(panel);card.appendChild(box);
-   let drag=null,moved=false;scene.addEventListener('pointerdown',e=>{drag={x:e.clientX,r:ry};moved=false});
-   const mv=e=>{if(!box.isConnected){cleanup();return}if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>6)moved=true;if(moved)setRy(drag.r+dx*.35)};const up=()=>{drag=null};
-   function cleanup(){window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up)}
-   window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+   const card=host.head(a.title,a.sub);
+   const S=stage(host,{card,lang,dir,title:titleText,titleNl,sub:a.title,room:buildRoom(host,{keep:new Set(A1_OBJ),sam:true}),onMenu:menu,yaw:-22});
+   const {panel,room}=S;
    const items=()=>[...room.querySelectorAll('[data-item]')];
    const mark=(id,cls,on=true)=>items().forEach(n=>{if(n.dataset.item===id)n.classList.toggle(cls,on)});const clearMarks=cls=>items().forEach(n=>n.classList.remove(cls));
-   const api={panel,mark,clearMarks,onTap:()=>{},room};
-   const tap=e=>{if(moved){moved=false;return}const n=e.target.closest('[data-item]');if(!n)return;const id=n.dataset.item;if(id!=='sam'&&O[id])host.say(O[id][0]+' '+O[id][1]);api.onTap(id)};
-   scene.addEventListener('click',tap);scene.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset?.item){e.preventDefault();tap(e)}});
+   const api={panel,mark,clearMarks,onTap:()=>{},room,stage:S};
+   S.onTap=id=>{if(id!=='sam'&&O[id])host.say(O[id][0]+' '+O[id][1]);api.onTap(id)};
    return api;
   }
   const word=id=>O[id][0]+' '+O[id][1];
@@ -305,21 +403,25 @@
   }
   // ---- tasks ----
   function task(ti){
-   const t=A1_TASKS[ti],m=mount((ti+1)+'. '+t.nl,true),p=m.panel;let round=0,right=0;const N=3;const objs=shuffle(A1_OBJ);
-   const choices=(opts,onPick)=>{const row=el('div','k-choices');shuffle(opts).forEach(([label,ok,tr])=>{const b=btn('','k-choice');const s=el('span','k-choice-nl',label);s.lang='nl';s.dir='ltr';b.appendChild(s);if(tr)b.appendChild(el('small','',tr));b.onclick=()=>{if(row.dataset.done)return;onPick(ok,b,row)};row.appendChild(b)});return row};
-   const feedback=(ok,b,row,after)=>{row.dataset.done='1';[...row.children].forEach(c=>c.disabled=true);b.classList.add(ok?'is-right':'is-wrong');
-    const r=ok?(round%2?a.ok2:a.ok):a.no;const msg=el('div','k-react');msg.append(pieterRow(r[0],r[1]));p.appendChild(msg);if(ok)right++;host.say(r[0]);setTimeout(after,ok?900:1300)};
+   const t=A1_TASKS[ti],m=mount((ti+1)+'. '+t.nl,true),p=m.panel,S=m.stage;let round=0,right=0;const N=3;const objs=shuffle(A1_OBJ);
+   const hud=()=>{S.progress(a.round+' '+Math.min(round+1,N)+' / '+N);S.score('✓ '+right)};const gotIt=()=>{right++;hud();S.bump()};
+   const choices=(opts,onPick)=>{const row=el('div','k-choices');shuffle(opts).forEach(([label,ok,tr],i)=>{const b=btn('','k-choice');b.dataset.ok=ok?'1':'0';const key=el('span','k-key','ABCD'[i]);key.setAttribute('aria-hidden','true');b.appendChild(key);const s=el('span','k-choice-nl',label);s.lang='nl';s.dir='ltr';b.appendChild(s);if(tr)b.appendChild(el('small','',tr));b.onclick=()=>{if(row.dataset.done)return;onPick(ok,b,row)};row.appendChild(b)});return row};
+   // right: green and the Dutch answer is spoken; wrong: soft red and the right answer is shown (one try per question, as before)
+   const feedback=(ok,b,row,after)=>{row.dataset.done='1';row.classList.add('is-done');[...row.children].forEach(c=>c.disabled=true);b.classList.add(ok?'is-right':'is-wrong');
+    const good=row.querySelector('[data-ok="1"]');if(!ok&&good)good.classList.add('is-answer');
+    const r=ok?(round%2?a.ok2:a.ok):a.no;const msg=el('div','k-react '+(ok?'is-ok':'is-no'));msg.append(pieterRow(r[0],r[1]));p.appendChild(msg);msg.scrollIntoView?.({block:'nearest',behavior:'smooth'});if(ok)gotIt();
+    host.say((good&&good.querySelector('.k-choice-nl')?.textContent)||r[0]);setTimeout(after,ok?1100:1700)};
    const finish=()=>{p.replaceChildren();const passed=right>=2;if(passed)award('tasks',t.id);const box=el('div','k-result');box.append(el('div','k-bigstars',passed?'★':'☆'),pieterRow(passed?a.ok2[0]:a.no[0],passed?a.passed:a.notYet));
     const row=el('div','row');row.append(btn(a.again,'btn',()=>task(ti)),btn(ti<A1_TASKS.length-1?a.next:a.list,'btn primary',()=>ti<A1_TASKS.length-1?task(ti+1):menu()));box.appendChild(row);p.appendChild(box);host.bar((ti+1)/A1_TASKS.length)};
    const next=()=>{round++;if(round>=N)finish();else ask()};
    const target=()=>objs[round%objs.length];
    function ask(){
     p.replaceChildren();m.clearMarks('is-hot');m.clearMarks('is-hint');m.onTap=()=>{};const obj=target(),o=O[obj];
-    const head=el('p','k-count',a.round+' '+(round+1)+' / '+N);p.appendChild(head);
+    hud();
     if(t.id==='k1'){m.mark(obj,'is-hint');p.appendChild(pieterRow('Wat is dit?',tl(['Що це? (предмет світиться)','What is this? (the object is glowing)','Qu’est-ce que c’est ? (l’objet brille)','ما هذا؟ (الشيء يتوهج)'],lang)));
      const wrong=pickN(A1_OBJ,2,obj);p.appendChild(choices([['Dit is een '+o[1]+'.',1],...wrong.map(w=>['Dit is een '+O[w][1]+'.',0])],(ok,b,row)=>feedback(ok,b,row,next)))}
     else if(t.id==='k2'){p.appendChild(pieterRow('Waar is '+word(obj)+'?',tl(['Де '+L(o,'uk')+'? Торкнися предмета в кімнаті.','Where is the '+L(o,'en')+'? Tap it in the room.','Où est « '+L(o,'fr')+' » ? Touche-le dans la chambre.','أين '+L(o,'ar')+'؟ المسه في الغرفة.'],lang)));
-     m.onTap=id=>{if(id==='sam'||!O[id])return;p.querySelector('.k-react')?.remove();const ok=id===obj;m.mark(id,ok?'is-hot':'is-bad',true);const r=ok?(round%2?a.ok2:a.ok):a.no;const msg=el('div','k-react');msg.append(pieterRow(r[0],r[1]));p.appendChild(msg);host.say(r[0]);if(ok){right++;m.onTap=()=>{};setTimeout(next,900)}else setTimeout(()=>m.mark(id,'is-bad',false),900)}}
+     m.onTap=id=>{if(id==='sam'||!O[id])return;p.querySelector('.k-react')?.remove();const ok=id===obj;m.mark(id,ok?'is-hot':'is-bad',true);const r=ok?(round%2?a.ok2:a.ok):a.no;const msg=el('div','k-react');msg.append(pieterRow(r[0],r[1]));p.appendChild(msg);host.say(r[0]);if(ok){gotIt();m.onTap=()=>{};setTimeout(next,900)}else setTimeout(()=>m.mark(id,'is-bad',false),900)}}
     else if(t.id==='k3'){m.mark(obj,'is-hint');p.appendChild(pieterRow('Wat zie je?',tl(['Що ти бачиш? Вибери речення.','What do you see? Choose the sentence.','Que vois-tu ? Choisis la phrase.','ماذا ترى؟ اختر الجملة.'],lang)));
      const wrong=pickN(A1_OBJ,2,obj);p.appendChild(choices([['Ik zie een '+o[1]+'.',1],...wrong.map(w=>['Ik zie een '+O[w][1]+'.',0])],(ok,b,row)=>feedback(ok,b,row,next)))}
     else if(t.id==='k4'){const keys=Object.keys(COLOR),cobj=keys[round%keys.length],c=COLOR[cobj],co=O[cobj];m.mark(cobj,'is-hint');
@@ -334,7 +436,7 @@
   // ---- talks with Sam ----
   function talk(startAt){
    let ti=startAt!=null?startAt:TALKS.findIndex((_,i)=>!st.talks['d'+(i+1)]);if(ti<0)ti=0;
-   const d=TALKS[ti];const m=mount(a.talk+' · '+(ti+1)+' / '+TALKS.length);const p=m.panel;m.room.querySelector('[data-item="sam"]').classList.add('talking');
+   const d=TALKS[ti];const m=mount(a.talk+' · '+(ti+1)+' / '+TALKS.length);const p=m.panel;m.stage.progress(ht(lang).talk+' '+(ti+1)+' / '+TALKS.length);m.stage.score('★ '+stars10()+' / 10');m.room.querySelector('[data-item="sam"]').classList.add('talking');
    m.onTap=()=>{};if(d[5])m.mark(d[5],'is-hint');
    p.appendChild(samRow(d[0],d[1]));host.say(d[0]);
    const row=el('div','k-choices');p.appendChild(el('p','k-count',a.choose));
@@ -344,7 +446,7 @@
      p.querySelector('.k-react')?.remove();const msg=el('div','k-react');msg.appendChild(samRow(d[3],d[4]));p.appendChild(msg);const got=award('talks','d'+(ti+1));
      const done=el('div','k-result');if(got)done.appendChild(el('p','k-msg2 ok',a.talkStar));
      const all=Object.keys(st.talks).length>=5&&stars10()>=8;if(all)done.appendChild(pieterRow(a.talkDone,a.talkDoneT));
-     const r2=el('div','row');r2.append(btn(a.list,'btn',menu),btn(ti<TALKS.length-1?a.next:a.list,'btn primary',()=>ti<TALKS.length-1?talk(ti+1):menu()));done.appendChild(r2);p.appendChild(done);host.bar(stars10()/10)};
+     const r2=el('div','row');r2.append(btn(a.list,'btn',menu),btn(ti<TALKS.length-1?a.next:a.list,'btn primary',()=>ti<TALKS.length-1?talk(ti+1):menu()));done.appendChild(r2);p.appendChild(done);host.bar(stars10()/10);m.stage.score('★ '+stars10()+' / 10');if(got)m.stage.bump()};
     row.appendChild(b)});
    p.appendChild(row);
   }
