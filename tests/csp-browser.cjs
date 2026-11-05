@@ -17,7 +17,7 @@ const release=fs.readFileSync(path.join(root,'app.js'),'utf8').match(/const RELE
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());page.on('dialog',d=>d.dismiss());
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.text().startsWith('CSPV '))violations.push(m.text())});
   await page.addInitScript(r=>{addEventListener('securitypolicyviolation',e=>console.error('CSPV '+e.effectiveDirective+' '+e.blockedURI+' '+e.sourceFile+':'+e.lineNumber),true);
-   if(window===top&&!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_home_v1','path');sessionStorage.setItem('seeded','1')}},release);
+   if(window===top&&!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_home_v1','path');sessionStorage.setItem('seeded','1')}},release);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath&&window.EXAM12);
   assert(await page.evaluate(()=>{const s=document.querySelector('.seo-shell');return !s||getComputedStyle(s).display==='none'}),'static summary hidden when JavaScript runs');
   const steps=[];const S=async(name,fn,wait=250)=>{await page.evaluate(fn).catch(e=>errors.push(name+': '+e.message));await page.waitForTimeout(wait);steps.push(name)};

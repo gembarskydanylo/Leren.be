@@ -22,7 +22,7 @@ const scaleOf=tf=>+((tf||'').match(/scale3d\(([\d.]+)/)||[])[1];
  const open=async(w,h,{level='a11',game='kamer1',touch=false}={})=>{
   const ctx=await browser.newContext({viewport:{width:w,height:h},hasTouch:touch,isMobile:touch,serviceWorkers:'block'}),page=await ctx.newPage();page.on('pageerror',e=>errors.push(w+'x'+h+': '+e.message));
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-  await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
+  await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);
   await page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome()},level);await page.click('[data-game="'+game+'"]');
   // the A1 room opens straight into the first task; the A2 room still has its menu

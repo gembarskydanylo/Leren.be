@@ -4022,19 +4022,24 @@ function startLevelTest(){
 }
 // One welcome screen for brand-new learners: what they will be able to do after a week, then the level question.
 const WELCOME_UI={
- uk:{title:"Що ти вмітимеш через 7 днів",sub:"По 10 хвилин на день, з поясненнями українською.",items:["👋 Привітатися, представитися й розповісти про сім’ю","🔢 Назвати числа, ціни та час","🏥 Зрозуміти прості фрази в магазині, у лікаря й у gemeente"],meta:"Безкоштовно · без реєстрації · працює офлайн",start:"Почати",tour:"Показати, як усе працює"},
- en:{title:"What you’ll be able to do in 7 days",sub:"10 minutes a day, with explanations in your language.",items:["👋 Greet people, introduce yourself and talk about your family","🔢 Say numbers, prices and the time","🏥 Understand simple phrases in a shop, at the doctor’s and at the gemeente"],meta:"Free · no sign-up · works offline",start:"Start",tour:"Show me how it works"},
- fr:{title:"Ce que tu sauras faire dans 7 jours",sub:"10 minutes par jour, avec des explications dans ta langue.",items:["👋 Saluer, te présenter et parler de ta famille","🔢 Dire les nombres, les prix et l’heure","🏥 Comprendre des phrases simples au magasin, chez le médecin et à la commune"],meta:"Gratuit · sans inscription · fonctionne hors ligne",start:"Commencer",tour:"Montre-moi comment ça marche"},
- ar:{title:"ماذا ستتقن بعد 7 أيام",sub:"10 دقائق يوميًا مع شرح بلغتك.",items:["👋 التحية والتعريف بنفسك والحديث عن عائلتك","🔢 قول الأرقام والأسعار والوقت","🏥 فهم عبارات بسيطة في المتجر وعند الطبيب وفي البلدية"],meta:"مجاني · بلا تسجيل · يعمل دون إنترنت",start:"ابدأ",tour:"أرِني كيف يعمل"}
+ uk:{title:"Що ти вмітимеш через 7 днів",sub:"Короткі уроки щодня, з поясненнями українською.",items:["👋 Привітатися, представитися й розповісти про сім’ю","🔢 Назвати числа, ціни та час","🏥 Зрозуміти прості фрази в магазині, у лікаря й у gemeente"],meta:"Безкоштовно · без реєстрації · працює офлайн",start:"Почати",tour:"Показати, як усе працює",goal:"Скільки хвилин на день?"},
+ en:{title:"What you’ll be able to do in 7 days",sub:"Short daily lessons, with explanations in your language.",items:["👋 Greet people, introduce yourself and talk about your family","🔢 Say numbers, prices and the time","🏥 Understand simple phrases in a shop, at the doctor’s and at the gemeente"],meta:"Free · no sign-up · works offline",start:"Start",tour:"Show me how it works",goal:"How many minutes a day?"},
+ fr:{title:"Ce que tu sauras faire dans 7 jours",sub:"De courtes leçons chaque jour, avec des explications dans ta langue.",items:["👋 Saluer, te présenter et parler de ta famille","🔢 Dire les nombres, les prix et l’heure","🏥 Comprendre des phrases simples au magasin, chez le médecin et à la commune"],meta:"Gratuit · sans inscription · fonctionne hors ligne",start:"Commencer",tour:"Montre-moi comment ça marche",goal:"Combien de minutes par jour ?"},
+ ar:{title:"ماذا ستتقن بعد 7 أيام",sub:"دروس قصيرة كل يوم مع شرح بلغتك.",items:["👋 التحية والتعريف بنفسك والحديث عن عائلتك","🔢 قول الأرقام والأسعار والوقت","🏥 فهم عبارات بسيطة في المتجر وعند الطبيب وفي البلدية"],meta:"مجاني · بلا تسجيل · يعمل دون إنترنت",start:"ابدأ",tour:"أرِني كيف يعمل",goal:"كم دقيقة في اليوم؟"}
 };
 function welcomeScreen(then,onTour){
  const w=WELCOME_UI[uiLang]||WELCOME_UI.uk;
  popup((panel,close,m)=>{
   m.dataset.lock="1";panel.classList.add("welcome-panel");
   const list=el("ul","welcome-list");w.items.forEach(t=>list.appendChild(el("li","",t)));
-  const go=el("button","btn primary",w.start);go.type="button";go.onclick=()=>{lsSet("leren_welcome_seen",true);close();setTimeout(then,200)};
-  const tour=el("button","tour-skip",w.tour);tour.type="button";tour.onclick=()=>{lsSet("leren_welcome_seen",true);lsSet("leren_level_asked",true);close();setTimeout(onTour,200)};
-  panel.append(el("h2","goal-title",w.title),el("p","goal-hint",w.sub),list,el("p","goal-hint welcome-meta",w.meta),go,tour);
+  // Daily goal (5/10/20 min): saved as the same setting the progress screen uses.
+  let goal=10;const gl=LerenInsights.ui(uiLang).min,row=el("div","welcome-goals");row.setAttribute("role","group");row.setAttribute("aria-label",w.goal);
+  [5,10,20].forEach(v=>{const b=el("button","welcome-goal"+(v===goal?" on":""),v+" "+gl);b.type="button";b.dataset.goal=v;b.setAttribute("aria-pressed",v===goal?"true":"false");
+   b.onclick=()=>{goal=v;row.children.forEach(x=>{const on=Number(x.dataset.goal)===v;x.classList?.toggle("on",on);x.setAttribute("aria-pressed",String(on))})};row.appendChild(b)});
+  const save=()=>{lsSet("leren_welcome_seen",true);lsSet("leren_goal_min",goal)};
+  const go=el("button","btn primary",w.start);go.type="button";go.onclick=()=>{save();close();setTimeout(then,200)};
+  const tour=onTour?el("button","tour-skip",w.tour):null;if(tour){tour.type="button";tour.onclick=()=>{save();lsSet("leren_level_asked",true);close();setTimeout(onTour,200)}}
+  panel.append(el("h2","goal-title",w.title),el("p","goal-hint",w.sub),list,el("p","goal-hint welcome-goal-q",w.goal),row,el("p","goal-hint welcome-meta",w.meta),go);if(tour)panel.appendChild(tour);
   setTimeout(()=>{try{go.focus({preventScroll:true})}catch(e){}},30);
  });
 }
@@ -6161,3 +6166,5 @@ function tourEnd(){
 $("helpBtn").addEventListener("click",()=>{closeSheet("settingsSheet");setTimeout(startTour,250)});
 function updateHelpBtn(){}
 if(targetLang!=="nl")setTimeout(firstRun,600);
+// The Dutch route has its own home (next lesson, "I already know some Dutch"), so brand-new learners only get the welcome screen: no level question, no legacy tour.
+else setTimeout(()=>{if(lsGet("leren_welcome_seen",false)||lsGet("leren_tour_done",false)||score>0||streakState().n>0||minutesToday()>0)return;welcomeScreen(()=>{},null)},600);

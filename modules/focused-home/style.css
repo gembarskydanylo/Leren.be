@@ -177,3 +177,8 @@
 .welcome-panel .welcome-meta{margin:0 0 14px;font-weight:800}
 .welcome-panel .btn.primary{width:100%;min-height:52px}
 .welcome-panel .tour-skip{display:block;margin:12px auto 0;min-height:44px}
+.welcome-panel .welcome-goal-q{margin:4px 0 8px;font-weight:800;color:var(--ink)}
+.welcome-panel .welcome-goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.welcome-panel .welcome-goal{min-height:48px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:800 15px/1.2 var(--font-body,inherit);cursor:pointer}
+.welcome-panel .welcome-goal.on{border-color:var(--focus-accent,#EB6A00);background:var(--focus-soft,#fff1e3);box-shadow:0 3px 0 var(--focus-accent,#EB6A00)}
+.welcome-panel .welcome-goal:focus-visible{outline:3px solid var(--focus-accent,#EB6A00);outline-offset:2px}

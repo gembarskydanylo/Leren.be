@@ -31,7 +31,7 @@ async function runPart(part){
   for(const [name,viewport] of [['phone',{width:390,height:844}],['desktop',{width:1366,height:900}]]){
    const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];
    page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
-   await page.addInitScript(r=>{if(!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('poly_toetsbest',JSON.stringify({course_comm_v2:9}));sessionStorage.setItem('seeded','1')}},release);
+   await page.addInitScript(r=>{if(!sessionStorage.getItem('seeded')){localStorage.clear();localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r));localStorage.setItem('poly_toetsbest',JSON.stringify({course_comm_v2:9}));sessionStorage.setItem('seeded','1')}},release);
    await page.goto(base);await page.waitForFunction(()=>window.EXAM12&&window.learningPath);
    const score0=await page.evaluate(()=>score);
    // Open the exam the way a learner does: course A1.2 → Tests → Final exam A1.2.

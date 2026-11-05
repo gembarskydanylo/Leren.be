@@ -12,7 +12,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
   const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
   const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
-  await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
+  await page.addInitScript(r=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk');localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r))},release);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);
   const tile=lv=>page.evaluate(l=>{curLevel=l;setView('games');renderGamesHome();return !!document.querySelector('[data-game="kamer1"]')},lv);
   assert.equal(await tile('a11'),true);assert.equal(await tile('a12'),true);assert.equal(await tile('a21'),false);

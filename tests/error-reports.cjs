@@ -50,7 +50,7 @@ const root=path.join(__dirname,'..');
   for(const flag of [true,false]){
    const ctx=await browser.newContext({serviceWorkers:'block'}),page=await ctx.newPage(),reports=[];
    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>{const q=r.request();if(q.url().endsWith('/errors'))reports.push(JSON.parse(q.postData()));r.abort()});
-   await page.addInitScript(([r,f])=>{localStorage.setItem('leren_release_seen',JSON.stringify(r));if(f)localStorage.setItem('leren_err_test','1')},[release,flag]);
+   await page.addInitScript(([r,f])=>{localStorage.setItem('leren_welcome_seen','true');localStorage.setItem('leren_release_seen',JSON.stringify(r));if(f)localStorage.setItem('leren_err_test','1')},[release,flag]);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);
    await page.evaluate(()=>{Promise.reject(new Error('rejected in test'))});await page.waitForTimeout(100);
    await page.evaluate(()=>{for(let i=0;i<2;i++)setTimeout(()=>{throw new Error('boom in test')});

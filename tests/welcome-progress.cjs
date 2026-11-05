@@ -2,21 +2,29 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const fn=name=>{const s=script.indexOf('function '+name+'(');return script.slice(s,script.indexOf('\n}',s)+2)};
 const welcome=script.slice(script.indexOf('const WELCOME_UI='),script.indexOf('function welcomeScreen('));
-const mk=()=>({text:'',children:[],dataset:{},classList:{add(){}},append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)}});
+const mk=()=>({text:'',children:[],dataset:{},classList:{add(){},toggle(){}},setAttribute(){},append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)}});
 const flat=n=>[n.text||'',...(n.children||[]).flatMap(flat)];
 // 1. Welcome screen: four languages, three outcomes, primary start + optional tour, shown once, then the level question follows.
 for(const lang of ['uk','en','fr','ar']){
  const store={},calls=[];
- const ctx=vm.createContext({uiLang:lang,lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},el:(tag,cls,text)=>Object.assign(mk(),{text:text||'',tag,cls}),setTimeout:f=>f(),
+ const ctx=vm.createContext({uiLang:lang,lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},el:(tag,cls,text)=>Object.assign(mk(),{text:text||'',tag,cls}),setTimeout:f=>f(),LerenInsights:{ui:()=>({min:'min'})},
   popup:build=>{const p=mk();build(p,()=>{},mk());ctx.panel=p}});
  vm.runInContext(welcome+fn('welcomeScreen')+`;globalThis.run=()=>welcomeScreen(()=>calls.push('then'),()=>calls.push('tour'))`,ctx);
  ctx.calls=calls;vm.runInContext('globalThis.calls=calls',ctx);
  ctx.run();
  const texts=flat(ctx.panel);assert(texts.some(t=>t.includes('7')),lang+': title promises a 7-day outcome');
  const list=ctx.panel.children.find(c=>c.cls==='welcome-list');assert.equal(list.children.length,3,lang+': three outcomes');
+ const goals=ctx.panel.children.find(c=>c.cls==='welcome-goals');assert.deepEqual(goals.children.map(b=>String(b.dataset.goal)),['5','10','20'],lang+': goal choices');
  const buttons=ctx.panel.children.filter(c=>c.tag==='button');assert.equal(buttons.length,2,lang+': start + tour');
- buttons[0].onclick();assert.equal(store.leren_welcome_seen,true);assert.deepEqual(calls,['then']);
+ goals.children[2].onclick();
+ buttons[0].onclick();assert.equal(store.leren_welcome_seen,true);assert.equal(store.leren_goal_min,20,lang+': chosen goal saved');assert.deepEqual(calls,['then']);
  buttons[1].onclick();assert.equal(store.leren_level_asked,true);assert(calls.includes('tour'));
+}
+// 1b. Dutch route: no tour link, Start just closes the screen.
+{
+ const store={},calls=[];const ctx=vm.createContext({uiLang:'uk',lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},el:(tag,cls,text)=>Object.assign(mk(),{text:text||'',tag,cls}),setTimeout:f=>f(),LerenInsights:{ui:()=>({min:'хв'})},popup:build=>{const p=mk();build(p,()=>{},mk());ctx.panel=p}});
+ vm.runInContext(welcome+fn('welcomeScreen')+';globalThis.run=()=>welcomeScreen(()=>calls.push(\'then\'),null)',ctx);ctx.run();
+ assert.equal(ctx.panel.children.filter(c=>c.tag==='button').length,1,'only Start without a tour');
 }
 // 2. firstRun shows the welcome first for new learners, never for returning ones.
 {
