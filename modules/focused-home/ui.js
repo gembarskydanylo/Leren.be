@@ -39,21 +39,46 @@
   en:{label:'Course',soon:'Coming soon',done:(d,t)=>d+' of '+t+' lessons',a11:'Basics',a12:'Next steps',a21:'Next level',active:'Studying now'},
   fr:{label:'Cours',soon:'Bientôt',done:(d,t)=>d+' leçons sur '+t,a11:'Les bases',a12:'La suite',a21:'Niveau suivant',active:'En cours'},
   ar:{label:'الدورة',soon:'قريباً',done:(d,t)=>d+' من '+t+' دروس',a11:'الأساسيات',a12:'المتابعة',a21:'المستوى التالي',active:'تدرسها الآن'}};
- function courses({lang,active,items,onPick}){
+
+ const PANEL_COPY={uk:{now:'Зараз ти вивчаєш',part:(a,b)=>'Частина '+a+' з '+b,can:'Вже вмієш:',none:'Після першого уроку тут з’являться твої навички.',done:'Усі уроки цього рівня пройдено',open:'Показати прогрес',close:'Сховати прогрес'},
+  en:{now:'You are studying now',part:(a,b)=>'Part '+a+' of '+b,can:'You can already:',none:'Your first skills will appear here after your first lesson.',done:'All lessons of this level are done',open:'Show progress',close:'Hide progress'},
+  fr:{now:'Tu étudies maintenant',part:(a,b)=>'Partie '+a+' sur '+b,can:'Tu sais déjà :',none:'Tes premières compétences apparaîtront ici après ta première leçon.',done:'Toutes les leçons de ce niveau sont terminées',open:'Voir la progression',close:'Masquer la progression'},
+  ar:{now:'أنت تدرس الآن',part:(a,b)=>'الجزء '+a+' من '+b,can:'أصبحت تعرف:',none:'ستظهر مهاراتك الأولى هنا بعد أول درس.',done:'اكتملت كل دروس هذا المستوى',open:'عرض التقدم',close:'إخفاء التقدم'}};
+ // Opens under the active course card: current topic, its progress, the continue button and what the learner can already do.
+ function progressPanel({lang,level,name,pct,chapter,done,total,canDo,allDone,startLabel,onContinue}){
+  const c=PANEL_COPY[lang]||PANEL_COPY.uk,box=node('div','fh-progress-panel');
+  const head=node('p','fh-pp-head');head.append(node('strong','',level+(name?' · '+name:'')),node('span','fh-pp-pct',pct+'%'));box.appendChild(head);
+  if(allDone){box.appendChild(node('p','fh-pp-now',c.done))}
+  else{
+   box.append(node('p','fh-pp-label',c.now),node('p','fh-pp-topic',chapter||''));
+   const row=node('div','fh-pp-bar');row.append(meter(done,total,chapter||level),node('span','',c.part(Math.min(done+1,total),total)));box.appendChild(row);
+   box.appendChild(button(startLabel,onContinue,'fh-primary fh-pp-go'));
+  }
+  const can=node('div','fh-pp-can');can.appendChild(node('p','fh-pp-label',c.can));
+  if(canDo.length){const ul=node('ul','fh-pp-list');for(const x of canDo)ul.appendChild(node('li','',x));can.appendChild(ul)}else can.appendChild(node('p','fh-pp-none',c.none));
+  box.appendChild(can);return box;
+ }
+ function courses({lang,active,items,onPick,detail}){
+  let panel=null,activeCard=null;const togglePanel=()=>{courses.open=!courses.open;activeCard.setAttribute('aria-expanded',String(courses.open));activeCard.classList.toggle('is-open',courses.open);panel.hidden=!courses.open;panel.replaceChildren();if(courses.open)panel.appendChild(detail())};
   const c=COURSE_COPY[lang]||COURSE_COPY.uk,nav=node('nav','fh-courses');nav.setAttribute('aria-label',c.label);
   for(const it of items){
    const on=it.level===active,pct=it.total?Math.round(it.done/it.total*100):0,card=node('button','fh-course'+(on?' is-active':'')+(it.soon?' is-soon':''));card.type='button';card.dataset.level=it.level;
-   card.setAttribute('aria-pressed',String(on));if(it.soon){card.disabled=true;card.setAttribute('aria-disabled','true')}else card.onclick=()=>{if(!on)onPick(it.level)};
-   const top=node('span','fh-course-top');top.append(node('strong','fh-course-name',it.level),node('span','fh-course-pct',it.soon?c.soon:pct+'%'));
-   card.append(top,node('span','fh-course-sub',c[it.key]||''));
+   card.setAttribute('aria-pressed',String(on));if(it.soon){card.disabled=true;card.setAttribute('aria-disabled','true')}else card.onclick=()=>{if(!on)onPick(it.level);else if(detail)togglePanel()};
+   const top=node('span','fh-course-top'),mascot=node('img','fh-course-cat'),heading=node('span','fh-course-heading');
+   mascot.src='./img/mascot/level-'+(it.key==='a21'?'a2':it.key)+'.webp';mascot.alt='🐱';mascot.decoding='async';mascot.setAttribute('aria-hidden','true');
+   heading.append(node('strong','fh-course-name',it.level),node('span','fh-course-pct',it.soon?c.soon:pct+'%'));
+   top.append(mascot,heading);card.append(top,node('span','fh-course-sub',c[it.key]||''));
    if(!it.soon){card.append(meter(it.done,it.total,it.level),node('span','fh-course-done',c.done(it.done,it.total)))}
    card.setAttribute('aria-label',it.level+' · '+(c[it.key]||'')+' · '+(it.soon?c.soon:pct+'% · '+c.done(it.done,it.total))+(on?' · '+c.active:''));
+   if(on&&detail&&!it.soon){card.setAttribute('aria-expanded',String(courses.open));card.classList.toggle('is-open',courses.open);card.appendChild(node('span','fh-course-arrow'));activeCard=card}
    nav.appendChild(card);
   }
+  if(detail&&activeCard){panel=node('section','fh-course-panel');panel.setAttribute('aria-label',(PANEL_COPY[lang]||PANEL_COPY.uk).open);panel.hidden=!courses.open;if(courses.open)panel.appendChild(detail());nav.appendChild(panel)}
   return nav;
  }
  function about(lang){
   const t=tr(lang),d=node('dialog','fh-about');d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';d.setAttribute('aria-labelledby','fhAboutTitle');const h=node('h2','','lerenbe.com');h.id='fhAboutTitle';d.append(h,node('p','',t.aboutText),node('p','',t.teachers),node('p','',t.aboutAi));const links=node('div','fh-about-links'),privacy=node('a','',t.privacy),contact=node('a','',t.contact);privacy.href='./privacy.html';contact.href='mailto:gembarsky.d@gmail.com';links.append(privacy,contact);d.append(links,button(t.close,()=>d.close(),'fh-primary'));const previous=document.activeElement;d.addEventListener('close',()=>{d.remove();if(previous?.isConnected)previous.focus()},{once:true});document.body.append(d);d.showModal();return d;
  }
- window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,about};
+ courses.open=false;
+ window.LerenFocus={tr,node,button,meter,tools,hero,topic,courses,progressPanel,about,courseName:(lang,key)=>(COURSE_COPY[lang]||COURSE_COPY.uk)[key]||''};
 })();

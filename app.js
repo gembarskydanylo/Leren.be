@@ -1961,6 +1961,7 @@ function ttsSpeak(list,retried){
  if(s.speaking||s.pending){try{s.cancel()}catch(e){}setTimeout(go,120)}else go();
  return true;
 }
+const TTS_FEMALE_RX=/\b(female|vrouw|ellen|claire|colette|fenna|dena|laura|lotte|saskia|nora|marijke|lize|google nederlands)\b/i,TTS_MALE_RX=/\b(male|man|xander|maarten|arnaud|frank|ruben|jasper|bart)\b/i;
 function sayTTS(text,button,onDone){
  try{
   if(audioEl){audioEl.pause();audioEl=null}
@@ -1971,9 +1972,15 @@ function sayTTS(text,button,onDone){
   u.lang=speechLang();u.rate=.75;u.volume=1;
   const voices=speechVoices.length?speechVoices:(refreshSpeechVoices(),speechVoices),pre=u.lang.toLowerCase().split("-")[0];
   const saved=lsGet("leren_voice_"+targetLang,"");
-  const v=voices.find(x=>speechVoiceKey(x)===saved)||voices.find(x=>x.lang.toLowerCase()===u.lang.toLowerCase())||voices.find(x=>x.lang.toLowerCase().startsWith(pre));
+  const byLang=voices.filter(x=>x.lang.toLowerCase().startsWith(pre)),exact=byLang.filter(x=>x.lang.toLowerCase()===u.lang.toLowerCase());
+  const wantF=targetLang==="nl"&&recVoice()==="f",gOf=x=>TTS_FEMALE_RX.test(x.name)?"f":TTS_MALE_RX.test(x.name)?"m":"";
+  const pickG=list=>list.find(x=>gOf(x)===(wantF?"f":"m"));
+  const chosen=voices.find(x=>speechVoiceKey(x)===saved);
+  const v=chosen||(targetLang==="nl"&&(pickG(exact)||pickG(byLang)))||exact[0]||byLang[0];
   if(voices.length&&!v){showSpeechNote();return}
   if(v){u.voice=v;u.lang=v.lang}
+  // The teacher's voice must differ even on devices with one Dutch voice: nudge the pitch unless a voice of the right gender was found.
+  if(targetLang==="nl"&&!chosen&&(!v||gOf(v)!==(wantF?"f":"m")))u.pitch=wantF?1.25:.8;
   u.onstart=()=>{if(token===speechToken)updateSpeechState(true,button)};
   const done=()=>{if(token===speechToken){updateSpeechState(false);if(onDone)onDone()}};
   u.onend=done;
@@ -4371,7 +4378,7 @@ const MYDAY=[
 
 // --- shared state & helpers ---
 let cardOwner="lesson",gState=null,gTimer=0,gRec=null;
-const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true],["wb","🔤",true]];
+const GAMES=[["story","🇧🇪",true],["ai","🤖",false],["ask","❓",false],["dlg","🧩",true],["rp","🎭",true],["sp","🎤",true],["bl","⚡",false],["mm","🃏",false],["dc","✍️",false],["md","🗓️",true],["om","🎯",true],["ks","📄",true],["wb","🔤",true],["kamer","🏠",true],["kamer1","🏠",true]];
 const gNorm=t=>String(t||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-zà-ÿ0-9' ]+/g," ").replace(/\s+/g," ").trim();
 function gStop(){clearInterval(gTimer);gTimer=0;try{gRec&&gRec.abort()}catch(e){}gRec=null}
 function gRecords(){return lsGet("leren_games",{})}
@@ -4527,6 +4534,21 @@ function wbStart(){
  LerenWordBuilder.start({lang:()=>uiLang,words:()=>wbCourseWords(),picture:icon=>{if(String(icon).startsWith('<')){const d=el("div","wb-emoji");d.innerHTML=icon;return d}return window.LerenEmoji?LerenEmoji.make(icon,'wb-emoji'):null},head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),mistake:t=>logMistake(t,"wb"),
   done:xp=>{if(xp)toast(gU().pts(xp));gameDone("wb",xp)},home:renderGamesHome});
 }
+// --- 13. Kamer van Pieter: CSS-3D room (A2, modules/kamer) ---
+Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.tr(l);G_UI[l].kamer=k.title;G_UI[l].kamerS=k.sub});
+Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.A1T?LerenKamer.A1T(l):null;if(!k)return;G_UI[l].kamer1=k.title;G_UI[l].kamer1S=k.sub});
+function kamer1Start(){
+ if(!window.LerenKamer){toast(gU().nlOnly);return}
+ gState={kamer1:1};
+ LerenKamer.startA1({lang:()=>uiLang,head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),icon:e=>window.LerenEmoji?LerenEmoji.make(e,"k-pic"):null,mistake:t=>logMistake(t,"kamer1"),
+  done:xp=>{if(xp)toast(gU().pts(xp));gameDone("kamer1",xp)},home:renderGamesHome});
+}
+function kamerStart(){
+ if(!window.LerenKamer){toast(gU().nlOnly);return}
+ gState={kamer:1};
+ LerenKamer.start({lang:()=>uiLang,head:(t,s)=>gHead(t,s,true),bar:gBar,say:t=>say(t),icon:e=>window.LerenEmoji?LerenEmoji.make(e,"k-pic"):null,mistake:t=>logMistake(t,"kamer"),
+  done:xp=>{if(xp)toast(gU().pts(xp));gameDone("kamer",xp)},home:renderGamesHome});
+}
 const ksU=()=>KS_UI[uiLang]||KS_UI.en;
 const KS_SETS={
  top:["zijn","hebben","gaan","komen","doen","maken","eten","drinken","werken","wonen"],
@@ -4655,7 +4677,9 @@ th:first-child,td:first-child{width:31%}.fold{display:flex;justify-content:flex-
 // --- games home ---
 // "Een dag in België" and "Mijn dag" are A1.1 stories; the verb sheet and want/omdat are grammar of both courses.
 const A11_ONLY_GAMES=["story","md"];
-const gameForLevel=(id,lv=curLevel)=>lv==="a11"||!A11_ONLY_GAMES.includes(id);
+const A2_ONLY_GAMES=["kamer"];
+const A1_ONLY_GAMES=["kamer1"];
+const gameForLevel=(id,lv=curLevel)=>A1_ONLY_GAMES.includes(id)?lv!=="a21":A2_ONLY_GAMES.includes(id)?lv==="a21":(lv==="a11"||!A11_ONLY_GAMES.includes(id));
 // Spell-the-word words of the selected course: nouns with a verified picture ([word, article, plural, uk, en, fr, ar, picture]).
 function wbCourseWords(lv=curLevel){
  if(lv==="a11")return null;const seen=new Set();
@@ -4674,14 +4698,14 @@ function renderGamesHome(){
  GAMES.filter(([id])=>gameForLevel(id)).forEach(([id,icon,nl])=>{
   const b=el("button","g-card g-art-card");b.type="button";b.dataset.game=id;
   const best={bl:rec.bl!=null?g.best+": "+rec.bl:"",mm:rec.mm!=null?g.best+": "+rec.mm+" "+g.moves.toLowerCase():""}[id]||"";
-  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
+  const art=el("img","g-art");art.src=id==="wb"?"./img/games/wb-v114.webp":id==="kamer"?"./img/games/kamer-v186.webp":id==="kamer1"?"./img/games/kamer1-v187.webp":"./img/games/"+id+"-v111.webp";art.alt=altU().game(id==="ai"?aiTitle():g[id]);art.width=600;art.height=400;art.decoding="async";art.loading=["story","ai","ask"].includes(id)?"eager":"lazy";
   b.append(art,el("strong","",id==="ai"?aiTitle():g[id]),el("span","g-s",g[id+"S"]));b.setAttribute("aria-label",(id==="ai"?aiTitle():g[id])+". "+(g[id+"S"]||""));
   if(best)b.appendChild(el("span","g-best",best));
   if(w.played.includes(id))b.classList.add("played");
   if(nl&&targetLang!=="nl")b.classList.add("off");
   if((id==="ai"||id==="ask")&&!AI_ENDPOINT)return;
   if(id==="story")b.classList.add("wide");
-  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart})[id]()};
+  b.onclick=()=>{if(nl&&targetLang!=="nl"){toast(g.nlOnly);return}({story:storyMap,ai:aiStart,ask:askStart,dlg:dlgPick,rp:rpPick,sp:spStart,bl:blStart,mm:mmStart,dc:dcStart,md:mdStart,om:omStart,ks:ksStart,wb:wbStart,kamer:kamerStart,kamer1:kamer1Start})[id]()};
   grid.appendChild(b);
  });
  card.appendChild(grid);
@@ -5126,7 +5150,7 @@ function charPicker(onPick){
   const b=el("button","ch-card"+(on?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("role","radio");b.setAttribute("aria-checked",on?"true":"false");
   const fig=el("div","ch-fig ch-"+id);fig.innerHTML=c.svg("happy",true);
   b.append(fig,el("strong","",c.n),el("span","",u[id]));if(on)b.appendChild(el("em","ch-badge","✓ "+u.chosen));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");onPick&&onPick(id)};wrap.appendChild(b)});
+  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");onPick&&onPick(id)};wrap.appendChild(b)});
  return wrap;
 }
 function pickCharPopup(then){
@@ -5137,7 +5161,7 @@ function renderCharRow(){
  const box=$("charSeg");box.replaceChildren();
  Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");b.setAttribute("aria-label",uiLang==="uk"?c.u:uiLang==="ar"?c.a:c.n);
   const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
+  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
 }
 const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
 const SCENE_ART={
@@ -5904,7 +5928,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="183";
+const RELEASE_VERSION="194";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

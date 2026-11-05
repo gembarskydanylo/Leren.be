@@ -1388,7 +1388,254 @@ Zolang we samenwerken, lukt het.|Поки ми працюємо разом, ус
    ['Wat zeg je als je wilt meehelpen?','Що ти кажеш, якщо хочеш допомогти?','What do you say if you want to help?','Ik wil graag meehelpen.']
   ]
  };
- for(const part of [a2p1,a2p2]){
+ // ---- A2 chapter 9: grammar ----
+ const a2p3 = {
+  chapters: [
+   ['a2gram','📘 Grammatica: tijden, bijzinnen, voorzetsels',['a2imp1','a2imp2','a2tijden','a2passief','a2relatief','a2er','a2alswanneer','a2bijzin','a2voorz','a2adj']]
+  ],
+  labels: {
+   a2gram: [['Граматика A2: часи, підрядні, прийменники','Правила A2 з короткими поясненнями й прикладами: imperfectum, пасив, die/dat, er, als/wanneer, порядок слів.'],['A2 grammar: tenses, clauses, prepositions','A2 rules with short explanations and examples: imperfectum, passive, die/dat, er, als/wanneer, word order.'],['Grammaire A2 : temps, subordonnées, prépositions','Règles A2 avec courtes explications et exemples : imperfectum, passif, die/dat, er, als/wanneer, ordre des mots.'],['قواعد A2: الأزمنة والجمل الفرعية وحروف الجر','قواعد A2 مع شروح قصيرة وأمثلة: imperfectum والمبني للمجهول وdie/dat وer وals/wanneer وترتيب الكلمات.']]
+  },
+  lessons: {
+   a2imp1: ['Imperfectum: правильні дієслова','Imperfectum: regular verbs','Imperfectum : verbes réguliers','Imperfectum: الأفعال المنتظمة', `
+Ik werkte vroeger in een winkel.|Раніше я працював у магазині.|I used to work in a shop.|Avant, je travaillais dans un magasin.|كنت أعمل سابقاً في متجر.|🛍️
+Wij woonden in Kyiv.|Ми жили в Києві.|We lived in Kyiv.|Nous habitions à Kyiv.|كنا نسكن في كييف.|🏠
+Zij speelde buiten met de kinderen.|Вона гралася надворі з дітьми.|She played outside with the children.|Elle jouait dehors avec les enfants.|لعبت في الخارج مع الأطفال.|⚽
+Hij leerde Nederlands in Oekraïne.|Він вивчав нідерландську в Україні.|He learned Dutch in Ukraine.|Il apprenait le néerlandais en Ukraine.|تعلّم الهولندية في أوكرانيا.|📚
+Wij wachtten lang op de bus.|Ми довго чекали на автобус.|We waited a long time for the bus.|Nous avons attendu longtemps le bus.|انتظرنا الحافلة طويلاً.|🚌
+Gisteren kookte ik soep.|Учора я варив суп.|Yesterday I cooked soup.|Hier, j’ai fait cuire une soupe.|أمس طبخت حساءً.|🍲
+Ik belde mijn vriendin.|Я зателефонував подрузі.|I called my friend.|J’ai appelé mon amie.|اتصلت بصديقتي.|📞
+Zij maakten een afspraak.|Вони домовилися про зустріч.|They made an appointment.|Ils ont pris rendez-vous.|حدّدوا موعداً.|📅
+`],
+   a2imp2: ['Imperfectum: сильні дієслова','Imperfectum: strong verbs','Imperfectum : verbes forts','Imperfectum: الأفعال القوية', `
+Ik ging naar school.|Я пішов до школи.|I went to school.|Je suis allé à l’école.|ذهبت إلى المدرسة.|🏫
+Hij kwam te laat.|Він прийшов запізно.|He came too late.|Il est arrivé trop tard.|وصل متأخراً.|⏰
+Wij zagen een film.|Ми дивилися фільм.|We watched a film.|Nous avons regardé un film.|شاهدنا فيلماً.|🎬
+Zij nam de bus.|Вона поїхала автобусом.|She took the bus.|Elle a pris le bus.|ركبت الحافلة.|🚌
+Ik schreef een brief.|Я написав листа.|I wrote a letter.|J’ai écrit une lettre.|كتبت رسالة.|✉️
+Wij aten samen.|Ми їли разом.|We ate together.|Nous avons mangé ensemble.|أكلنا معاً.|🍽️
+Hij sprak met de dokter.|Він говорив із лікарем.|He spoke to the doctor.|Il a parlé au médecin.|تحدث مع الطبيب.|🩺
+Het was koud en ik had honger.|Було холодно, і я був голодний.|It was cold and I was hungry.|Il faisait froid et j’avais faim.|كان الجو بارداً وكنت جائعاً.|❄️
+`],
+   a2tijden: ['Perfectum чи imperfectum?','Perfectum or imperfectum?','Perfectum ou imperfectum ?','Perfectum أم imperfectum؟', `
+Vroeger woonde ik in Kyiv, nu woon ik in Gent.|Раніше я жив у Києві, тепер живу в Генті.|I used to live in Kyiv, now I live in Ghent.|Avant, j’habitais à Kyiv, maintenant j’habite à Gand.|كنت أسكن في كييف والآن أسكن في خنت.|🏙️
+Gisteren ben ik naar de markt gegaan.|Учора я ходив на ринок.|Yesterday I went to the market.|Hier, je suis allé au marché.|ذهبت أمس إلى السوق.|🛒
+Toen ik jong was, speelde ik voetbal.|Коли я був молодим, грав у футбол.|When I was young, I played football.|Quand j’étais jeune, je jouais au football.|عندما كنت شاباً كنت ألعب كرة القدم.|⚽
+Ik heb vandaag al gegeten.|Я вже сьогодні їв.|I have already eaten today.|J’ai déjà mangé aujourd’hui.|أكلت اليوم بالفعل.|🍽️
+Hij werkte tien jaar in een studio.|Він десять років працював у студії.|He worked in a studio for ten years.|Il a travaillé dix ans dans un studio.|عمل عشر سنوات في استوديو.|🎬
+Wij hebben gisteren gewinkeld.|Учора ми ходили по магазинах.|We went shopping yesterday.|Nous avons fait les magasins hier.|تسوقنا أمس.|🛍️
+Zij was ziek en bleef thuis.|Вона була хвора й лишилася вдома.|She was ill and stayed at home.|Elle était malade et est restée à la maison.|كانت مريضة وبقيت في البيت.|🤒
+Ik heb mijn sleutels verloren.|Я загубив свої ключі.|I have lost my keys.|J’ai perdu mes clés.|أضعت مفاتيحي.|🔑
+`],
+   a2passief: ['Пасив: worden + дієприкметник','Passive: worden + participle','Passif : worden + participe','المبني للمجهول: worden + اسم المفعول', `
+De winkel wordt om zes uur gesloten.|Магазин зачиняють о шостій.|The shop is closed at six.|Le magasin est fermé à six heures.|يُغلق المتجر في السادسة.|🏪
+Het pakket wordt morgen bezorgd.|Посилку доставлять завтра.|The parcel will be delivered tomorrow.|Le colis sera livré demain.|سيُسلَّم الطرد غداً.|📦
+Mijn aanvraag wordt nu behandeld.|Мою заяву зараз розглядають.|My application is being processed now.|Ma demande est en cours de traitement.|يجري الآن النظر في طلبي.|📋
+Hier worden fietsen gerepareerd.|Тут ремонтують велосипеди.|Bicycles are repaired here.|Ici, on répare des vélos.|تُصلَّح الدراجات هنا.|🚲
+In Vlaanderen wordt Nederlands gesproken.|У Фландрії розмовляють нідерландською.|Dutch is spoken in Flanders.|En Flandre, on parle néerlandais.|يُتحدث بالهولندية في فلاندر.|🗣️
+De brief wordt door de gemeente verstuurd.|Лист надсилає громада.|The letter is sent by the municipality.|La lettre est envoyée par la commune.|تُرسل الرسالة من البلدية.|✉️
+Deze straat wordt volgende week afgesloten.|Цю вулицю закриють наступного тижня.|This street will be closed next week.|Cette rue sera fermée la semaine prochaine.|سيُغلق هذا الشارع الأسبوع القادم.|🚧
+Het huis werd vorig jaar verkocht.|Будинок продали торік.|The house was sold last year.|La maison a été vendue l’année dernière.|بيع المنزل العام الماضي.|🏠
+`],
+   a2relatief: ['Відносні речення: die / dat','Relative clauses: die / dat','Propositions relatives : die / dat','الجمل الموصولة: die / dat', `
+De man die naast ons woont, is vriendelijk.|Чоловік, що живе поруч із нами, привітний.|The man who lives next to us is friendly.|L’homme qui habite à côté de chez nous est sympathique.|الرجل الذي يسكن بجانبنا لطيف.|👨
+Het huis dat ik huur, is klein.|Будинок, який я орендую, малий.|The house that I rent is small.|La maison que je loue est petite.|المنزل الذي أستأجره صغير.|🏠
+Ik heb een buurvrouw die heel goed kookt.|У мене є сусідка, яка дуже добре готує.|I have a neighbour who cooks very well.|J’ai une voisine qui cuisine très bien.|لدي جارة تطبخ جيداً جداً.|🍲
+Het boek dat ik lees, is spannend.|Книжка, яку я читаю, цікава.|The book that I am reading is exciting.|Le livre que je lis est passionnant.|الكتاب الذي أقرؤه مشوّق.|📖
+De kinderen die buiten spelen, zijn mijn buren.|Діти, які граються надворі, мої сусіди.|The children who are playing outside are my neighbours.|Les enfants qui jouent dehors sont mes voisins.|الأطفال الذين يلعبون في الخارج هم جيراني.|🧒
+Dit is het formulier dat u moet invullen.|Це форма, яку ви маєте заповнити.|This is the form that you have to fill in.|Voici le formulaire que vous devez remplir.|هذا هو النموذج الذي يجب أن تملأه.|📄
+Waar is de pen die op tafel lag?|Де ручка, що лежала на столі?|Where is the pen that was on the table?|Où est le stylo qui était sur la table ?|أين القلم الذي كان على الطاولة؟|✏️
+Het feest dat zaterdag begint, is gratis.|Свято, що починається в суботу, безкоштовне.|The party that starts on Saturday is free.|La fête qui commence samedi est gratuite.|الحفلة التي تبدأ يوم السبت مجانية.|🎉
+`],
+   a2er: ['Er: місце й кількість','Er: place and quantity','Er : lieu et quantité','Er: المكان والكمية', `
+Er is een bushalte bij mijn huis.|Біля мого будинку є автобусна зупинка.|There is a bus stop near my house.|Il y a un arrêt de bus près de chez moi.|توجد محطة حافلات قرب بيتي.|🚏
+Er zijn twee scholen in de buurt.|У районі є дві школи.|There are two schools in the neighbourhood.|Il y a deux écoles dans le quartier.|توجد مدرستان في الحي.|🏫
+Ik ga er morgen naartoe.|Я піду туди завтра.|I am going there tomorrow.|J’y vais demain.|سأذهب إلى هناك غداً.|🚶
+Heb je broers? Ja, ik heb er twee.|У тебе є брати? Так, у мене їх двоє.|Do you have brothers? Yes, I have two.|Tu as des frères ? Oui, j’en ai deux.|هل لديك إخوة؟ نعم، لدي اثنان.|👪
+Er staat een fiets voor de deur.|Перед дверима стоїть велосипед.|There is a bike in front of the door.|Il y a un vélo devant la porte.|توجد دراجة أمام الباب.|🚲
+Wie woont er in dit huis?|Хто живе в цьому будинку?|Who lives in this house?|Qui habite dans cette maison ?|من يسكن في هذا البيت؟|🏠
+Hoeveel kinderen zijn er in de klas?|Скільки дітей у класі?|How many children are there in the class?|Combien d’enfants y a-t-il dans la classe ?|كم طفلاً في الصف؟|🧒
+Ik werk er al drie jaar.|Я працюю там уже три роки.|I have worked there for three years.|J’y travaille depuis trois ans.|أعمل هناك منذ ثلاث سنوات.|💼
+`],
+   a2alswanneer: ['Als, wanneer, toen','Als, wanneer, toen','Als, wanneer, toen','Als وwanneer وtoen', `
+Als het regent, neem ik de bus.|Якщо йде дощ, я їду автобусом.|If it rains, I take the bus.|S’il pleut, je prends le bus.|إذا أمطرت أركب الحافلة.|🌧️
+Wanneer begint de les?|Коли починається урок?|When does the lesson start?|Quand commence le cours ?|متى يبدأ الدرس؟|⏰
+Toen ik klein was, woonde ik in Oekraïne.|Коли я був малим, жив в Україні.|When I was small, I lived in Ukraine.|Quand j’étais petit, j’habitais en Ukraine.|عندما كنت صغيراً كنت أسكن في أوكرانيا.|🧒
+Als je ziek bent, bel dan je werkgever.|Якщо ти хворий, зателефонуй роботодавцю.|If you are ill, call your employer.|Si tu es malade, appelle ton employeur.|إذا كنت مريضاً اتصل بصاحب العمل.|🤒
+Wanneer kom je naar huis?|Коли ти приїдеш додому?|When are you coming home?|Quand rentres-tu à la maison ?|متى ستعود إلى البيت؟|🏠
+Toen ik aankwam, was het al laat.|Коли я приїхав, було вже пізно.|When I arrived, it was already late.|Quand je suis arrivé, il était déjà tard.|عندما وصلت كان الوقت متأخراً.|🌙
+Als ik tijd heb, bel ik je.|Якщо в мене буде час, я тобі зателефоную.|If I have time, I will call you.|Si j’ai le temps, je t’appelle.|إذا كان لدي وقت سأتصل بك.|📞
+Ik weet niet wanneer de trein vertrekt.|Я не знаю, коли відходить потяг.|I do not know when the train leaves.|Je ne sais pas quand le train part.|لا أعرف متى يغادر القطار.|🚆
+`],
+   a2bijzin: ['Порядок слів у підрядних','Word order in subordinate clauses','Ordre des mots dans les subordonnées','ترتيب الكلمات في الجمل الفرعية', `
+Ik denk dat het morgen regent.|Я думаю, що завтра буде дощ.|I think that it will rain tomorrow.|Je pense qu’il pleuvra demain.|أظن أنها ستمطر غداً.|🌧️
+Ik weet niet of hij thuis is.|Я не знаю, чи він удома.|I do not know whether he is at home.|Je ne sais pas s’il est à la maison.|لا أعرف إن كان في البيت.|🏠
+Zij zegt dat ze graag in Gent woont.|Вона каже, що їй подобається жити в Генті.|She says that she likes living in Ghent.|Elle dit qu’elle aime habiter à Gand.|تقول إنها تحب السكن في خنت.|🏙️
+Ik ben moe omdat ik niet goed heb geslapen.|Я втомлений, бо погано спав.|I am tired because I did not sleep well.|Je suis fatigué parce que je n’ai pas bien dormi.|أنا متعب لأنني لم أنم جيداً.|😴
+Hij vraagt of ik mee wil komen.|Він питає, чи хочу я піти з ним.|He asks whether I want to come along.|Il demande si je veux venir avec lui.|يسأل إن كنت أريد القدوم معه.|🙋
+Ik weet dat jij een afspraak hebt.|Я знаю, що в тебе зустріч.|I know that you have an appointment.|Je sais que tu as un rendez-vous.|أعرف أن لديك موعداً.|📅
+Zij blijft thuis omdat de kinderen ziek zijn.|Вона лишається вдома, бо діти хворі.|She stays at home because the children are ill.|Elle reste à la maison parce que les enfants sont malades.|تبقى في البيت لأن الأطفال مرضى.|🤒
+Ik hoop dat je snel beter wordt.|Сподіваюся, ти швидко одужаєш.|I hope that you get better soon.|J’espère que tu iras vite mieux.|آمل أن تتحسن قريباً.|💐
+`],
+   a2voorz: ['Прийменники: in/op, naar/uit','Prepositions: in/op, naar/uit','Prépositions : in/op, naar/uit','حروف الجر: in/op وnaar/uit', `
+Ik woon in Gent, maar ik werk in Brussel.|Я живу в Генті, але працюю в Брюсселі.|I live in Ghent, but I work in Brussels.|J’habite à Gand, mais je travaille à Bruxelles.|أسكن في خنت لكنني أعمل في بروكسل.|🏙️
+Morgen ga ik naar Antwerpen.|Завтра я їду до Антверпена.|Tomorrow I am going to Antwerp.|Demain, je vais à Anvers.|غداً أذهب إلى أنتويرب.|🚆
+Mijn buurman komt uit Polen.|Мій сусід родом із Польщі.|My neighbour comes from Poland.|Mon voisin vient de Pologne.|جاري من بولندا.|🌍
+Het boek ligt op de tafel.|Книжка лежить на столі.|The book is on the table.|Le livre est sur la table.|الكتاب على الطاولة.|📖
+Ik wacht op de bus.|Я чекаю на автобус.|I am waiting for the bus.|J’attends le bus.|أنتظر الحافلة.|🚌
+Ik denk vaak aan mijn familie.|Я часто думаю про свою родину.|I often think of my family.|Je pense souvent à ma famille.|أفكر كثيراً في عائلتي.|👪
+De les is op dinsdag om negen uur.|Урок у вівторок о дев’ятій.|The lesson is on Tuesday at nine o’clock.|Le cours a lieu mardi à neuf heures.|الدرس يوم الثلاثاء الساعة التاسعة.|📅
+Wij gaan met de trein naar Gent.|Ми їдемо потягом до Гента.|We are going to Ghent by train.|Nous allons à Gand en train.|نذهب إلى خنت بالقطار.|🚆
+`],
+   a2adj: ['Прикметники: закінчення -e','Adjectives: the -e ending','Adjectifs : la terminaison -e','الصفات: النهاية -e', `
+Dat is een groot huis.|Це великий будинок.|That is a big house.|C’est une grande maison.|هذا منزل كبير.|🏠
+Dat is het grote huis aan de hoek.|Це великий будинок на розі.|That is the big house on the corner.|C’est la grande maison au coin.|هذا هو المنزل الكبير عند الزاوية.|🏘️
+Wij hebben een nieuwe buurman.|У нас новий сусід.|We have a new neighbour.|Nous avons un nouveau voisin.|لدينا جار جديد.|👨
+Het nieuwe boek is duur.|Нова книжка дорога.|The new book is expensive.|Le nouveau livre est cher.|الكتاب الجديد غالٍ.|📖
+Ik zoek een goedkoop appartement.|Я шукаю дешеву квартиру.|I am looking for a cheap apartment.|Je cherche un appartement bon marché.|أبحث عن شقة رخيصة.|🏢
+Zij draagt een rode jas.|Вона носить червоне пальто.|She is wearing a red coat.|Elle porte un manteau rouge.|ترتدي معطفاً أحمر.|🧥
+Het rode huis is van mijn buurman.|Червоний будинок належить моєму сусідові.|The red house belongs to my neighbour.|La maison rouge est à mon voisin.|المنزل الأحمر لجاري.|🏠
+Dit is een gezellige straat.|Це затишна вулиця.|This is a cosy street.|C’est une rue conviviale.|هذا شارع مريح.|🏘️
+`]
+  },
+  notes: {
+   a2imp1: ['Основа + -te/-de: werk→werkte, woon→woonde. Після t, k, f, s, ch, p (’t kofschip) — -te, інакше -de. Множина: -ten/-den.','Stem + -te/-de: werk→werkte, woon→woonde. After t, k, f, s, ch, p (’t kofschip) use -te, otherwise -de. Plural: -ten/-den.','Radical + -te/-de : werk→werkte, woon→woonde. Après t, k, f, s, ch, p (’t kofschip) : -te, sinon -de. Pluriel : -ten/-den.','الجذر + -te/-de: werk→werkte وwoon→woonde. بعد t وk وf وs وch وp (’t kofschip) نستعمل -te وإلا -de. الجمع: -ten/-den.'],
+   a2imp2: ['Сильні дієслова змінюють голосну: gaan→ging, komen→kwam, zien→zag, nemen→nam. Їх треба вчити напам’ять; у множині: gingen, kwamen, zagen, namen.','Strong verbs change the vowel: gaan→ging, komen→kwam, zien→zag, nemen→nam. Learn them by heart; plural: gingen, kwamen, zagen, namen.','Les verbes forts changent de voyelle : gaan→ging, komen→kwam, zien→zag, nemen→nam. À apprendre par cœur ; pluriel : gingen, kwamen, zagen, namen.','الأفعال القوية تغيّر حرف العلّة: gaan→ging وkomen→kwam وzien→zag وnemen→nam. تُحفظ عن ظهر قلب؛ الجمع: gingen وkwamen وzagen وnamen.'],
+   a2tijden: ['У розмові про недавнє й результат — perfectum (ik heb gegeten). У розповіді про минуле, у was/had і в описах — imperfectum (ik werkte, ik was).','For recent events and results use the perfectum (ik heb gegeten). For stories about the past, was/had and descriptions use the imperfectum (ik werkte, ik was).','Pour le récent et le résultat : perfectum (ik heb gegeten). Pour un récit passé, was/had et les descriptions : imperfectum (ik werkte, ik was).','للحدث القريب والنتيجة نستعمل perfectum (ik heb gegeten). وللسرد عن الماضي وwas/had والوصف نستعمل imperfectum (ik werkte وik was).'],
+   a2passief: ['worden + дієприкметник у кінці: De brief wordt verstuurd. Минулий час: werd. Хто виконує дію — door: door de gemeente.','worden + participle at the end: De brief wordt verstuurd. Past: werd. The doer comes with door: door de gemeente.','worden + participe à la fin : De brief wordt verstuurd. Passé : werd. L’agent avec door : door de gemeente.','worden + اسم المفعول في النهاية: De brief wordt verstuurd. الماضي: werd. الفاعل مع door: door de gemeente.'],
+   a2relatief: ['die — для de-слів і множини, dat — для het-слів. Дієслово йде в кінець: Het huis dat ik huur. Wat — після alles, iets, niets.','die for de-words and plurals, dat for het-words. The verb goes to the end: Het huis dat ik huur. Wat after alles, iets, niets.','die pour les mots en de et le pluriel, dat pour les mots en het. Le verbe va à la fin : Het huis dat ik huur. Wat après alles, iets, niets.','die لكلمات de والجمع، وdat لكلمات het. الفعل في النهاية: Het huis dat ik huur. وwat بعد alles وiets وniets.'],
+   a2er: ['Er is / er zijn = є. Er = «там» (ik ga er naartoe). Er = «їх» при кількості (ik heb er twee). У питаннях: Wie woont er?','Er is / er zijn = there is / are. Er = “there” (ik ga er naartoe). Er = “of them” with a number (ik heb er twee). In questions: Wie woont er?','Er is / er zijn = il y a. Er = « y » (ik ga er naartoe). Er = « en » avec un nombre (ik heb er twee). Dans les questions : Wie woont er ?','Er is / er zijn = يوجد. er = «هناك» (ik ga er naartoe). er = «منهم» مع العدد (ik heb er twee). في الأسئلة: Wie woont er؟'],
+   a2alswanneer: ['Als — умова або повторення (als het regent). Wanneer — «коли?» у питанні й підрядному. Toen — одна подія в минулому (toen ik aankwam).','Als — condition or repetition (als het regent). Wanneer — “when?” in questions and subordinate clauses. Toen — one event in the past (toen ik aankwam).','Als — condition ou répétition (als het regent). Wanneer — « quand ? » dans les questions et subordonnées. Toen — un événement passé (toen ik aankwam).','Als — شرط أو تكرار (als het regent). Wanneer — «متى؟» في الأسئلة والجمل الفرعية. Toen — حدث واحد في الماضي (toen ik aankwam).'],
+   a2bijzin: ['Після dat, of, omdat, als, wanneer дієслово йде в кінець: Ik denk dat het regent. Два дієслова: …omdat ik niet heb geslapen.','After dat, of, omdat, als, wanneer the verb goes to the end: Ik denk dat het regent. Two verbs: …omdat ik niet heb geslapen.','Après dat, of, omdat, als, wanneer, le verbe va à la fin : Ik denk dat het regent. Deux verbes : …omdat ik niet heb geslapen.','بعد dat وof وomdat وals وwanneer يذهب الفعل إلى النهاية: Ik denk dat het regent. فعلان: …omdat ik niet heb geslapen.'],
+   a2voorz: ['in/op — де? (in Gent, op tafel). naar — куди? (naar Gent). uit — звідки? (uit Polen). Op de bus wachten, aan iets denken — фіксовані пари.','in/op — where? (in Gent, op tafel). naar — where to? (naar Gent). uit — where from? (uit Polen). Op de bus wachten, aan iets denken are fixed pairs.','in/op — où ? (in Gent, op tafel). naar — vers où ? (naar Gent). uit — d’où ? (uit Polen). Op de bus wachten, aan iets denken sont des paires fixes.','in/op — أين؟ (in Gent وop tafel). naar — إلى أين؟ (naar Gent). uit — من أين؟ (uit Polen). Op de bus wachten وaan iets denken تراكيب ثابتة.'],
+   a2adj: ['Перед іменником прикметник майже завжди має -e: de grote stad, het grote huis, een nieuwe buurman. Виняток: een groot huis (een + het-слово) без -e.','Before a noun an adjective usually ends in -e: de grote stad, het grote huis, een nieuwe buurman. Exception: een groot huis (een + het-word) has no -e.','Devant un nom, l’adjectif prend presque toujours -e : de grote stad, het grote huis, een nieuwe buurman. Exception : een groot huis (een + mot en het) sans -e.','قبل الاسم تنتهي الصفة غالباً بـ -e: de grote stad وhet grote huis وeen nieuwe buurman. الاستثناء: een groot huis (een + كلمة het) بلا -e.']
+  },
+  gaps: {
+   a2gram:['De man ___ naast ons woont, is vriendelijk.','die','dat','wat','wie']
+  },
+  bank: [
+   ['a2gram',1,'ik|werkte|vroeger|in een winkel','SVTR','Раніше я працював у магазині.','I used to work in a shop.','Avant, je travaillais dans un magasin.','كنت أعمل سابقاً في متجر.','werk','.'],
+   ['a2gram',1,'wij|woonden|in Kyiv','SVR','Ми жили в Києві.','We lived in Kyiv.','Nous habitions à Kyiv.','كنا نسكن في كييف.','woonde','.'],
+   ['a2gram',1,'ik|ging|naar school','SVR','Я пішов до школи.','I went to school.','Je suis allé à l’école.','ذهبت إلى المدرسة.','gaat','.'],
+   ['a2gram',1,'hij|kwam|te laat','SVR','Він прийшов запізно.','He came too late.','Il est arrivé trop tard.','وصل متأخراً.','kom','.'],
+   ['a2gram',1,'de winkel|wordt|om zes uur|gesloten','SVRR','Магазин зачиняють о шостій.','The shop is closed at six.','Le magasin est fermé à six heures.','يُغلق المتجر في السادسة.','worden','.'],
+   ['a2gram',1,'het pakket|wordt|morgen|bezorgd','SVTR','Посилку доставлять завтра.','The parcel will be delivered tomorrow.','Le colis sera livré demain.','سيُسلَّم الطرد غداً.','worden','.'],
+   ['a2gram',1,'ik|heb|een buurvrouw|die|goed|kookt','SVRRRV','У мене є сусідка, яка добре готує.','I have a neighbour who cooks well.','J’ai une voisine qui cuisine bien.','لدي جارة تطبخ جيداً.','dat','.'],
+   ['a2gram',1,'er|is|een bushalte|bij mijn huis','RVSR','Біля мого будинку є автобусна зупинка.','There is a bus stop near my house.','Il y a un arrêt de bus près de chez moi.','توجد محطة حافلات قرب بيتي.','zijn','.'],
+   ['a2gram',1,'er|zijn|twee scholen|in de buurt','RVSR','У районі є дві школи.','There are two schools in the neighbourhood.','Il y a deux écoles dans le quartier.','توجد مدرستان في الحي.','is','.'],
+   ['a2gram',1,'wanneer|begint|de les','QVS','Коли починається урок?','When does the lesson start?','Quand commence le cours ?','متى يبدأ الدرس؟','als','?'],
+   ['a2gram',1,'ik|denk|dat|het|morgen|regent','SVRSTV','Я думаю, що завтра буде дощ.','I think that it will rain tomorrow.','Je pense qu’il pleuvra demain.','أظن أنها ستمطر غداً.','regen','.'],
+   ['a2gram',1,'ik|weet|niet|of|hij|thuis is','SVRRSR','Я не знаю, чи він удома.','I do not know whether he is at home.','Je ne sais pas s’il est à la maison.','لا أعرف إن كان في البيت.','dat','.'],
+   ['a2gram',1,'ik|woon|in Gent','SVR','Я живу в Генті.','I live in Ghent.','J’habite à Gand.','أسكن في خنت.','naar','.'],
+   ['a2gram',1,'ik|ga|naar Gent','SVR','Я їду до Гента.','I am going to Ghent.','Je vais à Gand.','أذهب إلى خنت.','in','.'],
+   ['a2gram',1,'hij|komt|uit Polen','SVR','Він родом із Польщі.','He comes from Poland.','Il vient de Pologne.','هو من بولندا.','in','.'],
+   ['a2gram',1,'dat|is|een groot huis','SVR','Це великий будинок.','That is a big house.','C’est une grande maison.','هذا منزل كبير.','grote','.'],
+   ['a2gram',1,'ik|heb|vandaag|gegeten','SVTV','Я сьогодні їв.','I have eaten today.','J’ai mangé aujourd’hui.','أكلت اليوم.','at','.'],
+   ['a2gram',2,'gisteren|kookte|ik|soep','TVSR','Учора я варив суп.','Yesterday I cooked soup.','Hier, j’ai fait cuire une soupe.','أمس طبخت حساءً.','kook','.'],
+   ['a2gram',2,'toen ik klein was|woonde|ik|in Oekraïne','TVSR','Коли я був малим, жив в Україні.','When I was small, I lived in Ukraine.','Quand j’étais petit, j’habitais en Ukraine.','عندما كنت صغيراً كنت أسكن في أوكرانيا.','woon','.'],
+   ['a2gram',2,'hier|worden|fietsen|gerepareerd','TVSR','Тут ремонтують велосипеди.','Bicycles are repaired here.','Ici, on répare des vélos.','تُصلَّح الدراجات هنا.','wordt','.'],
+   ['a2gram',2,'het boek|dat|ik|lees|is spannend','SRSVR','Книжка, яку я читаю, цікава.','The book that I am reading is exciting.','Le livre que je lis est passionnant.','الكتاب الذي أقرؤه مشوّق.','die','.'],
+   ['a2gram',2,'wie|woont|er|in dit huis','QVRR','Хто живе в цьому будинку?','Who lives in this house?','Qui habite dans cette maison ?','من يسكن في هذا البيت؟','wonen','?'],
+   ['a2gram',2,'als het regent|neem|ik|de bus','TVSR','Якщо йде дощ, я їду автобусом.','If it rains, I take the bus.','S’il pleut, je prends le bus.','إذا أمطرت أركب الحافلة.','nam','.'],
+   ['a2gram',2,'ik|weet|niet|wanneer|de trein|vertrekt','SVRRSV','Я не знаю, коли відходить потяг.','I do not know when the train leaves.','Je ne sais pas quand le train part.','لا أعرف متى يغادر القطار.','als','.'],
+   ['a2gram',2,'zij|blijft|thuis|omdat|de kinderen|ziek zijn','SVRRSR','Вона лишається вдома, бо діти хворі.','She stays at home because the children are ill.','Elle reste à la maison parce que les enfants sont malades.','تبقى في البيت لأن الأطفال مرضى.','want','.'],
+   ['a2gram',2,'ik|hoop|dat|je|snel|beter wordt','SVRSTR','Сподіваюся, ти швидко одужаєш.','I hope that you get better soon.','J’espère que tu iras vite mieux.','آمل أن تتحسن قريباً.','word','.'],
+   ['a2gram',2,'ik|denk|vaak|aan mijn familie','SVTR','Я часто думаю про свою родину.','I often think of my family.','Je pense souvent à ma famille.','أفكر كثيراً في عائلتي.','op','.'],
+   ['a2gram',2,'zij|draagt|een rode jas','SVR','Вона носить червоне пальто.','She is wearing a red coat.','Elle porte un manteau rouge.','ترتدي معطفاً أحمر.','rood','.'],
+   ['a2gram',2,'vroeger|woonde|ik|in Kyiv','TVSR','Раніше я жив у Києві.','I used to live in Kyiv.','Avant, j’habitais à Kyiv.','كنت أسكن سابقاً في كييف.','woon','.'],
+   ['a2gram',2,'gisteren|ben|ik|naar de markt|gegaan','TVSRV','Учора я ходив на ринок.','Yesterday I went to the market.','Hier, je suis allé au marché.','ذهبت أمس إلى السوق.','heb','.']
+  ],
+  dialogues: [
+   ['a2gram','📘','Розмова про минуле','Talking about the past','Parler du passé','الحديث عن الماضي',[
+    ['Waar woonde je vroeger?','Де ти жив раніше?','Where did you live before?'],
+    ['Ik woonde in Kyiv. Daar werkte ik tien jaar in een studio.','Я жив у Києві. Там я десять років працював у студії.','I lived in Kyiv. I worked in a studio there for ten years.'],
+    ['En wanneer ben je naar België gekomen?','А коли ти приїхав до Бельгії?','And when did you come to Belgium?'],
+    ['Toen de oorlog begon, ben ik met mijn gezin vertrokken.','Коли почалася війна, я виїхав із родиною.','When the war began, I left with my family.'],
+    ['Wat doe je hier nu?','Що ти робиш тут зараз?','What do you do here now?'],
+    ['Ik leer Nederlands, want ik wil hier werken.','Я вчу нідерландську, бо хочу тут працювати.','I am learning Dutch because I want to work here.']]],
+   ['a2d_dokter','🩺','У лікаря','At the doctor’s','Chez le médecin','عند الطبيب',[
+    ['Goedemorgen dokter.','Доброго ранку, докторе.','Good morning, doctor.'],
+    ['Goedemorgen, wat is er precies aan de hand?','Доброго ранку, що саме трапилося?','Good morning, what exactly is the matter?'],
+    ['Ik heb last van mijn keel en ik hoest.','У мене болить горло, і я кашляю.','I have a sore throat and I am coughing.'],
+    ['Sinds wanneer?','Відколи?','Since when?'],
+    ['Sinds eergisteren.','Із позавчора.','Since the day before yesterday.'],
+    ['Hebt u koorts gehad?','У вас була температура?','Have you had a fever?'],
+    ['Nee, geen koorts. Alleen keelpijn.','Ні, без температури. Лише біль у горлі.','No, no fever. Only a sore throat.'],
+    ['Oké, ik luister even naar uw longen.','Добре, я послухаю ваші легені.','Okay, I will listen to your lungs for a moment.']]],
+   ['a2d_kleding','👕','У магазині одягу','In a clothes shop','Dans un magasin de vêtements','في متجر الملابس',[
+    ['Goedemiddag, kan ik u helpen?','Добрий день, чим можу допомогти?','Good afternoon, can I help you?'],
+    ['Goedemiddag. Ik zoek een warme trui.','Добрий день. Я шукаю теплий светр.','Good afternoon. I am looking for a warm sweater.'],
+    ['Welke maat hebt u?','Який у вас розмір?','Which size are you?'],
+    ['Medium, denk ik.','Medium, думаю.','Medium, I think.'],
+    ['Mag ik deze even passen?','Можна це приміряти?','May I try this one on?'],
+    ['Natuurlijk, de paskamers zijn daar.','Звісно, примірочні там.','Of course, the fitting rooms are over there.'],
+    ['Deze is te groot. Hebt u een kleinere?','Цей завеликий. У вас є менший?','This one is too big. Do you have a smaller one?'],
+    ['Ja, hier is small.','Так, ось small.','Yes, here is a small.']]],
+   ['a2d_station','🚆','На вокзалі','At the station','À la gare','في محطة القطار',[
+    ['Goedemiddag.','Добрий день.','Good afternoon.'],
+    ['Goedemiddag. Mijn trein heeft vertraging.','Добрий день. Мій потяг запізнюється.','Good afternoon. My train is delayed.'],
+    ['Waar moet u naartoe?','Куди вам потрібно їхати?','Where do you need to go?'],
+    ['Naar Gent.','До Гента.','To Ghent.'],
+    ['Hoe lang is de vertraging?','Скільки триває затримка?','How long is the delay?'],
+    ['Ongeveer vijftien minuten.','Приблизно п’ятнадцять хвилин.','About fifteen minutes.'],
+    ['Kan ik een andere trein nemen?','Чи можу я поїхати іншим потягом?','Can I take another train?'],
+    ['Op dit moment niet, sorry.','Наразі ні, вибачте.','Not at the moment, sorry.']]],
+   ['a2d_apotheek','💊','В аптеці','At the pharmacy','À la pharmacie','في الصيدلية',[
+    ['Goedemiddag, waarmee kan ik u helpen?','Добрий день, чим можу допомогти?','Good afternoon, how can I help you?'],
+    ['Ik zoek iets tegen hoofdpijn.','Я шукаю щось від головного болю.','I am looking for something for a headache.'],
+    ['Hebt u al iets genomen?','Ви вже щось приймали?','Have you already taken something?'],
+    ['Ja, paracetamol, maar het helpt niet genoeg.','Так, парацетамол, але він не допомагає достатньо.','Yes, paracetamol, but it does not help enough.'],
+    ['Sinds wanneer hebt u last?','Відколи у вас болить?','Since when have you had trouble?'],
+    ['Sinds vanmorgen.','Із сьогоднішнього ранку.','Since this morning.'],
+    ['Ik geef u ibuprofen.','Я дам вам ібупрофен.','I will give you ibuprofen.'],
+    ['Neem er maximaal drie per dag.','Приймайте максимум три на день.','Take a maximum of three a day.']]],
+   ['a2d_cafe','☕','У кафе','At the café','Au café','في المقهى',[
+    ['Goedemorgen, wat mag het zijn?','Доброго ранку, що будете?','Good morning, what can I get you?'],
+    ['Een koffie met melk en een croissant.','Каву з молоком і круасан.','A coffee with milk and a croissant.'],
+    ['Wilt u de croissant warm?','Хочете круасан теплим?','Would you like the croissant warm?'],
+    ['Ja, graag.','Так, будь ласка.','Yes, please.'],
+    ['Mag ik er een glas water bij?','Можна до цього склянку води?','May I have a glass of water with it?'],
+    ['Natuurlijk.','Звісно.','Of course.'],
+    ['Dat is dan 5,90 euro.','Це буде 5,90 євро.','That will be 5.90 euros.'],
+    ['Dank u wel.','Дякую.','Thank you.']]],
+   ['a2d_buur','🏘️','Розмова із сусідом','Talking to a neighbour','Discussion avec un voisin','حديث مع الجار',[
+    ['Hé, alles goed?','Привіт, усе добре?','Hey, all good?'],
+    ['Ja, prima. En met jou?','Так, чудово. А в тебе?','Yes, fine. And you?'],
+    ['Goed. Woon je hier al lang?','Добре. Ти тут давно живеш?','Good. Have you lived here long?'],
+    ['Nee, pas sinds vorige maand.','Ні, лише з минулого місяця.','No, only since last month.'],
+    ['Welkom in de buurt!','Ласкаво просимо в наш район!','Welcome to the neighbourhood!'],
+    ['Dank je.','Дякую.','Thank you.'],
+    ['Als je iets nodig hebt, mag je altijd aankloppen.','Якщо щось потрібно, завжди можеш постукати.','If you need anything, you can always knock.'],
+    ['Dat is heel vriendelijk, bedankt.','Це дуже люб’язно, дякую.','That is very kind, thank you.']]],
+   ['a2d_afspraak','📞','Запис на прийом по телефону','Booking an appointment by phone','Prendre rendez-vous par téléphone','حجز موعد بالهاتف',[
+    ['Goedemiddag, huisartsenpraktijk.','Добрий день, кабінет сімейного лікаря.','Good afternoon, GP practice.'],
+    ['Goedemiddag. Ik wil graag een afspraak maken.','Добрий день. Я хочу записатися на прийом.','Good afternoon. I would like to make an appointment.'],
+    ['Wat is de reden?','Яка причина?','What is the reason?'],
+    ['Ik heb last van mijn rug.','У мене болить спина.','I have back pain.'],
+    ['Wanneer past het u?','Коли вам зручно?','When suits you?'],
+    ['Bij voorkeur morgen of overmorgen.','Бажано завтра або післязавтра.','Preferably tomorrow or the day after.'],
+    ['Morgen om 10.15 uur is nog vrij.','Завтра о 10:15 ще вільно.','Tomorrow at 10.15 is still free.'],
+    ['Perfect, dat is goed.','Чудово, це підходить.','Perfect, that is fine.']]],
+   ['a2d_super','🛒','У супермаркеті: де знайти?','In the supermarket: where to find it?','Au supermarché : où trouver ?','في السوبرماركت: أين أجد؟',[
+    ['Pardon, kunt u mij helpen?','Перепрошую, можете мені допомогти?','Excuse me, can you help me?'],
+    ['Natuurlijk.','Звісно.','Of course.'],
+    ['Ik zoek de havermout.','Я шукаю вівсянку.','I am looking for the oatmeal.'],
+    ['Die staat in gang vier, bovenaan.','Вона в проході чотири, нагорі.','That is in aisle four, at the top.'],
+    ['En waar vind ik de yoghurt zonder suiker?','А де я знайду йогурт без цукру?','And where do I find the yoghurt without sugar?'],
+    ['Bij de zuivel, links.','Біля молочних продуктів, ліворуч.','By the dairy, on the left.'],
+    ['Dank u wel.','Дякую.','Thank you.'],
+    ['Graag gedaan.','Будь ласка.','You’re welcome.']]]
+  ],
+  speech: [
+   ['Waar woonde je vroeger?','Де ти жив раніше?','Where did you live before?','Vroeger woonde ik in Kyiv.'],
+   ['Wat deed je gisteren?','Що ти робив учора?','What did you do yesterday?','Gisteren ben ik naar de markt gegaan.'],
+   ['Wanneer ben je naar België gekomen?','Коли ти приїхав до Бельгії?','When did you come to Belgium?','Ik ben vorig jaar naar België gekomen.'],
+   ['Wat doe je als het regent?','Що ти робиш, коли йде дощ?','What do you do when it rains?','Als het regent, neem ik de bus.'],
+   ['Wie is jouw buurman?','Хто твій сусід?','Who is your neighbour?','Mijn buurman is een man die heel vriendelijk is.'],
+   ['Wat denk je van het weer morgen?','Що ти думаєш про погоду завтра?','What do you think of tomorrow’s weather?','Ik denk dat het morgen regent.']
+  ]
+ };
+ for(const part of [a2p1,a2p2,a2p3]){
   a2.chapters.push(...part.chapters);
   Object.assign(a2.labels,part.labels);
   Object.assign(a2.lessons,part.lessons);
@@ -1398,6 +1645,34 @@ Zolang we samenwerken, lukt het.|Поки ми працюємо разом, ус
   a2.dialogues.push(...part.dialogues);
   a2.speech.push(...part.speech);
  }
+ // ---- A2 grammar check: 25 four-option cards (sentence with a gap, one correct answer, explanation in four languages) ----
+ const a2plus = [
+  ['Ik ___ gisteren naar de bioscoop gegaan.','ben','heb','is','zijn',['З дієсловами руху й зміни місця perfectum утворюється з «zijn»: ik ben gegaan.','With verbs of movement and change of place the perfect uses “zijn”: ik ben gegaan.','Avec les verbes de mouvement et de changement de lieu, le perfectum se forme avec « zijn » : ik ben gegaan.','مع أفعال الحركة وتغيّر المكان يُصاغ الماضي التام بـ zijn: ik ben gegaan.']],
+  ['Hij is groter ___ zijn broer.','dan','als','van','met',['У порівнянні після вищого ступеня завжди «dan».','After a comparative you always use “dan”.','Après un comparatif, on utilise toujours « dan ».','بعد صيغة المقارنة نستعمل دائماً dan.']],
+  ['Ik woon hier ___ 2023.','sinds','al','voor','vanaf',['«Sinds» стоїть із точкою в часі (sinds 2023). З періодом — «al»: al drie jaar.','“Sinds” goes with a point in time (sinds 2023). With a period use “al”: al drie jaar.','« Sinds » va avec un moment précis (sinds 2023). Avec une durée, on dit « al » : al drie jaar.','sinds مع نقطة زمنية (sinds 2023). ومع المدة نستعمل al: al drie jaar.']],
+  ['Er ___ veel mensen in de winkel.','zijn','is','heeft','hebben',['«Er is» — однина, «er zijn» — множина.','“Er is” is singular, “er zijn” is plural.','« Er is » au singulier, « er zijn » au pluriel.','er is للمفرد وer zijn للجمع.']],
+  ['Ik ga naar de dokter ___ me te laten controleren.','om','voor','van','met',['Мету дії виражає конструкція «om … te».','Purpose is expressed with “om … te”.','Le but s’exprime avec « om … te ».','الغرض يُعبَّر عنه بـ om … te.']],
+  ['Zij ___ de hele dag gewerkt.','heeft','is','wordt','hebben',['Більшість дієслів у perfectum утворюються з «hebben»: zij heeft gewerkt.','Most verbs form the perfect with “hebben”: zij heeft gewerkt.','La plupart des verbes forment le perfectum avec « hebben » : zij heeft gewerkt.','معظم الأفعال تكوّن الماضي التام بـ hebben: zij heeft gewerkt.']],
+  ['De film was interessanter ___ ik dacht.','dan','als','dat','zoals',['Після вищого ступеня — «dan», також перед підрядною частиною.','After a comparative use “dan”, also before a subordinate clause.','Après un comparatif, « dan », même devant une subordonnée.','بعد المقارنة نستعمل dan حتى قبل جملة فرعية.']],
+  ['Ik ___ mijn sleutels thuis laten liggen.','heb','ben','is','zijn',['«Laten» утворює perfectum з «hebben»: ik heb laten liggen.','“Laten” forms the perfect with “hebben”: ik heb laten liggen.','« Laten » forme le perfectum avec « hebben » : ik heb laten liggen.','laten تكوّن الماضي التام بـ hebben: ik heb laten liggen.']],
+  ['Wij hebben honger, ___ wij gaan eten.','dus','omdat','want','hoewel',['«Dus» означає «тому, отже» і не змінює порядок слів.','“Dus” means “so, therefore” and does not change the word order.','« Dus » signifie « donc » et ne change pas l’ordre des mots.','dus تعني «لذلك» ولا تغيّر ترتيب الكلمات.']],
+  ['Ik kan niet komen, ___ ik moet werken.','want','dus','omdat','daarom',['«Want» з’єднує дві самостійні частини й не змінює порядок слів (ik moet werken). З «omdat» дієслово пішло б в кінець.','“Want” joins two main clauses and keeps the word order (ik moet werken). With “omdat” the verb would go to the end.','« Want » relie deux principales et garde l’ordre (ik moet werken). Avec « omdat », le verbe irait à la fin.','want تربط جملتين رئيسيتين وتحافظ على الترتيب (ik moet werken). مع omdat يذهب الفعل إلى النهاية.']],
+  ['___ veel auto’s op straat.','Er zijn','Er is','Er heeft','Er hebben',['Множина → «er zijn».','Plural → “er zijn”.','Pluriel → « er zijn ».','الجمع → er zijn.']],
+  ['Hij praat ___ hard.','te','te veel','teveel','te erg',['«Te» + прикметник/прислівник = «занадто»: te hard.','“Te” + adjective/adverb = “too”: te hard.','« Te » + adjectif/adverbe = « trop » : te hard.','te + صفة/ظرف = «أكثر من اللازم»: te hard.']],
+  ['Ik ___ gisteren pizza gegeten.','heb','ben','is','zijn',['«Eten» утворює perfectum з «hebben»: ik heb gegeten.','“Eten” forms the perfect with “hebben”: ik heb gegeten.','« Eten » forme le perfectum avec « hebben » : ik heb gegeten.','eten تكوّن الماضي التام بـ hebben: ik heb gegeten.']],
+  ['Zij is naar huis gegaan ___ zij ziek was.','omdat','want','dus','maar',['«Omdat» відкриває підрядну частину, дієслово йде в кінець: …omdat zij ziek was.','“Omdat” opens a subordinate clause, so the verb goes to the end: …omdat zij ziek was.','« Omdat » ouvre une subordonnée : le verbe va à la fin : …omdat zij ziek was.','omdat تبدأ جملة فرعية فيذهب الفعل إلى النهاية: …omdat zij ziek was.']],
+  ['Ik moet nog boodschappen ___.','doen','te doen','gedaan','doende',['Після модальних дієслів (moeten, kunnen, willen) — інфінітив без «te».','After modal verbs (moeten, kunnen, willen) use the infinitive without “te”.','Après les verbes modaux (moeten, kunnen, willen) : infinitif sans « te ».','بعد الأفعال المساعدة (moeten وkunnen وwillen) نستعمل المصدر بدون te.']],
+  ['De winkel is open van negen ___ zes uur.','tot','naar','voor','bij',['«Van … tot …» = «від … до …».','“Van … tot …” = “from … to …”.','« Van … tot … » = « de … à … ».','van … tot … = «من … إلى …».']],
+  ['Ik voel me niet goed. Ik denk dat ik ___ heb.','koorts','een koorts','de koorts','koortsen',['«Koorts hebben» — без артикля.','“Koorts hebben” is used without an article.','« Koorts hebben » s’emploie sans article.','تُقال koorts hebben بدون أداة تعريف.']],
+  ['Hij heeft hard gewerkt, ___ is hij moe.','daarom','omdat','want','maar',['«Daarom» = «тому», стоїть на початку другої частини, і далі йде дієслово: daarom is hij moe.','“Daarom” = “that is why”; it starts the second part and the verb follows: daarom is hij moe.','« Daarom » = « c’est pourquoi » ; il ouvre la seconde partie, le verbe suit : daarom is hij moe.','daarom = «لهذا»؛ تبدأ الجزء الثاني ويليها الفعل: daarom is hij moe.']],
+  ['Ik ga sporten ___ fitter te worden.','om','voor','van','met',['Мета — «om … te + інфінітив».','Purpose: “om … te + infinitive”.','But : « om … te + infinitif ».','الغرض: om … te + المصدر.']],
+  ['Er ___ een auto voor de deur.','is','zijn','heeft','staan',['Однина → «er is» (також «er staat»).','Singular → “er is” (also “er staat”).','Singulier → « er is » (aussi « er staat »).','المفرد → er is (وأيضاً er staat).']],
+  ['Zij ___ gisteren op tijd aangekomen.','is','heeft','wordt','hebben',['«Aankomen» — рух до місця, тому perfectum із «zijn»: zij is aangekomen.','“Aankomen” expresses arrival, so the perfect uses “zijn”: zij is aangekomen.','« Aankomen » exprime l’arrivée, donc perfectum avec « zijn » : zij is aangekomen.','aankomen تعبّر عن الوصول، لذا نستعمل zijn: zij is aangekomen.']],
+  ['Mijn zus is ___ oud als ik.','even','meer','dan','groter',['«Even + прикметник + als» = «такий самий … як».','“Even + adjective + als” = “as … as”.','« Even + adjectif + als » = « aussi … que ».','even + صفة + als = «بنفس … مثل».']],
+  ['We hebben gisteren ___ de film gekeken.','naar','op','aan','voor',['«Kijken naar» = «дивитися на/дивитися (фільм)».','“Kijken naar” = “to watch / look at”.','« Kijken naar » = « regarder ».','kijken naar = «يشاهد / ينظر إلى».']],
+  ['Ik blijf thuis ___ ik ziek ben.','omdat','want','dus','daarom',['«Omdat» + підмет + … + дієслово в кінці: …omdat ik ziek ben.','“Omdat” + subject + … + verb at the end: …omdat ik ziek ben.','« Omdat » + sujet + … + verbe à la fin : …omdat ik ziek ben.','omdat + الفاعل + … + الفعل في النهاية: …omdat ik ziek ben.']],
+  ['Hij ___ de brief al geschreven.','heeft','is','wordt','hebben',['«Schrijven» утворює perfectum з «hebben»: hij heeft geschreven.','“Schrijven” forms the perfect with “hebben”: hij heeft geschreven.','« Schrijven » forme le perfectum avec « hebben » : hij heeft geschreven.','schrijven تكوّن الماضي التام بـ hebben: hij heeft geschreven.']]
+ ];
  const a2Ids=new Set(a2.chapters.map(c=>c[0]));
  advanced.push(...a2.chapters.map(([id,title,tabs])=>[id,title,[...tabs]]));
  Object.assign(topicLabels,a2.labels);
@@ -1570,6 +1845,8 @@ Zolang we samenwerken, lukt het.|Поки ми працюємо разом, ус
    const no=lvl==='a11'?chapters.findIndex(c=>c[0]===id)+1:lvl==='a21'?a2.chapters.findIndex(c=>c[0]===id)+1:advanced.findIndex(c=>c[0]===id)+1,clean=title.replace(/^\S+\s/,m=>/\p{Extended_Pictographic}/u.test(m)?'':m);
    tests.push({id:testId(id),lvl,group:'chapter',no,chapter:id,dutch:clean,title:translated(`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`,`${no} · ${clean}`),questions});
   }
+  tests.push({id:'a2_grammar_cards_v1',lvl:'a21',title:translated('Граматика A2: 25 карток','A2 grammar: 25 cards','Grammaire A2 : 25 cartes','قواعد A2: 25 بطاقة'),pass:70,
+   questions:a2plus.map(([sentence,...rest])=>({type:'gap',sentence,q:prompt,opts:rest.slice(0,4),ok:0,explanation:translated(...rest[4])}))});
   const levelTest=tests.find(t=>t.kind==='leveltest'&&t.unlocks==='a12');
   levelTest.id='lt_a12_course_v2';
   // Explicitly test all twelve 1.1 chapters, not just introductions.
