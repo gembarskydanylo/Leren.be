@@ -182,3 +182,9 @@
 .welcome-panel .welcome-goal{min-height:48px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:800 15px/1.2 var(--font-body,inherit);cursor:pointer}
 .welcome-panel .welcome-goal.on{border-color:var(--focus-accent,#EB6A00);background:var(--focus-soft,#fff1e3);box-shadow:0 3px 0 var(--focus-accent,#EB6A00)}
 .welcome-panel .welcome-goal:focus-visible{outline:3px solid var(--focus-accent,#EB6A00);outline-offset:2px}
+/* Motivational banner */
+.fh-banner{margin:0 0 16px;padding:20px 18px;border-radius:22px;background:linear-gradient(135deg,#b85200,#c85a00);border-bottom:5px solid #8f3f00;color:#fff;display:grid;gap:10px;position:relative;overflow:hidden}
+.fh-banner::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:8px;background:linear-gradient(#1e1712 0 33.3%,#fdda24 33.3% 66.6%,#ef3340 66.6%)}
+.fh-banner-line{margin:0;padding-inline-start:10px;font:900 22px/1.25 var(--font-display,inherit);overflow-wrap:normal;word-break:normal;hyphens:manual}
+.fh-banner-line.is-small{font:800 15px/1.35 var(--font-body,inherit);opacity:.95}
+@media(max-width:380px){.fh-banner-line{font-size:19px}.fh-banner-line.is-small{font-size:14px}}
