@@ -16,7 +16,7 @@
 | Вебсайт | https://lerenbe.com |
 | Значок 512×512 | `store/play-icon-512.png` |
 | Банер 1024×500 | `store/feature-graphic-1024x500.png` |
-| Знімки телефона 1080×1920 (9:16) | `store/play-screenshots/1-chat-1080x1920.png` … `6-dict-1080x1920.png` (у цьому порядку; 9:16 потрібне для рекомендацій у Play). `screenshots/` (1080×2160) — для маніфесту сайту |
+| Знімки телефону 1080×1920 (9:16) | `store/play-screenshots/1-chat-1080x1920.png` … `6-dict-1080x1920.png` (у цьому порядку; 9:16 потрібне для рекомендацій у Play). `screenshots/` (1080×2160) — для маніфесту сайту |
 
 Посилання на політику всередині застосунку: ⚙ Налаштування → внизу «Privacy»; на екрані згоди AI-чату згадано, що дані обробляє AI.
 
@@ -33,33 +33,35 @@
 Нідерландська (голландська) A1–A2 українською: уроки, іспити, AI-викладач Пітер
 
 **Повний опис:**
-lerenbe.com — тренажер нідерландської мови рівнів A1.1, A1.2 і A2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на перших курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
+Вивчай нідерландську (голландську) мову з нуля: так, як говорять у Бельгії (фламандський варіант), і як на курсах CVO та inburgering.
+
+lerenbe.com — тренажер нідерландської мови рівнів A1.1, A1.2 і A2, створений українцем, який сам вивчає нідерландську в Бельгії. Усе, що потрібно на курсах (CVO, inburgering), зібрано в одному застосунку з поясненнями українською.
 
 🤖 AI-ВИКЛАДАЧ ПІТЕР
 • «Praat met Peter»: розмовляй письмово або голосом — Пітер відповідає простою нідерландською, виправляє помилки й пояснює правило українською.
 • «Запитай Пітера»: питай про граматику, слова, переклад і вимову, проси вправи — з прикладами, які можна прослухати.
 • Під кожною відповіддю — переклад українською.
 • Пітер пам’ятає, що ти вчиш і де помиляєшся, а кілька фактів про тебе зберігаються лише на твоєму пристрої — їх можна переглянути й видалити.
+• Замість Пітера можна обрати викладачку Дафну.
 • Можна практикувати також англійську та французьку.
 AI-чат — для дорослих, працює онлайн; на будь-яку відповідь можна поскаржитися кнопкою «⚑».
 
 📈 ТРИ РІВНІ: A1.1, A1.2 І A2
-Збирай бали, виконуй ціль дня, тримай серію днів 🔥 і відкривай наступний рівень. Якщо вже знаєш матеріал, склади тест на рівень і переходь одразу.
-A2 — окремий курс із 8 розділів про життя в Бельгії: робота, житло, здоров’я й ziekenfonds, gemeente й офіційні листи, школа, гроші й банк, новини й погода, свята й клуби. Граматика: imperfectum, die / dat, om … te, зворотні дієслова, hoewel / zodat / zodra.
+A1.1 відкритий одразу. A1.2 відкривається, коли збереш бали, або одразу після тесту на рівень. A2 — окремий курс: робота, житло, здоров’я, документи, школа, гроші, новини й життя поруч з іншими. Виконуй ціль дня й тримай серію днів 🔥.
 
 📚 УРОКИ ЗА ТЕМАМИ
 Привітання, питання, займенники, дієслова, артиклі de/het, числа й години, погода, сім’я, професії, тіло й лікар, дім, покупки, місто й транспорт, муніципалітет, школа CVO, робота й банк; на рівні A1.2 — мій день, модальні дієслова, perfectum, житло, телефон і лист.
-Режими: Вчити · Тест · Слухати · Речення · Повтор (слова з помилками повертаються самі).
+Короткі уроки по 5–10 хвилин; слова з помилками повертаються на повторення самі.
 
 🎮 ІГРИ
-«Een dag in België» — історія дня в Бельгії, діалоги-пазли, рольова гра, «Відповідай на питання» голосом, Бліц, Memory, Диктант, Kort / lang для довгих і коротких голосних.
+«Een dag in België» — історія дня в Бельгії, діалоги-пазли, рольова гра, «Відповідай на питання» голосом, Бліц, Мемо, Диктант, omdat-катапульта, Kort / lang для довгих і коротких голосних.
 
 📝 TOETS І ПРОБНІ ІСПИТИ
-Міні-іспити як на курсі: вибір відповіді, пропущене слово, читання. Результат «склав» від 70 %. Пробні підсумкові іспити A1.1 і A1.2 з аудіюванням, читанням, письмом і говорінням.
+Міні-тести як на курсі: вибір відповіді, пропущене слово, читання. Пробні іспити за зразком NT2: читання, аудіювання, письмо, говоріння, слова й граматика. Результат «склав» від 70 %.
 
 ✨ ТАКОЖ
-• Словник: понад 2900 слів з артиклем, формами й озвученням
-• Записане бельгійське озвучення або голос твого телефона
+• Словник: майже 2800 слів з артиклем, формами й озвученням
+• Записане бельгійське озвучення (голоси Пітера й Дафни) або голос твого телефону
 • Уроки працюють без інтернету
 • Пояснення українською, англійською, французькою або арабською
 • Темна тема, щоденні нагадування
@@ -76,39 +78,41 @@ lerenbe.com — незалежний навчальний проєкт і не �
 ## 🇧🇪 Nederlands (nl-NL)
 
 **Naam:**
-lerenbe.com — Nederlands A1–A2
+Nederlands A1–A2 — lerenbe.com
 
 **Korte beschrijving:**
-Nederlands A1–A2: lessen, toetsen, examens en AI-leraar Peter legt fouten uit.
+Nederlands A1–A2: lessen, oefenexamens en AI-leraar Peter die fouten uitlegt.
 
 **Volledige beschrijving:**
-lerenbe.com is een oefenapp voor Nederlands op niveau A1.1, A1.2 en A2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de eerste lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
+Leer Nederlands vanaf nul, zoals het in België gesproken wordt (Vlaams) en zoals in de lessen van CVO en inburgering.
+
+lerenbe.com is een oefenapp voor Nederlands op niveau A1.1, A1.2 en A2, gemaakt door een Oekraïner die zelf Nederlands leert in België. Alles wat je nodig hebt in de lessen (CVO, inburgering) in één app, met uitleg in het Oekraïens, Engels, Frans of Arabisch.
 
 🤖 AI-LERAAR PETER
 • “Praat met Peter”: schrijf of spreek — Peter antwoordt in eenvoudig Nederlands, verbetert je fouten en legt de regel uit in jouw taal.
 • “Vraag het Peter”: vragen over grammatica, woorden, vertaling en uitspraak, of vraag een oefening — met voorbeelden die je kunt beluisteren.
 • Onder elk antwoord staat een vertaling.
 • Peter onthoudt wat je leert en waar je fouten maakt; een paar notities over jou blijven alleen op je toestel en kun je bekijken en wissen.
+• In plaats van Peter kun je ook lerares Dafna kiezen.
 • Je kunt ook Engels en Frans oefenen.
 De AI-chat is voor volwassenen en werkt online; elk antwoord kun je melden met “⚑”.
 
 📈 DRIE NIVEAUS: A1.1, A1.2 EN A2
-Verzamel punten, haal je dagdoel, houd je reeks 🔥 vol en ontgrendel het volgende niveau. Ken je het al? Doe de niveautest.
-A2 is een aparte cursus met 8 hoofdstukken over het leven in België: werk, wonen, gezondheid en ziekenfonds, de gemeente en officiële brieven, school, geld en bank, nieuws en weer, feesten en clubs. Grammatica: imperfectum, die / dat, om … te, wederkerende werkwoorden, hoewel / zodat / zodra.
+A1.1 staat meteen open. A1.2 ontgrendel je met punten, of meteen met de niveautest. A2 is een aparte cursus: werk, wonen, gezondheid, administratie, school, geld, nieuws en samenleven. Haal je dagdoel en houd je reeks 🔥 vol.
 
 📚 LESSEN PER THEMA
 Begroetingen, vragen, voornaamwoorden, werkwoorden, de/het, getallen en de klok, het weer, familie, beroepen, lichaam en dokter, het huis, boodschappen, de stad en vervoer, de gemeente, school (CVO), werk en bank; op A1.2 ook mijn dag, modale werkwoorden, het perfectum, wonen, telefoon en mail.
-Oefenvormen: Leren · Quiz · Luisteren · Zinnen bouwen · Herhalen.
+Korte lessen van 5–10 minuten; woorden waarin je fouten maakt, komen vanzelf terug.
 
 🎮 SPELLETJES
-“Een dag in België”, dialoogpuzzels, rollenspel, vragen beantwoorden met je stem, Blitz, Memory, dictee en Kort / lang.
+“Een dag in België”, dialoogpuzzels, rollenspel, vragen beantwoorden met je stem, Blitz, Memory, dictee, omdat-katapult en Kort / lang.
 
 📝 TOETSEN EN OEFENEXAMENS
-Mini-toetsen zoals in de klas: meerkeuze, aanvulzinnen en lezen. “Geslaagd” vanaf 70 %. Oefenexamens A1.1 en A1.2 met luisteren, lezen, schrijven en spreken.
+Mini-toetsen zoals in de klas: meerkeuze, aanvulzinnen en lezen. Oefenexamens naar het voorbeeld van NT2: lezen, luisteren, schrijven, spreken, woordenschat en grammatica. “Geslaagd” vanaf 70 %.
 
 ✨ VERDER
-• Woordenboek met meer dan 2900 woorden, met lidwoord, vormen en uitspraak
-• Opgenomen Vlaamse uitspraak of de stem van je toestel
+• Woordenboek met bijna 2800 woorden, met lidwoord, vormen en uitspraak
+• Opgenomen Vlaamse uitspraak (stemmen van Peter en Dafna) of de stem van je toestel
 • Lessen werken offline
 • Donker thema en dagelijkse herinneringen
 
@@ -124,39 +128,41 @@ Idee of fout gevonden? Mail naar gembarsky.d@gmail.com
 ## 🇬🇧 English (en-US)
 
 **Title:**
-lerenbe.com — Nederlands A1–A2
+Learn Dutch — lerenbe.com
 
 **Short description:**
-Dutch A1–A2: lessons, quizzes, exams and AI tutor Peter who fixes mistakes.
+Dutch A1–A2: lessons, mock exams and AI tutor Peter who explains your mistakes.
 
 **Full description:**
-lerenbe.com is a Dutch practice app for levels A1.1, A1.2 and A2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your first Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
+Learn Dutch from scratch the way it is spoken in Belgium (Flemish) and taught in CVO and inburgering classes.
+
+lerenbe.com is a Dutch practice app for levels A1.1, A1.2 and A2, made by a Ukrainian who is learning Dutch in Belgium himself. Everything you need in your Dutch classes (CVO, inburgering) in one app, with explanations in Ukrainian, English, French or Arabic.
 
 🤖 AI TUTOR PETER
 • “Praat met Peter”: write or speak — Peter answers in simple Dutch, corrects your mistakes and explains the rule in your language.
 • “Ask Peter”: ask about grammar, words, translation and pronunciation, or ask for an exercise — with examples you can listen to.
 • A translation under every answer.
 • Peter remembers what you are learning and where you make mistakes; a few notes about you are kept only on your device, and you can view and delete them.
+• You can choose tutor Dafna instead of Peter.
 • You can also practise English and French.
 The AI chat is for adults and works online; you can report any answer with “⚑”.
 
 📈 THREE LEVELS: A1.1, A1.2 AND A2
-Collect points, hit your daily goal, keep your 🔥 streak and unlock the next level. Already know it? Take the level test.
-A2 is a separate course with 8 chapters about life in Belgium: work, housing, health and ziekenfonds, the municipality and official letters, school, money and bank, news and weather, celebrations and clubs. Grammar: imperfectum, die / dat, om … te, reflexive verbs, hoewel / zodat / zodra.
+A1.1 is open from the start. A1.2 unlocks with points, or straight away after the level test. A2 is a separate course: work, housing, health, paperwork, school, money, news and living together. Hit your daily goal and keep your 🔥 streak.
 
 📚 LESSONS BY TOPIC
 Greetings, questions, pronouns, verbs, de/het, numbers and time, weather, family, jobs, body and doctor, home, shopping, the city and transport, the municipality, school (CVO), work and bank; at A1.2 also my day, modal verbs, the perfect tense, housing, phone and e-mail.
-Modes: Study · Quiz · Listen · Build sentences · Review.
+Short 5–10 minute lessons; words you get wrong come back for review automatically.
 
 🎮 GAMES
-“Een dag in België”, dialogue puzzles, role play, answer questions with your voice, Blitz, Memory, dictation and Kort / lang.
+“Een dag in België”, dialogue puzzles, role play, answer questions with your voice, Blitz, Memory, dictation, the omdat catapult and Kort / lang.
 
-📝 TOETS AND PRACTICE EXAMS
-Mini exams like in class: multiple choice, fill in the gap and reading. “Passed” from 70%. Practice final exams A1.1 and A1.2 with listening, reading, writing and speaking.
+📝 TESTS AND MOCK EXAMS
+Mini tests like in class: multiple choice, fill in the gap and reading. Mock exams modelled on NT2: reading, listening, writing, speaking, vocabulary and grammar. “Passed” from 70%.
 
 ✨ ALSO
-• Dictionary with 2900+ words, with article, forms and audio
-• Recorded Belgian Dutch audio or your phone's voice
+• Dictionary with almost 2,800 words, with article, forms and audio
+• Recorded Belgian Dutch audio (Peter’s and Dafna’s voices) or your phone’s voice
 • Lessons work offline
 • Dark mode and daily reminders
 
