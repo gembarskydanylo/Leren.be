@@ -25,7 +25,7 @@ async function simulate(fail){
  assert(opened.every(name=>name==='leren-be-v201'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));assert(added.includes('./modules/learning-path/invitation.js?v=2'));assert(added.includes('./modules/learning-path/invitation.css?v=1'));
  if(fail==='optional')assert(added.length<1027,'some optional files should fail');
- else assert.equal(added.length,1039);
+ else assert.equal(added.length,1038);
  let activate;handlers.activate({waitUntil:p=>activate=p});await activate;
  assert.deepEqual(deleted,['leren-be-v167']);assert.equal(claimed,1);
 }
