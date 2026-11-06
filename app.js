@@ -1685,6 +1685,10 @@ function updateHeader(){
  $("lblMode").textContent=u.lMode;
  $("targetLangPicker").value=targetLang;
  $("uiLangPicker").value=uiLang;
+ const headerUiPicker=$("headerUiLangPicker");
+ if(headerUiPicker)headerUiPicker.value=uiLang;
+ const headerUiLabel=$("headerUiLangLabel");
+ if(headerUiLabel)headerUiLabel.textContent=({uk:"Мова",en:"Language",fr:"Langue",ar:"اللغة"})[uiLang]||"Мова";
  syncFlagFaces();
  if(typeof updateHelpBtn==="function")updateHelpBtn();
  document.documentElement.lang=uiLang;
@@ -3479,6 +3483,7 @@ function updateModeButtons(){
 
 $("targetLangPicker").addEventListener("change",e=>changeTargetLang(e.target.value));
 $("uiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
+$("headerUiLangPicker").addEventListener("change",e=>changeUiLang(e.target.value));
 
 // --- Mini translator / word search ---
 function allVocab(){
@@ -5942,7 +5947,7 @@ function start(){
  }catch(e){document.documentElement.dataset.theme="light"}
  const nav=$("modeButtons"),head=document.querySelector("main > header");if(nav&&head){head.after(nav);nav.setAttribute("role","navigation")}
  rewardCheck();askPersist();goalCheck();updateHeader();buildNav();if(view!=="path")newRound();initLearningPath();applyView();loadAudioManifest();pushSync();acctInit();textGapsWatch();
- // Desktop header (≥1024px): reminders bell and account. Language stays in Settings.
+ // Desktop header (≥1024px): reminders bell and account. Language is also available directly in the shared header.
  if(window.LerenDesktop){const focusRow=(row,ctl)=>setTimeout(()=>{$(row)?.scrollIntoView({block:"center"});$(ctl)?.focus({preventScroll:true})},150);
   LerenDesktop.mount({language:()=>uiLang,setLanguage:l=>changeUiLang(l),user:()=>acct.user,canRemind:()=>{const r=$("remindRow");return !!r&&!r.hidden},
    reminders:()=>{openSheet("settingsSheet");focusRow("remindRow","remindToggle")},account:()=>{acctRender();openSheet("settingsSheet");focusRow("acctRow","acctBtn")}});
@@ -5963,7 +5968,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="203";
+const RELEASE_VERSION="204";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
