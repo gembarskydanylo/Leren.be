@@ -114,6 +114,15 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .lang-select,.theme-btn,.score-pill{min-height:38px;border-radius:var(--r-sm);border:0;font-weight:800;font-size:13px}
 .lang-select option{background:#fff;color:#2A1D12}
 .lang-select{background:#FFFFFF;color:#2A1D12;padding:0 8px;box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35);cursor:pointer}
+/* Interface language is a first-glance choice, not a hidden setting.
+   The header control stays visible on mobile, desktop, and RTL layouts. */
+.header-language{display:flex;align-items:center;gap:6px;flex:none;max-width:100%}
+.header-language label{font-size:12px;font-weight:900;white-space:nowrap;color:#fff}
+.header-language select{min-height:44px;max-width:min(48vw,180px);border:2px solid rgba(255,255,255,.85);
+ border-radius:12px;background:#fff;color:#2A1D12;padding:0 8px;font-weight:900;font-size:13px;
+ box-shadow:0 3px 0 rgba(120,50,0,.35);cursor:pointer}
+@media(max-width:390px){.header-language label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .header-language select{max-width:136px}}
 /* language pickers drawn as flags with the code written on them */
 .flag-pick{position:relative;display:inline-flex;min-width:66px;height:38px;border-radius:var(--r-sm);overflow:hidden;
  box-shadow:0 var(--depth-sm) 0 rgba(120,50,0,.35),inset 0 0 0 2px rgba(255,255,255,.95);cursor:pointer}
@@ -1062,6 +1071,15 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <main data-view="path">
   <header>
     <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="lerenbe.com — на головну"><h1 id="appTitle">lerenbe.com</h1><p id="tagline"></p></div>
+    <div class="header-language">
+      <label for="headerUiLangPicker" id="headerUiLangLabel">Мова</label>
+      <select id="headerUiLangPicker" aria-labelledby="headerUiLangLabel">
+        <option value="uk">🇺🇦 Українська</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
+    </div>
     <button type="button" class="comp-header-route" id="headerRoute"></button>
     <div class="hdr-stats">
       <button type="button" class="hdr-pill streak-pill" id="streakPill"></button>
@@ -1279,7 +1297,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/learning-path/ui.js?v=200"></script>
 <script src="./modules/dialogues/translations.js?v=177"></script>
 <script src="./course-curriculum.js?v=178"></script>
-<script src="./app.js?v=203"></script>
+<script src="./app.js?v=204"></script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
 <script src="./modules/exam/exam-core.js?v=176" defer></script>
