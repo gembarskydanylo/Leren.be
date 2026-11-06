@@ -1065,9 +1065,27 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 </style>
 </head>
 <body>
-<style>#splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#fff1de;cursor:pointer;transition:opacity .3s ease}#splash[hidden]{display:none}#splash.out{opacity:0;pointer-events:none}#splash img{width:100%;height:100%;object-fit:contain;display:block}.splash-on{overflow:hidden}@media(prefers-reduced-motion:reduce){#splash{transition:none}}</style>
-<div id="splash" role="img" aria-label="lerenbe.com" hidden><img alt="" decoding="async" fetchpriority="high"></div>
-<script src="./splash.js?v=202"></script>
+<style>
+#splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(circle at top,#fff9e7,#ffe6bf 70%,#ffc785);color:#173255;overflow-y:auto;padding:16px;transition:opacity .3s ease}
+#splash[hidden]{display:none}#splash.out{opacity:0;pointer-events:none}
+.splash-on{overflow:hidden}
+.onboard-card{width:min(100%,440px);padding:clamp(18px,5vw,28px);border-radius:26px;background:#fffaf3;box-shadow:0 16px 48px rgba(95,48,12,.22);text-align:center}
+.onboard-cat{width:min(145px,35vw);height:132px;object-fit:contain;margin:0 auto 4px;display:block}
+.onboard-card h2{font:900 clamp(21px,5vw,27px)/1.25 "Nunito",system-ui,sans-serif;margin:8px 0;color:#12335e}
+.onboard-card p{font:700 15px/1.4 "Nunito",system-ui,sans-serif;margin:0 0 18px;color:#615342}
+.onboard-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.onboard-options button{min-width:0;min-height:60px;padding:9px 7px;border:2px solid #edcba3;border-radius:15px;background:white;color:#24354b;box-shadow:0 3px 0 #e0b88e;font:900 clamp(13px,3.7vw,16px)/1.3 "Nunito",system-ui,sans-serif;cursor:pointer}
+.onboard-options button:focus-visible{outline:3px solid #12335e;outline-offset:3px}
+.onboard-options button:active{transform:translateY(3px);box-shadow:none}
+.onboard-banner{width:min(100%,460px);text-align:center;padding:24px 15px;color:#12335e}
+.onboard-banner h2{font:900 clamp(27px,7vw,42px)/1.15 "Unbounded","Nunito",system-ui,sans-serif;margin:12px auto;color:#133663;overflow-wrap:anywhere}
+.onboard-banner p{font:800 clamp(16px,4.5vw,23px)/1.35 "Nunito",system-ui,sans-serif;color:#be4b08;margin:10px auto 20px}
+.onboard-banner img{display:block;width:min(80vw,310px);height:min(45vh,310px);object-fit:contain;margin:0 auto}
+.onboard-banner strong{font:900 20px "Nunito",system-ui,sans-serif}
+@media(prefers-reduced-motion:reduce){#splash{transition:none}}
+</style>
+<div id="splash" hidden></div>
+<script src="./splash.js?v=205"></script>
 <main data-view="path">
   <header>
     <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="lerenbe.com — на головну"><h1 id="appTitle">lerenbe.com</h1><p id="tagline"></p></div>
