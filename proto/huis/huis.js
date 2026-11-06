@@ -90,10 +90,11 @@
   heroEl.classList.toggle('is-left', facingLeft); if (!animate) requestAnimationFrame(() => { heroEl.style.transition = ''; });
  }
  function drawItem(it) {
-  if (!it.node) { it.node = el('div', 'h-item'); const img = el('img'); img.src = '../../img/emoji/' + it.img + '.png'; img.alt = it.nl; img.lang = 'nl'; img.draggable = false; it.node.appendChild(img); it.node.dataset.item = it.id; board.appendChild(it.node); }
+  if (!it.node) { it.node = el('div', 'h-item'); const img = el('img'); img.src = '../../img/emoji/' + it.img + '.png'; img.alt = it.nl; img.lang = 'nl'; img.draggable = false; it.node.appendChild(img); it.node.dataset.item = it.id; it.node.dataset.label = it.nl; board.appendChild(it.node); }
   if (it.carried) { it.node.hidden = true; return; } it.node.hidden = false;
   const c = it.at ? it.at.c : it.c, r = it.at ? it.at.r : it.r; pos(it.node, c, r); it.node.style.zIndex = 6 + Math.ceil(r) + (it.under ? -2 : 1);
   it.node.classList.toggle('is-under', !!it.under); it.node.classList.toggle('is-in', !!it.inside);
+  it.node.classList.toggle('is-edge-left', c === 0); it.node.classList.toggle('is-edge-right', c === COLS - 1);
  }
  function refreshNear() {
   const nf = new Set(nearFurn().map(f => f.id)); FURN.forEach(f => furnEls[f.id].classList.toggle('is-near', nf.has(f.id)));
@@ -172,7 +173,7 @@
   setTimeout(() => { heroEl.classList.remove('is-happy'); busy = false; nextMission(); }, 1500);
  }
  function wrong(nl, uk) { mistakes++; heroEl.classList.remove('is-no'); void heroEl.offsetWidth; heroEl.classList.add('is-no'); toast(nl, uk, false); say(nl); if (mistakes >= 2) hint(); }
- function hint() { const f = furnEls[current.f]; f.classList.add('is-hint'); const it = current.item && items.find(i => i.id === current.item); if (it && it.node && !carrying) it.node.classList.add('is-near'); }
+ function hint() { const f = furnEls[current.f]; f.classList.add('is-hint'); const it = current.item && items.find(i => i.id === current.item); if (it && it.node && !carrying) it.node.classList.add('is-hint'); }
 
  // contextual big buttons under the room
  function actions() {

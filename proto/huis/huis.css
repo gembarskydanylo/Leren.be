@@ -68,8 +68,14 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 /* small things to pick up */
 .h-item{position:absolute;display:grid;place-items:center;transition:transform .25s ease,opacity .3s}
 .h-item[hidden]{display:none}
-.h-item img{width:70%;height:70%;object-fit:contain;filter:drop-shadow(0 3px 2px #0004)}
+.h-item:before{content:"";position:absolute;inset:9%;border-radius:50%;background:#fff9ef;box-shadow:0 2px 0 #b98146,0 4px 8px #5a3a1c66}
+.h-item img{position:relative;width:84%;height:84%;object-fit:contain;filter:drop-shadow(0 3px 2px #0004)}
 .h-item.is-near img{animation:h-bob .7s ease-in-out infinite}
+.h-item.is-hint:before{background:#fff8c5;box-shadow:0 0 0 4px var(--ye),0 0 14px 6px #fdda24bb;animation:h-item-hint 1s ease-in-out infinite}
+.h-item.is-hint:after{content:attr(data-label);position:absolute;left:50%;bottom:100%;transform:translateX(-50%);padding:3px 8px;border-radius:99px;background:var(--ink);color:#fff;font-size:12px;font-weight:900;white-space:nowrap;z-index:2}
+.h-item.is-edge-left.is-hint:after{left:0;transform:none}
+.h-item.is-edge-right.is-hint:after{left:auto;right:0;transform:none}
+@keyframes h-item-hint{50%{box-shadow:0 0 0 6px var(--ye),0 0 20px 10px #fdda24dd}}
 @keyframes h-bob{50%{transform:translateY(-5px)}}
 .h-item.is-under{opacity:.55;z-index:1!important}
 .h-item.is-in{opacity:0}
@@ -125,7 +131,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .h-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .h-row .h-act{flex:1;min-width:140px}
 
-@media (prefers-reduced-motion:reduce){.h-hero,.h-item{transition:none}.h-hero.is-walking .h-hero-in,.h-item.is-near img,.h-f.is-hint .h-shape{animation:none}}
+@media (prefers-reduced-motion:reduce){.h-hero,.h-item{transition:none}.h-hero.is-walking .h-hero-in,.h-item.is-near img,.h-item.is-hint:before,.h-f.is-hint .h-shape{animation:none}}
 /* shorter phones: smaller controls so the room, the arrows and the answers stay on one screen */
 @media (max-height:740px){
  .h-app{gap:6px;padding-top:6px}.h-top{padding-top:max(6px,env(safe-area-inset-top));padding-bottom:6px}
