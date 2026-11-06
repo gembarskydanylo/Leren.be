@@ -17,3 +17,13 @@ assert.match(html,/app\.js\?v=204/);
 assert.match(sw,/leren-be-v204/);
 assert.match(sw,/app\.js\?v=204/);
 console.log('PASS: initial Ukrainian, visible language switcher, persistence path and updated offline asset versions');
+
+const splash=fs.readFileSync('splash.js','utf8');
+assert.match(html,/splash\.js\?v=205/);
+assert.match(sw,/leren-be-v205/);
+assert.match(sw,/splash\.js\?v=205/);
+assert.match(splash,/leren_onboarding_language_v1/);
+assert.match(splash,/localStorage\.getItem\(k\)/);
+assert.match(splash,/setTimeout\(finish,4000\)/);
+for(const code of ['uk','en','fr','ar']) assert.match(splash,new RegExp('id:"'+code+'"'));
+console.log('PASS: language onboarding, saved choice, localized banner and 4-second transition');
