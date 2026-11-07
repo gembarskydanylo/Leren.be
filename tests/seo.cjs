@@ -6,6 +6,10 @@ const read=p=>fs.readFileSync(p,'utf8'),html=require(__dirname+'/lib/app-source.
 const meta=(attr,name)=>{const m=head.match(new RegExp('<meta '+attr+'="'+name.replace(/[:.]/g,'\\$&')+'" content="([^"]+)"'));return m&&m[1]};
 // Meta tags
 assert.match(meta('name','description'),/A1\.1 і A1\.2/);
+assert.match(head,/<title>Нідерландська для українців у Бельгії/);
+assert.match(meta('name','description'),/Безкоштовно вивчайте нідерландську/);
+assert.equal(meta('property','og:title'),meta('name','twitter:title'));
+assert.equal(meta('property','og:description'),meta('name','twitter:description'));
 assert(head.includes('<link rel="canonical" href="https://lerenbe.com/">'));
 for(const k of ['og:title','og:description','og:image','og:url','og:type'])assert(meta('property',k),k);
 assert.equal(meta('property','og:url'),'https://lerenbe.com/');assert.equal(meta('property','og:image'),'https://lerenbe.com/og-image.jpg');assert(fs.existsSync('og-image.jpg'));

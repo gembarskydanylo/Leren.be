@@ -81,9 +81,16 @@
   en:{title:'My progress',streak:'days in a row',streak0:'Start your streak today',today:'Today',min:'min',points:'points',lessons:(d,t)=>d+' of '+t+' lessons in this level',met:'Daily goal reached 🎉',left:n=>n+' min left to your daily goal',more:'All progress →'},
   fr:{title:'Ma progression',streak:'jours d’affilée',streak0:'Commence ta série aujourd’hui',today:'Aujourd’hui',min:'min',points:'points',lessons:(d,t)=>d+' leçons sur '+t+' dans ce niveau',met:'Objectif du jour atteint 🎉',left:n=>'Encore '+n+' min pour l’objectif du jour',more:'Toute la progression →'},
   ar:{title:'تقدّمي',streak:'أيام متتالية',streak0:'ابدأ سلسلتك اليوم',today:'اليوم',min:'د',points:'نقطة',lessons:(d,t)=>d+' من '+t+' دروس في هذا المستوى',met:'تم تحقيق هدف اليوم 🎉',left:n=>'بقي '+n+' د لهدف اليوم',more:'كل التقدّم ←'}};
- function progressCard({lang,streak,min,goal,points,done,total,onMore}){
+ const EMPTY_PROGRESS={
+  uk:{title:'Тут почнеться твій прогрес',text:'Пройди перший короткий урок. Бали нараховуються за навчання й нові найкращі результати.',start:'Почати перший урок →'},
+  en:{title:'Your progress starts here',text:'Try your first short lesson. You earn points as you learn and improve your best results.',start:'Start the first lesson →'},
+  fr:{title:'Ta progression commence ici',text:'Essaie ta première courte leçon. Tu gagnes des points en apprenant et en améliorant tes résultats.',start:'Commencer la première leçon →'},
+  ar:{title:'تقدّمك يبدأ هنا',text:'ابدأ أول درس قصير. تكسب نقاطاً بالتعلّم وتحسين أفضل نتائجك.',start:'ابدأ الدرس الأول ←'}
+ };
+ function progressCard({lang,streak,min,goal,points,done,total,onMore,onBegin}){
   const c=PCARD[lang]||PCARD.uk,box=node('section','fh-pcard'),head=node('div','fh-pcard-head');
   box.setAttribute('aria-label',c.title);head.append(node('h2','',c.title),button(c.more,onMore,'fh-link fh-pcard-more'));box.appendChild(head);
+  if(!streak&&!min&&!points&&!done&&onBegin){const e=EMPTY_PROGRESS[lang]||EMPTY_PROGRESS.uk,empty=node('div','fh-pcard-empty');empty.append(node('strong','',e.title),node('p','',e.text),button(e.start,onBegin,'fh-primary fh-pcard-start'));box.appendChild(empty);return box}
   const tiles=node('div','fh-pcard-tiles'),tile=(icon,value,label,cls)=>{const d=node('div','fh-pcard-tile'+(cls?' '+cls:''));d.append(node('span','fh-pcard-icon',icon),node('strong','',String(value)),node('small','',label));return d};
   const shown=Math.min(min,goal);
   tiles.append(tile('🔥',streak,streak?c.streak:c.streak0,streak?'':'is-off'),tile('🎯',shown+' / '+goal,c.today+', '+c.min),tile('⭐',points,c.points));box.appendChild(tiles);

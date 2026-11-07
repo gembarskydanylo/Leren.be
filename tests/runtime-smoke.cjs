@@ -4,10 +4,11 @@ assert(fs.existsSync('img/mascot/fill-gap-cat.png'),'Gap questions have their ow
 assert(script.includes('it?.type==="gap"||it?.gap')&&fs.readFileSync('sw.js','utf8').includes('./img/mascot/fill-gap-cat.png'),'Gap illustration is selected in questions and precached offline');
 function fn(name){const start=script.indexOf('function '+name+'(');return script.slice(start,script.indexOf('\n}',start)+2)}
 const grow=script.slice(script.indexOf('const GROW_UI='),script.indexOf('const growU='));
+const onboarding=script.slice(script.indexOf('const ONBOARD_SKIP='),script.indexOf('function welcomeScreen('));
 for(const lang of ['uk','en','fr','ar'])for(const count of [12,17]){
- const ctx=vm.createContext({lsGet:k=>k==='leren_welcome_seen',el:(tag,cls,text)=>({text,children:[],append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)}}),setTimeout(){}});
+ const ctx=vm.createContext({uiLang:lang,lsGet:k=>k==='leren_welcome_seen',el:(tag,cls,text)=>({text,children:[],append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)}}),setTimeout(){},score:0,curLevel:'a11',learnedCount:()=>0,streakState:()=>({n:0}),minutesToday:()=>0});
  ctx.popup=build=>{const p={children:[],append(...x){this.children.push(...x)},appendChild(x){this.children.push(x)}};build(p,()=>{},{dataset:{}});ctx.panel=p};
- vm.runInContext(grow+`const growU=()=>GROW_UI.${lang};const TOETS=[{kind:'leveltest',unlocks:'a12',questions:Array(${count})}];`+fn('firstRun')+';firstRun()',ctx);
+ vm.runInContext(grow+onboarding+`const growU=()=>GROW_UI.${lang};const TOETS=[{kind:'leveltest',unlocks:'a12',questions:Array(${count})}];`+fn('firstRun')+';firstRun()',ctx);
  const subtitle=ctx.panel.children[2].children[1].children[1].text;
  assert(subtitle.includes(String(count)));assert(!subtitle.includes('{n}'));
 }

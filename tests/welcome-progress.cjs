@@ -15,25 +15,28 @@ for(const lang of ['uk','en','fr','ar']){
  const texts=flat(ctx.panel);assert(texts.some(t=>t.includes('7')),lang+': title promises a 7-day outcome');
  const list=ctx.panel.children.find(c=>c.cls==='welcome-list');assert.equal(list.children.length,3,lang+': three outcomes');
  const goals=ctx.panel.children.find(c=>c.cls==='welcome-goals');assert.deepEqual(goals.children.map(b=>String(b.dataset.goal)),['5','10','20'],lang+': goal choices');
- const buttons=ctx.panel.children.filter(c=>c.tag==='button');assert.equal(buttons.length,2,lang+': start + tour');
+ const buttons=ctx.panel.children.filter(c=>c.tag==='button');assert.equal(buttons.length,3,lang+': start + tour + skip');
  goals.children[2].onclick();
  buttons[0].onclick();assert.equal(store.leren_welcome_seen,true);assert.equal(store.leren_goal_min,20,lang+': chosen goal saved');assert.deepEqual(calls,['then']);
  buttons[1].onclick();assert.equal(store.leren_level_asked,true);assert(calls.includes('tour'));
+ store.leren_tour_done=false;buttons[2].onclick();assert.equal(store.leren_tour_done,true,lang+': skip completes onboarding');
 }
 // 1b. Dutch route: no tour link, Start just closes the screen.
 {
  const store={},calls=[];const ctx=vm.createContext({uiLang:'uk',lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},el:(tag,cls,text)=>Object.assign(mk(),{text:text||'',tag,cls}),setTimeout:f=>f(),LerenInsights:{ui:()=>({min:'хв'})},popup:build=>{const p=mk();build(p,()=>{},mk());ctx.panel=p}});
  vm.runInContext(welcome+fn('welcomeScreen')+';globalThis.run=()=>welcomeScreen(()=>calls.push(\'then\'),null)',ctx);ctx.run();
- assert.equal(ctx.panel.children.filter(c=>c.tag==='button').length,1,'only Start without a tour');
+ assert.equal(ctx.panel.children.filter(c=>c.tag==='button').length,2,'Start and Skip without a tour');
 }
 // 2. firstRun shows the welcome first for new learners, never for returning ones.
 {
  let shown=0;const store={};
- const ctx=vm.createContext({lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},welcomeScreen:()=>shown++,startTour(){},popup(){},growU:()=>({}),el:()=>mk(),setTimeout(){}});
- vm.runInContext(fn('firstRun')+';globalThis.fr=firstRun',ctx);
+ const ctx=vm.createContext({lsGet:(k,d)=>store[k]??d,lsSet:(k,v)=>{store[k]=v},welcomeScreen:()=>shown++,startTour(){},popup(){},growU:()=>({}),el:()=>mk(),setTimeout(){},score:0,curLevel:'a11',learnedCount:()=>0,streakState:()=>({n:0}),minutesToday:()=>0});
+ vm.runInContext(welcome+fn('firstRun')+';globalThis.fr=firstRun',ctx);
  ctx.fr();assert.equal(shown,1,'new learner sees the welcome screen');
  store.leren_welcome_seen=true;ctx.fr();assert.equal(shown,1,'welcome is shown once');
  store.leren_tour_done=true;store.leren_welcome_seen=false;shown=0;ctx.fr();assert.equal(shown,0,'returning learner skips it');
+ store.leren_tour_done=false;store.leren_welcome_seen=false;ctx.score=10;ctx.fr();assert.equal(shown,0,'existing progress skips onboarding');assert.equal(store.leren_tour_done,true,'existing progress marks onboarding complete');
+ ctx.score=0;store.leren_tour_done=false;store.leren_path_v1={started:true};ctx.fr();assert.equal(shown,0,'started lesson without points skips onboarding');
 }
 // 3. Home progress card: streak, goal, points, level lessons, one tap to the full progress screen; four languages.
 const src=fs.readFileSync('modules/focused-home/ui.js','utf8');
@@ -49,6 +52,8 @@ for(const lang of ['uk','en','fr','ar']){
  const btn=card.children[0].children[1];btn.onclick();assert.equal(more,1,lang+': one tap to full progress');
  const done=win.LerenFocus.progressCard({lang,streak:0,min:15,goal:10,points:0,done:0,total:0,onMore(){}});
  assert(flat({text:'',children:done.children.map(function f(c){return{text:c.textContent,children:c.children.map(f)}})}).some(x=>x.includes('10 / 10')),lang+': goal capped at 100%');
+ let began=0;const empty=win.LerenFocus.progressCard({lang,streak:0,min:0,goal:10,points:0,done:0,total:197,onMore(){},onBegin:()=>began++});
+ assert(empty.children.some(c=>c.className==='fh-pcard-empty'),lang+': empty progress gives a next step');empty.children[1].children[2].onclick();assert.equal(began,1,lang+': first lesson button works');
 }
 // 4. Home wires the card in and the bridge exposes the numbers.
 assert(fs.readFileSync('modules/learning-path/ui.js','utf8').includes('LerenFocus.progressCard'));

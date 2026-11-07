@@ -170,6 +170,10 @@
 .fh-pcard-goal>.fh-meter{width:100%;max-width:none;height:10px}
 .fh-pcard-goal>span,.fh-pcard-lessons{font-size:13px;font-weight:800;color:var(--ink-2)}
 .fh-pcard-lessons{margin:8px 0 0}
+.fh-pcard-empty{display:grid;gap:9px;padding:18px;border-radius:16px;background:var(--bg)}
+.fh-pcard-empty strong{font:900 19px/1.3 var(--font-display,inherit)}
+.fh-pcard-empty p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.5;font-weight:700}
+.fh-pcard-start{justify-self:start;margin-top:4px}
 @media(max-width:380px){.fh-pcard-tiles{grid-template-columns:1fr 1fr}}
 /* Welcome screen */
 .welcome-panel .welcome-list{list-style:none;margin:14px 0;padding:0;display:grid;gap:10px;text-align:start}

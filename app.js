@@ -3987,15 +3987,24 @@ function renderShellText(){
  const pathBack=$("pathReturn");if(pathBack)pathBack.textContent=({uk:"‹ До навчального маршруту",en:"‹ Back to my learning path",fr:"‹ Retour au parcours",ar:"العودة إلى مسار التعلّم ›"})[uiLang];
  fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();if(typeof renderCharRow==="function")renderCharRow();
 }
+const PROGRESS_EMPTY_UI={
+ uk:{title:'Перший крок — і тут з’являться твої результати',text:'Урок займає 5–10 хвилин. За навчання та нові рекорди ти отримуватимеш бали.',start:'Почати урок →',results:'Після першого тесту тут з’явиться твій результат.'},
+ en:{title:'Take one step to see your results here',text:'A lesson takes 5–10 minutes. Learning and new best results earn points.',start:'Start a lesson →',results:'Your result will appear here after your first test.'},
+ fr:{title:'Fais un premier pas pour voir tes résultats ici',text:'Une leçon prend 5 à 10 minutes. L’apprentissage et les nouveaux records rapportent des points.',start:'Commencer une leçon →',results:'Ton résultat apparaîtra ici après ton premier test.'},
+ ar:{title:'ابدأ لتظهر نتائجك هنا',text:'يستغرق الدرس ٥–١٠ دقائق. تكسب نقاطاً بالتعلّم وتحسين نتائجك.',start:'ابدأ درساً ←',results:'ستظهر نتيجتك هنا بعد أول اختبار.'}
+};
 function renderProgressView(){
  const n=navU(),grid=$("pvGrid"),tb=$("pvToets");if(!grid)return;renderRewards();
  renderProgressPanel();
  let ins=$("pvInsights");if(!ins){ins=el("div","pv-insights");ins.id="pvInsights";grid.before(ins)}renderInsights(ins);
  grid.replaceChildren();
+ const emptyCopy=PROGRESS_EMPTY_UI[uiLang]||PROGRESS_EMPTY_UI.uk;
+ if(score===0&&learnedCount(curLevel)===0){const welcome=el("div","pv-empty");welcome.append(el("strong","",emptyCopy.title),el("p","",emptyCopy.text));const start=el("button","btn primary",emptyCopy.start);start.type="button";start.onclick=()=>setView("path");welcome.appendChild(start);grid.appendChild(welcome)}
  [[n.pvLearned,learnedCount(curLevel)],[n.pvReview,dueItems(curLevel).length]].forEach(([l,v])=>{const d=el("div","pv-tile");d.append(el("strong","",String(v)),el("span","",l));grid.appendChild(d)});
  tb.replaceChildren(el("h3","",n.pvToets));
- const best=lsGet("poly_toetsbest",{}),list=el("div","pv-list");
- TOETS.filter(t=>t.kind!=="leveltest"&&(t.lvl||"a11")===curLevel).forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
+ const best=lsGet("poly_toetsbest",{}),list=el("div","pv-list"),tests=TOETS.filter(t=>t.kind!=="leveltest"&&(t.lvl||"a11")===curLevel);
+ if(tests.every(t=>best[t.id]==null))tb.appendChild(el("p","pv-empty-hint",emptyCopy.results));
+ tests.forEach(t=>{const r=el("div","pv-row"),b=best[t.id];
   r.append(el("span","",t.title[uiLang]||t.title.en||t.id),el("strong","",b!=null?b+" / "+t.questions.length:n.pvNone));if(b==null)r.classList.add("none");list.appendChild(r)});
  tb.appendChild(list);renderDiphthongsProgress(tb);
  const mk=$("pvMistakes");if(mk&&typeof renderMistakes==="function")renderMistakes(mk);
@@ -4032,6 +4041,9 @@ const WELCOME_UI={
  fr:{title:"Ce que tu sauras faire dans 7 jours",sub:"De courtes leçons chaque jour, avec des explications dans ta langue.",items:["👋 Saluer, te présenter et parler de ta famille","🔢 Dire les nombres, les prix et l’heure","🏥 Comprendre des phrases simples au magasin, chez le médecin et à la commune"],meta:"Gratuit · sans inscription · fonctionne hors ligne",start:"Commencer",tour:"Montre-moi comment ça marche",goal:"Combien de minutes par jour ?"},
  ar:{title:"ماذا ستتقن بعد 7 أيام",sub:"دروس قصيرة كل يوم مع شرح بلغتك.",items:["👋 التحية والتعريف بنفسك والحديث عن عائلتك","🔢 قول الأرقام والأسعار والوقت","🏥 فهم عبارات بسيطة في المتجر وعند الطبيب وفي البلدية"],meta:"مجاني · بلا تسجيل · يعمل دون إنترنت",start:"ابدأ",tour:"أرِني كيف يعمل",goal:"كم دقيقة في اليوم؟"}
 };
+const ONBOARD_SKIP={uk:'Пропустити',en:'Skip for now',fr:'Passer pour le moment',ar:'تخطي الآن'};
+function skipOnboarding(){lsSet("leren_welcome_seen",true);lsSet("leren_level_asked",true);lsSet("leren_tour_done",true)}
+function hasLearningHistory(){const path=lsGet("leren_path_v1",null);return score>0||learnedCount(curLevel)>0||streakState().n>0||minutesToday()>0||!!(path&&(path.started||path.session||path.placement||Object.keys(path.completed||{}).length))}
 function welcomeScreen(then,onTour){
  const w=WELCOME_UI[uiLang]||WELCOME_UI.uk;
  popup((panel,close,m)=>{
@@ -4044,12 +4056,14 @@ function welcomeScreen(then,onTour){
   const save=()=>{lsSet("leren_welcome_seen",true);lsSet("leren_goal_min",goal)};
   const go=el("button","btn primary",w.start);go.type="button";go.onclick=()=>{save();close();setTimeout(then,200)};
   const tour=onTour?el("button","tour-skip",w.tour):null;if(tour){tour.type="button";tour.onclick=()=>{save();lsSet("leren_level_asked",true);close();setTimeout(onTour,200)}}
-  panel.append(el("h2","goal-title",w.title),el("p","goal-hint",w.sub),list,el("p","goal-hint welcome-goal-q",w.goal),row,el("p","goal-hint welcome-meta",w.meta),go);if(tour)panel.appendChild(tour);
+  const skip=el("button","tour-skip",ONBOARD_SKIP[uiLang]||ONBOARD_SKIP.uk);skip.type="button";skip.onclick=()=>{skipOnboarding();close()};
+  panel.append(el("h2","goal-title",w.title),el("p","goal-hint",w.sub),list,el("p","goal-hint welcome-goal-q",w.goal),row,el("p","goal-hint welcome-meta",w.meta),go);if(tour)panel.appendChild(tour);panel.appendChild(skip);
   setTimeout(()=>{try{go.focus({preventScroll:true})}catch(e){}},30);
  });
 }
 function firstRun(){
  if(lsGet("leren_tour_done",false)){lsSet("leren_level_asked",true);return}
+ if(hasLearningHistory()){skipOnboarding();return}
  if(lsGet("leren_level_asked",false)){startTour();return}
  if(!lsGet("leren_welcome_seen",false)){welcomeScreen(firstRun,startTour);return}
  const g=growU();
@@ -4061,6 +4075,7 @@ function firstRun(){
    const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
    b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(()=>{lsSet("leren_tour_done",true);afterTourEnd()}),250)};list.appendChild(b)});
   panel.appendChild(list);
+  const skip=el("button","tour-skip",ONBOARD_SKIP[uiLang]||ONBOARD_SKIP.uk);skip.type="button";skip.onclick=()=>{skipOnboarding();close()};panel.appendChild(skip);
  });
 }
 function afterTourEnd(){if(pendingLevelTest){pendingLevelTest=false;setTimeout(startLevelTest,200)}}
@@ -5968,7 +5983,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="204";
+const RELEASE_VERSION="206";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
@@ -5986,6 +6001,7 @@ function showReleaseNotes(){
 }
 // Someone opening the app for the first time has nothing "new" to compare with: no release notes for them.
 const releaseFirstVisit=!lsGet("leren_release_seen","")&&!Number(lsGet("poly_score",0))&&!lsGet("leren_tour_done",false);
+if(releaseFirstVisit)lsSet("leren_release_seen",RELEASE_VERSION);
 function announceRelease(){
  if(lsGet("leren_release_seen","")===RELEASE_VERSION)return;
  if(Number(lsGet("leren_release_seen","0"))>=Number(RELEASE_NOTES_VERSION)){lsSet("leren_release_seen",RELEASE_VERSION);return}
@@ -6172,4 +6188,4 @@ $("helpBtn").addEventListener("click",()=>{closeSheet("settingsSheet");setTimeou
 function updateHelpBtn(){}
 if(targetLang!=="nl")setTimeout(firstRun,600);
 // The Dutch route has its own home (next lesson, "I already know some Dutch"), so brand-new learners only get the welcome screen: no level question, no legacy tour.
-else setTimeout(()=>{if(lsGet("leren_welcome_seen",false)||lsGet("leren_tour_done",false)||score>0||streakState().n>0||minutesToday()>0)return;welcomeScreen(()=>{},null)},600);
+else setTimeout(()=>{if(lsGet("leren_welcome_seen",false)||lsGet("leren_tour_done",false)||hasLearningHistory())return;welcomeScreen(()=>{},null)},600);
