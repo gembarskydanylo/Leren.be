@@ -15,6 +15,15 @@ for(const t of tabs){const topic=P.data[t];assert(topic,'topic '+t);assert.equal
  for(const l of ['uk','fr','ar'])assert.deepEqual(dup(topic.items.map(w=>w[l])),[],t+': duplicate '+l+' translation');
  for(const l of ['uk','en','fr','ar'])assert(P.grammar[t]?.[l]?.length>20,t+': rule in '+l)}
 assert.equal(all.length,180);assert.deepEqual(dup(all.map(w=>w.id)),[],'unique ids');assert.deepEqual(dup(all.map(w=>w.en.toLowerCase())),[],'no English text twice');
+// Quality review (stage 3) — guards against the fixed issues coming back.
+const by=id=>all.find(w=>w.id==='en:'+id);
+assert.equal(by('on_monday').en,'I work on Mondays.','habit: on Mondays');assert.equal(by('far').en,"It's a long way.",'natural British “far”');assert.equal(by('platform').en,'the platform');
+assert.match(by('good_afternoon').fr,/^Bonjour/,'French greets with Bonjour in the afternoon (Bon après-midi is a goodbye)');
+assert.equal(by('there_is').ar,'توجد حديقة.','feminine agreement');assert.equal(by('sofa').nl,'de zetel','Flemish word');
+assert(!/«half drie»!/.test(P.grammar.en_time.uk),'clear rule for half past');
+// Style: sentences start with a capital and end with . ? or !; vocabulary items (no verb) are lower case except names/days.
+for(const w of all){const sentence=/[.?!]$/.test(w.en);if(sentence)assert.match(w.en,/^[A-Z]/,w.id+': sentence starts with a capital');
+ assert(!/\s[,.?!]|\s{2}/.test(w.en),w.id+': spacing');assert(!/\bfar\.$/.test(w.en),w.id+': no bare “far.”')}
 const course=c.LerenLearningPath.catalog(P.data,P.curriculum,{text:'en'});assert.equal(course.lessons.length,36,'36 lessons of 5');
 assert(course.chapters.every(ch=>ch.level==='1.1'));assert(course.lessons.every(l=>l.ids.length===5));
 console.log('PASS: English 1.1 — 6 chapters, 18 topics, 180 cards in 4 translations, rules in 4 languages, 36 lessons');
