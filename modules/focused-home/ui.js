@@ -82,15 +82,17 @@
   fr:{title:'Ma progression',streak:'jours d’affilée',streak0:'Commence ta série aujourd’hui',today:'Aujourd’hui',min:'min',points:'points',lessons:(d,t)=>d+' leçons sur '+t+' dans ce niveau',met:'Objectif du jour atteint 🎉',left:n=>'Encore '+n+' min pour l’objectif du jour',more:'Toute la progression →'},
   ar:{title:'تقدّمي',streak:'أيام متتالية',streak0:'ابدأ سلسلتك اليوم',today:'اليوم',min:'د',points:'نقطة',lessons:(d,t)=>d+' من '+t+' دروس في هذا المستوى',met:'تم تحقيق هدف اليوم 🎉',left:n=>'بقي '+n+' د لهدف اليوم',more:'كل التقدّم ←'}};
  const EMPTY_PROGRESS={
-  uk:{title:'Тут почнеться твій прогрес',text:'Пройди перший короткий урок. Бали нараховуються за навчання й нові найкращі результати.',start:'Почати перший урок →'},
-  en:{title:'Your progress starts here',text:'Try your first short lesson. You earn points as you learn and improve your best results.',start:'Start the first lesson →'},
-  fr:{title:'Ta progression commence ici',text:'Essaie ta première courte leçon. Tu gagnes des points en apprenant et en améliorant tes résultats.',start:'Commencer la première leçon →'},
-  ar:{title:'تقدّمك يبدأ هنا',text:'ابدأ أول درس قصير. تكسب نقاطاً بالتعلّم وتحسين أفضل نتائجك.',start:'ابدأ الدرس الأول ←'}
+  uk:{title:'Тут почнеться твій прогрес',text:'Пройди перший короткий урок. Бали нараховуються за навчання й нові найкращі результати.',start:'Почати перший урок →',begunTitle:'Перший урок уже розпочато',begun:'Заверши його — і тут з’являться серія днів, хвилини й бали.'},
+  en:{title:'Your progress starts here',text:'Try your first short lesson. You earn points as you learn and improve your best results.',start:'Start the first lesson →',begunTitle:'Your first lesson is under way',begun:'Finish it and your streak, minutes and points will appear here.'},
+  fr:{title:'Ta progression commence ici',text:'Essaie ta première courte leçon. Tu gagnes des points en apprenant et en améliorant tes résultats.',start:'Commencer la première leçon →',begunTitle:'Ta première leçon est commencée',begun:'Termine-la et ta série, tes minutes et tes points apparaîtront ici.'},
+  ar:{title:'تقدّمك يبدأ هنا',text:'ابدأ أول درس قصير. تكسب نقاطاً بالتعلّم وتحسين أفضل نتائجك.',start:'ابدأ الدرس الأول ←',begunTitle:'بدأت درسك الأول',begun:'أكمله وستظهر هنا سلسلة أيامك ودقائقك ونقاطك.'}
  };
- function progressCard({lang,streak,min,goal,points,done,total,onMore,onBegin}){
+ function progressCard({lang,streak,min,goal,points,done,total,onMore,onBegin,started=false}){
   const c=PCARD[lang]||PCARD.uk,box=node('section','fh-pcard'),head=node('div','fh-pcard-head');
   box.setAttribute('aria-label',c.title);head.append(node('h2','',c.title),button(c.more,onMore,'fh-link fh-pcard-more'));box.appendChild(head);
-  if(!streak&&!min&&!points&&!done&&onBegin){const e=EMPTY_PROGRESS[lang]||EMPTY_PROGRESS.uk,empty=node('div','fh-pcard-empty');empty.append(node('strong','',e.title),node('p','',e.text),button(e.start,onBegin,'fh-primary fh-pcard-start'));box.appendChild(empty);return box}
+  // Empty state. The hero above already holds the one primary action, so the card never adds a second one: a lesson in
+  // progress gets a note, a new learner a secondary start button.
+  if(!streak&&!min&&!points&&!done&&onBegin){const e=EMPTY_PROGRESS[lang]||EMPTY_PROGRESS.uk,empty=node('div','fh-pcard-empty');if(started)empty.append(node('strong','',e.begunTitle),node('p','',e.begun));else empty.append(node('strong','',e.title),node('p','',e.text),button(e.start,onBegin,'fh-alternative fh-pcard-start'));box.appendChild(empty);return box}
   const tiles=node('div','fh-pcard-tiles'),tile=(icon,value,label,cls)=>{const d=node('div','fh-pcard-tile'+(cls?' '+cls:''));d.append(node('span','fh-pcard-icon',icon),node('strong','',String(value)),node('small','',label));return d};
   const shown=Math.min(min,goal);
   tiles.append(tile('🔥',streak,streak?c.streak:c.streak0,streak?'':'is-off'),tile('🎯',shown+' / '+goal,c.today+', '+c.min),tile('⭐',points,c.points));box.appendChild(tiles);
