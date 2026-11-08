@@ -15,15 +15,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Write existing Firebase service account
+      - name: Install Firebase Admin SDK
+        run: npm install --no-save --no-audit --no-fund firebase-admin@13.5.0
+      - name: Deploy rules
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
-        run: |
-          test -n "$FIREBASE_SA"
-          printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/firebase-sa.json"
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
-      - name: Deploy rules
-        run: npx --yes firebase-tools@14.20.0 deploy --only firestore:rules --project leren-be --non-interactive
+        run: node tools/deploy-firestore-rules.cjs
