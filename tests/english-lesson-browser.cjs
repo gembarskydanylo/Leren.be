@@ -40,7 +40,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     assert.equal(await page.locator('.cp-feedback.is-'+(pick===want?'right':'wrong')).count(),1);await page.locator('.cp-stage .cp-primary').click();
     if(phase==='listen'&&i===4)await page.locator('.cp-stage .cp-primary',{hasText:'Перевір'}).click();
    }
-   await page.waitForSelector('.cp-score');assert.equal(await page.locator('.cp-score').textContent(),'5 / 5');
+   await page.waitForSelector('.cp-score');assert.equal(await page.locator('.cp-score').textContent(),'5 / 5');assert.equal(await page.locator('.cp-xp').textContent(),'+25 XP','shared points shown');
    if(process.env.SHOT)await page.screenshot({path:process.env.SHOT});
    const store=await page.evaluate(()=>({en:JSON.parse(localStorage.getItem('leren_path_v1@en')),nl:localStorage.getItem('leren_path_v1')}));
    assert.equal(Object.keys(store.en.completed).length,1,'lesson saved in leren_path_v1@en');assert.equal(store.en.completed['en_hello:en_greet:0'],5);

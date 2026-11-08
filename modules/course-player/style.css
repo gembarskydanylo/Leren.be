@@ -53,3 +53,4 @@ details[open]>.cp-sum{margin-bottom:10px}
 .ex-skills{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px;text-align:start}.ex-skills li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}.ex-skills li .ex-bar{grid-column:1/-1}
 .ex-mistake{padding:10px 0;border-top:1px solid var(--line,#eadbc8)}.ex-mistake p{margin:2px 0}.ex-mq{font-weight:800}.ex-your{color:#a32b14}.ex-right{color:#1d7a45;font-weight:700}.ex-why{font-size:14px;color:var(--ink-2,#6b5a48)}
 :root[data-theme="dark"] .ex-model{background:#123d26}
+.cp-xp{margin:0;text-align:center;color:var(--ok,#1d7a45);font-weight:900;font-size:18px}

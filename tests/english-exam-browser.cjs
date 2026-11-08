@@ -30,7 +30,7 @@ const TYPED={w5:'My name is Olena.',w6:'am',w7:"I've got two children.",w8:'How 
    assert.match(await page.locator('.ex-note').textContent(),/не офіційний сертифікат CEFR чи Cambridge/);
    const shot=async name=>{if(process.env.SHOTS)await page.screenshot({path:path.join(process.env.SHOTS,'exam-'+name+'.png')})};await shot('intro');
    await page.click('.ex-intro ~ .cp-primary');await shot('reading');let n=0;while(await page.locator('.ex-result').count()===0){if(n===13)await shot('writing-order');await answer(page,false);n++;assert(n<40)}
-   assert.equal(n,30,'30 items');assert.equal(await page.locator('.cp-score').textContent(),'100%');assert.match(await page.locator('.ex-verdict').textContent(),/складено/);
+   assert.equal(n,30,'30 items');assert.equal(await page.locator('.cp-score').textContent(),'100%');assert.equal(await page.locator('.ex-xp').textContent(),'+250 XP','exam points shown once');assert.match(await page.locator('.ex-verdict').textContent(),/складено/);
    const skills=await page.locator('.ex-skills li').evaluateAll(l=>l.map(x=>x.dataset.skill+':'+x.querySelector('strong').textContent));
    assert.deepEqual(skills,['reading:9 / 9','listening:8 / 8','writing:8 / 8','speaking:тренування, не оцінюється']);assert.equal(await page.locator('.ex-mistake').count(),0);
    const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_course_exam_v1@en')));assert.deepEqual(saved.en11.best,{reading:9,listening:8,writing:8});assert.equal(saved.en11.lastPct,100);
@@ -39,6 +39,7 @@ const TYPED={w5:'My name is Olena.',w6:'am',w7:"I've got two children.",w8:'How 
    // second run: every third item wrong
    await page.click('.cp-exam');await page.click('.ex-intro ~ .cp-primary');let k=0;const wrongIds=[];
    while(await page.locator('.ex-result').count()===0){const w=k%3===0;const id=await answer(page,w);if(w&&!id.startsWith('s'))wrongIds.push(id);k++}
+   assert.equal(await page.locator('.ex-xp').count(),0,'no points for a weaker second attempt');
    if(process.env.SHOTS)await page.screenshot({path:path.join(process.env.SHOTS,'exam-result.png'),fullPage:true});
    const ms=await page.locator('.ex-mistake').evaluateAll(l=>l.map(x=>({id:x.dataset.item,right:x.querySelector('.ex-right').textContent,why:x.querySelector('.ex-why').textContent})));
    assert.deepEqual(ms.map(m=>m.id).sort(),wrongIds.sort(),'every mistake listed');assert(ms.every(m=>m.right.length>10&&m.why.length>10),'right answer and explanation');

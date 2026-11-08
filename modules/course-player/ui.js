@@ -84,6 +84,8 @@
    if(s.index===s.ids.length){
     if(s.phase<2){body.append(node('h3','cp-h',C.stepDone),button(C.nextStep+' → '+C[STEPS[s.phase+1]],()=>{model.nextPhase();lesson()},'cp-btn cp-primary'));return}
     const r=model.finish();body.append(node('h3','cp-h',C.result),node('p','cp-score',r.correct+' / '+r.total),node('p','cp-muted',C.score));
+    // Shared progress (app.js LerenCourseRewards): points only above this lesson's best, never twice.
+    let xp=0;try{xp=globalThis.LerenCourseRewards?.lesson?.(lang,r.id,r.correct,r.total)||0}catch{}if(xp)body.appendChild(node('p','cp-xp','+'+xp+' XP'));
     const list=node('ul','cp-learned');s.ids.forEach(id=>{const w=course.cards.get(id);const li=node('li');const t=node('strong','',target(w));t.lang=lang;li.append(t,node('span','',' — '+tr(w)));list.appendChild(li)});body.appendChild(list);
     const nxt=model.recommended();
     if(nxt)body.appendChild(button(C.nextLesson+' →',()=>{model.continueRoute();lesson()},'cp-btn cp-primary'));
