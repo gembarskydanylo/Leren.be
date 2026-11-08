@@ -3,12 +3,15 @@
  'use strict';
  const KEY='leren_path_v1';
  const phases=['study','listen','check'];
- function catalog(data,curriculum){
+ // opts.text: the card field with the target-language text ('nl' for the Dutch course, the default). A chapter may give its
+ // level as a 4th tuple item; otherwise the Dutch rule applies (A2 list, first 12 chapters A1.1, then A1.2).
+ function catalog(data,curriculum,opts={}){
+  const text=opts.text||'nl';
   const a2ids=new Set(curriculum.a2Ids||[]);
-  const chapters=[...curriculum.chapters,...curriculum.advanced].map(([id,nl,tabs],index)=>({id,nl,tabs,index,level:a2ids.has(id)?'A2':index<12?'A1.1':'A1.2',lessons:[]}));
+  const chapters=[...curriculum.chapters,...curriculum.advanced].map(([id,nl,tabs,lvl],index)=>({id,nl,tabs,index,level:lvl||(a2ids.has(id)?'A2':index<12?'A1.1':'A1.2'),lessons:[]}));
   const lessons=[],cards=new Map();
   for(const chapter of chapters)for(const tab of chapter.tabs){
-   const items=(data[tab]?.items||[]).filter(w=>w.id&&w.nl&&w.uk);
+   const items=(data[tab]?.items||[]).filter(w=>w.id&&w[text]&&w.uk);
    for(const w of items)cards.set(w.id,w);
    // Stable chunks keep every existing course card on the route.
    for(let offset=0;offset<items.length;offset+=5){
@@ -18,7 +21,9 @@
   }
   return {chapters,lessons,cards};
  }
- function create(course,storage){
+ // opts.key: where this course keeps its route (another language: 'leren_path_v1@en'); Dutch keeps KEY.
+ function create(course,storage,opts={}){
+  const key=opts.key||KEY;
   const byId=new Map(course.lessons.map(l=>[l.id,l])),cardIds=course.cards;
   // A1.1 and A1.2 are independent courses: each has its own route start and its own paused lesson.
   const levels=[...new Set(course.chapters.map(c=>c.level))],levelOf=new Map(course.chapters.map(c=>[c.id,c.level]));
@@ -26,7 +31,7 @@
   for(const l of course.lessons)for(const id of l.ids)if(!cardLevel.has(id))cardLevel.set(id,levelOf.get(l.chapter));
   const courseLessons=level=>course.lessons.filter(l=>levelOf.get(l.chapter)===level);
   let persistent=true,raw;
-  let value;try{value=storage.getItem(KEY)}catch{persistent=false}
+  let value;try{value=storage.getItem(key)}catch{persistent=false}
   try{raw=JSON.parse(value||'null')}catch{}
   const obj=v=>v&&typeof v==='object'&&!Array.isArray(v);
   const state={version:1,started:false,entry:course.lessons[0].id,completed:{},mistakes:[],session:null,placement:null};
@@ -49,7 +54,7 @@
    const p=raw.placement;
    if(obj(p)&&Array.isArray(p.answers)&&p.answers.length<=12&&p.answers.every(a=>typeof a==='boolean'))state.placement={answers:p.answers};
   }
-  function save(){try{storage.setItem(KEY,JSON.stringify(state))}catch{persistent=false}}
+  function save(){try{storage.setItem(key,JSON.stringify(state))}catch{persistent=false}}
   const entryOf=level=>state.entries[level]||courseLessons(level)[0]?.id;
   function recommended(level=state.course){
    if(level===state.course&&state.session?.kind==='lesson'&&lessonLevel(state.session.lesson)===level&&!(state.session.phase===2&&state.session.index===state.session.ids.length))return byId.get(state.session.lesson);
