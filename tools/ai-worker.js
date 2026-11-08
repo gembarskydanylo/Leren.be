@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-08-explain-lang-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-08-prompt-cache-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 // The explanation language follows the learner: the app setting (uk/en/fr/ar) by default, but a learner who writes in
@@ -347,7 +347,13 @@ export default {
     // Preserve recent dialogue but ensure the newest learner turn is authoritative.
     // Previous assistant suggestions are conversation history, not instructions to repeat a drill.
     const notes = learnerNotes(body.profile, mode, memory, style) + (mode === "chat" ? askedNote(msgs) : "") + (mode === "chat" && body.scene === "exam11" ? examScript(body.exam, LANG[body.lang] || "Ukrainian") : "") + (mode === "ask" && body.focus === "exam11" && (body.target || "nl") === "nl" ? EXAM11_COACH(LANG[body.lang] || "Ukrainian") : "");
-    const sys = mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, notes) : chatSystem(target, body.lang, body.level, body.scene, body.char, notes, style);
+    // Prompt caching: the notes change on every turn, the rest of the prompt does not. The prompt is built with the notes
+    // between two markers and sent as text blocks in the same order: everything before the notes is cached (cache reads cost
+    // about a tenth), so the model sees exactly the same text as before.
+    const CUT = "\u0001", wrapped = CUT + notes + CUT;
+    const parts = (mode === "memo" ? memoSystem(body.lang) : mode === "ask" ? askSystem(target, body.lang, body.level, body.char, wrapped) : chatSystem(target, body.lang, body.level, body.scene, body.char, wrapped, style)).split(CUT);
+    const sys = parts.join("");
+    const sysBlocks = [{type: "text", text: parts[0], cache_control: {type: "ephemeral"}}, ...(parts.length > 1 && parts.slice(1).join("") ? [{type: "text", text: parts.slice(1).join("")}] : [])];
     const schema = schemaFor(mode, LANG[body.lang] || "Ukrainian");
     const provider = env.PROVIDER || (env.ANTHROPIC_KEY ? "anthropic" : env.GEMINI_KEY ? "gemini" : "workers-ai");
     await chargeDaily(env, day, net, dev, daily);
@@ -358,11 +364,12 @@ export default {
       if (provider === "anthropic") {
         // Structured outputs guarantee valid JSON; low effort keeps replies fast and cheap.
         const r = await fetch("https://api.anthropic.com/v1/messages", {method: "POST", signal: ctl.signal, headers: {"content-type": "application/json", "x-api-key": env.ANTHROPIC_KEY, "anthropic-version": "2023-06-01"},
-          body: JSON.stringify({model: env.MODEL || "claude-haiku-5-5", max_tokens: 4000, system: sys, messages: msgs,
+          body: JSON.stringify({model: env.MODEL || "claude-haiku-5-5", max_tokens: 4000, system: sysBlocks, messages: msgs,
             output_config: {effort: env.EFFORT || (mode === "ask" ? "medium" : "low"), format: {type: "json_schema", schema}}})});
         const j = await r.json();
         if (!r.ok) { console.log("anthropic", r.status, JSON.stringify(j).slice(0, 300)); return json({error: "ai"}, 502); }
         if (j.stop_reason === "refusal") return json({error: "refusal"}, 502);
+        const u = j.usage || {}; console.log("AI_USAGE " + JSON.stringify({mode, in: u.input_tokens || 0, cache_read: u.cache_read_input_tokens || 0, cache_write: u.cache_creation_input_tokens || 0, out: u.output_tokens || 0})); // Cloudflare → leren-ai → Logs: is the cache hit?
         text = (j.content || []).filter(c => c.type === "text").map(c => c.text).join("");
       } else if (provider === "gemini") {
         const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${env.MODEL || "gemini-3.5-flash-lite"}:generateContent`, {method: "POST", signal: ctl.signal, headers: {"Content-Type": "application/json", "x-goog-api-key": env.GEMINI_KEY},

@@ -14,7 +14,7 @@ const fix = (corrected, severity = "minor", explanation = "Коротке пра
 const modelAnswer = (reply, correction = NONE, extra = {}) => ({learner_in_target: extra.said || "", reply, translation: "Переклад.", correction});
 
 let sent; // last request body the Worker sent to the model
-const mockModel = answer => async (url, opts) => { sent = JSON.parse(opts.body); return {ok: true, status: 200, json: async () => ({stop_reason: "end_turn", content: [{type: "text", text: JSON.stringify(answer)}]})}; };
+const mockModel = answer => async (url, opts) => { sent = JSON.parse(opts.body); if (Array.isArray(sent.system)) sent.system = sent.system.map(b => b.text).join(""); /* prompt-cache blocks → the prompt text */ return {ok: true, status: 200, json: async () => ({stop_reason: "end_turn", content: [{type: "text", text: JSON.stringify(answer)}]})}; };
 
 async function load() {
   const src = fs.readFileSync(path.join(__dirname, "../tools/ai-worker.js"), "utf8");
