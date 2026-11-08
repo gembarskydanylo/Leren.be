@@ -20,7 +20,7 @@ const load=(...files)=>{const c=vm.createContext({console});vm.runInContext(read
  assert.equal(R.key('leren_path_v1','de'),'leren_path_v1@de','German has its own keys');assert.throws(()=>R.key('leren_path_v1','es'));assert.throws(()=>R.key('evil','en'));
  assert.equal(R.name('fr','uk'),'Французька');assert.equal(R.name('de','uk'),'Німецька');assert.equal(R.COURSES.de.status,'planned');assert.equal(R.VOICE.de,'de-DE');assert.equal(R.VOICE.en,'en-GB');assert.deepEqual([...R.COURSES.en.levels],['1.1','1.2']);
  // Every per-course key the app really uses exists in the code (catches typos in the list).
- const app=read('app.js')+read('modules/learning-path/core.js');for(const k of R.PER_COURSE)assert(app.includes(k),'per-course key used by the app: '+k)}
+ const app=read('app.js')+read('modules/learning-path/core.js')+read('modules/course-player/ui.js');for(const k of R.PER_COURSE)assert(app.includes(k),'per-course key used by the app: '+k)}
 
 // 2. The Dutch route is built by the same rules as before and kept in the same key.
 {const c=load('modules/courses/registry.js','modules/learning-path/core.js'),core=c.LerenLearningPath,{DATA,LerenCurriculum}=c.fixture;
