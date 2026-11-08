@@ -24,7 +24,7 @@
  // Preview switch for testing new courses on a phone: open lerenbe.com/?multilang=1 (on) or ?multilang=0 (off).
  try{const q=new URLSearchParams(globalThis.location?.search||'').get('multilang');if(q==='1')globalThis.localStorage?.setItem(FLAG_KEY,'1');else if(q==='0')globalThis.localStorage?.removeItem(FLAG_KEY)}catch{}
  // Keys that hold results of ONE course. Everything else is shared by all languages.
- const PER_COURSE=new Set(['leren_path_v1','leren_path_rewards_v1','leren_mistakes','leren_skills_v2','leren_slips_v2','poly_progress','poly_toetsbest','poly_unlocked','leren_exam11','leren_exam12','leren_story','leren_ks_set']);
+ const PER_COURSE=new Set(['leren_path_v1','leren_path_rewards_v1','leren_mistakes','leren_skills_v2','leren_slips_v2','poly_progress','poly_toetsbest','poly_unlocked','leren_exam11','leren_exam12','leren_story','leren_ks_set','leren_course_exam_v1']);
  const get=(storage,k)=>{try{return storage.getItem(k)}catch{return null}};
  function preview(storage){return get(storage,FLAG_KEY)==='1'}
  // Courses the learner may pick: live ones, plus planned ones in preview mode.
