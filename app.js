@@ -5937,6 +5937,35 @@ function recordPathResult(id,correct,total){
  pathSessionRewards[id]=correct;best[id]=correct;lsSet("leren_path_rewards_v1",best);addXP(gain,"p:"+id);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
 }
 
+// ========== OTHER LANGUAGES: English (and later French/German) lessons and exams feed the shared progress ==========
+// Same rules as the Dutch route: points only for answers above the learner's own best in that lesson (+5 each) or in
+// that exam skill (+10 each, like Toets), recorded in the course's own rewards key (leren_path_rewards_v1@en) and
+// granted with a record key (p@en:…, x@en:…) so two devices never count the same lesson twice (sync keeps the
+// maximum per record key). Minutes, the daily goal and the streak count by themselves: the course player opens on top
+// of the route screen, which is a learning screen. The Dutch rewards key and the Dutch route are never touched.
+const courseSessionRewards={};
+function courseRewardsKey(lang){return LerenCourses.key("leren_path_rewards_v1",lang)}
+function courseBest(lang){const b=lsGet(courseRewardsKey(lang),{});return b&&typeof b==="object"&&!Array.isArray(b)?b:{}}
+function courseGrant(lang,rec,correct,max,per,xpKey){
+ const best=courseBest(lang),old=best[rec],sk=lang+":"+rec,previous=Math.max(Number.isInteger(old)&&old>=0&&old<=max?old:0,courseSessionRewards[sk]||0);
+ const gain=Math.max(0,correct-previous)*per;if(!gain)return 0;
+ courseSessionRewards[sk]=correct;best[rec]=correct;lsSet(courseRewardsKey(lang),best);addXP(gain,xpKey);return gain;
+}
+function recordCourseLesson(lang,id,correct,total){
+ if(lang==="nl")return recordPathResult(id,correct,total);
+ const pack=globalThis.LerenCourseData?.[lang];if(!pack||!globalThis.LerenCourses?.COURSES?.[lang])return 0;
+ const lesson=LerenLearningPath.catalog(pack.data,pack.curriculum,{text:pack.text}).lessons.find(l=>l.id===id);
+ if(!lesson||total!==lesson.ids.length||!Number.isInteger(correct)||correct<0||correct>total)return 0;
+ const gain=courseGrant(lang,id,correct,total,5,"p@"+lang+":"+id);saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
+}
+function recordCourseExam(lang,examId,best){
+ const E=globalThis.LerenCourseExams?.[examId];if(!E||E.lang!==lang||!best||typeof best!=="object")return 0;
+ const size={reading:E.reading.reduce((n,t)=>n+t.items.length,0),listening:E.listening.length,writing:E.writing.length};let gain=0;
+ for(const [skill,max] of Object.entries(size)){const ok=best[skill];if(!Number.isInteger(ok)||ok<0||ok>max)continue;gain+=courseGrant(lang,"x:"+examId+":"+skill,ok,max,10,"x@"+lang+":"+examId+":"+skill)}
+ saveStore();rewardCheck(true);queueProgressSync();updateStats();return gain;
+}
+globalThis.LerenCourseRewards={lesson:recordCourseLesson,exam:recordCourseExam};
+
 // ========== TEXT GAPS: no glued words when the page is read as plain text ==========
 // Labels and hints, numbers and units, titles and counters are separate elements that the layout keeps apart (flex/grid
 // gaps, separate lines). Their markup has no space between them, so copy & paste, reader modes, search snippets, some
@@ -5996,7 +6025,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="213";
+const RELEASE_VERSION="214";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
