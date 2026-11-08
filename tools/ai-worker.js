@@ -14,9 +14,12 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-03-security-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-08-explain-lang-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
+// The explanation language follows the learner: the app setting (uk/en/fr/ar) by default, but a learner who writes in
+// another language (Polish, Turkish, Romanian…) gets translations and explanations in that language.
+const EXPLAIN_RULE = (L, target) => `EXPLANATION LANGUAGE: "${L}" below means the learner's own language: ${L} by default, but if the learner clearly writes their own messages (not ${target} practice) in another language (Polish, Russian, Turkish, Romanian, Spanish…), use that one for all translations and explanations until they switch. If unsure, use ${L}.`;
 const SCENES = {
   cafe: "You are a barista in a Flemish café. The learner orders a drink, chooses milk/size and pays.",
   super: "You work in a Belgian supermarket. The learner asks where products are, asks prices, loyalty card.",
@@ -86,9 +89,10 @@ const STYLE_RULES = (L, level = "a11") => ({
 });
 function chatSystem(t, lang, level, scene, char, extra = "", style = "teacher") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
-  const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + ".";
+  const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + " and anything else the learner wants to talk about (news, culture, food, travel, their country). Follow their topic; if they have nothing to say, suggest one everyday topic.";
   const blocks = STYLE_RULES(L, level === "a12" ? "a12" : "a11"), current = scene === "exam11" || style === "exam" ? "exam" : blocks[style] ? style : "teacher";
   return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
+${EXPLAIN_RULE(L, T.name)}
 ${sceneText}
 Current style (the learner may switch style between turns; follow ONLY this one, whatever style your earlier turns used, and never mention a switch): ${blocks[current]}
 Course grammar (follow it when correcting):
@@ -108,7 +112,7 @@ Rules:
 - correction: has_error is true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language, and the current style allows reporting it; then original = their text, corrected = one natural sentence in the target language, explanation = one short sentence in ${L} (never in the target language), severity = "major" if the mistake blocks understanding, changes the meaning or is in the wrong language, otherwise "minor". Never invent errors and never change what the learner meant. If there is no mistake: has_error false, severity "minor", empty strings. Explain only the language, never blame speech recognition.
 - Natural A1 wording: wellbeing is «Goed, en met jou?» or «Het gaat goed», not a bare «Ik goed»; a mixed-language word becomes Dutch while keeping the learner's number (English "comics" → «strips»); «naar huis» is movement, «thuis» is the place; keep an article where Dutch needs one («een Nederlands boek»).
 ${extra}${scene === "exam11" ? `- EXAM RETRY RULE (this overrides "continue the conversation" above; the EXAM SCRIPT line says which question to ask): if the learner's LAST answer has a mistake (has_error true) or is not a full sentence, do NOT go on to the next question. In reply say kindly that it is not quite right (e.g. «Bijna! Kijk naar de verbetering en zeg het nog eens.» / «Niet helemaal juist. Denk nog eens na.») and ask the learner to answer the SAME question again with the corrected sentence; repeat that question. Only when the answer is correct, praise briefly (Goed zo! / Heel goed!) and ask the next question. If the learner makes the same mistake twice, say the right sentence in reply, ask them to repeat it once more, and then move on.
-` : ""}- Stay on language practice. If the learner asks about something unrelated to learning languages, say in reply (in the target language, very simply) that you only help with language practice and steer back.
+` : ""}- Any everyday topic IS language practice: join in. Only if the learner asks you to DO something unrelated to languages (other homework, code, advice), say in reply (in the target language, very simply) that you only help with language practice and steer back.
 ${SAFETY}
 LANGUAGE RULE: "reply" and "corrected" are in the target language and use only Latin letters (write names in Latin script, e.g. Danylo, never mixed with Cyrillic); "translation" and "explanation" are ALWAYS in ${L}, never in Dutch, English or French unless ${L} is that language.`;
 }
@@ -121,6 +125,7 @@ const EXAM11_COACH = L => `- EXAM COACH MODE: the learner is preparing the CVO D
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   return `You are ${PERSONA[char] || PERSONA.peter}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+${EXPLAIN_RULE(L, T.name)}
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
 Grammar notes for ${T.name} (keep explanations consistent with them):
@@ -210,14 +215,14 @@ const schemaFor = (mode, L) => mode === "memo"
   ? {type: "object", additionalProperties: false, required: ["memory"], properties: {memory: {type: "string", description: `Notes about the learner in ${L}.`}}}
   : mode === "ask"
   ? {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
-      answer: {type: "string", description: `Written in ${L}.`},
+      answer: {type: "string", description: `Written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
-        properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L}.`}}}}}}
+        properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}}}
   : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
       learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
-      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L}: translate every word, leave no words in the target language.`},
+      reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L} (or the learner's own language, see EXPLANATION LANGUAGE): translate every word, leave no words in the target language.`},
       correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation", "severity"],
-        properties: {has_error: {type: "boolean"}, severity: {type: "string", enum: ["minor", "major"], description: "major = the mistake blocks understanding, changes the meaning or is in the wrong language; otherwise minor."}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L}.`}}}}};
+        properties: {has_error: {type: "boolean"}, severity: {type: "string", enum: ["minor", "major"], description: "major = the mistake blocks understanding, changes the meaning or is in the wrong language; otherwise minor."}, original: STR, corrected: STR, explanation: {type: "string", description: `Short rule explanation written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}};
 
 function parseJSON(t) {
   if (!t) return null;
