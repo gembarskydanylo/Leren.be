@@ -5,6 +5,7 @@ on:
     paths:
       - firestore.rules
       - firebase.json
+      - tools/deploy-firestore-rules.cjs
       - .github/workflows/deploy-firestore-rules.yml
   workflow_dispatch:
 permissions:
