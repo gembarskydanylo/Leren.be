@@ -26,4 +26,16 @@ assert(page.includes('noindex,nofollow'),'pilot is not publicly indexed');
 assert(page.includes('localStorage.getItem(M.stateKey)'),'isolated progress');
 assert(!page.includes('leren_path_v1'),'does not access existing Dutch route');
 assert(!page.includes('innerHTML'),'no dynamic HTML injection');
+
+const field=fs.readFileSync(path.join(root,'modules/life/fence/field.html'),'utf8');
+assert(field.includes('Hoe diep moet het gat zijn?'),'depth question in quick mode');
+assert(field.includes('Hoeveel centimeter dieper?'),'centimeters question in quick mode');
+assert(field.includes('Heb je een waterpas?'),'tool request in quick mode');
+assert(field.includes('Hoe hoog moet de paal zijn?'),'height question in quick mode');
+assert(field.includes('speechSynthesis'),'voice in quick mode');
+assert(field.includes('navigator.clipboard.writeText'),'copy phrase for real use');
+assert(page.includes('href="field.html"'),'quick mode linked from game');
+assert(field.includes('noindex,nofollow'),'pilot quick mode not indexed');
+assert(!field.includes('leren_path_v1'),'quick mode cannot mutate Dutch progress');
+
 console.log('PASS: LIFE fence pilot — 6 scenes, vocabulary, answers, isolated storage and accessible standalone page');
