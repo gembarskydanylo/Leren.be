@@ -13,12 +13,12 @@ const load=(...files)=>{const c=vm.createContext({console});vm.runInContext(read
  assert.deepEqual([...R.available(s).map(x=>x.id)],['nl'],'English and French are not offered yet');
  assert.equal(R.choose(s,'en'),false,'cannot pick a planned course');s.setItem('leren_learn_lang','en');assert.equal(R.current(s),'nl','a planned course falls back to Dutch');
  s.setItem('leren_learn_lang','xx');assert.equal(R.current(s),'nl','unknown falls back to Dutch');
- const p=mem({leren_multilang:'1'});assert.deepEqual([...R.available(p).map(x=>x.id)],['nl','en','fr'],'preview shows the planned courses');assert.equal(R.choose(p,'fr'),true);assert.equal(R.current(p),'fr');
+ const p=mem({leren_multilang:'1'});assert.deepEqual([...R.available(p).map(x=>x.id)],['nl','en','fr','de'],'preview shows the planned courses');assert.equal(R.choose(p,'fr'),true);assert.equal(R.current(p),'fr');
  assert.equal(R.key('leren_path_v1','nl'),'leren_path_v1','Dutch keeps its key');assert.equal(R.key('leren_path_v1'),'leren_path_v1');
  assert.equal(R.key('leren_path_v1','en'),'leren_path_v1@en');assert.equal(R.key('poly_toetsbest','fr'),'poly_toetsbest@fr');
  for(const shared of ['poly_streak','leren_xp_v2','leren_minutes_v2','leren_goal_min','poly_score'])assert.equal(R.key(shared,'en'),shared,shared+' is shared by all languages');
- assert.throws(()=>R.key('leren_path_v1','de'));assert.throws(()=>R.key('evil','en'));
- assert.equal(R.name('fr','uk'),'Французька');assert.deepEqual([...R.COURSES.en.levels],['1.1','1.2']);
+ assert.equal(R.key('leren_path_v1','de'),'leren_path_v1@de','German has its own keys');assert.throws(()=>R.key('leren_path_v1','es'));assert.throws(()=>R.key('evil','en'));
+ assert.equal(R.name('fr','uk'),'Французька');assert.equal(R.name('de','uk'),'Німецька');assert.equal(R.COURSES.de.status,'planned');assert.equal(R.VOICE.de,'de-DE');assert.equal(R.VOICE.en,'en-GB');assert.deepEqual([...R.COURSES.en.levels],['1.1','1.2']);
  // Every per-course key the app really uses exists in the code (catches typos in the list).
  const app=read('app.js')+read('modules/learning-path/core.js');for(const k of R.PER_COURSE)assert(app.includes(k),'per-course key used by the app: '+k)}
 
