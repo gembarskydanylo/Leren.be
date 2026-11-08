@@ -88,5 +88,9 @@
 - Правила розгортає `.github/workflows/deploy-firestore-rules.yml` після злиття в `main` (тільки якщо живі правила збігаються з попередньою версією в репозиторії).
 
 **Що лишається зробити вручну:**
-- **Firebase → App Check:** зареєструвати сайт (reCAPTCHA Enterprise), потім увімкнути *Enforce* для Cloud Firestore. Без цього бот може створити скільки завгодно анонімних акаунтів і засипати чергу модерації (на сайт спам не потрапить, але чергу доведеться чистити). Увімкнення App Check потребує ще й правки в коді (`initializeAppCheck` у `reviews.js` і `app.js`) — після реєстрації сайту дай ключ сайту, і це буде зроблено.
-- **Окремий службовий акаунт для правил.** Зараз `FIREBASE_SA` (той самий ключ, що надсилає нагадування) ще й змінює правила безпеки. Краще: Google Cloud → IAM → новий службовий акаунт `rules-deployer` лише з роллю *Firebase Rules Admin*, його JSON — у новий секрет GitHub `FIREBASE_RULES_SA`, у workflow замінити `FIREBASE_SA` на `FIREBASE_RULES_SA`, а з акаунта нагадувань роль *Firebase Rules Admin* прибрати.
+- **Firebase → App Check** (захист черги модерації від спаму-ботів; не терміново: навантаження на Firestore — десятки операцій на день при безкоштовному ліміті 50 000):
+  1. Google Cloud → Security → reCAPTCHA → Create key (Website, домени `lerenbe.com`, `www.lerenbe.com`).
+  2. Firebase → App Check → Apps → вебзастосунок → reCAPTCHA Enterprise → цей ключ сайту.
+  3. Ключ сайту (не секретний) — у код: `initializeAppCheck` у `app.js` і `reviews.js`.
+  4. Лише після деплою коду й кількох днів (частка «verified» у графіку App Check) — Firestore → **Enforce**. Раніше не можна: зламаються синхронізація, нагадування й відгуки.
+- Окремий службовий акаунт для правил **не потрібен**: `FIREBASE_SA` (firebase-adminsdk) через Admin SDK і так має повний доступ до даних в обхід правил, тож забрати в нього право змінювати правила майже нічого не дає. Важливо лише, що ключ лежить тільки в секретах GitHub.
