@@ -4138,7 +4138,7 @@ function docUrl(id){return "https://firestore.googleapis.com/v1/projects/"+PUSH_
 let pushAuthP=null;
 function pushToken(){
  if(!pushAuthP)pushAuthP=(async()=>{const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
-  const auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId},"push"));
+  const auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"push"));
   await auth.authStateReady();if(!auth.currentUser)await b.signInAnonymously(auth);return auth})();
  return pushAuthP.then(auth=>auth.currentUser.getIdToken().then(t=>({uid:auth.currentUser.uid,t}))).catch(e=>{pushAuthP=null;throw e});
 }
@@ -5674,7 +5674,7 @@ let appCheckP=null;
 function appCheckHeaders(h){
  if(!/(^|\.)lerenbe\.com$/.test(location.hostname))return Promise.resolve(h);
  if(!appCheckP)appCheckP=Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-app-check.js")]).then(([a,c])=>{
-  const app=a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId},"appcheck");
+  const app=a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"appcheck");
   return {c,ac:c.initializeAppCheck(app,{provider:new c.ReCaptchaEnterpriseProvider(APPCHECK_KEY),isTokenAutoRefreshEnabled:true})}}).catch(e=>{appCheckP=null;throw e});
  const tok=appCheckP.then(({c,ac})=>c.getToken(ac,false)).then(r=>r.token);
  return Promise.race([tok,new Promise(r=>setTimeout(()=>r(""),5000))]).catch(()=>"").then(t=>t?{...h,"X-Firebase-AppCheck":t}:h);
@@ -5748,7 +5748,7 @@ const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false,rev:"",syncing:n
 async function acctLoad(){
  if(acct.mod)return acct.mod;
  const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
- acct.auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId},"acct"));
+ acct.auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"acct"));
  b.onAuthStateChanged(acct.auth,u=>{acct.user=u;acctRender();if(u)syncPull().catch(()=>{})});
  acct.mod=b;return b;
 }
