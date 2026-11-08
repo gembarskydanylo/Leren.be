@@ -7,6 +7,11 @@ html.cp-open{overflow:hidden}
 .cp-body{width:100%;max-width:560px;margin:0 auto;padding:16px;display:grid;gap:12px;box-sizing:border-box}
 .cp-card{padding:16px;border-radius:18px;background:var(--surface,#fff);border:1px solid var(--line,#eadbc8)}
 .cp-card h3{margin:0 0 10px;font-size:18px}
+.cp-sum{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;cursor:pointer;list-style:none;font-weight:800;font-size:17px}
+.cp-sum::-webkit-details-marker{display:none}
+.cp-sum-n{flex:none;font-size:14px;color:var(--ink-2,#6b5a48)}
+details[open]>.cp-sum{margin-bottom:10px}
+.cp-next{margin-top:-4px}
 .cp-lessons{margin:0;padding:0;list-style:none;display:grid;gap:8px}
 .cp-lessons li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:10px 12px;border-radius:12px;background:var(--bg,#fff8ef)}
 .cp-li-n{font-weight:800}.cp-li-words{color:var(--ink-2,#6b5a48);font-size:14px}.cp-li-done{margin-inline-start:auto;color:var(--ok,#1d7a45);font-weight:800;font-size:14px}

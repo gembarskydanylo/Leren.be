@@ -48,17 +48,21 @@
 
   function home(){
    body.replaceChildren();feedback=null;
+   // The one main action first (on the first screen), then the chapters: the current one open, the others folded with
+   // their progress (36 lessons would otherwise push the button far below the screen).
+   const next=model.recommended(),s=model.state.session,resume=!!next&&s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length);
+   if(next){const ch=course.chapters.find(c=>c.id===next.chapter),n=ch.lessons.findIndex(l=>l.id===next.id)+1;
+    body.append(button((resume?C.resume:C.start)+' →',()=>{if(!resume)model.begin(next.id);lesson()},'cp-btn cp-primary'),node('p','cp-muted cp-next',chapterName(ch)+' · '+C.lesson+' '+n))}
+   else body.appendChild(node('p','cp-all-done',C.allDone));
    for(const ch of course.chapters){
-    const box=node('div','cp-card');box.appendChild(node('h3','',chapterName(ch)));
+    const done=ch.lessons.filter(l=>model.state.completed[l.id]!=null).length,box=node('details','cp-card');box.dataset.chapter=ch.id;
+    if(next?ch.id===next.chapter:ch===course.chapters[0])box.open=true;
+    const sum=node('summary','cp-sum');sum.append(node('span','cp-sum-name',chapterName(ch)),node('span','cp-sum-n',done+' / '+ch.lessons.length+(done===ch.lessons.length?' ✓':'')));box.appendChild(sum);
     const list=node('ol','cp-lessons');ch.lessons.forEach((l,i)=>{const li=node('li',model.state.completed[l.id]!=null?'is-done':'');li.dataset.lesson=l.id;
      li.append(node('span','cp-li-n',C.lesson+' '+(i+1)),node('span','cp-li-words',l.ids.slice(0,2).map(id=>target(course.cards.get(id))).join(' · ')+' …'));
      if(model.state.completed[l.id]!=null)li.appendChild(node('span','cp-li-done','✓ '+C.done));list.appendChild(li)});
     box.appendChild(list);body.appendChild(box);
    }
-   const next=model.recommended();
-   if(next){const s=model.state.session,resume=s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length);
-    body.appendChild(button((resume?C.resume:C.start)+' →',()=>{if(!resume)model.begin(next.id);lesson()},'cp-btn cp-primary'))}
-   else body.appendChild(node('p','cp-all-done',C.allDone));
   }
 
   function options(w,showTarget){
