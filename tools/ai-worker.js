@@ -14,7 +14,7 @@
 //           ask  → {answer, examples: [{lang, text, translation}]}
 //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
 //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
-const WORKER_VERSION = "2026-11-08-prompt-cache-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+const WORKER_VERSION = "2026-11-08-german-arch-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
 const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
 const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
 // The explanation language follows the learner: the app setting (uk/en/fr/ar) by default, but a learner who writes in
@@ -56,10 +56,19 @@ const GRAMMAR_FR = `- Word order: sujet + verbe + complément (J'habite en Belgi
 - Polite: vous (formal), s'il vous plaît, je voudrais…
 - Belgian usage: septante (70), nonante (90); déjeuner = lunch in BE is 'dîner', breakfast 'déjeuner'.
 - A1+: passé composé (j'ai travaillé, je suis allé), futur proche (je vais manger).`;
+const GRAMMAR_DE = `- Word order: verb in 2nd position (Ich wohne in Belgien; Heute arbeite ich); in yes/no questions the verb comes first (Wohnst du in Gent?).
+- Present tense: ich wohne, du wohnst, er/sie wohnt, wir wohnen, ihr wohnt, sie/Sie wohnen; sein (ich bin, du bist, er ist, wir sind, Sie sind), haben (ich habe, du hast, er hat).
+- Gender: der/die/das, ein/eine; learn the article with the noun (der Tisch, die Lampe, das Haus). Plural die.
+- Negation: nicht, and kein/keine before a noun without article (Ich habe kein Auto).
+- Polite: Sie (formal) with the verb in -en (Woher kommen Sie?), bitte, danke, ich möchte…
+- Separable verbs: the prefix goes to the end (aufstehen → Ich stehe um sieben Uhr auf).
+- A1+: Perfekt with haben/sein (ich habe gearbeitet, ich bin gegangen), modal verbs + infinitive at the end (Ich kann gut schwimmen).`;
 const TARGET = {
   nl: {name: "Dutch as spoken in Belgium (nl-BE, Flemish)", grammar: GRAMMAR_NL, place: "everyday life in Belgium (family, work, CVO school, shopping, weather, hobbies, transport)"},
   en: {name: "English (British spelling)", grammar: GRAMMAR_EN, place: "everyday life (family, work, school, shopping, weather, hobbies, travel)"},
-  fr: {name: "French as spoken in Belgium (fr-BE)", grammar: GRAMMAR_FR, place: "everyday life in Belgium (famille, travail, école, courses, météo, loisirs, transports)"}
+  fr: {name: "French as spoken in Belgium (fr-BE)", grammar: GRAMMAR_FR, place: "everyday life in Belgium (famille, travail, école, courses, météo, loisirs, transports)"},
+  // German: architecture only (modules/courses/registry.js status planned); the app does not offer it yet.
+  de: {name: "Standard German (Hochdeutsch; also spoken in East Belgium)", grammar: GRAMMAR_DE, place: "everyday life (Familie, Arbeit, Schule, Einkaufen, Wetter, Hobbys, Verkehr)"}
 };
 const PERSONA = {
   peter: "Peter, a calm, friendly Flemish language teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
@@ -132,7 +141,7 @@ Grammar notes for ${T.name} (keep explanations consistent with them):
 ${T.grammar}
 Answer format:
 - answer: ALWAYS written in ${L}, also when you decline a question; short and simple (max about 120 words), beginner-friendly, no tables, no markdown headings; you may use line breaks and "•" bullets. Put words in the studied language in «guillemets».
-- examples: 0–3 short example sentences that illustrate the answer; lang is the language of the example (nl, en or fr), text is the sentence, translation is its ${L} translation. Use [] when examples do not help (for example when declining an off-topic question).
+- examples: 0–3 short example sentences that illustrate the answer; lang is the language of the example (nl, en, fr or de), text is the sentence, translation is its ${L} translation. Use [] when examples do not help (for example when declining an off-topic question).
 - If the learner asks for an exercise, give one or two short tasks in answer and put the solutions at the end after "→".
 - STUDY METHOD ON PAPER ("Korean method"): when the learner asks how to learn or memorise verbs, verb forms or new words (or asks for a study method or tip), explain this paper method, enthusiastic and simple, as 4 numbered steps (for this answer up to about 200 words are allowed):
   1. Preparation: take an ordinary A4 sheet and a pen.
@@ -205,8 +214,8 @@ Write in ${L}: at most 8 short lines, each starting with "• ", at most 500 cha
 }
 
 const STR = {type: "string"};
-const TNAME = {uk: {nl: "нідерландською", en: "англійською", fr: "французькою"}, en: {nl: "in Dutch", en: "in English", fr: "in French"},
-  fr: {nl: "en néerlandais", en: "en anglais", fr: "en français"}, ar: {nl: "بالهولندية", en: "بالإنجليزية", fr: "بالفرنسية"}};
+const TNAME = {uk: {nl: "нідерландською", en: "англійською", fr: "французькою", de: "німецькою"}, en: {nl: "in Dutch", en: "in English", fr: "in French", de: "in German"},
+  fr: {nl: "en néerlandais", en: "en anglais", fr: "en français", de: "en allemand"}, ar: {nl: "بالهولندية", en: "بالإنجليزية", fr: "بالفرنسية", de: "بالألمانية"}};
 const SAY_IT = {uk: t => `Ти написав не ${TNAME.uk[t] || TNAME.uk.nl}. Так це звучить ${TNAME.uk[t] || TNAME.uk.nl} — повтори вголос.`,
   en: t => `That wasn't ${TNAME.en[t] || TNAME.en.nl}. This is how to say it ${TNAME.en[t] || TNAME.en.nl} — repeat it out loud.`,
   fr: t => `Ce n'était pas ${TNAME.fr[t] || TNAME.fr.nl}. Voilà comment le dire ${TNAME.fr[t] || TNAME.fr.nl} — répète-le à voix haute.`,
@@ -217,7 +226,7 @@ const schemaFor = (mode, L) => mode === "memo"
   ? {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
       answer: {type: "string", description: `Written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
-        properties: {lang: {type: "string", enum: ["nl", "en", "fr"]}, text: STR, translation: {type: "string", description: `Translation into ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}}}
+        properties: {lang: {type: "string", enum: ["nl", "en", "fr", "de"]}, text: STR, translation: {type: "string", description: `Translation into ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}}}
   : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
       learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
       reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L} (or the learner's own language, see EXPLANATION LANGUAGE): translate every word, leave no words in the target language.`},
@@ -383,7 +392,7 @@ export default {
       if (mode === "memo") { if (o && typeof o.memory === "string") delivered = true; return json({memory: cut(o && typeof o.memory === "string" ? o.memory : memory, 600)}); }
       if (mode === "ask") {
         if (!o || !o.answer) return json({error: "format"}, 502);
-        const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr"].includes(e.lang)).slice(0, 3)
+        const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr", "de"].includes(e.lang)).slice(0, 3)
           .map(e => ({lang: e.lang, text: cut(e.text, 200), translation: cut(e.translation, 200)}));
         delivered = true;
         return json({answer: cut(o.answer, 1500), examples: ex});

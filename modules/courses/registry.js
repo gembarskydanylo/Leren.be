@@ -14,9 +14,15 @@
  const COURSES={
   nl:{id:'nl',flag:'🇳🇱',status:'live',levels:['A1.1','A1.2','A2'],names:{uk:'Нідерландська',en:'Dutch',fr:'Néerlandais',ar:'الهولندية'}},
   en:{id:'en',flag:'🇬🇧',status:'planned',levels:['1.1','1.2'],names:{uk:'Англійська',en:'English',fr:'Anglais',ar:'الإنجليزية'}},
-  fr:{id:'fr',flag:'🇫🇷',status:'planned',levels:['1.1','1.2'],names:{uk:'Французька',en:'French',fr:'Français',ar:'الفرنسية'}}
+  fr:{id:'fr',flag:'🇫🇷',status:'planned',levels:['1.1','1.2'],names:{uk:'Французька',en:'French',fr:'Français',ar:'الفرنسية'}},
+  // German: architecture only (same Flemish profile "Europese talen groep 1"); no course data yet.
+  de:{id:'de',flag:'🇩🇪',status:'planned',levels:['1.1','1.2'],names:{uk:'Німецька',en:'German',fr:'Allemand',ar:'الألمانية'}}
  };
+ // Voice for each target language (speech synthesis on the learner's device).
+ const VOICE={nl:'nl-BE',en:'en-GB',fr:'fr-BE',de:'de-DE'};
  const DEFAULT='nl',LANG_KEY='leren_learn_lang',FLAG_KEY='leren_multilang';
+ // Preview switch for testing new courses on a phone: open lerenbe.com/?multilang=1 (on) or ?multilang=0 (off).
+ try{const q=new URLSearchParams(globalThis.location?.search||'').get('multilang');if(q==='1')globalThis.localStorage?.setItem(FLAG_KEY,'1');else if(q==='0')globalThis.localStorage?.removeItem(FLAG_KEY)}catch{}
  // Keys that hold results of ONE course. Everything else is shared by all languages.
  const PER_COURSE=new Set(['leren_path_v1','leren_path_rewards_v1','leren_mistakes','leren_skills_v2','leren_slips_v2','poly_progress','poly_toetsbest','poly_unlocked','leren_exam11','leren_exam12','leren_story','leren_ks_set']);
  const get=(storage,k)=>{try{return storage.getItem(k)}catch{return null}};
@@ -33,5 +39,5 @@
   return lang===DEFAULT||!PER_COURSE.has(base)?base:base+'@'+lang;
  }
  const name=(id,ui)=>(COURSES[id]?.names[ui])||COURSES[id]?.names.uk||id;
- globalThis.LerenCourses={COURSES,DEFAULT,LANG_KEY,FLAG_KEY,PER_COURSE,available,current,choose,key,name,preview};
+ globalThis.LerenCourses={COURSES,VOICE,DEFAULT,LANG_KEY,FLAG_KEY,PER_COURSE,available,current,choose,key,name,preview};
 })();

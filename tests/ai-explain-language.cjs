@@ -21,4 +21,7 @@ for(const [lang,L] of [['uk','Ukrainian'],['en','English'],['fr','French'],['ar'
 {const p=T.chatSystem('nl','uk','a11',null,'peter','','teacher');assert.match(p,/IS language practice: join in/);assert.doesNotMatch(p,/If the learner asks about something unrelated to learning languages/)}
 // A role-play scene keeps its own situation (no free-topic text).
 assert.doesNotMatch(T.chatSystem('nl','uk','a11','cafe','peter','','teacher'),/anything else the learner wants/);
+// German at architecture level: the tutor can be asked for German (target 'de'), examples may be German.
+{const de=T.chatSystem('de','uk','a11',null,'peter','','teacher');assert.match(de,/Standard German/);assert.match(de,/kein\/keine/);
+ assert.deepEqual([...T.schemaFor('ask','Ukrainian').properties.examples.items.properties.lang.enum],['nl','en','fr','de'])}
 console.log('PASS: explanation language follows the learner (4 app languages + others), free conversation on any everyday topic');

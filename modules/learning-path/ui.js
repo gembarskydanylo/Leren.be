@@ -59,6 +59,8 @@
    const due=bridge.due?bridge.due():[],warm=!placing&&!paused&&next&&model.warmupDue(due)?model.warmupIds(due).length:0;
    const showcase=globalThis.LerenShowcase?.create({lang,level:model.course,gameCards:()=>bridge.gameCards?.()||[],onGames:()=>bridge.games?.(),onGame:id=>bridge.game?.(id),onClock:()=>bridge.clock?.(),onChat:id=>bridge.chat?.(id),onRoute:()=>root.querySelector('.fh-hero')?.scrollIntoView({behavior:'smooth',block:'start'})});
    if(LerenFocus.banner)root.appendChild(LerenFocus.banner());
+   // New languages, preview only (lerenbe.com/?multilang=1): English, French, German open in their own player.
+   {const pc=globalThis.LerenCoursePlayer?.previewCard?.(lang);if(pc)root.appendChild(pc)}
    // A learner who has started sees the next lesson first (one tap to continue); the course switch and the showcase follow.
    // A new visitor first meets the course switch and the showcase, then the start.
    const intro=()=>{courseSwitch(()=>panelContent());if(showcase)root.appendChild(showcase.intro)};
