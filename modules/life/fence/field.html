@@ -1,0 +1,90 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#fff3e0">
+<title>LerenBe LIFE — Фрази на будівництві</title>
+<style>
+:root{font:16px/1.4 system-ui,sans-serif;color:#273329;background:#fffaf2}*{box-sizing:border-box}
+body{margin:0}main{max-width:700px;margin:auto;padding:16px 15px 80px}a{color:#6a4e13}
+h1{font-size:1.5rem;line-height:1.2}p{color:#576459}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px 0;position:sticky;top:0;background:#fffaf2;z-index:2}nav button{white-space:nowrap}
+button{font:inherit;cursor:pointer;border-radius:12px;border:1px solid #d1c5b3;padding:11px;background:white;min-height:46px}button:focus-visible,input:focus-visible{outline:3px solid #215db4;outline-offset:2px}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #c7c0b4;font:inherit;font-size:1rem}
+button.active{background:#f2a443;color:#1c1a14;font-weight:700;border-color:#b86b0c}
+article{border:1px solid #ded4c2;background:white;border-radius:14px;padding:15px;margin:11px 0}
+.phrase{font-size:1.16rem;font-weight:750;margin:0 0 5px}.uk{color:#56635b;margin:0 0 12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{font-size:.87rem}
+label{font-weight:700}small{color:#647069}.hint{margin-top:12px;font-size:.85rem}
+</style></head><body><main>
+<a href="index.html">← Повернутися до місії</a>
+<h1>🛠️ Фрази для роботи біля паркану</h1>
+<p>Відкрий на телефоні, вибери ситуацію, покажи або озвуч потрібну фразу сусіду. Розмовна нідерландська, зрозуміла у Фландрії.</p>
+<label for="query">Знайти фразу українською або нідерландською</label>
+<input id="query" type="search" placeholder="Наприклад: глибоко, сантиметрів, стовп…" autocomplete="off">
+<nav id="tabs" aria-label="Категорії фраз"></nav>
+<section id="results" aria-live="polite"></section>
+<p class="hint">🔊 Використовує системний голос телефону (nl-BE, якщо встановлений). Числа нижче — приклади мовлення, а не рекомендації щодо конструкції паркану. Не використовуй ці фрази замість перевірки безпеки робіт.</p>
+</main><script>
+'use strict';
+const groups=[
+{id:'request',label:'🤝 Попросити',items:[
+['Kun je me de hamer aangeven, alsjeblieft?','Можеш передати мені молоток, будь ласка?'],
+['Kun je de schroefmachine even halen?','Можеш принести шуруповерт?'],
+['Heb je een waterpas?','У тебе є будівельний рівень?'],
+['Heb je nog schroeven?','У тебе ще є шурупи?'],
+['Waar ligt de schop?','Де лежить лопата?'],
+['Kun je deze paal even vasthouden?','Можеш потримати цей стовп?'],
+['Kun je me even helpen?','Можеш мені на хвилинку допомогти?']
+]},
+{id:'depth',label:'🕳️ Глибина',items:[
+['Hoe diep moet het gat zijn?','Якої глибини має бути яма?'],
+['Is dit diep genoeg?','Це достатньо глибоко?'],
+['Het gat is niet diep genoeg.','Яма недостатньо глибока.'],
+['Het gat is te diep.','Яма надто глибока.'],
+['Het hoeft niet zo diep.','Не потрібно так глибоко.'],
+['Nog tien centimeter dieper?','Ще на десять сантиметрів глибше?'],
+['Hoeveel centimeter dieper?','На скільки сантиметрів глибше?'],
+['Hoe diep is het nu?','Яка зараз глибина?']
+]},
+{id:'height',label:'📏 Висота',items:[
+['Hoe hoog moet de paal zijn?','Якої висоти має бути стовп?'],
+['Is deze paal te hoog?','Цей стовп надто високий?'],
+['Deze paal is te laag.','Цей стовп надто низький.'],
+['Een beetje hoger, alsjeblieft.','Трохи вище, будь ласка.'],
+['Een beetje lager.','Трохи нижче.'],
+['Hoeveel centimeter hoger?','На скільки сантиметрів вище?'],
+['We moeten de hoogte meten.','Нам потрібно виміряти висоту.']
+]},
+{id:'align',label:'🪵 Виставити',items:[
+['Staat de paal recht?','Стовп стоїть рівно?'],
+['Hou de paal recht, alsjeblieft.','Тримай стовп рівно, будь ласка.'],
+['Een beetje naar links.','Трохи лівіше.'],
+['Een beetje naar rechts.','Трохи правіше.'],
+['Zo is het goed!','Ось так добре!'],
+['We moeten eerst meten.','Спочатку нам потрібно виміряти.'],
+['Doe er wat grind bij.','Досип трохи щебеню.'],
+['Zal ik het vasthouden?','Мені потримати це?']
+]},
+{id:'clarify',label:'💬 Уточнити',items:[
+['Kun je dat herhalen, alsjeblieft?','Можеш повторити, будь ласка?'],
+['Kun je wat langzamer spreken?','Можеш говорити трохи повільніше?'],
+['Wat bedoel je precies?','Що саме ти маєш на увазі?'],
+['Bedoel je tien of twintig centimeter?','Ти маєш на увазі десять чи двадцять сантиметрів?'],
+['Ik begrijp het niet helemaal.','Я не зовсім розумію.'],
+['Moeten we hier stoppen?','Нам потрібно тут зупинитися?'],
+['Zijn we klaar voor vandaag?','Ми на сьогодні закінчили?']
+]}
+];
+let category='all';const tabs=document.querySelector('#tabs'),results=document.querySelector('#results'),query=document.querySelector('#query');
+const normalize=s=>s.toLocaleLowerCase('nl').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+function speak(s){if(!('speechSynthesis'in window))return;const v=new SpeechSynthesisUtterance(s);v.lang='nl-BE';v.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(v)}
+function renderTabs(){tabs.replaceChildren();for(const [id,label] of [['all','Усі'],...groups.map(g=>[g.id,g.label])]){const b=document.createElement('button');b.type='button';b.textContent=label;b.className=id===category?'active':'';b.setAttribute('aria-pressed',String(id===category));b.onclick=()=>{category=id;renderTabs();render()};tabs.append(b)}}
+function render(){
+ const q=normalize(query.value);results.replaceChildren();let count=0;
+ for(const g of groups){if(category!=='all'&&category!==g.id)continue;
+ for(const [nl,uk] of g.items){if(q&&!normalize(nl+' '+uk).includes(q))continue;count++;
+ const card=document.createElement('article');const p=document.createElement('p');p.className='phrase';p.lang='nl-BE';p.textContent=nl;const t=document.createElement('p');t.className='uk';t.textContent=uk;
+ const actions=document.createElement('div');actions.className='actions';const voice=document.createElement('button');voice.textContent='🔊 Слухати';voice.onclick=()=>speak(nl);const copy=document.createElement('button');copy.textContent='Копіювати';copy.onclick=async()=>{try{await navigator.clipboard.writeText(nl);copy.textContent='✓ Скопійовано'}catch{copy.textContent='Не вдалося скопіювати'}};actions.append(voice,copy);card.append(p,t,actions);results.append(card)}
+ }
+ if(!count){const p=document.createElement('p');p.textContent='Нічого не знайдено. Спробуй інше слово.';results.append(p)}
+}
+query.addEventListener('input',render);renderTabs();render();
+</script></body></html>
