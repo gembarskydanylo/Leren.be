@@ -1,8 +1,11 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInAnonymously,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signOut} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {initializeAppCheck,ReCaptchaEnterpriseProvider} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js';
 import {getFirestore,collection,doc,getDoc,getDocs,query,orderBy,limit,setDoc,deleteDoc,writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const app=initializeApp({apiKey:'AIzaSyA-v4mkpSlmpjwM5s34nD6jlgRZfVuxOwQ',authDomain:'leren-be.firebaseapp.com',projectId:'leren-be'},'reviews');
+// App Check (reCAPTCHA Enterprise, only on lerenbe.com): Firestore can then refuse requests that do not come from this site.
+if(/(^|\.)lerenbe\.com$/.test(location.hostname)){try{initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider('6Lct5RYuAAAAABhPFLfNjJzc-QTy4hleZyGPAQHV'),isTokenAutoRefreshEnabled:true})}catch(error){console.error('App Check:',error)}}
 const auth=getAuth(app),db=getFirestore(app);
 const owner='gembarsky.d@gmail.com';
 const $=id=>document.getElementById(id);
