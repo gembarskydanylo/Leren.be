@@ -17,7 +17,7 @@ admin.initializeApp({credential:admin.credential.cert(serviceAccount),projectId:
 (async()=>{
  const service=admin.securityRules();
  const current=await service.getFirestoreRuleset();
- const live=(current.source?.files||[]).map(file=>file.content).join('\n').trim();
+ const live=(current.source||[]).map(file=>file.content).join('\n').trim();
  if(live===source){console.log('Firestore rules already match '+hash(source));return}
  // The bootstrap revision is the last committed rules before the review feature.
  // Afterwards HEAD^ supplies the prior source for ordinary rules updates.
