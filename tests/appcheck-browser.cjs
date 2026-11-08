@@ -7,7 +7,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.json':'application/json','.woff':'font/woff','.webmanifest':'application/json'};
 const KEY=fs.readFileSync(path.join(root,'app.js'),'utf8').match(/const APPCHECK_KEY="([^"]+)"/)[1];
-const FAKE_APP='export function initializeApp(o,name){return {o,name}}';
+const FAKE_APP='export function initializeApp(o,name){if(o.appId!=="1:533895640416:web:770d52f1926e13a186da05")throw Error("Firebase appId missing for "+name);return {o,name}}';
 const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k=k}}\nexport function initializeAppCheck(app,o){globalThis.__ac={app:app.name,key:o.provider.k,auto:o.isTokenAutoRefreshEnabled};return {}}\nexport async function getToken(){return {token:"tok-123"}}';
 (async()=>{
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');return}
@@ -32,6 +32,11 @@ const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k
   assert.deepEqual(down.h,{Authorization:'Bearer x'},'App Check unavailable: request goes without the header');assert(down.ms<6000,'no long wait: '+down.ms);
   const local=await run('localhost.test');assert.deepEqual(local.h,{Authorization:'Bearer x'});assert.equal(local.ac,null,'not loaded off lerenbe.com');
   // reviews.js initializes App Check with the same key, only on lerenbe.com
+  // Validate every Firebase app initialization, not just the App Check token header.
+  const appSource=fs.readFileSync(path.join(root,'app.js'),'utf8');
+  for(const name of ['push','appcheck','acct'])assert(appSource.includes('appId:"1:533895640416:web:770d52f1926e13a186da05"},"'+name+'")'),'missing Firebase appId for '+name);
+  const rvSource=fs.readFileSync(path.join(root,'reviews.js'),'utf8');
+  assert(rvSource.includes("appId:'1:533895640416:web:770d52f1926e13a186da05'},'reviews')"),'missing Firebase appId for reviews');
   const rv=fs.readFileSync(path.join(root,'reviews.js'),'utf8');assert(rv.includes(`new ReCaptchaEnterpriseProvider('${KEY}')`)&&/lerenbe\\\.com\$\/\.test\(location\.hostname\)/.test(rv),'reviews.js App Check');
   // Every Firestore REST call in app.js sends the App Check headers.
   const app=fs.readFileSync(path.join(root,'app.js'),'utf8'),calls=app.split('fetch(').slice(1).filter(x=>/^(docUrl\(|"https:\/\/firestore\.googleapis\.com)/.test(x));
