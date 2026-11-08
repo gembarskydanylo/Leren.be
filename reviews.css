@@ -58,3 +58,7 @@ footer{max-width:1200px;margin:auto;padding:16px 40px 35px;display:flex;gap:25px
 @media(max-width:780px){.content{grid-template-columns:1fr}.hero{min-height:0}.hero img{width:105px;align-self:flex-end;margin-inline-end:-20px}.hero-copy{max-width:75%}}
 @media(max-width:480px){.top{padding:15px 18px}.brand{font-size:14px}.lang-label>span{display:none}.hero{padding:26px 20px}.hero-copy{max-width:100%}.hero img{position:absolute;width:95px;right:22px;top:110px;opacity:.5}.hero p:not(.eyebrow){padding-right:36px}.content{gap:18px;margin-top:25px}.reviews-panel,.form-panel{border-radius:20px}.review-top{align-items:start}.stars{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Moderation: reviews with possible swearing */
+.review-card.is-flagged{border:2px solid #d1495b;background:#fff1f1}
+.review-card .flag{margin:0 0 8px;color:#a32b14;font-weight:800;font-size:14px}

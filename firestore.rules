@@ -53,7 +53,11 @@ service cloud.firestore {
         && d.text is string && d.text.size() >= 20 && d.text.size() <= 600
         && d.rating is int && d.rating >= 1 && d.rating <= 5
         && d.locale in ['uk', 'en', 'fr', 'ar']
-        && d.createdAt is timestamp;
+        && d.createdAt is timestamp
+        // No swearing: same stems as STRONG in reviews.js, at the start of a word. (?s): a review may span
+        // several lines; (?i): any letter case (lower() in rules does not lower-case Cyrillic).
+        && !d.name.matches('(?si)(|.*[^a-zа-яёіїєґ])(хуй|хуя|хує|хуї|хуе|нахуй|нахуя|похуй|похуя|ніхуя|нихуя|охуе|охуї|пизд|розпизд|спизд|запизд|напизд|впизд|підпизд|бляд|блять|їбан|їбат|їбал|заїба|йобан|ебан|ебат|ебал|заеба|наеба|уеба|проеба|виеба|выеба|єбан|єбат|єбал|заєба|мудак|мудил|підор|підар|пидор|пидар|гандон|залуп|шлюх|курв|fuck|motherf|shit|cunt|asshole|klootzak|godverdomme|putain|connard|salope|encul).*')
+        && !d.text.matches('(?si)(|.*[^a-zа-яёіїєґ])(хуй|хуя|хує|хуї|хуе|нахуй|нахуя|похуй|похуя|ніхуя|нихуя|охуе|охуї|пизд|розпизд|спизд|запизд|напизд|впизд|підпизд|бляд|блять|їбан|їбат|їбал|заїба|йобан|ебан|ебат|ебал|заеба|наеба|уеба|проеба|виеба|выеба|єбан|єбат|єбал|заєба|мудак|мудил|підор|підар|пидор|пидар|гандон|залуп|шлюх|курв|fuck|motherf|shit|cunt|asshole|klootzak|godverdomme|putain|connard|salope|encul).*');
     }
     match /reviews_pending/{uid} {
       allow get: if reviewOwner() || (request.auth != null && request.auth.uid == uid);
