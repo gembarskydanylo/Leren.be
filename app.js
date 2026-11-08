@@ -4154,7 +4154,7 @@ async function pushWrite(sub,st){
  if(st.sig===sig&&st.id===id)return true;
  const {uid,t}=await pushToken();fields.uid={stringValue:uid};
  // updateMask: change only the app's own fields; lastSent belongs to the reminder server
- const r=await fetch(docUrl(id)+PUSH_FIELDS.map(f=>"&updateMask.fieldPaths="+f).join(""),{method:"PATCH",headers:{"Content-Type":"application/json",Authorization:"Bearer "+t},body:JSON.stringify({fields})});
+ const r=await fetch(docUrl(id)+PUSH_FIELDS.map(f=>"&updateMask.fieldPaths="+f).join(""),{method:"PATCH",headers:await appCheckHeaders({"Content-Type":"application/json",Authorization:"Bearer "+t}),body:JSON.stringify({fields})});
  if(!r.ok){let m="";try{m=(await r.json()).error.message}catch(e){}throw new Error("Firestore "+r.status+(m?": "+m:""))}
  st.id=id;st.sig=sig;lsSet("leren_push",st);return true;
 }
@@ -4181,7 +4181,7 @@ async function pushEnable(){
 // Turning reminders off: stop the browser subscription and delete the server copy. If the server can't be reached,
 // the ID is kept in "pendingDel" and deleting is retried at the next start, so a copy is never left behind silently.
 async function pushDeleteDoc(id){
- try{const {t}=await pushToken();const r=await fetch(docUrl(id),{method:"DELETE",headers:{Authorization:"Bearer "+t}});return r.ok||r.status===404}catch(e){return false}
+ try{const {t}=await pushToken();const r=await fetch(docUrl(id),{method:"DELETE",headers:await appCheckHeaders({Authorization:"Bearer "+t})});return r.ok||r.status===404}catch(e){return false}
 }
 async function pushDisable(){
  const st=pushState();st.on=false;
@@ -5666,6 +5666,19 @@ function renderMistakes(box){
 // ========== ACCOUNT (optional): Google or e-mail sign-in; progress and settings synced to Firestore users/{uid} ==========
 // Without signing in nothing changes. Firebase is loaded only when the user signs in (or signed in before on this device).
 const FB_SDK="https://www.gstatic.com/firebasejs/10.12.2/";
+// App Check (Firebase, reCAPTCHA Enterprise): proves to Firestore that a request comes from lerenbe.com, so bots cannot
+// write through the REST API. Loaded only on lerenbe.com and only when a Firestore request is about to be sent. Best effort:
+// if no token comes within 5 s (offline, blocked), the request goes without it, which is fine until Enforce is switched on.
+const APPCHECK_KEY="6Lct5RYuAAAAABhPFLfNjJzc-QTy4hleZyGPAQHV";
+let appCheckP=null;
+function appCheckHeaders(h){
+ if(!/(^|\.)lerenbe\.com$/.test(location.hostname))return Promise.resolve(h);
+ if(!appCheckP)appCheckP=Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-app-check.js")]).then(([a,c])=>{
+  const app=a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId},"appcheck");
+  return {c,ac:c.initializeAppCheck(app,{provider:new c.ReCaptchaEnterpriseProvider(APPCHECK_KEY),isTokenAutoRefreshEnabled:true})}}).catch(e=>{appCheckP=null;throw e});
+ const tok=appCheckP.then(({c,ac})=>c.getToken(ac,false)).then(r=>r.token);
+ return Promise.race([tok,new Promise(r=>setTimeout(()=>r(""),5000))]).catch(()=>"").then(t=>t?{...h,"X-Firebase-AppCheck":t}:h);
+}
 const ACCT_UI={
  uk:{label:"Акаунт (необов’язково)",out:"Прогрес і налаштування на всіх пристроях. Пам’ять AI лишається тільки на цьому пристрої. Без входу все працює як і раніше.",signIn:"Увійти через Google",synced:"синхронізовано",never:"ще не синхронізовано",emailIn:"Увійти через e-mail",emailQ:"Твоя e-mail адреса:",emailSent:"Лист із посиланням для входу надіслано на {e}. Відкрий його на цьому пристрої.",emailAgain:"Підтвердь e-mail, на який прийшов лист:",signOut:"Вийти",del:"Видалити акаунт",
   delQ:"Видалити акаунт і всі дані в хмарі? Прогрес на цьому пристрої залишиться.",deleted:"Акаунт і дані в хмарі видалено.",err:"Не вдалося. Перевір інтернет і спробуй ще раз.",
@@ -5741,7 +5754,7 @@ async function acctLoad(){
 }
 async function fsUserDoc(method,body){
  const t=await acct.user.getIdToken();
- return fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid,{method,headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+ return fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid,{method,headers:await appCheckHeaders({Authorization:"Bearer "+t,"Content-Type":"application/json"}),body:body?JSON.stringify(body):undefined});
 }
 const syncPaused=()=>!acct.user||acct.deleting||lsGet("leren_del_pending",false);
 // Writes only if the cloud copy is still the one we last saw (Firestore precondition), so two devices can't
@@ -5753,7 +5766,7 @@ async function syncWrite(snap){
  if(blob.length>=SYNC_MAX)return syncFail("size");
  let t,r;try{t=await acct.user.getIdToken();
  r=await fetch("https://firestore.googleapis.com/v1/projects/"+PUSH_CONFIG.projectId+"/databases/(default)/documents/users/"+acct.user.uid+q,
-  {method:"PATCH",headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({fields:{blob:{stringValue:blob},updated:{integerValue:String(ts)},v:{integerValue:"2"}}})});
+  {method:"PATCH",headers:await appCheckHeaders({Authorization:"Bearer "+t,"Content-Type":"application/json"}),body:JSON.stringify({fields:{blob:{stringValue:blob},updated:{integerValue:String(ts)},v:{integerValue:"2"}}})});
  }catch(e){return syncFail(navigator.onLine===false?"offline":"network")}
  // 409/412 (and 400 for a failed precondition): someone else wrote first → read, merge, write again.
  if(r.status===409||r.status===412||r.status===400&&acct.rev)return "conflict";
@@ -5983,7 +5996,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="208";
+const RELEASE_VERSION="209";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

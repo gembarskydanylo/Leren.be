@@ -88,9 +88,9 @@
 - Правила розгортає `.github/workflows/deploy-firestore-rules.yml` після злиття в `main` (тільки якщо живі правила збігаються з попередньою версією в репозиторії).
 
 **Що лишається зробити вручну:**
-- **Firebase → App Check** (захист черги модерації від спаму-ботів; не терміново: навантаження на Firestore — десятки операцій на день при безкоштовному ліміті 50 000):
-  1. Google Cloud → Security → reCAPTCHA → Create key (Website, домени `lerenbe.com`, `www.lerenbe.com`).
-  2. Firebase → App Check → Apps → вебзастосунок → reCAPTCHA Enterprise → цей ключ сайту.
-  3. Ключ сайту (не секретний) — у код: `initializeAppCheck` у `app.js` і `reviews.js`.
-  4. Лише після деплою коду й кількох днів (частка «verified» у графіку App Check) — Firestore → **Enforce**. Раніше не можна: зламаються синхронізація, нагадування й відгуки.
+- **Firebase → App Check** (reCAPTCHA Enterprise / Fraud Defense, ключ сайту `6Lct5RYuAAAAABhPFLfNjJzc-QTy4hleZyGPAQHV` — не секретний):
+  1. ✅ (8.11.2026) Ключ створено, сайт зареєстровано в App Check (TTL токена 1 год).
+  2. ✅ (v209) Код: `appCheckHeaders()` в `app.js` додає `X-Firebase-AppCheck` до всіх запитів у Firestore (REST); `reviews.js` — `initializeAppCheck`. Лише на lerenbe.com; якщо токена немає за 5 с, запит іде без нього (`tests/appcheck-browser.cjs`).
+  3. **Cloudflare → Rules → Transform Rules → «Security headers» → Content-Security-Policy:** додати `https://www.google.com` у `script-src`, `connect-src` і `frame-src` (так само, як у `tests/csp-browser.cjs`). Без цього reCAPTCHA блокується, токенів не буде.
+  4. Через кілька днів після п. 3: Firebase → App Check → **APIs** → Cloud Firestore: якщо в графіку майже всі запити «Verified» — **Enforce**. Раніше не можна: зламаються синхронізація, нагадування й відгуки.
 - Окремий службовий акаунт для правил **не потрібен**: `FIREBASE_SA` (firebase-adminsdk) через Admin SDK і так має повний доступ до даних в обхід правил, тож забрати в нього право змінювати правила майже нічого не дає. Важливо лише, що ключ лежить тільки в секретах GitHub.
