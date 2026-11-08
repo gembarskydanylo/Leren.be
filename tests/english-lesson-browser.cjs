@@ -23,7 +23,9 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    const btns=await page.locator('.cp-preview button').evaluateAll(b=>b.map(x=>x.dataset.course));assert.deepEqual(btns,['en','fr','de'],'English, French, German in preview');
    const dutchBefore=await page.evaluate(()=>localStorage.getItem('leren_path_v1'));
    await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-stage .cp-lessons');
-   assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.1/);assert.equal(await page.locator('.cp-lessons li').count(),6,'6 lessons in chapter 1');
+   assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.1/);assert.equal(await page.locator('.cp-card').count(),6,'6 chapters');assert.equal(await page.locator('.cp-card').first().locator('.cp-lessons li').count(),6,'6 lessons in chapter 1');assert.equal(await page.locator('.cp-lessons li').count(),36,'36 lessons in English 1.1');
+   const lay=await page.evaluate(()=>({btn:document.querySelector('.cp-stage .cp-primary').getBoundingClientRect().bottom,open:[...document.querySelectorAll('details.cp-card')].filter(d=>d.open).map(d=>d.dataset.chapter)}));
+   assert(lay.btn<=844,'start button on the first screen: '+lay.btn);assert.deepEqual(lay.open,['en_hello'],'only the current chapter is open');
    await page.click('.cp-stage .cp-primary');
    const tr=id=>page.evaluate(id=>{for(const t of Object.values(LerenCourseData.en.data))for(const w of t.items)if(w.id===id)return {en:w.en,uk:w.uk};return null},id);
    // study: five cards, the rule on the first one
