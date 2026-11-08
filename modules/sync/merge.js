@@ -116,7 +116,11 @@
   leren_xp_v2:(b,l,c)=>xpMerge(l,c),leren_minutes_v2:(b,l,c)=>minutesMerge(l,c),leren_skills_v2:(b,l,c)=>skillsMerge(l,c),leren_slips_v2:(b,l,c)=>slipsMerge(l,c),
   poly_progress:wordsMerge,leren_path_v1:pathMerge,poly_streak:(b,l,c)=>streakMerge(l,c),leren_achievements_v1:(b,l,c)=>achievementsMerge(l,c),
   leren_week:(b,l,c)=>weekMerge(l,c),leren_exam11:examMerge,leren_exam12:examMerge};
+ // A course in another language keeps its results under the same key with a language suffix (leren_path_v1@en,
+ // modules/courses/registry.js); it merges and is checked by the rule of the base key. Dutch keys have no suffix.
+ const baseKey=k=>String(k).replace(/@[a-z]{2}$/,'');
  function mergeKey(k,b,l,c){
+  k=baseKey(k);
   if(k==='poly_score'){const v=Math.max(num(l),num(c));return String(Math.floor(v))}
   const rule=RULES[k];if(!rule)return undefined;
   if(l===undefined)return c;if(c===undefined)return l;if(l===c)return l;
@@ -158,7 +162,7 @@
    keys={poly_progress:JSON.stringify(data.store)};if(data.score!==undefined)keys.poly_score=String(Math.floor(data.score));
    if(data.companion!==undefined){if(!obj(data.companion))return {ok:false,error:'shape'};for(const k of ['leren_path_v1','leren_path_rewards_v1','leren_achievements_v1']){const v=data.companion[k];if(v===undefined||v===null)continue;if(!obj(v))return {ok:false,error:'value:'+k};keys[k]=JSON.stringify(v)}}
   }else return {ok:false,error:'shape'};
-  for(const [k,v] of Object.entries(keys)){const check=CHECK[k];if(!check)continue;const val=RAW.has(k)?v:parse(v);if(val===undefined||!check(val))return {ok:false,error:'value:'+k}}
+  for(const [k,v] of Object.entries(keys)){const check=CHECK[baseKey(k)];if(!check)continue;const val=RAW.has(baseKey(k))?v:parse(v);if(val===undefined||!check(val))return {ok:false,error:'value:'+k}}
   if(!Object.keys(keys).length)return {ok:false,error:'empty'};
   return {ok:true,keys,version:data.v||2};
  }
