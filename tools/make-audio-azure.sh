@@ -29,7 +29,7 @@ touch "$DONE"
 # so only new texts are recorded.
 [ -s "$DONE" ] || for f in "$OUT"/*.m4a; do [ -e "$f" ] && basename "$f" .m4a; done > "$DONE"
 # AAC/M4A: afconvert on a Mac, ffmpeg elsewhere (Linux, cloud).
-to_m4a(){ if command -v afconvert >/dev/null; then afconvert -f m4af -d aac -b 48000 "$1" "$2"; else ffmpeg -loglevel error -y -i "$1" -c:a aac -b:a 48k "$2"; fi; }
+to_m4a(){ if command -v afconvert >/dev/null; then afconvert -f m4af -d aac -b 48000 "$1" "$2"; else ffmpeg -nostdin -loglevel error -y -i "$1" -c:a aac -b:a 48k "$2" </dev/null; fi; }  # -nostdin: ffmpeg must not eat the text list the loop reads
 esc(){ sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' <<<"$1"; }
 total=$(wc -l < "$TEXTS" | tr -d ' '); n=0
 while IFS=$'\t' read -r h t; do
