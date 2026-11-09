@@ -1,4 +1,4 @@
-/* The home showcase links to lessons, games, the clock, AI chat and learner reviews. */
+/* The home showcase links to lessons, Learn Life, games, the clock, AI chat and learner reviews. */
 (() => {
  'use strict';
  const copy = {
@@ -13,6 +13,7 @@
   fr:{feedbackTag:'Paroles d’apprenants',feedbackTitle:'Ton expérience peut aider la prochaine personne',feedbackText:'Lis les avis des apprenants et partage ton expérience. Ton avis apparaîtra après vérification.',feedbackLink:'Lire et écrire un avis ↗',faqTag:'À savoir',faqTitle:'Questions fréquentes',faq:[['Faut-il s’inscrire ?','Non. Tu peux commencer sans compte. Sans connexion, ta progression reste sur cet appareil.'],['Combien de temps par jour ?','Commence par 5 à 10 minutes : une courte leçon ou quelques exercices suffisent pour avancer.'],['L’application fonctionne-t-elle hors ligne ?','Les leçons et les contenus téléchargés fonctionnent hors ligne après une première visite. Les conversations avec l’IA et la synchronisation nécessitent Internet.'],['Y a-t-il des publicités ?','Non, l’application ne contient actuellement aucune publicité.'],['Puis-je synchroniser mes appareils ?','Oui. Un compte Google ou e-mail facultatif synchronise ta progression entre tes appareils.']]},
   ar:{feedbackTag:'تجارب المتعلمين',feedbackTitle:'تجربتك قد تساعد المتعلم التالي',feedbackText:'اقرأ آراء المتعلمين الحقيقية وشارك تجربتك. سيظهر رأيك بعد المراجعة.',feedbackLink:'اقرأ الآراء واكتب رأيك ↗',faqTag:'معلومات سريعة',faqTitle:'أسئلة شائعة',faq:[['هل التسجيل مطلوب؟','لا. يمكنك البدء دون حساب. من دون تسجيل الدخول، يُحفظ تقدمك على هذا الجهاز فقط.'],['كم دقيقة أحتاج كل يوم؟','ابدأ بخمس إلى عشر دقائق: درس قصير أو بضعة تمارين تساعدك على الاستمرار.'],['هل يعمل التطبيق دون إنترنت؟','تعمل الدروس والمواد المحمّلة دون إنترنت بعد فتحها أول مرة. تحتاج محادثات الذكاء الاصطناعي والمزامنة إلى اتصال بالإنترنت.'],['هل توجد إعلانات؟','لا، لا توجد إعلانات في التطبيق حالياً.'],['هل يمكن مزامنة التقدم بين الأجهزة؟','نعم. يتيح حساب Google أو البريد الإلكتروني الاختياري مزامنة تقدمك بين أجهزتك.']]}
  };
+ const lifeCopy={tag:'Новий спосіб вчитися',title:'Learn Life · слова з твого дня',text:'Будуєш паркан із сусідом? Пройди справжню ситуацію: від розмітки й ям до хвіртки. Скажи потрібну фразу саме в той момент, коли вона знадобиться.',steps:['Розмітка','Копаємо','Хвіртка','Стовпчики'],cta:'Спробувати Learn Life →'};
  const gamesFor=level=>[['om','om-v111.webp'],['ks','ks-v111.webp'],['wb','wb-v114.webp'],level==='A2'?['kamer','kamer-v186.webp']:['kamer1','kamer1-v196.jpg']];
  const catAlt={uk:'Рудий котик із книжкою',en:'Orange cat with a book',fr:'Chat roux avec un livre',ar:'قطة برتقالية مع كتاب'};
  // A space between pieces keeps words apart for screen readers and copied text.
@@ -38,6 +39,12 @@
   const introArt=el('div','hs-intro-art'),cat=el('img','hs-intro-cat');cat.src='./img/home/hero-cat-v196.png';cat.alt=catAlt[lang]||catAlt.uk;cat.width=470;cat.height=470;cat.decoding='async';add(introArt,cat,el('span','hs-float hs-float-top','hallo!'),el('span','hs-float hs-float-bottom','goed bezig ✦'));add(intro,introCopy,introArt);
 
   const features=el('div','hs-features');
+  if(lang==='uk'){
+   const life=el('section','hs-life');
+   add(life,el('p','hs-section-kicker',lifeCopy.tag),el('h2','',lifeCopy.title),el('p','hs-section-intro',lifeCopy.text));
+   const lifeSteps=el('div','hs-life-steps');lifeCopy.steps.forEach((name,index)=>{const step=el('span','hs-life-step');step.append(el('b','',String(index+1).padStart(2,'0')),el('span','',name));lifeSteps.append(step)});life.append(lifeSteps);
+   const lifeLink=el('a','hs-life-link',lifeCopy.cta);lifeLink.href='./learn-life.html';life.append(lifeLink);features.append(life);
+  }
   const gameSection=el('section','hs-section hs-games');gameSection.id='hsGames';add(gameSection,el('p','hs-section-kicker',t.gamesTag),el('h2','',t.gamesTitle),el('p','hs-section-intro',t.gamesIntro));
   const grid=el('div','hs-game-grid');for(const game of pickGames(level,gameCards)){const card=button('',()=>onGame(game.id),'hs-game-card'),img=el('img','hs-game-art');img.src=game.art;img.alt=game.title;img.loading='lazy';img.width=600;img.height=400;const body=el('span','hs-game-copy');add(body,el('strong','',game.title),el('small','',game.text),el('span','hs-game-cta',t.gameGo));add(card,img,body);grid.appendChild(card)}gameSection.appendChild(grid);features.appendChild(gameSection);
 
