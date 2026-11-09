@@ -45,7 +45,7 @@
 | `CLOUDFLARE_API_TOKEN` | GitHub → Settings → Secrets and variables → Actions | Cloudflare → My Profile → API Tokens → шаблон «Edit Cloudflare Workers» |
 | `FIREBASE_SA` (service account JSON) | GitHub → Settings → Secrets and variables → Actions | Firebase → Project settings → Service accounts → Generate new key |
 | `VAPID_PUBLIC` / `VAPID_PRIVATE` | GitHub Actions secrets (публічний також у `index.html`) | Нову пару генерувати лише разом зі скиданням усіх підписок |
-| Ключ Azure Speech | Azure → leren-be-speech → Keys and Endpoint (лише вводиться в Термінал) | Regenerate Key1 |
+| Ключ Azure Speech | Azure → leren-be-speech → Keys and Endpoint (вводиться в Термінал або зберігається як мережевий секрет хмарного середовища Claude для `northeurope.tts.speech.microsoft.com`) | Regenerate Key1 (і оновити секрет у середовищі) |
 | Ключ підпису Android | Google Play App Signing + локальний keystore (див. `LOCAL-FILES.md`) | Втрата upload-ключа → запит на скидання в Play Console |
 
 ## Як оновлювати
