@@ -23,7 +23,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    const btns=await page.locator('.cp-preview button').evaluateAll(b=>b.map(x=>x.dataset.course));assert.deepEqual(btns,['en','fr','de'],'English, French, German in preview');
    const dutchBefore=await page.evaluate(()=>localStorage.getItem('leren_path_v1'));
    await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-stage .cp-lessons');
-   assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.1/);assert.equal(await page.locator('.cp-card').count(),6,'6 chapters');assert.equal(await page.locator('.cp-card').first().locator('.cp-lessons li').count(),6,'6 lessons in chapter 1');assert.equal(await page.locator('.cp-lessons li').count(),36,'36 lessons in English 1.1');
+   assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.1/);assert.equal(await page.locator('.cp-card').count(),12,'6 chapters per level');assert.deepEqual(await page.locator('.cp-level').allTextContents(),['1.1 · Breakthrough (A1)','1.2 · Waystage (A2)'],'level headings');assert.equal(await page.locator('.cp-card').first().locator('.cp-lessons li').count(),6,'6 lessons in chapter 1');assert.equal(await page.locator('.cp-lessons li').count(),72,'36 lessons in English 1.1 and 36 in 1.2');
    const lay=await page.evaluate(()=>({btn:document.querySelector('.cp-stage .cp-primary').getBoundingClientRect().bottom,open:[...document.querySelectorAll('details.cp-card')].filter(d=>d.open).map(d=>d.dataset.chapter)}));
    assert(lay.btn<=844,'start button on the first screen: '+lay.btn);assert.deepEqual(lay.open,['en_hello'],'only the current chapter is open');
    await page.click('.cp-stage .cp-primary');
@@ -52,6 +52,17 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    // French and German: coming soon
    for(const l of ['fr','de']){await page.click('.cp-close');await page.click(`.cp-preview [data-course="${l}"]`);await page.waitForSelector('.cp-soon');}
    assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: full lesson 5/5, saved in @en, Dutch untouched, fr/de soon')}
+  // 2a. English 1.1 finished: the course moves on to 1.2 (title, open chapter, first 1.2 lesson), 1.1 results kept.
+  {const {ctx,page,errors}=await open('?multilang=1');
+   await page.evaluate(()=>{const P=LerenCourseData.en,core=LerenLearningPath,course=core.catalog(P.data,P.curriculum,{text:'en'}),m=core.create(course,localStorage,{key:'leren_path_v1@en'});
+    for(const l of course.lessons)if(l.level==='1.1'||course.chapters.find(c=>c.id===l.chapter).level==='1.1')m.state.completed[l.id]=5;m.state.started=true;m.save()});
+   await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-stage .cp-primary');
+   assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.2/,'title shows level 1.2');
+   assert.deepEqual(await page.evaluate(()=>[...document.querySelectorAll('details.cp-card')].filter(d=>d.open).map(d=>d.dataset.chapter)),['en_lastweek'],'first 1.2 chapter open');
+   assert.equal(await page.locator('.cp-lessons li.is-done').count(),36);await page.click('.cp-stage .cp-primary');
+   assert.equal(await page.locator('.cp-stage').getAttribute('data-card'),'en:was_home','first 1.2 card');
+   const st=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_path_v1@en')));assert.equal(st.course,'1.2');assert.equal(Object.keys(st.completed).length,36,'1.1 results kept');
+   assert.deepEqual(errors,[]);await ctx.close();report.push('1.1 done → 1.2 starts')}
   // 2b. A device whose voices do not include English: the study card warns that the pronunciation may be wrong.
   {const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
