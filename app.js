@@ -4138,7 +4138,7 @@ function docUrl(id){return "https://firestore.googleapis.com/v1/projects/"+PUSH_
 let pushAuthP=null;
 function pushToken(){
  if(!pushAuthP)pushAuthP=(async()=>{const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
-  const auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"push"));
+  const auth=b.getAuth(await fbApp(a,"push"));
   await auth.authStateReady();if(!auth.currentUser)await b.signInAnonymously(auth);return auth})();
  return pushAuthP.then(auth=>auth.currentUser.getIdToken().then(t=>({uid:auth.currentUser.uid,t}))).catch(e=>{pushAuthP=null;throw e});
 }
@@ -5670,12 +5670,20 @@ const FB_SDK="https://www.gstatic.com/firebasejs/10.12.2/";
 // write through the REST API. Loaded only on lerenbe.com and only when a Firestore request is about to be sent. Best effort:
 // if no token comes within 5 s (offline, blocked), the request goes without it, which is fine until Enforce is switched on.
 const APPCHECK_KEY="6Lct5RYuAAAAABhPFLfNjJzc-QTy4hleZyGPAQHV";
+const onLerenbe=()=>/(^|\.)lerenbe\.com$/.test(location.hostname);
+// Every named Firebase app gets its own App Check instance on lerenbe.com, so the Auth SDK (sign-in, token refresh) sends
+// the X-Firebase-AppCheck header too. Without it Firebase counts all Authentication requests as unverified.
+async function fbApp(a,name){
+ const app=a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},name);
+ if(!onLerenbe())return app;
+ try{const c=await import(FB_SDK+"firebase-app-check.js");
+  return Object.assign(app,{_ac:{c,ac:c.initializeAppCheck(app,{provider:new c.ReCaptchaEnterpriseProvider(APPCHECK_KEY),isTokenAutoRefreshEnabled:true})}})}
+ catch(e){return app}
+}
 let appCheckP=null;
 function appCheckHeaders(h){
- if(!/(^|\.)lerenbe\.com$/.test(location.hostname))return Promise.resolve(h);
- if(!appCheckP)appCheckP=Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-app-check.js")]).then(([a,c])=>{
-  const app=a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"appcheck");
-  return {c,ac:c.initializeAppCheck(app,{provider:new c.ReCaptchaEnterpriseProvider(APPCHECK_KEY),isTokenAutoRefreshEnabled:true})}}).catch(e=>{appCheckP=null;throw e});
+ if(!onLerenbe())return Promise.resolve(h);
+ if(!appCheckP)appCheckP=import(FB_SDK+"firebase-app.js").then(a=>fbApp(a,"appcheck")).then(app=>{if(!app._ac)throw new Error("App Check unavailable");return app._ac}).catch(e=>{appCheckP=null;throw e});
  const tok=appCheckP.then(({c,ac})=>c.getToken(ac,false)).then(r=>r.token);
  return Promise.race([tok,new Promise(r=>setTimeout(()=>r(""),5000))]).catch(()=>"").then(t=>t?{...h,"X-Firebase-AppCheck":t}:h);
 }
@@ -5748,7 +5756,7 @@ const acct={mod:null,auth:null,user:null,lastSnap:"",busy:false,rev:"",syncing:n
 async function acctLoad(){
  if(acct.mod)return acct.mod;
  const [a,b]=await Promise.all([import(FB_SDK+"firebase-app.js"),import(FB_SDK+"firebase-auth.js")]);
- acct.auth=b.getAuth(a.initializeApp({apiKey:PUSH_CONFIG.apiKey,authDomain:"leren-be.firebaseapp.com",projectId:PUSH_CONFIG.projectId,appId:"1:533895640416:web:770d52f1926e13a186da05"},"acct"));
+ acct.auth=b.getAuth(await fbApp(a,"acct"));
  b.onAuthStateChanged(acct.auth,u=>{acct.user=u;acctRender();if(u)syncPull().catch(()=>{})});
  acct.mod=b;return b;
 }
@@ -6025,7 +6033,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="216";
+const RELEASE_VERSION="217";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
