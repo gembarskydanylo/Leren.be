@@ -67,13 +67,13 @@
   en_jobsearch:{title:{uk:'Пошук роботи',en:'Looking for a job',fr:'Chercher un emploi',ar:'البحث عن عمل'},items:[
    c('looking_job',"I'm looking for a job.",'Я шукаю роботу.','Je cherche un emploi.','أبحث عن عمل.','Ik zoek werk.','🔎'),
    c('my_cv','my CV','моє резюме','mon CV','سيرتي الذاتية','mijn cv','📃'),
-   c('interview','I have a job interview.','У мене співбесіда.',"J'ai un entretien d'embauche.",'عندي مقابلة عمل.','Ik heb een sollicitatiegesprek.','🗣️'),
+   c('interview',"I've got a job interview.",'У мене співбесіда.',"J'ai un entretien d'embauche.",'عندي مقابلة عمل.','Ik heb een sollicitatiegesprek.','🗣️'),
    c('experience','I have five years of experience.','У мене п’ять років досвіду.',"J'ai cinq ans d'expérience.",'لديّ خبرة خمس سنوات.','Ik heb vijf jaar ervaring.','📈'),
    c('can_drive','I can drive.','Я вмію водити авто.','Je sais conduire.','أستطيع قيادة السيارة.','Ik kan met de auto rijden.','🚗'),
    c('speak_little','I speak a little English.','Я трохи говорю англійською.','Je parle un peu anglais.','أتكلم الإنجليزية قليلًا.','Ik spreek een beetje Engels.','💬'),
    c('when_start','When can you start?','Коли ви можете почати?','Quand pouvez-vous commencer ?','متى يمكنك أن تبدأ؟','Wanneer kunt u beginnen?','📆'),
    c('start_monday','I can start on Monday.','Я можу почати в понеділок.','Je peux commencer lundi.','أستطيع أن أبدأ يوم الاثنين.','Ik kan maandag beginnen.','✅'),
-   c('apply','I want to apply for this job.','Я хочу подати заявку на цю вакансію.','Je voudrais postuler pour ce poste.','أريد التقدّم لهذه الوظيفة.','Ik wil solliciteren voor deze job.','✉️'),
+   c('apply','I want to apply for this job.','Я хочу подати заявку на цю вакансію.','Je voudrais postuler à ce poste.','أريد التقدّم لهذه الوظيفة.','Ik wil solliciteren voor deze job.','✉️'),
    c('job_advert','a job advert','оголошення про вакансію',"une offre d'emploi",'إعلان وظيفة','een vacature','📰')]},
 
   en_body:{title:{uk:'Тіло',en:'The body',fr:'Le corps',ar:'الجسم'},items:[
@@ -174,7 +174,7 @@
    c('when_meet','What time shall we meet?','О котрій зустрінемося?','On se retrouve à quelle heure ?','في أي ساعة نلتقي؟','Hoe laat spreken we af?','🕖'),
    c('meet_station',"Let's meet at the station.",'Зустріньмося на вокзалі.','Retrouvons-nous à la gare.','لنلتقِ في المحطة.','Laten we aan het station afspreken.','🚉'),
    c('birthday_party','a birthday party','святкування дня народження',"une fête d'anniversaire",'حفلة عيد ميلاد','een verjaardagsfeest','🎈'),
-   c('free_friday','Are you free on Friday?','Ти вільний(-на) в п’ятницю?','Tu es libre vendredi ?','هل أنت متفرغ يوم الجمعة؟','Ben je vrij op vrijdag?','📆'),
+   c('free_friday','Are you free on Friday?','Ти вільний(-на) в п’ятницю?','Tu es libre vendredi ?','هل أنت متفرغ يوم الجمعة؟','Ben je vrijdag vrij?','📆'),
    c('good_idea',"That's a good idea!",'Гарна ідея!',"C'est une bonne idée !",'فكرة جيدة!','Goed idee!','💡'),
    c('another_time','Maybe another time.','Може, іншим разом.','Une autre fois, peut-être.','ربما في وقت آخر.','Misschien een andere keer.','🔄')]},
 

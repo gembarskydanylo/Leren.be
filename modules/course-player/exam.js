@@ -60,8 +60,9 @@
   for(const it of E.speaking)out.push({...it,skill:'speaking'});return out;
  }
 
- function run({body,lang,ui='uk',exam:E,speak,storage,key,onBack,onResult}){
-  const C=COPY[ui]||COPY.uk,list=items(E),voice=hasVoice();
+ function run({body,lang,ui='uk',exam:E,speak,storage,key,onBack,onResult,canPlay}){
+  // Listening is scored when the device has a voice or every listening text has a recording (canPlay from the player).
+  const C=COPY[ui]||COPY.uk,list=items(E),voice=hasVoice()||(typeof canPlay==='function'&&E.listening.every(it=>canPlay(it.say)));
   let i=0,answers={},order=null,practice=null;
   const fill=(s,o)=>s.replace('{m}',o.m).replace('{p}',o.p).replace('{l}',o.l);
   const label=sk=>C[sk];

@@ -23,6 +23,8 @@ assert.equal(all.length,180);assert.deepEqual(dup(all.map(w=>w.id)),[]);assert.d
 const by=id=>all.find(w=>w.id==='fr:'+id);
 assert.equal(by('septante').fr,'septante');assert.equal(by('nonante').fr,'nonante');assert.equal(by('quatre_vingts').fr,'quatre-vingts');
 assert.match(by('gsm').fr,/GSM/);assert.equal(by('maison_communale').fr,'la maison communale');assert.match(P.grammar.fr_num.uk,/septante/);
+// Native review: natural equivalents.
+assert.equal(by('age').en,'elderly');assert.equal(by('fille_unique').ar,'أنا الطفلة الوحيدة في العائلة.');
 // Days are lower case in French.
 for(const id of ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'])assert.equal(by(id).fr,id);
 // Engine: 36 lessons of five, all level 1.1, ids separate from English.

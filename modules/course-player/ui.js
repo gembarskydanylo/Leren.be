@@ -26,7 +26,21 @@
  const storage={getItem:k=>{try{return localStorage.getItem(k)}catch{return null}},setItem:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}};
  const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
 
+ // Recorded audio (Azure neural voices, tools/make-audio-azure.sh): audio/<lang>/<hash>.m4a listed in audio/<lang>/manifest.json,
+ // same hash as app.js audioHash(). Anything not recorded, or a clip that fails to load, uses the device voice.
+ const REC={};let recEl=null;
+ function recLoad(lang){if(REC[lang])return REC[lang];const set=REC[lang]=new Set();
+  try{fetch('audio/'+lang+'/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))a.forEach(h=>set.add(h))}).catch(()=>{})}catch{}return set}
  function speak(text,lang){
+  const h=typeof globalThis.audioHash==='function'?globalThis.audioHash(text):null;
+  if(h&&REC[lang]?.has(h)){
+   try{globalThis.speechSynthesis?.cancel()}catch{}try{recEl?.pause()}catch{}
+   try{const a=new Audio('audio/'+lang+'/'+h+'.m4a');recEl=a;a.preservesPitch=true;a.playbackRate=.9;a.onerror=()=>{REC[lang].delete(h);tts(text,lang)};
+    const p=a.play();if(p&&p.catch)p.catch(()=>{});globalThis.__cpSaid=(globalThis.__cpSaid||[]).concat(text);globalThis.__cpRecorded=(globalThis.__cpRecorded||[]).concat(h);return true}catch{}
+  }
+  return tts(text,lang);
+ }
+ function tts(text,lang){
   try{const synth=globalThis.speechSynthesis;if(!synth||!globalThis.SpeechSynthesisUtterance)return false;
    const code=globalThis.LerenCourses?.VOICE?.[lang]||lang,u=new SpeechSynthesisUtterance(text);u.lang=code;u.rate=.9;
    const v=synth.getVoices().find(v=>v.lang===code)||synth.getVoices().find(v=>v.lang&&v.lang.slice(0,2)===code.slice(0,2));if(v)u.voice=v;
@@ -43,6 +57,7 @@
   close.setAttribute('aria-label',C.close);head.append(title,close);const body=node('div','cp-body');stage.append(head,body);
   document.body.appendChild(stage);document.documentElement.classList.add('cp-open');
   const pack=globalThis.LerenCourseData?.[lang];
+  recLoad(lang);
   if(!pack){body.append(node('div','cp-soon-icon','🐱📚'),node('p','cp-soon',C.soon));return stage}
   const core=globalThis.LerenLearningPath,course=core.catalog(pack.data,pack.curriculum,{text:pack.text});
   const model=core.create(course,storage,{key:R.key('leren_path_v1',lang)});
@@ -67,7 +82,7 @@
    // One button per exam of this language (1.1, 1.2), in level order.
    const XU=globalThis.LerenCourseExamUI;
    for(const E of Object.values(globalThis.LerenCourseExams||{}).filter(e=>e.lang===lang).sort((a,b)=>a.level.localeCompare(b.level)))if(XU){const k=R.key('leren_course_exam_v1',lang),sm=XU.summary(storage,k,E.id),X=XU.COPY[ui]||XU.COPY.uk;
-    const b=button('📝 '+X.exam+' '+E.level+(sm?' · '+X.best+': '+sm.lastPct+'%':''),()=>XU.run({body,lang,ui,exam:E,speak,storage,key:k,onBack:home,
+    const b=button('📝 '+X.exam+' '+E.level+(sm?' · '+X.best+': '+sm.lastPct+'%':''),()=>XU.run({body,lang,ui,exam:E,speak,storage,key:k,onBack:home,canPlay:t=>typeof globalThis.audioHash==='function'&&!!REC[lang]?.has(globalThis.audioHash(t)),
      onResult:(id,best,pct)=>{try{return globalThis.LerenCourseRewards?.exam?.(lang,id,best)||0}catch{return 0}}}),'cp-btn cp-exam');b.dataset.exam=E.id;body.appendChild(b)}
    let shownLevel=null;
    for(const ch of course.chapters){
@@ -110,7 +125,7 @@
     const word=node('p','cp-word',target(w));word.lang=lang;word.dir='ltr';
     const say=button('🔊 '+C.sound,()=>speak(target(w),lang),'cp-btn cp-sound');
     body.append(art,word,node('p','cp-tr',tr(w)),say);
-    if(!voiceFor(lang))body.appendChild(node('p','cp-novoice',C.noVoice.replace('{n}',R.name(lang,ui).toLowerCase())));
+    if(!voiceFor(lang)&&!REC[lang]?.size)body.appendChild(node('p','cp-novoice',C.noVoice.replace('{n}',R.name(lang,ui).toLowerCase())));
     if(s.index===0&&pack.grammar?.[l.tab]){const rule=node('div','cp-rule');rule.append(node('strong','',C.rule+': '),node('span','',pack.grammar[l.tab][ui]||pack.grammar[l.tab].uk));body.appendChild(rule)}
     body.appendChild(button(C.next+' →',()=>{model.advance(w.id,true);lesson()},'cp-btn cp-primary'));
     setTimeout(()=>{if(say.isConnected)speak(target(w),lang)},150);return;

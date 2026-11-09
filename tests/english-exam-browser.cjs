@@ -12,8 +12,10 @@ const TYPED12={w5:'was',w6:'bought',w7:"I've got a headache.",w8:'Would you like
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html?multilang=1';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
- const open=async({voice=true,exam='en11'}={})=>{const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];
+ const open=async({voice=true,exam='en11',recorded=null}={})=>{const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
+  // recorded: null = no recordings (manifest 404); an array of texts = those texts are recorded.
+  await ctx.route('**/audio/en/manifest.json',async r=>{if(!recorded)return r.fulfill({status:404,body:''});const hs=await page.evaluate(t=>t.map(x=>audioHash(x)),recorded);r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(hs)})});
   await page.addInitScript(([r,v])=>{if(!v){try{delete window.speechSynthesis;delete Window.prototype.speechSynthesis;delete window.SpeechSynthesisUtterance}catch(e){}} // like a browser without speech: the API does not exist
    if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,val] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,val)},[release,voice]);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});
@@ -63,6 +65,11 @@ const TYPED12={w5:'was',w6:'bought',w7:"I've got a headache.",w8:'Would you like
    while(await page.locator('.ex-result').count()===0){if(await page.locator('.ex-note',{hasText:'немає англійського голосу'}).count()){await page.locator('.cp-primary').click()}else await answer(page,false);n++;assert(n<40)}
    const li=await page.locator('.ex-skills li[data-skill="listening"] strong').textContent();assert.equal(li,'не оцінено');assert.equal(await page.locator('.cp-score').textContent(),'100%','score from reading + writing only');
    assert.deepEqual(errors,[]);await ctx.close();report.push('no voice: listening not scored')}
+  // No device voice, but every listening text is recorded: listening is scored.
+  {const texts=await (async()=>{const vm=require('node:vm'),c=vm.createContext({});vm.runInContext(fs.readFileSync(path.join(__dirname,'..','modules/courses/en-exam.js'),'utf8'),c);return c.LerenCourseExams.en11.listening.map(i=>i.say)})();
+   const {ctx,page,errors}=await open({voice:false,recorded:texts});await page.click('.ex-intro ~ .cp-primary');let n=0;
+   while(await page.locator('.ex-result').count()===0){await answer(page,false);n++;assert(n<40)}
+   assert.equal(await page.locator('.ex-skills li[data-skill="listening"] strong').textContent(),'8 / 8','listening scored from recordings');assert.deepEqual(errors,[]);await ctx.close();report.push('no voice + recordings: listening scored')}
   console.log('PASS: English 1.1 and 1.2 exams on a phone — '+report.join('; '));
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

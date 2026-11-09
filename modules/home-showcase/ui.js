@@ -42,7 +42,7 @@
   if(lang==='uk'){
    const life=el('section','hs-life');
    add(life,el('p','hs-section-kicker',lifeCopy.tag),el('h2','',lifeCopy.title),el('p','hs-section-intro',lifeCopy.text));
-   const lifeSteps=el('div','hs-life-steps');lifeCopy.steps.forEach((name,index)=>{const step=el('span','hs-life-step');step.append(el('b','',String(index+1).padStart(2,'0')),el('span','',name));lifeSteps.append(step)});life.append(lifeSteps);
+   const lifeSteps=el('div','hs-life-steps');lifeCopy.steps.forEach((name,index)=>{const step=el('span','hs-life-step');step.append(el('b','',String(index+1).padStart(2,'0')),el('span','',name));lifeSteps.append(step)});life.append(lifeSteps,' ');
    const lifeLink=el('a','hs-life-link',lifeCopy.cta);lifeLink.href='./learn-life.html';life.append(lifeLink);features.append(life);
   }
   const gameSection=el('section','hs-section hs-games');gameSection.id='hsGames';add(gameSection,el('p','hs-section-kicker',t.gamesTag),el('h2','',t.gamesTitle),el('p','hs-section-intro',t.gamesIntro));
