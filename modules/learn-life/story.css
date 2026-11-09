@@ -54,3 +54,12 @@ body{margin:0;background:var(--ls-bg);color:var(--ls-ink);font:16px/1.45 system-
 .ls-tile{font:inherit;font-weight:700;padding:10px 14px;border-radius:12px;border:1px solid var(--ls-line);background:var(--ls-card);color:var(--ls-ink);cursor:pointer;min-height:44px}.ls-tile:disabled{opacity:.35}
 .ls-end{text-align:center}.ls-score{font-size:28px;font-weight:900;margin:4px 0}.ls-gain{font-size:22px;font-weight:900;color:var(--ls-orange2);margin:0}.ls-muted{color:var(--ls-ink2)}.ls-finale{font-weight:700}
 @media (max-width:420px){.ls-mode{margin-left:0;width:100%}.ls-mode button{flex:1}}
+a.ls-btn{display:block;text-align:center;text-decoration:none;box-sizing:border-box}
+.ls-person.is-met{border-color:var(--ls-ok)}
+.ls-skills .ls-h{font-size:16px}.ls-skill{display:grid;grid-template-columns:1fr 90px auto;align-items:center;gap:10px;padding:5px 0;text-align:left}
+.ls-skill-l{font-size:14px}.ls-bar{height:10px;border-radius:6px;background:var(--ls-line);overflow:hidden}.ls-fill{display:block;height:100%;background:var(--ls-ok)}
+.ls-small{font-size:13px;margin:8px 0 0}.ls-end .ls-skills{margin-top:12px}
+.ls-mode button{padding:6px 8px}
+.ls-skill{grid-template-columns:minmax(0,1fr) 90px 48px}.ls-skill b{text-align:right}
+.ls-mode button{white-space:nowrap}
+@media (max-width:420px){.ls-mode button{font-size:12px;padding:6px 4px}}

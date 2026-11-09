@@ -27,9 +27,25 @@ export const firstDay = {
     {nl: 'Kunt u dat herhalen, alstublieft?', uk: 'Можете повторити, будь ласка?', repeat: true}]},
    {type: 'line', who: 'annick', nl: 'Was de reis goed?', uk: 'Добре доїхала?'},
    {type: 'reply', prompt: 'Скажи, що так, але ти трохи втомилася.', options: [
-    {nl: 'Ja, maar ik ben een beetje moe.', uk: 'Так, але я трохи втомилася.', ok: true},
+    {nl: 'Ja, maar ik ben een beetje moe.', uk: 'Так, але я трохи втомилася.', ok: true, react: {who: 'annick', nl: 'Dat begrijp ik. We gaan snel naar huis.', uk: 'Розумію. Швидко поїдемо додому.'}},
+    {nl: 'Ja, de reis was goed, dank je.', uk: 'Так, поїздка була добра, дякую.', ok: true, react: {who: 'annick', nl: 'Fijn om te horen!', uk: 'Приємно чути!'}},
     {nl: 'Ik ben dertig jaar.', uk: 'Мені тридцять років.', why: 'Це про вік. Moe — втомлений(-а).'},
-    {nl: 'Kun je wat trager spreken?', uk: 'Можеш говорити трохи повільніше?', repeat: true}]}]},
+    {nl: 'Kun je wat trager spreken?', uk: 'Можеш говорити трохи повільніше?', repeat: true}]},
+   {type: 'line', who: 'annick', nl: 'Heb je al een ticket voor de tram?', uk: 'У тебе вже є квиток на трамвай?'},
+   {type: 'reply', prompt: 'Що відповіси? Підходить кілька відповідей — історія піде по-різному.', explain: 'Ticket — квиток. Анік питає, чи є в тебе квиток на трамвай.', options: [
+    {nl: 'Ja, ik heb al een ticket.', uk: 'Так, у мене вже є квиток.', ok: true, set: {ticket: 'had'}, react: {who: 'annick', nl: 'Top! Dan gaan we meteen naar de tram.', uk: 'Чудово! Тоді одразу йдемо до трамвая.'}},
+    {nl: 'Nee, waar kan ik een ticket kopen?', uk: 'Ні, де я можу купити квиток?', ok: true, set: {ticket: 'buy'}, react: {who: 'annick', nl: 'Aan de automaat daar. Kom, ik toon het je.', uk: 'В автоматі он там. Ходімо, я покажу.'}},
+    {nl: 'Sorry, ik begrijp het niet.', uk: 'Вибач, я не розумію.', repeat: true},
+    {nl: 'Ja, ik ben moe.', uk: 'Так, я втомилася.', why: 'Питання про квиток (ticket). Ja, ik heb al een ticket — або Nee, waar kan ik een ticket kopen?'}]}]},
+
+  {id: 'machine', icon: '🎫', title: 'Квиток в автоматі', if: {ticket: 'buy'}, steps: [
+   {type: 'listen', who: 'annick', nl: 'Kies hier: één rit. Dat kost drie euro.', uk: 'Вибери тут: одна поїздка. Це коштує три євро.',
+    q: 'Що вибрати й скільки це коштує?', options: ['одна поїздка, €3', 'денний квиток, €3', 'одна поїздка, €13'], answer: 0, why: 'één rit — одна поїздка; drie euro — три євро (dertien = 13).'},
+   {type: 'reply', prompt: 'Запитай, чи можна заплатити карткою.', options: [
+    {nl: 'Kan ik met de kaart betalen?', uk: 'Можна заплатити карткою?', ok: true, react: {who: 'annick', nl: 'Ja, met Bancontact. Hou je kaart hier.', uk: 'Так, Bancontact. Прикладай картку сюди.'}},
+    {nl: 'Hoe laat is het?', uk: 'Котра година?', why: 'Ти питаєш про оплату: Kan ik met de kaart betalen?'},
+    {nl: 'Kun je dat herhalen?', uk: 'Можеш повторити?', repeat: true}]},
+   {type: 'say', nl: 'Eén rit, alstublieft.', uk: 'Одну поїздку, будь ласка.', tip: 'één rit — одна поїздка; alstublieft — будь ласка (ввічливо).'}]},
 
   {id: 'meet', icon: '🤝', title: 'Знайомимося', steps: [
    {type: 'line', who: 'annick', nl: 'Waar kom je vandaan?', uk: 'Звідки ти?'},
@@ -46,13 +62,10 @@ export const firstDay = {
     q: 'На що ви сідаєте?', options: ['🚋 трамвай 1', '🚋 трамвай 4', '🚌 автобус 1'], answer: 0, why: 'tram 1 — трамвай номер один; richting — напрямок (кінцева зупинка).'},
    {type: 'listen', who: 'annick', nl: 'We stappen uit aan de Korenmarkt.', uk: 'Ми виходимо на Коренмаркт.',
     q: 'Де ви виходите?', options: ['Korenmarkt', 'Evergem', 'біля вокзалу'], answer: 0, why: 'uitstappen — виходити. Evergem — лише напрямок трамвая.'},
-   {type: 'line', who: 'annick', nl: 'Heb je een ticket?', uk: 'У тебе є квиток?'},
-   {type: 'reply', prompt: 'Квитка немає. Запитай, де його купити.', options: [
-    {nl: 'Nee, waar koop ik een ticket?', uk: 'Ні, де мені купити квиток?', ok: true},
-    {nl: 'Ja, het is twee uur.', uk: 'Так, зараз друга година.', why: 'Це про час. Waar koop ik…? — Де мені купити…?'},
-    {nl: 'Kun je dat herhalen?', uk: 'Можеш повторити?', repeat: true}]},
-   {type: 'listen', who: 'annick', nl: 'Met de app van De Lijn, of aan de automaat.', uk: 'У застосунку De Lijn або в автоматі.',
-    q: 'Де можна купити квиток?', options: ['у застосунку або автоматі', 'лише у водія', 'у супермаркеті'], answer: 0, why: 'De Lijn — фламандський перевізник автобусів і трамваїв; de automaat — автомат.'}]},
+   {type: 'line', who: 'annick', nl: 'Vergeet niet je ticket te scannen.', uk: 'Не забудь відсканувати квиток.', if: {ticket: 'had'}},
+   {type: 'line', who: 'annick', nl: 'Scan je nieuwe ticket hier, bij de deur.', uk: 'Відскануй свій новий квиток тут, біля дверей.', if: {ticket: 'buy'}},
+   {type: 'listen', who: 'annick', nl: 'De volgende keer kan je ook de app van De Lijn gebruiken.', uk: 'Наступного разу можеш також скористатися застосунком De Lijn.',
+    q: 'Що ще можна використати для квитка?', options: ['застосунок De Lijn', 'паспорт', 'ключ від квартири'], answer: 0, why: 'De Lijn — фламандський перевізник автобусів і трамваїв; de app — застосунок.'}]},
 
   {id: 'flat', icon: '🔑', title: 'Твоя квартира', steps: [
    {type: 'line', who: 'annick', nl: 'Dit is je appartement. Kijk maar rond!', uk: 'Це твоя квартира. Роззирнися!'},
@@ -78,7 +91,13 @@ export const firstDay = {
    {type: 'reply', prompt: 'Подякуй Янові.', options: [
     {nl: 'Dank u wel, dat is vriendelijk!', uk: 'Дуже дякую, це мило!', ok: true},
     {nl: 'Tot morgen in de les.', uk: 'До завтра на уроці.', why: 'Jan не твій вчитель. Dank u wel — ввічлива подяка.'},
-    {nl: 'Wat bedoelt u?', uk: 'Що ви маєте на увазі?', repeat: true}]}]},
+    {nl: 'Wat bedoelt u?', uk: 'Що ви маєте на увазі?', repeat: true}]},
+   {type: 'line', who: 'jan', nl: 'Komt u zaterdag een kopje koffie drinken?', uk: 'Прийдете в суботу на чашку кави?'},
+   {type: 'reply', prompt: 'Jan запрошує тебе на каву. Обидві ввічливі відповіді підходять — Jan запам’ятає.', options: [
+    {nl: 'Graag! Hoe laat?', uk: 'Залюбки! О котрій?', ok: true, set: {coffee: 'yes'}, react: {who: 'jan', nl: 'Om drie uur. Tot zaterdag!', uk: 'О третій. До суботи!'}},
+    {nl: 'Dat is lief, maar ik drink geen koffie.', uk: 'Це мило, але я не п’ю каву.', ok: true, set: {coffee: 'tea'}, react: {who: 'jan', nl: 'Geen probleem, ik heb ook thee!', uk: 'Не проблема, у мене є й чай!'}},
+    {nl: 'Sorry, kunt u dat herhalen?', uk: 'Вибачте, можете повторити?', repeat: true},
+    {nl: 'Nee, ik woon op nummer twaalf.', uk: 'Ні, я живу в номері дванадцять.', why: 'Номер 12 — це дім Яна. Він запрошує на каву: Graag! — або ввічливо відмовитися.'}]}]},
 
   {id: 'tomorrow', icon: '🏛️', title: 'План на завтра', steps: [
    {type: 'listen', who: 'annick', nl: 'Morgen gaan we samen naar het gemeentehuis. Om tien uur, oké?', uk: 'Завтра ми разом підемо до комуни (gemeentehuis). О десятій, добре?',

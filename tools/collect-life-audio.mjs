@@ -8,7 +8,7 @@ const hash=t=>{let h=0x811c9dc5;const s=norm(t);for(let i=0;i<s.length;i++){h^=s
 const T=new Set(),add=t=>{t=String(t||'').trim();if(t)T.add(t)};
 for(const story of STORIES)for(const sc of story.scenes)for(const st of sc.steps){
  add(st.nl);(st.options||[]).forEach(o=>add(o.nl));
- if(st.type==='find')for(const it of st.items){add(it.nl);if(st.ask.includes(it.id))add('Waar is '+it.nl+'?')}}
+ if(st.type==='find')for(const it of st.items){add(it.nl);if(st.ask.includes(it.id))add(it.q||'Waar is '+it.nl+'?')}}
 const rows=new Map([...T].map(t=>[hash(t),t]));
 fs.writeFileSync('audio/nl/life-texts.tsv',[...rows].map(([h,t])=>h+'\t'+t).join('\n')+'\n');
 console.log('LIFE texts: '+rows.size);
