@@ -67,6 +67,7 @@ h1 em{font-style:normal;color:var(--yellow)}
 .ll-speak-answer{font-size:19px;font-weight:1000;color:var(--forest);min-height:29px}.ll-speak-feedback{min-height:24px;color:var(--muted);margin:8px 0}
 .ll-speak .ll-primary{box-shadow:none;background:var(--forest);color:#fff;width:100%}
 .ll-bank{margin-top:24px}.ll-bank-head{align-items:center}.ll-phrase-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ll-search-label{display:block;margin:0 0 6px;font-weight:1000}.ll-bank input{width:100%;min-height:49px;margin:0 0 18px;padding:9px 12px;border:2px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
 .ll-phrase{display:flex;align-items:start;gap:8px;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;text-align:left;min-width:0}
 .ll-phrase-main{flex:1;min-width:0;border:0;background:none;text-align:left;color:var(--ink)}
 .ll-phrase-main strong{display:block;color:var(--forest);font-size:15px}.ll-phrase-main small{display:block;color:var(--muted);font-size:13px;font-weight:700}

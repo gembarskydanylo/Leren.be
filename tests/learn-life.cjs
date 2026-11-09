@@ -6,6 +6,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const ids=fence.phrases.map(p=>p.id),tasks=fence.stages.flatMap(s=>s.tasks);
  assert.equal(fence.stages.length,4);
  assert.equal(tasks.length,20);
+ for(const phrase of ['hammer-please','hold-gate','block-under','old-concrete','water-break','deep-enough','repeat-please'])assert(ids.includes(phrase),phrase+' covers the real workday');
  assert.equal(new Set(ids).size,ids.length);
  assert.equal(new Set(tasks.map(t=>t.id)).size,tasks.length);
  for(const task of tasks){
@@ -40,7 +41,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  for(const stage of fence.stages){assert.equal(session.complete(stage.id),stage.tasks.length);assert.equal(session.next(stage.id),null)}
  assert.equal(createLifeSession(fence,{getItem(){return '{broken'},setItem(){throw Error('storage blocked')}}).done(),0);
  const html=fs.readFileSync('learn-life.html','utf8'),sw=fs.readFileSync('sw.js','utf8'),home=fs.readFileSync('modules/home-showcase/ui.js','utf8');
- assert(html.includes('id="quick"')&&html.includes('id="speak"')&&html.includes('id="stageNav"'));
+ assert(html.includes('id="quick"')&&html.includes('id="speak"')&&html.includes('id="stageNav"')&&html.includes('id="phraseSearch"'));
  for(const path of ['./learn-life.html','./modules/learn-life/style.css?v=1','./modules/learn-life/data.mjs','./modules/learn-life/engine.mjs','./modules/learn-life/ui.mjs?v=1'])assert(sw.includes('"'+path+'"'),path+' cached for offline use');
  assert(home.includes("lifeLink.href='./learn-life.html'"));
  console.log('PASS: Learn Life four-stage scenario, 20 contextual decisions, phrase builder, wrong-first speaking queue, saved progress, blocked storage and offline assets');

@@ -49,7 +49,7 @@ function renderObjects(stage){
 }
 function renderObjectInfo(){
  const object=objectById(objectId),box=$('objectInfo');box.replaceChildren();
- box.append(el('span','',object.icon),el('strong','',object.nl),el('span','',object.uk));
+ const dutch=el('strong','',object.nl);dutch.lang='nl-BE';box.append(el('span','',object.icon),dutch,el('span','',object.uk));
  const sound=el('button','','🔊');sound.type='button';sound.setAttribute('aria-label','Послухати: '+object.nl);sound.addEventListener('click',()=>hear(object.nl,sound));box.append(sound);
 }
 function renderTask(){
@@ -67,7 +67,7 @@ function renderTask(){
  const choices=el('div','ll-choice-list');
  task.choices.forEach((id,index)=>{
   const phrase=phraseById(id),button=el('button','ll-choice');button.type='button';
-  button.append(el('span','ll-choice-code',String.fromCharCode(65+index)),el('span','',phrase.nl));
+  const dutch=el('span','',phrase.nl);dutch.lang='nl-BE';button.append(el('span','ll-choice-code',String.fromCharCode(65+index)),dutch);
   button.addEventListener('click',()=>{
    const result=session.answer(task.id,id);
    if(!result)return;
@@ -124,7 +124,7 @@ function renderSpeak(){
 }
 function revealSpeak(){
  const phrase=phraseById(speakId);
- $('speakAnswer').replaceChildren(el('strong','',phrase.nl));
+ const dutch=el('strong','',phrase.nl);dutch.lang='nl-BE';$('speakAnswer').replaceChildren(dutch);
  const sound=el('button','ll-sound','🔊 Послухати');sound.type='button';sound.addEventListener('click',()=>hear(phrase.nl,sound));$('speakAnswer').append(' ',sound);
  const attempt=$('speakInput').value.trim().toLocaleLowerCase('nl-BE').replace(/[.,!?;:]+/g,'').replace(/\s+/g,' ');
  const target=phrase.nl.toLocaleLowerCase('nl-BE').replace(/[.,!?;:]+/g,'').replace(/\s+/g,' ');
@@ -148,12 +148,13 @@ function setupSpeaking(){
 }
 function renderBank(){
  const list=$('phraseList');list.replaceChildren();
- const phrases=onlyFavourites?fence.phrases.filter(phrase=>session.state.favourites.includes(phrase.id)):fence.phrases;
- if(!phrases.length){list.append(el('p','','Тут з’являться фрази, які ти позначиш зірочкою.'));return}
+ const query=$('phraseSearch').value.trim().toLocaleLowerCase();
+ const phrases=fence.phrases.filter(phrase=>(!onlyFavourites||session.state.favourites.includes(phrase.id))&&(!query||(phrase.nl+' '+phrase.uk).toLocaleLowerCase().includes(query)));
+ if(!phrases.length){list.append(el('p','',query?'За цим запитом фраз немає. Спробуй інше слово.':'Тут з’являться фрази, які ти позначиш зірочкою.'));return}
  phrases.forEach(phrase=>{
   const row=el('div','ll-phrase');
   const main=el('button','ll-phrase-main');main.type='button';main.setAttribute('aria-label','Послухати: '+phrase.nl);
-  main.append(el('strong','',phrase.nl),el('small','',phrase.uk));
+  const dutch=el('strong','',phrase.nl);dutch.lang='nl-BE';main.append(dutch,el('small','',phrase.uk));
   main.addEventListener('click',()=>hear(phrase.nl,main));
   const star=el('button','ll-favourite',session.state.favourites.includes(phrase.id)?'★':'☆');star.type='button';star.setAttribute('aria-label',(session.state.favourites.includes(phrase.id)?'Прибрати із збережених: ':'Зберегти: ')+phrase.nl);
   star.addEventListener('click',()=>{session.favourite(phrase.id);renderBank()});
@@ -161,4 +162,5 @@ function renderBank(){
  });
 }
 $('favouritesOnly').addEventListener('click',()=>{onlyFavourites=!onlyFavourites;$('favouritesOnly').textContent=onlyFavourites?'★ Показати всі':'☆ Лише збережені';renderBank()});
+$('phraseSearch').addEventListener('input',renderBank);
 setupQuick();setupSpeaking();renderStage();renderSpeak();renderBank();

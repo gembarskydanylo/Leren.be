@@ -52,7 +52,12 @@ export const fence = {
   {id:'hammer-please',nl:'Geef me de hamer even aan.',uk:'Подай мені молоток, будь ласка.',note:'even пом’якшує коротке прохання.'},
   {id:'show-again',nl:'Kun je het nog eens laten zien?',uk:'Можеш показати ще раз?',note:'Корисна фраза, коли не встиг зрозуміти.'},
   {id:'wait',nl:'Wacht even, ik begrijp het niet.',uk:'Зачекай, я не зрозумів.',note:'Можна сказати в будь-який момент роботи.'},
-  {id:'water-break',nl:'Zullen we even wat water drinken?',uk:'Може, поп’ємо трохи води?',note:'Zullen we …? — пропозиція зробити щось разом.'}
+  {id:'water-break',nl:'Zullen we even wat water drinken?',uk:'Може, поп’ємо трохи води?',note:'Zullen we …? — пропозиція зробити щось разом.'},
+  {id:'deep-enough',nl:'Is dit diep genoeg?',uk:'Це достатньо глибоко?',note:'genoeg — достатньо.'},
+  {id:'move-left',nl:'Een beetje naar links, alsjeblieft.',uk:'Трохи лівіше, будь ласка.',note:'naar links — ліворуч.'},
+  {id:'move-right',nl:'Een beetje naar rechts, alsjeblieft.',uk:'Трохи правіше, будь ласка.',note:'naar rechts — праворуч.'},
+  {id:'repeat-please',nl:'Kun je dat herhalen, alsjeblieft?',uk:'Можеш повторити, будь ласка?',note:'herhalen — повторити.'},
+  {id:'slower-please',nl:'Kun je wat langzamer spreken?',uk:'Можеш говорити трохи повільніше?',note:'langzamer — повільніше.'}
  ],
  stages: [
   {id:'mark',number:'01',title:'Розмітка',intro:'Спочатку вимірюємо ділянку, ставимо кілочки й натягуємо шнур.',objectIds:['tape','cord','stake'],tasks:[
