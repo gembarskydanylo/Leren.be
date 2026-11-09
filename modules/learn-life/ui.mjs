@@ -1,4 +1,4 @@
-import {fence,phraseById,objectById,buildQuickPhrase} from './data.mjs';
+import {fence,phraseById,objectById,buildQuickPhrase,searchPhrases} from './data.mjs?v=2';
 import {createLifeSession} from './engine.mjs';
 
 const $=id=>document.getElementById(id);
@@ -148,8 +148,8 @@ function setupSpeaking(){
 }
 function renderBank(){
  const list=$('phraseList');list.replaceChildren();
- const query=$('phraseSearch').value.trim().toLocaleLowerCase();
- const phrases=fence.phrases.filter(phrase=>(!onlyFavourites||session.state.favourites.includes(phrase.id))&&(!query||(phrase.nl+' '+phrase.uk).toLocaleLowerCase().includes(query)));
+ const query=$('phraseSearch').value.trim();
+ const phrases=searchPhrases(fence.phrases,query).filter(phrase=>!onlyFavourites||session.state.favourites.includes(phrase.id));
  if(!phrases.length){list.append(el('p','',query?'За цим запитом фраз немає. Спробуй інше слово.':'Тут з’являться фрази, які ти позначиш зірочкою.'));return}
  phrases.forEach(phrase=>{
   const row=el('div','ll-phrase');

@@ -98,6 +98,15 @@ export const fence = {
 
 export const phraseById = id => fence.phrases.find(p=>p.id===id);
 export const objectById = id => fence.objects.find(o=>o.id===id);
+const searchTokens=text=>(text.toLocaleLowerCase().match(/[a-z0-9а-яіїєґ]+/gu)||[]).map(token=>token.length>=3?token.replace(/[аеєиіїоуюя]$/u,''):token);
+export function searchPhrases(phrases,query){
+ const terms=searchTokens(query);
+ if(!terms.length)return phrases;
+ return phrases.filter(phrase=>{
+  const words=searchTokens(phrase.nl+' '+phrase.uk);
+  return terms.every(term=>words.some(word=>word.includes(term)));
+ });
+}
 export function buildQuickPhrase(templateId,objectId){
  const template=fence.templates.find(x=>x.id===templateId),object=objectById(objectId);
  if(!template||!object)return null;

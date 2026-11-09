@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 
 (async()=>{
- const {fence,buildQuickPhrase}=await import('../modules/learn-life/data.mjs');
+ const {fence,buildQuickPhrase,searchPhrases}=await import('../modules/learn-life/data.mjs');
  const {createLifeSession}=await import('../modules/learn-life/engine.mjs');
  const ids=fence.phrases.map(p=>p.id),tasks=fence.stages.flatMap(s=>s.tasks);
  assert.equal(fence.stages.length,4);
@@ -17,6 +17,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  }
  for(const stage of fence.stages)assert(stage.objectIds.every(id=>fence.objects.some(o=>o.id===id)),stage.id+' objects exist');
  assert.deepEqual(buildQuickPhrase('hand','hammer'),{nl:'Kun je me de hamer even aangeven?',uk:'Можеш подати мені молоток?'});
+ assert.equal(searchPhrases(fence.phrases,'вода')[0]?.id,'water-break');
+ assert.equal(searchPhrases(fence.phrases,'лопата')[0]?.id,'give-shovel');
+ assert.equal(searchPhrases(fence.phrases,'waterpas')[0]?.id,'check-level');
  assert.equal(buildQuickPhrase('missing','hammer'),null);
  const data=new Map(),storage={getItem:key=>data.get(key)||null,setItem:(key,value)=>data.set(key,value)};
  let session=createLifeSession(fence,storage),first=tasks[0];
@@ -42,7 +45,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  assert.equal(createLifeSession(fence,{getItem(){return '{broken'},setItem(){throw Error('storage blocked')}}).done(),0);
  const html=fs.readFileSync('learn-life.html','utf8'),sw=fs.readFileSync('sw.js','utf8'),home=fs.readFileSync('modules/home-showcase/ui.js','utf8');
  assert(html.includes('id="quick"')&&html.includes('id="speak"')&&html.includes('id="stageNav"')&&html.includes('id="phraseSearch"'));
- for(const path of ['./learn-life.html','./modules/learn-life/style.css?v=1','./modules/learn-life/data.mjs','./modules/learn-life/engine.mjs','./modules/learn-life/ui.mjs?v=1'])assert(sw.includes('"'+path+'"'),path+' cached for offline use');
+ for(const path of ['./learn-life.html','./modules/learn-life/style.css?v=1','./modules/learn-life/data.mjs?v=2','./modules/learn-life/engine.mjs','./modules/learn-life/ui.mjs?v=2'])assert(sw.includes('"'+path+'"'),path+' cached for offline use');
  assert(home.includes("lifeLink.href='./learn-life.html'"));
  console.log('PASS: Learn Life four-stage scenario, 20 contextual decisions, phrase builder, wrong-first speaking queue, saved progress, blocked storage and offline assets');
 })().catch(error=>{console.error(error);process.exitCode=1});
