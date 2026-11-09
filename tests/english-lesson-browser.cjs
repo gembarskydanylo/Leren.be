@@ -1,6 +1,6 @@
 // First English lesson (English 1.1, chapter «Hello!») in the course player, on a phone: hidden without preview; with
 // ?multilang=1 the route home shows English / French / German; a whole lesson (study → listen → check → result) is
-// played; progress goes to leren_path_v1@en and the Dutch route is untouched; French and German say "coming soon".
+// played; progress goes to leren_path_v1@en and the Dutch route is untouched; German says "coming soon" (French has its own test).
 // Needs Playwright with Chromium; skipped otherwise. Run: node tests/english-lesson-browser.cjs
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),assert=require('node:assert/strict');
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
@@ -50,8 +50,8 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.click('.cp-close');await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-lessons');
    assert.equal(await page.locator('.cp-lessons li.is-done').count(),1);assert.match(await page.locator('.cp-stage .cp-primary').textContent(),/Продовжити/);
    // French and German: coming soon
-   for(const l of ['fr','de']){await page.click('.cp-close');await page.click(`.cp-preview [data-course="${l}"]`);await page.waitForSelector('.cp-soon');}
-   assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: full lesson 5/5, saved in @en, Dutch untouched, fr/de soon')}
+   for(const l of ['de']){await page.click('.cp-close');await page.click(`.cp-preview [data-course="${l}"]`);await page.waitForSelector('.cp-soon');}
+   assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: full lesson 5/5, saved in @en, Dutch untouched, de soon')}
   // 2a. English 1.1 finished: the course moves on to 1.2 (title, open chapter, first 1.2 lesson), 1.1 results kept.
   {const {ctx,page,errors}=await open('?multilang=1');
    await page.evaluate(()=>{const P=LerenCourseData.en,core=LerenLearningPath,course=core.catalog(P.data,P.curriculum,{text:'en'}),m=core.create(course,localStorage,{key:'leren_path_v1@en'});
@@ -69,7 +69,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.addInitScript(([r])=>{try{const s=window.speechSynthesis;if(s)s.getVoices=()=>[{lang:'uk-UA',name:'Lesya'}]}catch(e){}if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,v)},[release]);
    await page.goto(base+'?multilang=1');await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});
    await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-novoice');
-   assert.match(await page.locator('.cp-novoice').textContent(),/немає англійського голосу/);assert.deepEqual(errors,[]);await ctx.close();report.push('no English voice: warning')}
+   assert.match(await page.locator('.cp-novoice').textContent(),/немає голосу для цієї мови \(англійська\)/);assert.deepEqual(errors,[]);await ctx.close();report.push('no English voice: warning')}
   // 3. Arabic interface: right-to-left player, Arabic translations.
   {const {ctx,page,errors}=await open('?multilang=1','ar');await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');
    assert.equal(await page.locator('.cp-stage').getAttribute('dir'),'rtl');assert.equal(await page.locator('.cp-tr').first().textContent(),'مرحبًا!');assert.deepEqual(errors,[]);await ctx.close();report.push('ar: rtl')}

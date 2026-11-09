@@ -1,4 +1,4 @@
-/* Course player for the new languages (English first; French and German later). Same three steps as the Dutch route —
+/* Course player for the new languages (English and French; German later). Same three steps as the Dutch route —
    study, listen, check — on the same core (modules/learning-path/core.js), with this language's own progress key
    (LerenCourses.key('leren_path_v1', lang) → leren_path_v1@en). Opens as a full-screen layer above the app and never
    touches the Dutch route. Shown only in preview (lerenbe.com/?multilang=1) while the course status is "planned". */
@@ -7,7 +7,7 @@
  const COPY={
   uk:{preview:'Перегляд: інші мови',soon:'Курс готується. Скоро тут будуть уроки.',close:'Закрити',start:'Почати урок',resume:'Продовжити урок',lesson:'Урок',done:'пройдено',study:'Вивчи',listen:'Почуй',check:'Перевір',
    next:'Далі',listenQ:'Що ти почув(ла)?',checkQ:'Як це сказати?',right:'Правильно!',wrong:'Правильна відповідь:',stepDone:'Крок завершено!',nextStep:'Наступний крок',result:'Урок пройдено!',score:'Правильних відповідей',
-   nextLesson:'Наступний урок',back:'До курсу',allDone:'Розділ пройдено! Нові розділи — скоро.',rule:'Правило',sound:'Послухати',noVoice:'На цьому пристрої немає англійського голосу, тому вимова може звучати неточно. Додай англійський голос у налаштуваннях телефона (Мова → Синтез мовлення).'},
+   nextLesson:'Наступний урок',back:'До курсу',allDone:'Розділ пройдено! Нові розділи — скоро.',rule:'Правило',sound:'Послухати',noVoice:'На цьому пристрої немає голосу для цієї мови ({n}), тому вимова може звучати неточно. Додай його в налаштуваннях телефона (Мова → Синтез мовлення).'},
   en:{preview:'Preview: other languages',soon:'This course is being prepared. Lessons are coming soon.',close:'Close',start:'Start lesson',resume:'Continue lesson',lesson:'Lesson',done:'done',study:'Study',listen:'Listen',check:'Check',
    next:'Next',listenQ:'What did you hear?',checkQ:'How do you say it?',right:'Correct!',wrong:'The right answer:',stepDone:'Step complete!',nextStep:'Next step',result:'Lesson complete!',score:'Correct answers',
    nextLesson:'Next lesson',back:'Back to the course',allDone:'Chapter complete! New chapters are coming soon.',rule:'Rule',sound:'Listen',noVoice:'This device has no voice for this language, so the pronunciation may be wrong. Add one in your phone settings (Language → Text-to-speech).'},
@@ -46,7 +46,7 @@
   if(!pack){body.append(node('div','cp-soon-icon','🐱📚'),node('p','cp-soon',C.soon));return stage}
   const core=globalThis.LerenLearningPath,course=core.catalog(pack.data,pack.curriculum,{text:pack.text});
   const model=core.create(course,storage,{key:R.key('leren_path_v1',lang)});
-  const tr=w=>(ui==='en'?w.uk:(w[ui]||w.uk)),target=w=>w[pack.text];
+  const tr=w=>(ui===pack.text?w.uk:(w[ui]||w.uk)),target=w=>w[pack.text];
   const chapterName=ch=>pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl;
   let feedback=null;
   // The next lesson of the current level; when that level is finished, the first open lesson of the next level (1.1 → 1.2).
@@ -110,7 +110,7 @@
     const word=node('p','cp-word',target(w));word.lang=lang;word.dir='ltr';
     const say=button('🔊 '+C.sound,()=>speak(target(w),lang),'cp-btn cp-sound');
     body.append(art,word,node('p','cp-tr',tr(w)),say);
-    if(!voiceFor(lang))body.appendChild(node('p','cp-novoice',C.noVoice));
+    if(!voiceFor(lang))body.appendChild(node('p','cp-novoice',C.noVoice.replace('{n}',R.name(lang,ui).toLowerCase())));
     if(s.index===0&&pack.grammar?.[l.tab]){const rule=node('div','cp-rule');rule.append(node('strong','',C.rule+': '),node('span','',pack.grammar[l.tab][ui]||pack.grammar[l.tab].uk));body.appendChild(rule)}
     body.appendChild(button(C.next+' →',()=>{model.advance(w.id,true);lesson()},'cp-btn cp-primary'));
     setTimeout(()=>{if(say.isConnected)speak(target(w),lang)},150);return;
