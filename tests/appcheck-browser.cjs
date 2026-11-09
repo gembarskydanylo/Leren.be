@@ -8,7 +8,7 @@ let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Pla
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.json':'application/json','.woff':'font/woff','.webmanifest':'application/json'};
 const KEY=fs.readFileSync(path.join(root,'app.js'),'utf8').match(/const APPCHECK_KEY="([^"]+)"/)[1];
 const FAKE_APP='export function initializeApp(o,name){if(o.appId!=="1:533895640416:web:770d52f1926e13a186da05")throw Error("Firebase appId missing for "+name);return {o,name}}';
-const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k=k}}\nexport function initializeAppCheck(app,o){globalThis.__ac={app:app.name,key:o.provider.k,auto:o.isTokenAutoRefreshEnabled};return {}}\nexport async function getToken(){return {token:"tok-123"}}';
+const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k=k}}\nexport function initializeAppCheck(app,o){(globalThis.__ac=globalThis.__ac||[]).push({app:app.name,key:o.provider.k,auto:o.isTokenAutoRefreshEnabled});return {}}\nexport async function getToken(){return {token:"tok-123"}}';
 (async()=>{
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');return}
  try{
@@ -23,10 +23,12 @@ const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k
    await page.addInitScript(()=>{try{localStorage.setItem('leren_onboarding_language_v1','1');localStorage.setItem('poly_ui','uk')}catch(e){}});
    await page.goto('https://'+host+'/index.html');await page.waitForFunction(()=>typeof appCheckHeaders==='function');
    const t0=Date.now();const h=await page.evaluate(()=>appCheckHeaders({Authorization:'Bearer x'}));const ms=Date.now()-t0;
+   // The Auth apps (reminders and account sync) get App Check on the same Firebase app, so sign-in requests carry the token.
+   await page.evaluate(()=>import(FB_SDK+'firebase-app.js').then(a=>Promise.all([fbApp(a,'push'),fbApp(a,'acct')])));
    const ac=await page.evaluate(()=>globalThis.__ac||null);await ctx.close();return{h,ac,ms,errors}};
   const ok=await run('lerenbe.com');
   assert.deepEqual(ok.h,{Authorization:'Bearer x','X-Firebase-AppCheck':'tok-123'},'token header added');
-  assert.deepEqual(ok.ac,{app:'appcheck',key:KEY,auto:true},'reCAPTCHA Enterprise provider with the site key');
+  assert.deepEqual([...ok.ac].map(x=>({...x})),['appcheck','push','acct'].map(app=>({app,key:KEY,auto:true})),'reCAPTCHA Enterprise provider with the site key on every Firebase app');
   const www=await run('www.lerenbe.com');assert.equal(www.h['X-Firebase-AppCheck'],'tok-123','www too');
   const down=await run('lerenbe.com',{checkFails:true});
   assert.deepEqual(down.h,{Authorization:'Bearer x'},'App Check unavailable: request goes without the header');assert(down.ms<6000,'no long wait: '+down.ms);
@@ -34,7 +36,9 @@ const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k
   // reviews.js initializes App Check with the same key, only on lerenbe.com
   // Validate every Firebase app initialization, not just the App Check token header.
   const appSource=fs.readFileSync(path.join(root,'app.js'),'utf8');
-  for(const name of ['push','appcheck','acct'])assert(appSource.includes('appId:"1:533895640416:web:770d52f1926e13a186da05"},"'+name+'")'),'missing Firebase appId for '+name);
+  assert(appSource.includes('appId:"1:533895640416:web:770d52f1926e13a186da05"},name)'),'missing Firebase appId in fbApp');
+  for(const name of ['push','appcheck','acct'])assert(appSource.includes('fbApp(a,"'+name+'")'),'Firebase app '+name+' not created through fbApp');
+  assert(!/initializeApp\(\{apiKey:PUSH_CONFIG/.test(appSource.replace(/async function fbApp[\s\S]*?\n\}/,'')),'Firebase app created outside fbApp');
   const rvSource=fs.readFileSync(path.join(root,'reviews.js'),'utf8');
   assert(rvSource.includes("appId:'1:533895640416:web:770d52f1926e13a186da05'},'reviews')"),'missing Firebase appId for reviews');
   const rv=fs.readFileSync(path.join(root,'reviews.js'),'utf8');assert(rv.includes(`new ReCaptchaEnterpriseProvider('${KEY}')`)&&/lerenbe\\\.com\$\/\.test\(location\.hostname\)/.test(rv),'reviews.js App Check');
