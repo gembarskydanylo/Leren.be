@@ -65,11 +65,20 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    assert.deepEqual(errors,[]);await ctx.close();report.push('1.1 done → 1.2 starts')}
   // 2b. A device whose voices do not include English: the study card warns that the pronunciation may be wrong.
   {const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
-   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
+   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await ctx.route('**/audio/en/manifest.json',r=>r.fulfill({status:404,body:''}));
    await page.addInitScript(([r])=>{try{const s=window.speechSynthesis;if(s)s.getVoices=()=>[{lang:'uk-UA',name:'Lesya'}]}catch(e){}if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,v)},[release]);
    await page.goto(base+'?multilang=1');await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});
    await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-novoice');
    assert.match(await page.locator('.cp-novoice').textContent(),/немає голосу для цієї мови \(англійська\)/);assert.deepEqual(errors,[]);await ctx.close();report.push('no English voice: warning')}
+  // 2c. Recorded audio (audio/en/manifest.json): the card plays the recording, so no missing-voice warning even without an English device voice.
+  {const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
+   await page.addInitScript(([r])=>{try{const s=window.speechSynthesis;if(s)s.getVoices=()=>[{lang:'uk-UA',name:'Lesya'}]}catch(e){}if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,v)},[release]);
+   await page.goto(base+'?multilang=1');await page.waitForFunction(()=>window.learningPath);const h=await page.evaluate(()=>audioHash('Hello!'));
+   await ctx.route('**/audio/en/manifest.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify([h])}));
+   await page.evaluate(()=>{setView('path');learningPath.open()});await page.click('.cp-preview [data-course="en"]');await page.waitForTimeout(300);await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word');
+   assert.equal(await page.locator('.cp-novoice').count(),0,'no warning when the card is recorded');await page.locator('.cp-sound').first().click();
+   assert((await page.evaluate(()=>globalThis.__cpRecorded||[])).includes(h),'recording requested for the card');assert.deepEqual(errors,[]);await ctx.close();report.push('recorded audio used')}
   // 3. Arabic interface: right-to-left player, Arabic translations.
   {const {ctx,page,errors}=await open('?multilang=1','ar');await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');
    assert.equal(await page.locator('.cp-stage').getAttribute('dir'),'rtl');assert.equal(await page.locator('.cp-tr').first().textContent(),'مرحبًا!');assert.deepEqual(errors,[]);await ctx.close();report.push('ar: rtl')}

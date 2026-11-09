@@ -7,3 +7,5 @@ audio/nl-f/.done-*
 # macOS: metadata files on external (exFAT/FAT) drives and folder settings
 ._*
 .DS_Store
+audio/en/.done-*
+audio/fr/.done-*

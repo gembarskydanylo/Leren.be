@@ -32,5 +32,6 @@ assert.equal(course.chapters.filter(ch=>ch.level==='1.1').length,6);assert.equal
 assert.deepEqual([...course.lessons.slice(0,36).map(l=>l.chapter).filter((x,i,a)=>a.indexOf(x)===i)],['en_hello','en_numbers','en_family','en_shopping','en_home','en_town']);
 // 1.2 quality guards: past tense, British usage, Belgian life.
 assert.equal(by('we_left').en,'We left at five.');assert.equal(by('gp').nl,'de huisarts');assert.equal(by('call_112').en,'Call 112!');assert.equal(by('on_holiday').en,"I'm on holiday.",'British: on holiday');
-assert.match(P.grammar.en_email.uk,/Yours faithfully/);assert(course.lessons.every(l=>l.ids.length===5));
+assert.match(P.grammar.en_email.uk,/Yours faithfully/);
+assert.equal(by('apply').fr,'Je voudrais postuler à ce poste.');assert.equal(by('free_friday').nl,'Ben je vrijdag vrij?');assert.equal(by('interview').en,"I've got a job interview.");assert(course.lessons.every(l=>l.ids.length===5));
 console.log('PASS: English 1.1 + 1.2 — 12 chapters, 36 topics, 360 cards in 4 translations, rules in 4 languages, 72 lessons');
