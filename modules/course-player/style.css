@@ -12,6 +12,7 @@ html.cp-open{overflow:hidden}
 .cp-sum-n{flex:none;font-size:14px;color:var(--ink-2,#6b5a48)}
 details[open]>.cp-sum{margin-bottom:10px}
 .cp-next{margin-top:-4px}
+.cp-level{margin:14px 2px 0;font-size:15px;font-weight:800;letter-spacing:.02em;color:var(--ink-2,#6b5a48)}
 .cp-lessons{margin:0;padding:0;list-style:none;display:grid;gap:8px}
 .cp-lessons li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:10px 12px;border-radius:12px;background:var(--bg,#fff8ef)}
 .cp-li-n{font-weight:800}.cp-li-words{color:var(--ink-2,#6b5a48);font-size:14px}.cp-li-done{margin-inline-start:auto;color:var(--ok,#1d7a45);font-weight:800;font-size:14px}

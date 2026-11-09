@@ -19,6 +19,8 @@
    nextLesson:'الدرس التالي',back:'العودة إلى الدورة',allDone:'اكتمل الفصل! فصول جديدة قريبًا.',rule:'قاعدة',sound:'استمع',noVoice:'لا يوجد صوت لهذه اللغة على هذا الجهاز، لذلك قد يكون النطق غير دقيق. أضف صوتًا من إعدادات الهاتف (اللغة ← تحويل النص إلى كلام).'}
  };
  const STEPS=['study','listen','check'];
+ // Level names of the Flemish adult-education profile (internal course levels, not a certificate).
+ const LEVEL_NAME={'1.1':'Breakthrough (A1)','1.2':'Waystage (A2)'};
  const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
  const button=(label,fn,cls='cp-btn')=>{const b=node('button',cls,label);b.type='button';b.onclick=fn;return b};
  const storage={getItem:k=>{try{return localStorage.getItem(k)}catch{return null}},setItem:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}};
@@ -47,12 +49,17 @@
   const tr=w=>(ui==='en'?w.uk:(w[ui]||w.uk)),target=w=>w[pack.text];
   const chapterName=ch=>pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl;
   let feedback=null;
+  // The next lesson of the current level; when that level is finished, the first open lesson of the next level (1.1 → 1.2).
+  const levels=[...new Set(course.chapters.map(c=>c.level))];
+  const nextLesson=()=>model.recommended()||levels.map(lv=>lv===model.state.course?null:model.recommended(lv)).find(Boolean)||null;
 
   function home(){
    body.replaceChildren();feedback=null;
    // The one main action first (on the first screen), then the chapters: the current one open, the others folded with
    // their progress (36 lessons would otherwise push the button far below the screen).
-   const next=model.recommended(),s=model.state.session,resume=!!next&&s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length);
+   const next=nextLesson(),s=model.state.session,lvl=(next?course.chapters.find(c=>c.id===next.chapter):course.chapters[course.chapters.length-1])?.level||info.levels[0];
+   title.textContent=info.flag+' '+R.name(lang,ui)+' '+lvl;
+   const resume=!!next&&s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length);
    if(next){const ch=course.chapters.find(c=>c.id===next.chapter),n=ch.lessons.findIndex(l=>l.id===next.id)+1;
     body.append(button((resume?C.resume:C.start)+' →',()=>{if(!resume)model.begin(next.id);lesson()},'cp-btn cp-primary'),node('p','cp-muted cp-next',chapterName(ch)+' · '+C.lesson+' '+n))}
    else body.appendChild(node('p','cp-all-done',C.allDone));
@@ -61,7 +68,10 @@
    if(E&&XU){const k=R.key('leren_course_exam_v1',lang),sm=XU.summary(storage,k,E.id),X=XU.COPY[ui]||XU.COPY.uk;
     const b=button('📝 '+X.exam+' '+E.level+(sm?' · '+X.best+': '+sm.lastPct+'%':''),()=>XU.run({body,lang,ui,exam:E,speak,storage,key:k,onBack:home,
      onResult:(id,best,pct)=>{try{return globalThis.LerenCourseRewards?.exam?.(lang,id,best)||0}catch{return 0}}}),'cp-btn cp-exam');b.dataset.exam=E.id;body.appendChild(b)}
+   let shownLevel=null;
    for(const ch of course.chapters){
+    // A heading where a level starts (1.1 Breakthrough, 1.2 Waystage), only when the course has more than one level.
+    if(ch.level!==shownLevel&&new Set(course.chapters.map(c=>c.level)).size>1){shownLevel=ch.level;const h=node('h3','cp-level',ch.level+(LEVEL_NAME[ch.level]?' · '+LEVEL_NAME[ch.level]:''));h.dataset.level=ch.level;body.appendChild(h)}
     const done=ch.lessons.filter(l=>model.state.completed[l.id]!=null).length,box=node('details','cp-card');box.dataset.chapter=ch.id;
     if(next?ch.id===next.chapter:ch===course.chapters[0])box.open=true;
     const sum=node('summary','cp-sum');sum.append(node('span','cp-sum-name',chapterName(ch)),node('span','cp-sum-n',done+' / '+ch.lessons.length+(done===ch.lessons.length?' ✓':'')));box.appendChild(sum);
@@ -89,8 +99,8 @@
     // Shared progress (app.js LerenCourseRewards): points only above this lesson's best, never twice.
     let xp=0;try{xp=globalThis.LerenCourseRewards?.lesson?.(lang,r.id,r.correct,r.total)||0}catch{}if(xp)body.appendChild(node('p','cp-xp','+'+xp+' XP'));
     const list=node('ul','cp-learned');s.ids.forEach(id=>{const w=course.cards.get(id);const li=node('li');const t=node('strong','',target(w));t.lang=lang;li.append(t,node('span','',' — '+tr(w)));list.appendChild(li)});body.appendChild(list);
-    const nxt=model.recommended();
-    if(nxt)body.appendChild(button(C.nextLesson+' →',()=>{model.continueRoute();lesson()},'cp-btn cp-primary'));
+    const nxt=nextLesson();
+    if(nxt)body.appendChild(button(C.nextLesson+' →',()=>{model.home();model.begin(nxt.id);lesson()},'cp-btn cp-primary'));
     body.appendChild(button(C.back,()=>{model.state.session=null;home()}));return;
    }
    const w=model.current(),progress=node('p','cp-muted',(s.index+1)+' / '+s.ids.length);body.appendChild(progress);stage.dataset.card=w.id;stage.dataset.phase=STEPS[s.phase];
