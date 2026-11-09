@@ -79,3 +79,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:600px){.ll-top{padding:14px 16px}.ll-mark{font-size:14px}.ll-home,.ll-top-quick{font-size:12px}.ll-hero{min-height:0;padding:25px 20px;border-radius:22px;box-shadow:0 5px 0 #0b2727}.ll-hero:after{inset:8px;border-radius:15px}.ll-hero-badge{display:none}.ll-hero p:not(.ll-kicker){font-size:14px;margin-bottom:17px}.ll-start{min-height:45px;font-size:14px}.ll-stage-nav{gap:8px;margin:22px 0 18px}.ll-stage-tab{min-height:55px;padding:8px;gap:7px;border-radius:12px}.ll-stage-tab b{font-size:14px}.ll-stage-tab span{font-size:12px}.ll-stage-tab small{font-size:11px}.ll-story,.ll-quick,.ll-speak,.ll-bank{border-radius:18px;padding:17px}.ll-yard{min-height:215px;object-fit:cover}.ll-hotspots{inset:auto 7px 7px;gap:5px}.ll-hotspot{font-size:11px;min-height:39px;padding:5px 7px}.ll-hotspot i{font-size:16px}.ll-phrase-list{grid-template-columns:1fr}.ll-bank-head{display:block}#favouritesOnly{margin-bottom:12px}footer{padding:12px 18px 35px}}
 @media(max-width:370px){.ll-top-quick{display:none}.ll-hotspot span{display:none}.ll-hotspot{width:40px;justify-content:center}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Link to the LIFE stories (learn-life-story.html) */
+.ll-story-link{display:flex;align-items:center;gap:14px;margin:16px clamp(12px,3vw,24px) 0;padding:14px 18px;border-radius:18px;background:#fff1df;border:1px solid #f0c48f;color:#2a1c0c;text-decoration:none}
+.ll-story-link b{display:block}.ll-story-link small{display:block;color:#6b5435}.ll-story-icon{font-size:32px}.ll-story-link>span:last-child{margin-left:auto;font-weight:900;font-size:20px}
+.ll-story-link:focus-visible{outline:3px solid #2a6fd6;outline-offset:2px}

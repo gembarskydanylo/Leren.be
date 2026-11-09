@@ -45,7 +45,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  assert.equal(createLifeSession(fence,{getItem(){return '{broken'},setItem(){throw Error('storage blocked')}}).done(),0);
  const html=fs.readFileSync('learn-life.html','utf8'),sw=fs.readFileSync('sw.js','utf8'),home=fs.readFileSync('modules/home-showcase/ui.js','utf8');
  assert(html.includes('id="quick"')&&html.includes('id="speak"')&&html.includes('id="stageNav"')&&html.includes('id="phraseSearch"'));
- for(const path of ['./learn-life.html','./modules/learn-life/style.css?v=1','./modules/learn-life/data.mjs?v=2','./modules/learn-life/engine.mjs','./modules/learn-life/ui.mjs?v=2'])assert(sw.includes('"'+path+'"'),path+' cached for offline use');
+ for(const path of ['./learn-life.html','./modules/learn-life/style.css?v=2','./modules/learn-life/data.mjs?v=2','./modules/learn-life/engine.mjs','./modules/learn-life/ui.mjs?v=2'])assert(sw.includes('"'+path+'"'),path+' cached for offline use');
  assert(home.includes("lifeLink.href='./learn-life.html'"));
  console.log('PASS: Learn Life four-stage scenario, 20 contextual decisions, phrase builder, wrong-first speaking queue, saved progress, blocked storage and offline assets');
 })().catch(error=>{console.error(error);process.exitCode=1});
