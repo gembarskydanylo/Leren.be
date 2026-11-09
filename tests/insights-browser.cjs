@@ -25,7 +25,9 @@ function oldData(){
   for(const [name,viewport] of [['phone',{width:390,height:844}],['desktop',{width:1366,height:900}]])for(const theme of ['light','dark'])for(const who of ['new','old']){
    const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
    await page.addInitScript(([r,theme,data])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();const y=new Date();y.setDate(y.getDate()-1);const day=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    const base={leren_release_seen:JSON.stringify(r),poly_theme:theme,poly_ui:'uk',leren_home_v1:'path',...(data||{})};if(data)base.poly_streak=JSON.stringify({n:6,last:day(y)});
+    // leren_welcome_seen: the first-run welcome (shown 600 ms after start) would otherwise open on top of the goal dialog
+    // at a random moment and make the goal clicks flaky; this test is not about the welcome screen.
+    const base={leren_release_seen:JSON.stringify(r),poly_theme:theme,poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true',...(data||{})};if(data)base.poly_streak=JSON.stringify({n:6,last:day(y)});
     for(const [k,v] of Object.entries(base))localStorage.setItem(k,v);sessionStorage.setItem('seeded','1')},[release,theme,who==='old'?oldData():null]);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath&&window.EXAM12&&window.LerenInsights);
    const tag=name+'/'+theme+'/'+who;

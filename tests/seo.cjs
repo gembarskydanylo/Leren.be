@@ -35,8 +35,11 @@ assert(shell.includes('href="./privacy.html"'));assert(html.includes('.seo-shell
 // Hardening: every page carries in a <meta> the same CSP that Cloudflare sends as a header (tests/csp-browser.cjs walks the
 // app under it), so the policy still holds if the Cloudflare rule is switched off. <meta> ignores frame-ancestors (boot.js
 // has a frame guard instead) and adds form-action. A new external address in the code = add it here, in csp-browser.cjs and in Cloudflare.
-const headerCsp=read('tests/csp-browser.cjs').match(/const CSP="([^"]+)"/)[1],metaCsp=headerCsp.replace("; frame-ancestors 'self'","")+"; form-action 'self'";
-for(const f of ['index.html','privacy.html','modules/clock/widget.html']){const h=read(f);assert(h.includes(`<meta http-equiv="Content-Security-Policy" content="${metaCsp}">`),f+': meta CSP = Cloudflare CSP');if(f.includes('widget'))continue;assert(h.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'),f)}
+const headerCsp=read('tests/csp-browser.cjs').match(/const CSP="([^"]+)"/)[1];
+// Firebase (App Check, Auth) fetches from www.gstatic.com: script-src alone does not allow fetch/XHR, connect-src must list it.
+assert(/connect-src [^;]*https:\/\/www\.gstatic\.com/.test(headerCsp),'connect-src allows www.gstatic.com');assert(!/connect-src [^;]*(\s\*\s|\s\*;|https:\/\/\*;)/.test(headerCsp),'no wildcard host in connect-src');
+const metaCsp=headerCsp.replace("; frame-ancestors 'self'","")+"; form-action 'self'";
+for(const f of ['index.html','privacy.html','modules/clock/widget.html','reviews.html','proto/huis/index.html']){const h=read(f);assert(h.includes(`<meta http-equiv="Content-Security-Policy" content="${metaCsp}">`),f+': meta CSP = Cloudflare CSP');if(!['index.html','privacy.html','modules/clock/widget.html'].includes(f))continue;if(f.includes('widget'))continue;assert(h.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'),f)}
 const sec=read('.well-known/security.txt');assert.match(sec,/^Contact: mailto:\S+@\S+$/m);const exp=new Date(sec.match(/^Expires: (\S+)$/m)[1]);assert(exp>new Date()&&exp-new Date()<400*864e5,'security.txt Expires within a year');
 // robots.txt and sitemap.xml
 assert.match(read('robots.txt'),/^User-agent: \*\nAllow: \/\n\nSitemap: https:\/\/lerenbe\.com\/sitemap\.xml\n$/);
