@@ -64,8 +64,9 @@
     body.append(button((resume?C.resume:C.start)+' →',()=>{if(!resume)model.begin(next.id);lesson()},'cp-btn cp-primary'),node('p','cp-muted cp-next',chapterName(ch)+' · '+C.lesson+' '+n))}
    else body.appendChild(node('p','cp-all-done',C.allDone));
    // Final exam of the course (modules/course-player/exam.js): best result on the button.
-   const E=Object.values(globalThis.LerenCourseExams||{}).find(e=>e.lang===lang),XU=globalThis.LerenCourseExamUI;
-   if(E&&XU){const k=R.key('leren_course_exam_v1',lang),sm=XU.summary(storage,k,E.id),X=XU.COPY[ui]||XU.COPY.uk;
+   // One button per exam of this language (1.1, 1.2), in level order.
+   const XU=globalThis.LerenCourseExamUI;
+   for(const E of Object.values(globalThis.LerenCourseExams||{}).filter(e=>e.lang===lang).sort((a,b)=>a.level.localeCompare(b.level)))if(XU){const k=R.key('leren_course_exam_v1',lang),sm=XU.summary(storage,k,E.id),X=XU.COPY[ui]||XU.COPY.uk;
     const b=button('📝 '+X.exam+' '+E.level+(sm?' · '+X.best+': '+sm.lastPct+'%':''),()=>XU.run({body,lang,ui,exam:E,speak,storage,key:k,onBack:home,
      onResult:(id,best,pct)=>{try{return globalThis.LerenCourseRewards?.exam?.(lang,id,best)||0}catch{return 0}}}),'cp-btn cp-exam');b.dataset.exam=E.id;body.appendChild(b)}
    let shownLevel=null;

@@ -1,4 +1,4 @@
-/* Final exam screen for a course in the course player (English 1.1 first). Four parts: Reading, Listening, Writing are
+/* Final exam screen for a course in the course player (English 1.1 and 1.2 first). Four parts: Reading, Listening, Writing are
    scored; Speaking is practice (answer aloud, then compare with a model; not scored — pronunciation cannot be checked
    reliably in a browser). Results per skill, every mistake with the right answer and an explanation, "practise my
    mistakes" and "take the exam again". Best results are kept per course in leren_course_exam_v1@<lang>.
@@ -12,7 +12,7 @@
    noVoice:'На цьому пристрої немає англійського голосу — аудіювання не оцінюється. Спробуй на телефоні або в Chrome.',
    order:'Склади речення: торкайся слів по черзі.',reset:'Скинути',type:'Напиши відповідь',speakQ:'Послухай питання й відповідай уголос англійською.',
    showModel:'Показати приклад відповіді',model:'Приклад',selfOk:'Я відповів(ла)',practice:'тренування, не оцінюється',notScored:'не оцінено',
-   result:'Результат іспиту',total:'Разом',pass:'Іспит складено! Ти впевнено володієш темами English 1.1.',fail:'Ще трохи практики — повтори помилки й спробуй знову. Потрібно {p}%.',
+   result:'Результат іспиту',total:'Разом',pass:'Іспит складено! Ти впевнено володієш темами English {l}.',fail:'Ще трохи практики — повтори помилки й спробуй знову. Потрібно {p}%.',
    mistakes:'Помилки й пояснення',your:'Твоя відповідь',right:'Правильно',none:'(немає відповіді)',retryWrong:'Потренувати помилки',again:'Пройти іспит знову',back:'До курсу',
    best:'Найкращий результат',practiceTitle:'Тренування помилок',correct:'Правильно!',wrongAns:'Правильна відповідь:',done:'Готово'},
   en:{exam:'Final exam',intro:'Four parts: reading, listening, writing and speaking. About {m} min. Answers and explanations at the end.',
@@ -21,7 +21,7 @@
    noVoice:'This device has no English voice, so listening is not scored. Try on a phone or in Chrome.',
    order:'Build the sentence: tap the words in order.',reset:'Reset',type:'Write your answer',speakQ:'Listen to the question and answer aloud in English.',
    showModel:'Show a model answer',model:'Model',selfOk:'I answered',practice:'practice, not scored',notScored:'not scored',
-   result:'Exam result',total:'Total',pass:'Exam passed! You are confident with the English 1.1 topics.',fail:'A bit more practice: go over your mistakes and try again. {p}% is needed.',
+   result:'Exam result',total:'Total',pass:'Exam passed! You are confident with the English {l} topics.',fail:'A bit more practice: go over your mistakes and try again. {p}% is needed.',
    mistakes:'Mistakes and explanations',your:'Your answer',right:'Correct',none:'(no answer)',retryWrong:'Practise my mistakes',again:'Take the exam again',back:'Back to the course',
    best:'Best result',practiceTitle:'Practise your mistakes',correct:'Correct!',wrongAns:'The right answer:',done:'Done'},
   fr:{exam:'Examen final',intro:'Quatre parties : lecture, écoute, écriture et expression orale. Environ {m} min. Réponses et explications à la fin.',
@@ -30,7 +30,7 @@
    noVoice:'Cet appareil n’a pas de voix anglaise : l’écoute n’est pas notée. Essaie sur un téléphone ou dans Chrome.',
    order:'Construis la phrase : touche les mots dans l’ordre.',reset:'Effacer',type:'Écris ta réponse',speakQ:'Écoute la question et réponds à voix haute en anglais.',
    showModel:'Voir un exemple de réponse',model:'Exemple',selfOk:'J’ai répondu',practice:'entraînement, non noté',notScored:'non noté',
-   result:'Résultat de l’examen',total:'Total',pass:'Examen réussi ! Tu maîtrises les thèmes d’English 1.1.',fail:'Encore un peu d’entraînement : revois tes erreurs et réessaie. Il faut {p} %.',
+   result:'Résultat de l’examen',total:'Total',pass:'Examen réussi ! Tu maîtrises les thèmes d’English {l}.',fail:'Encore un peu d’entraînement : revois tes erreurs et réessaie. Il faut {p} %.',
    mistakes:'Erreurs et explications',your:'Ta réponse',right:'Correct',none:'(pas de réponse)',retryWrong:'Revoir mes erreurs',again:'Repasser l’examen',back:'Retour au cours',
    best:'Meilleur résultat',practiceTitle:'Revoir tes erreurs',correct:'Correct !',wrongAns:'La bonne réponse :',done:'Terminé'},
   ar:{exam:'الامتحان النهائي',intro:'أربعة أجزاء: القراءة والاستماع والكتابة والمحادثة. حوالي {m} دقيقة. الإجابات والشروح في النهاية.',
@@ -39,7 +39,7 @@
    noVoice:'لا يوجد صوت إنجليزي على هذا الجهاز، لذلك لا يُقيَّم الاستماع. جرّب على الهاتف أو في Chrome.',
    order:'رتّب الجملة: المس الكلمات بالترتيب.',reset:'مسح',type:'اكتب إجابتك',speakQ:'استمع إلى السؤال وأجب بصوت عالٍ بالإنجليزية.',
    showModel:'اعرض مثالًا للإجابة',model:'مثال',selfOk:'أجبت',practice:'تدريب، بدون تقييم',notScored:'غير مُقيَّم',
-   result:'نتيجة الامتحان',total:'المجموع',pass:'نجحت في الامتحان! أنت تتقن مواضيع English 1.1.',fail:'تحتاج إلى قليل من التدريب: راجع أخطاءك وحاول مرة أخرى. المطلوب {p}%.',
+   result:'نتيجة الامتحان',total:'المجموع',pass:'نجحت في الامتحان! أنت تتقن مواضيع English {l}.',fail:'تحتاج إلى قليل من التدريب: راجع أخطاءك وحاول مرة أخرى. المطلوب {p}%.',
    mistakes:'الأخطاء والشروح',your:'إجابتك',right:'الصحيح',none:'(لا توجد إجابة)',retryWrong:'تدرّب على أخطائي',again:'أعد الامتحان',back:'العودة إلى الدورة',
    best:'أفضل نتيجة',practiceTitle:'تدرّب على أخطائك',correct:'صحيح!',wrongAns:'الإجابة الصحيحة:',done:'تم'}
  };
@@ -63,7 +63,7 @@
  function run({body,lang,ui='uk',exam:E,speak,storage,key,onBack,onResult}){
   const C=COPY[ui]||COPY.uk,list=items(E),voice=hasVoice();
   let i=0,answers={},order=null,practice=null;
-  const fill=(s,o)=>s.replace('{m}',o.m).replace('{p}',o.p);
+  const fill=(s,o)=>s.replace('{m}',o.m).replace('{p}',o.p).replace('{l}',o.l);
   const label=sk=>C[sk];
 
   function intro(){
@@ -135,7 +135,7 @@
 
   function results(res,wrong,pct,gained){
    body.replaceChildren();delete body.dataset.item;const top=node('div','cp-card ex-result');top.append(node('h3','',C.result+' · '+E.level),node('p','cp-score',pct+'%'));
-   const pass=pct>=E.passPct;top.appendChild(node('p','ex-verdict '+(pass?'is-pass':'is-fail'),pass?C.pass:fill(C.fail,{p:E.passPct})));
+   const pass=pct>=E.passPct;top.appendChild(node('p','ex-verdict '+(pass?'is-pass':'is-fail'),pass?fill(C.pass,{l:E.level}):fill(C.fail,{p:E.passPct})));
    if(gained)top.appendChild(node('p','ex-xp','+'+gained+' XP'));
    const tbl=node('ul','ex-skills');
    for(const sk of SKILLS){const li=node('li');li.dataset.skill=sk;li.appendChild(node('span','',label(sk)));
