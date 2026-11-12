@@ -21,7 +21,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     if(theme==='dark')await page.evaluate(()=>{document.documentElement.dataset.theme='dark'});
     // The switcher is the first thing under the header, with three cards.
     const cards=page.locator('.fh-course');assert.equal(await cards.count(),3);
-    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),s=document.querySelector('.fh-courses');return [...r.children].filter(e=>!e.hidden&&e.offsetHeight>0&&!e.classList.contains('fh-banner')).at(0)===s});assert(first,'Course switcher sits right under the header (the motivation banner may come first)');
+    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),s=document.querySelector('.fh-courses'),vis=[...r.children].filter(e=>!e.hidden&&e.offsetHeight>0);return vis[0]?.classList.contains('fh-hero')&&vis.filter(e=>!e.classList.contains('fh-banner')&&!e.classList.contains('fh-hero')).at(0)===s});assert(first,'TEST-019: «Your next lesson» first, then (after the motivation banner) the course switcher');
     assert.equal(await cards.nth(0).getAttribute('aria-pressed'),'true');
     const a21=cards.nth(2);assert(!(await a21.isDisabled()),'A2 can be opened');assert.match(await a21.innerText(),/A2/);assert.doesNotMatch(await a21.innerText(),/Незабаром/);
     const width=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);assert(width,'No horizontal scroll on '+name);
@@ -37,12 +37,12 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     await page.reload();await page.waitForSelector('.fh-courses');assert.equal(await page.locator('.fh-course[data-level="A1.2"]').getAttribute('aria-pressed'),'true');
     // Start an A1.2 lesson, answer one card, then switch back to A1.1 and again to A1.2: the A1.2 lesson resumes.
     await page.locator('.fh-primary').first().click();await page.waitForSelector('.lp-card');
-    if(await page.locator('.lp-card .lp-primary').count())await page.locator('.lp-card .lp-primary').first().click();
+    assert.equal(await page.evaluate(()=>document.getElementById('learningPath').dataset.screen),'lesson','TEST-019: the main button opens the lesson itself');
     await page.waitForSelector('.fh-study-actions .lp-primary');await page.locator('.fh-study-actions .lp-primary').click();
     const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_path_v1')));assert.equal(saved.course,'A1.2');assert.equal(saved.session.index,1);
     await page.evaluate(()=>learningPath.home());await page.waitForSelector('.fh-courses');
     await page.locator('.fh-course[data-level="A1.1"]').click();await page.waitForFunction(()=>document.querySelector('.fh-course[data-level="A1.1"]')?.getAttribute('aria-pressed')==='true');
-    assert.equal(await page.evaluate(()=>localStorage.getItem('poly_level')),'a11');assert.match(await page.locator('.fh-eyebrow').first().innerText(),/A1\.1/);
+    assert.equal(await page.evaluate(()=>localStorage.getItem('poly_level')),'a11');assert.equal(await page.locator('.fh-course[data-level="A1.1"]').getAttribute('aria-pressed'),'true');assert.doesNotMatch(await page.locator('.fh-eyebrow').first().innerText(),/A1/,'TEST-019: no level code for A1.1 beginners');
     await page.locator('.fh-course[data-level="A1.2"]').click();await page.waitForFunction(()=>document.querySelector('.fh-course[data-level="A1.2"]')?.getAttribute('aria-pressed')==='true');
     const back=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_path_v1')));assert.equal(back.session.index,1,'Switching courses keeps the paused A1.2 lesson');
     // Games follow the course: A1.2 hides the two A1.1 stories, spell-the-word uses A1.2 words.

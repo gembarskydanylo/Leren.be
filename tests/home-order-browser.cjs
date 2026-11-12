@@ -21,8 +21,8 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    const r=await page.evaluate(()=>{const lp=document.getElementById('learningPath'),p=[...lp.querySelectorAll('.fh-primary')],hero=lp.querySelector('.fh-hero'),show=lp.querySelector('.hs-intro, [class*="showcase"]');
     const y=e=>e?e.getBoundingClientRect().top+scrollY:null;return{primaries:p.map(b=>b.textContent.trim()),heroY:y(hero),showY:y(show),btnBottom:p[0]?p[0].getBoundingClientRect().bottom+scrollY:null,card:lp.querySelector('.fh-pcard-empty')?.innerText||''}});
    assert.equal(r.primaries.length,1,(started?'started':'new')+': one primary action, got '+JSON.stringify(r.primaries));
-   if(r.showY!=null)assert(started?r.heroY<r.showY:r.showY<r.heroY,(started?'started: lesson above the showcase':'new: showcase first')+' '+JSON.stringify(r));
-   if(started){assert.match(r.primaries[0],/Продовжити урок/);assert(r.btnBottom<=844,'«Продовжити урок» on the first screen: '+r.btnBottom);assert.match(r.card,/Перший урок уже розпочато/)}
+   if(r.showY!=null)assert(r.heroY<r.showY,'TEST-019: the next lesson above the showcase for everyone '+JSON.stringify(r));assert(r.btnBottom<=844,'main button on the first screen: '+r.btnBottom);
+   if(!started)assert.match(r.primaries[0],/Почати навчання/);if(started){assert.match(r.primaries[0],/Продовжити навчання/);assert.match(r.card,/Перший урок уже розпочато/)}
    assert.deepEqual(errors,[]);report.push((started?'started':'new')+': '+r.primaries[0]+(started?' at '+Math.round(r.btnBottom)+'px':''));await ctx.close();
   }
   console.log('PASS: home order — '+report.join('; '));
