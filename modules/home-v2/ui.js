@@ -1,0 +1,176 @@
+/* LerenBe home v2 (TEST-016): the top of the existing home screen — full-width HERO with HTML text, interface language,
+   course cards, the LerenBe LIFE entrance, progress, XP and rewards, the orange cat. No learning logic of its own:
+   everything comes from the learning path (levels, progress, continue), the app bridge (streak, XP, rewards), the
+   course player (English / French) and the existing language picker (#uiLangPicker). Pictures come from
+   img/home/home-visuals.json: only entries with status "approved" are loaded (with width/height, so nothing jumps);
+   until then the HERO keeps its painted CSS fallback. Called by modules/learning-path/ui.js (hero()). */
+(() => {
+ 'use strict';
+ const T = {
+  uk: {kicker: 'Learn languages. Live in Belgium.', h1a: 'Вивчай мови для ', h1b: 'реального життя', h1c: ' в Бельгії', sub: 'Уроки, озвучені фрази й історії з повсякденного життя: вокзал, магазин, комуна, сусіди.', start: 'Почати навчання', cont: 'Продовжити урок', life: 'LerenBe LIFE', lifeTitle: 'Перший день у Бельгії', lifeText: 'Інтерактивна історія: вокзал, трамвай, квартира, сусід. Персонажі говорять — ти відповідаєш.', lifeGo: 'Відкрити історію', courses: 'Курси', nl: 'Нідерландська', en: 'Англійська', fr: 'Французька', de: 'Німецька', preview: 'перегляд', soon: 'скоро', open: 'Відкрити', active: 'зараз', lessons: 'уроків', lang: 'Мова інтерфейсу', streak: 'днів поспіль', xp: 'XP', today: 'хв сьогодні', rewards: 'Нагороди й досягнення', progress: 'Твій прогрес', cat: 'Котик LerenBe'},
+  en: {kicker: 'Learn languages. Live in Belgium.', h1a: 'Learn languages for ', h1b: 'real life', h1c: ' in Belgium', sub: 'Lessons, recorded phrases and everyday stories: the station, the shop, the town hall, the neighbours.', start: 'Start learning', cont: 'Continue the lesson', life: 'LerenBe LIFE', lifeTitle: 'First day in Belgium', lifeText: 'An interactive story: the station, the tram, the flat, the neighbour. The characters talk — you answer.', lifeGo: 'Open the story', courses: 'Courses', nl: 'Dutch', en: 'English', fr: 'French', de: 'German', preview: 'preview', soon: 'soon', open: 'Open', active: 'now', lessons: 'lessons', lang: 'Interface language', streak: 'days in a row', xp: 'XP', today: 'min today', rewards: 'Rewards and achievements', progress: 'Your progress', cat: 'The LerenBe cat'},
+  fr: {kicker: 'Learn languages. Live in Belgium.', h1a: 'Apprends les langues pour ', h1b: 'la vraie vie', h1c: ' en Belgique', sub: 'Des leçons, des phrases enregistrées et des histoires du quotidien : la gare, le magasin, la commune, les voisins.', start: 'Commencer', cont: 'Reprendre la leçon', life: 'LerenBe LIFE', lifeTitle: 'Premier jour en Belgique', lifeText: 'Une histoire interactive : la gare, le tram, l’appartement, le voisin. Les personnages parlent, tu réponds.', lifeGo: 'Ouvrir l’histoire', courses: 'Cours', nl: 'Néerlandais', en: 'Anglais', fr: 'Français', de: 'Allemand', preview: 'aperçu', soon: 'bientôt', open: 'Ouvrir', active: 'en cours', lessons: 'leçons', lang: 'Langue de l’interface', streak: 'jours d’affilée', xp: 'XP', today: 'min aujourd’hui', rewards: 'Récompenses et succès', progress: 'Ta progression', cat: 'Le chat LerenBe'},
+  ar: {kicker: 'Learn languages. Live in Belgium.', h1a: 'تعلّم اللغات من أجل ', h1b: 'الحياة الحقيقية', h1c: ' في بلجيكا', sub: 'دروس وعبارات مسجّلة وقصص من الحياة اليومية: المحطة، المتجر، البلدية، الجيران.', start: 'ابدأ التعلّم', cont: 'تابع الدرس', life: 'LerenBe LIFE', lifeTitle: 'اليوم الأول في بلجيكا', lifeText: 'قصة تفاعلية: المحطة، الترام، الشقة، الجار. الشخصيات تتكلم وأنت تجيب.', lifeGo: 'افتح القصة', courses: 'الدورات', nl: 'الهولندية', en: 'الإنجليزية', fr: 'الفرنسية', de: 'الألمانية', preview: 'معاينة', soon: 'قريبًا', open: 'افتح', active: 'الآن', lessons: 'دروس', lang: 'لغة الواجهة', streak: 'أيام متتالية', xp: 'XP', today: 'دقيقة اليوم', rewards: 'المكافآت والإنجازات', progress: 'تقدّمك', cat: 'قطة LerenBe'}
+ };
+ // TEST-019: levels in plain words first, the CEFR code small next to them, and one sentence about the scale
+ // (no link between a level and any particular exam).
+ const LEVEL_NAME = {
+  uk: {'A1.1': 'Починаю з нуля', 'A1.2': 'Вивчаю основи', A2: 'Спілкуюся в повсякденних ситуаціях', cefr: 'A1, A2 — рівні європейської шкали CEFR: від A1 (перші слова й прості фрази) до C2 (вільне володіння). A1.1 і A1.2 — дві половини рівня A1.'},
+  en: {'A1.1': 'Starting from zero', 'A1.2': 'Learning the basics', A2: 'Everyday conversations', cefr: 'A1, A2 are levels of the European CEFR scale: from A1 (first words and simple phrases) to C2 (fluent). A1.1 and A1.2 are the two halves of A1.'},
+  fr: {'A1.1': 'Je pars de zéro', 'A1.2': 'J’apprends les bases', A2: 'Je communique au quotidien', cefr: 'A1, A2 sont des niveaux de l’échelle européenne CECR : de A1 (premiers mots et phrases simples) à C2 (maîtrise). A1.1 et A1.2 sont les deux moitiés de A1.'},
+  ar: {'A1.1': 'أبدأ من الصفر', 'A1.2': 'أتعلّم الأساسيات', A2: 'أتواصل في المواقف اليومية', cefr: 'A1 وA2 مستويان في الإطار الأوروبي المرجعي CEFR: من A1 (الكلمات الأولى والعبارات البسيطة) إلى C2 (الإتقان). A1.1 وA1.2 نصفا المستوى A1.'}
+ };
+ const badge = id => { const b = el('span', 'hv-flag hv-flag-' + id, id.toUpperCase()); b.setAttribute('aria-hidden', 'true'); return b };
+ const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n };
+ const button = (label, fn, cls = 'hv-btn') => { const b = el('button', cls, label); b.type = 'button'; b.onclick = fn; return b };
+ let VIS = null; const ready = fetch('img/home/home-visuals.json', {cache: 'no-cache'}).then(r => r.ok ? r.json() : null).catch(() => null).then(v => { VIS = v; return v });
+ const PATH = /^img\/[a-z0-9][a-z0-9/_.-]*\.(webp|avif|png|jpe?g)$/i;
+ const ok = e => e && e.status === 'approved' && PATH.test(e.src || '') && !e.src.includes('..');
+
+ // <picture>: mobile and desktop sources, intrinsic size (no layout shift), eager + high priority only for the HERO.
+ function picture(entry, cls, {eager = false} = {}) {
+  const d = entry.desktop, m = entry.mobile; if (!ok(d) && !ok(m)) return null;
+  const pic = el('picture', cls), main = ok(m) ? m : d;
+  if (ok(d) && ok(m)) { const s = el('source'); s.media = '(min-width: 768px)'; s.srcset = d.src; s.width = d.width; s.height = d.height; pic.append(s) }
+  const img = el('img'); img.src = main.src; img.alt = entry.alt || ''; img.width = main.width; img.height = main.height; img.decoding = 'async';
+  img.loading = eager ? 'eager' : 'lazy'; if (eager) img.fetchPriority = 'high';
+  // Keep the reserved picture box on network/decode failure: removing it shifts the mobile HERO.
+  img.onerror = () => {
+   pic.dataset.state = 'failed'; img.style.visibility = 'hidden'; img.alt = '';
+   pic.setAttribute('role', 'img'); pic.setAttribute('aria-label', entry.alt || '');
+   if (!eager) pic.append(el('span', 'hv-life-icon', '🚉'));
+  }; pic.append(img); return pic;
+ }
+ function single(entry, cls, alt) {
+  if (!ok(entry)) return null; const img = el('img', cls); img.src = entry.src; img.alt = alt ?? entry.alt ?? ''; img.width = entry.width; img.height = entry.height; img.loading = 'lazy'; img.decoding = 'async'; img.onerror = () => img.remove(); return img;
+ }
+
+ // Interface language: a compact copy of the app's own picker; choosing here changes the original (same logic).
+ function langSelect(t) {
+  const src = document.getElementById('uiLangPicker'); if (!src) return null;
+  const wrap = el('label', 'hv-lang'), sel = el('select'); wrap.append(el('span', 'hv-lang-label', t.lang), sel);
+  for (const o of src.options) { const c = el('option', '', o.textContent); c.value = o.value; sel.append(c) }
+  sel.value = src.value; sel.onchange = () => { src.value = sel.value; src.dispatchEvent(new Event('change', {bubbles: true})) };
+  return wrap;
+ }
+
+ // Dutch course card: the three levels in plain words with progress, and the CEFR sentence.
+ function dutchCard(ctx, t, lang, after) {
+  const nl = el('article', 'hv-course is-live'); nl.dataset.course = 'nl';
+  { const hd = el('div', 'hv-course-head'); hd.append(badge('nl'), t.nl); nl.append(hd) }
+  for (const lv of ctx.levels || []) {
+   const row = button('', () => { lv.pick?.(); after?.() }, 'hv-level' + (lv.active ? ' is-active' : '')); row.disabled = !!lv.soon; row.dataset.level = lv.level;
+   const pct = lv.total ? Math.round(100 * lv.done / lv.total) : 0, bar = el('span', 'hv-bar'), f = el('span'); f.style.width = pct + '%'; bar.append(f);
+   const ln = (LEVEL_NAME[lang] || LEVEL_NAME.uk)[lv.level] || lv.level;
+   const code = lv.level === 'A2' ? 'A2.1' : lv.level; // the A2 course covers A2.1 (COURSE-CURRICULUM.md); the stored ID stays A2
+   row.append(el('b', 'hv-level-name', ln), el('small', '', code + ' · ' + (lv.soon ? t.soon : lv.done + ' / ' + lv.total + ' ' + t.lessons + (lv.active ? ' · ' + t.active : ''))), bar);
+   row.setAttribute('aria-label', t.nl + ' · ' + ln + ' (' + code + ')' + (lv.soon ? ' — ' + t.soon : ' — ' + pct + '%')); nl.append(row) }
+  if ((ctx.levels || []).length) nl.append(el('p', 'hv-cefr', (LEVEL_NAME[lang] || LEVEL_NAME.uk).cefr));
+  return nl;
+ }
+ // LerenBe 3.0 integration: production rule kept — courses with status 'planned' (English, French, German) appear only in
+ // preview mode (lerenbe.com/?multilang=1, LerenCourses.available); without the registry every language is listed.
+ const OTHER = () => { const R = globalThis.LerenCourses; let ok = null; try { ok = R?.available ? new Set(R.available(localStorage).map(c => c.id)) : null } catch {} return ['en', 'fr', 'de'].filter(id => !ok || ok.has(id)) };
+ function otherCard(id, t, lang) {
+  const R = globalThis.LerenCourses, P = globalThis.LerenCoursePlayer;
+  const info = R?.COURSES?.[id], hasPack = !!globalThis.LerenCourseData?.[id], c = el('article', 'hv-course'); c.dataset.course = id;
+  { const hd = el('div', 'hv-course-head'); hd.append(badge(id), t[id]); c.append(hd) } c.append(el('small', 'hv-course-meta', (info?.levels || []).join(' · ') + ' · ' + (hasPack ? t.preview : t.soon)));
+  const b = button(hasPack ? t.open + ' →' : t.soon, () => P?.open?.(id, lang), 'hv-btn hv-small'); b.disabled = !hasPack || !P; c.append(b); return c;
+ }
+ // TEST-022 — the language choice at the very top of the home: one button «Я вчу: Нідерландська · <level> ▾» that opens
+ // every language and the Dutch levels (chosen by the user over a row of language chips).
+ const PICK = {uk: {learn: 'Я вчу', choose: 'Обрати мову й рівень', langs: 'Мова, яку вчу'},
+  en: {learn: 'I’m learning', choose: 'Choose a language and level', langs: 'Language I’m learning'},
+  fr: {learn: 'J’apprends', choose: 'Choisir une langue et un niveau', langs: 'Langue que j’apprends'},
+  ar: {learn: 'أتعلّم', choose: 'اختر لغة ومستوى', langs: 'اللغة التي أتعلّمها'}};
+ function picker(ctx) {
+  const lang = T[ctx.lang] ? ctx.lang : 'uk', t = {...T[lang], ...PICK[lang]};
+  const box = el('section', 'hv-pick'); box.dir = lang === 'ar' ? 'rtl' : 'ltr'; box.lang = lang; box.setAttribute('aria-label', t.langs);
+  const cur = (ctx.levels || []).find(l => l.active) || (ctx.levels || [])[0], ln = cur ? ((LEVEL_NAME[lang] || LEVEL_NAME.uk)[cur.level] || cur.level) : '';
+  const panel = el('div', 'hv-pick-panel'); panel.hidden = true; panel.id = 'hvPickPanel';
+  const btn = button('', () => { const open = panel.hidden; panel.hidden = !open; btn.setAttribute('aria-expanded', String(open)) }, 'hv-pick-btn');
+  btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'hvPickPanel'); btn.setAttribute('aria-label', t.choose + ': ' + t.nl + (ln ? ' · ' + ln : ''));
+  const tx = el('span', 'hv-pick-text'); tx.append(el('small', '', t.learn), el('b', '', t.nl + (ln ? ' · ' + ln : '')));
+  const ar = el('span', 'hv-pick-arrow', '▾'); ar.setAttribute('aria-hidden', 'true'); btn.append(badge('nl'), tx, ar);
+  const grid = el('div', 'hv-course-grid'); grid.append(dutchCard(ctx, t, lang)); for (const id of OTHER()) grid.append(otherCard(id, t, lang));
+  panel.append(grid); box.append(btn, panel);
+  return box;
+ }
+ function top(ctx) {
+  const lang = T[ctx.lang] ? ctx.lang : 'uk', t = {...T[lang], ...PICK[lang]}, box = el('section', 'hv'); box.dir = lang === 'ar' ? 'rtl' : 'ltr'; box.lang = lang;
+  box.setAttribute('aria-label', t.kicker);
+  // HERO
+  const hero = el('div', 'hv-hero'); hero.dataset.art = 'fallback';
+  const fill = () => { if (!VIS?.hero) return; const pic = picture(VIS.hero, 'hv-hero-art', {eager: true}); if (pic) { hero.prepend(pic); hero.dataset.art = 'image' } };
+  // the language picker lives in the app header (#uiLangPicker); langSelect() stays available for layouts without it
+  if (VIS) fill(); else ready.then(fill);
+  const copy = el('div', 'hv-hero-copy'), h1 = el('h1', 'hv-title');
+  h1.append(t.h1a, el('em', '', t.h1b), t.h1c);
+  copy.append(el('p', 'hv-kicker', t.kicker), h1, el('p', 'hv-sub', t.sub));
+  const acts = el('div', 'hv-actions');
+  acts.append(button((ctx.started ? t.cont : t.start) + ' →', () => ctx.onContinue?.(), ctx.secondary ? 'hv-btn hv-ghost' : 'hv-btn hv-primary')); // secondary: the next-lesson card above carries the main button
+  const life = el('a', 'hv-btn hv-ghost', '🎬 ' + t.life); life.href = './learn-life-story.html?s=first-day'; acts.append(life);
+  if (!ctx.secondary) copy.append(acts); // TEST-022: under the next-lesson card the HERO has no buttons (no second «Start», LIFE has its own card below)
+  const stats = ctx.stats || {}, strip = el('div', 'hv-stats');
+  strip.append(el('span', 'hv-chip', '🔥 ' + (stats.streak || 0) + ' ' + t.streak), el('span', 'hv-chip', '⭐ ' + Number(stats.points || 0).toLocaleString(lang === 'ar' ? 'ar' : 'uk-UA') + ' ' + t.xp));
+  copy.append(strip);
+  const cat = single(VIS?.mascot, 'hv-cat', t.cat) || (() => { const img = el('img', 'hv-cat'); img.src = 'img/home/hero-cat-v196-320.webp'; img.alt = t.cat; img.width = 320; img.height = 320; img.loading = 'lazy'; img.decoding = 'async'; img.onerror = () => img.remove(); return img })();
+  hero.append(copy, cat); box.append(hero);
+
+  // Read-only view of the existing course model; callbacks open its existing chapter map.
+  const routeText = {
+   uk:['Твій шлях у нідерландській','Кожна зупинка — тема з твого курсу. Пройдені уроки вже враховано.','Ти тут','Попереду','Завершено','Почни з першої теми — прогрес з’явиться після завершення уроку.','Усі теми маршруту'],
+   en:['Your Dutch learning path','Each stop is a course topic. Completed lessons count towards your progress.','You are here','Ahead','Completed','Start with the first topic. Progress appears after completing a lesson.','All route topics'],
+   fr:['Ton parcours de néerlandais','Chaque étape est un thème du cours. Les leçons terminées comptent dans ta progression.','Tu es ici','À venir','Terminé','Commence par le premier thème. Termine une leçon pour voir ta progression.','Tous les thèmes'],
+   ar:['مسارك في تعلّم الهولندية','كل محطة موضوع في دورتك. الدروس المكتملة محسوبة في تقدّمك.','أنت هنا','قادم','مكتمل','ابدأ بالموضوع الأول. يظهر التقدّم بعد إكمال الدرس.','جميع المواضيع']
+  }[lang];
+  // Ukrainian agrees with the number: 1 урок, 2–4 уроки, 5+ уроків (11–14 → уроків).
+  const lessonsWord=n=>lang!=='uk'?t.lessons:n%10===1&&n%100!==11?'урок':n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?'уроки':'уроків';
+  if(ctx.route?.length){
+   const route=el('section','hv-route'), heading=el('h2','hv-h2',routeText[0]);
+   route.append(heading,el('p','hv-route-intro',routeText[1]));
+   if(!ctx.route.some(c=>c.done))route.append(el('p','hv-route-empty',routeText[5]));
+   const list=el('ol','hv-route-list');
+   ctx.route.forEach((c,i)=>{
+    const li=el('li','hv-stop'), complete=c.total>0&&c.done===c.total;
+    li.dataset.chapter=c.id; li.dataset.state=complete?'complete':c.current?'current':'ahead';
+    const b=button('',c.open,'hv-stop-button');if(c.current)b.setAttribute('aria-current','step');
+    const number=el('span','hv-stop-number',complete?'✓':String(i+1));number.setAttribute('aria-hidden','true');
+    const info=el('span','hv-stop-info');info.append(el('small','',complete?routeText[4]:c.current?routeText[2]:routeText[3]),el('b','',c.title),el('span','',c.done+' / '+c.total+' '+lessonsWord(c.total)));
+    const meter=el('progress');meter.max=c.total||1;meter.value=c.done;meter.setAttribute('aria-label',c.title+' — '+c.done+' / '+c.total);
+    info.append(meter);b.append(number,info);li.append(b);list.append(li);
+   });
+   const details=el('details','hv-route-details');details.append(el('summary','',routeText[6]+' · '+ctx.route.length),list);details.open=ctx.routeOpen!==false;route.append(details);box.append(route);
+  }
+
+  // Courses: on the app's home the choice lives in the «Я вчу» button at the top (picker(), TEST-022); this block
+  // stays only for layouts without that button.
+  if (!ctx.picker) {
+   const courses = el('section', 'hv-courses'); courses.append(el('h2', 'hv-h2', t.courses));
+   const grid = el('div', 'hv-course-grid'); grid.append(dutchCard(ctx, t, lang));
+   for (const id of OTHER()) grid.append(otherCard(id, t, lang));
+   courses.append(grid); box.append(courses);
+  }
+
+  // LIFE entrance + progress side by side on wide screens
+  const duo = el('div', 'hv-duo');
+  const lifeCard = el('a', 'hv-life'); lifeCard.href = './learn-life-story.html?s=first-day';
+  const lifeArt = el('div', 'hv-life-art'); lifeArt.append(el('span', 'hv-life-icon', '🚉'));
+  const fillLife = () => { const pic = VIS?.lifePromo && picture(VIS.lifePromo, 'hv-life-pic'); if (pic) { lifeArt.replaceChildren(pic); lifeArt.dataset.art = 'image' } };
+  if (VIS) fillLife(); else ready.then(fillLife);
+  const lt = el('div', 'hv-life-text'); lt.append(el('p', 'hv-kicker', '🎬 ' + t.life), el('h2', 'hv-h2', t.lifeTitle), el('p', '', t.lifeText), el('span', 'hv-btn hv-primary hv-small', t.lifeGo + ' →'));
+  lifeCard.append(lifeArt, lt);
+  const prog = el('section', 'hv-progress'); prog.append(el('h2', 'hv-h2', t.progress));
+  const cur = (ctx.levels || []).find(l => l.active) || (ctx.levels || [])[0];
+  if (cur) { const pct = cur.total ? Math.round(100 * cur.done / cur.total) : 0, ring = el('div', 'hv-ring'); ring.style.setProperty('--p', pct); ring.setAttribute('role', 'img'); ring.setAttribute('aria-label', t.nl + ' ' + cur.level + ': ' + pct + '%'); ring.append(el('span', '', pct + '%'));
+   const info = el('div'); info.append(el('b', '', t.nl + ' ' + cur.level), el('small', '', cur.done + ' / ' + cur.total + ' ' + t.lessons)); const row = el('div', 'hv-ring-row'); row.append(ring, info); prog.append(row) }
+  const chips = el('div', 'hv-stats'); chips.append(el('span', 'hv-chip', '⭐ ' + Number(stats.points || 0) + ' ' + t.xp), el('span', 'hv-chip', '⏱️ ' + (stats.min || 0) + ' / ' + (stats.goal || 0) + ' ' + t.today));
+  prog.append(chips, button('🏆 ' + t.rewards + ' →', () => ctx.rewards?.(), 'hv-btn hv-small'));
+  duo.append(lifeCard, prog); box.append(duo);
+  const benefitsText={uk:['Практика для життя в Бельгії','Зрозумій прохання сусіда, постав запитання в магазині, потренуй відповідь у LIFE. Уроки, озвучування й ігри допомагають повторювати слова різними способами.','Практичні посібники українською →'],en:['Practice for life in Belgium','Understand a neighbour, ask a question in a shop and practise a reply in LIFE. Lessons, audio and games offer different ways to revisit words.','Practical guides in Ukrainian →'],fr:['Pratiquer pour vivre en Belgique','Comprends un voisin, pose une question dans un magasin et entraîne-toi à répondre dans LIFE. Leçons, audio et jeux permettent de revoir les mots.','Guides pratiques en ukrainien →'],ar:['تدرّب للحياة في بلجيكا','افهم جارك واطرح سؤالاً في المتجر وتدرّب على الإجابة في LIFE. الدروس والصوت والألعاب تساعدك على مراجعة الكلمات.','أدلة عملية باللغة الأوكرانية ←']}[lang];
+  const benefits=el('section','hv-benefits');benefits.append(el('h2','hv-h2',benefitsText[0]),el('p','',benefitsText[1]));
+  const guides=el('a','hv-btn hv-small',benefitsText[2]);guides.href='./guides/';benefits.append(guides);box.append(benefits);
+  return box;
+ }
+ globalThis.LerenHomeV2 = {top, picker, ready: () => ready, T, langSelect};
+})();

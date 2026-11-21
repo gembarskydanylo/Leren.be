@@ -3,6 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com https://static.cloudflareinsights.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://www.google.com https://leren-ai.gembarsky-d.workers.dev https://cloudflareinsights.com; frame-src 'self' https://leren-be.firebaseapp.com https://accounts.google.com https://www.google.com; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- TEST-027: a meta-tag CSP turns off Chrome's preload scanner for script tags, so the scripts below loaded one after another (slow 4G: first screen 12.9 s → 6.8 s with these hints). Keep this list equal to the script src list (tests/script-preload.cjs). -->
+<link rel="preload" as="script" href="./splash.js?v=206">
+<link rel="preload" as="script" href="./boot.js?v=193">
+<link rel="preload" as="script" href="./modules/review/srs.js?v=175">
+<link rel="preload" as="script" href="./modules/sync/merge.js?v=211">
+<link rel="preload" as="script" href="./modules/insights/core.js?v=175">
+<link rel="preload" as="script" href="./modules/courses/registry.js?v=3">
+<link rel="preload" as="script" href="./modules/learning-path/core.js?v=210">
+<link rel="preload" as="script" href="./modules/courses/en.js?v=3">
+<link rel="preload" as="script" href="./modules/courses/en12.js?v=2">
+<link rel="preload" as="script" href="./modules/courses/en-exam.js?v=1">
+<link rel="preload" as="script" href="./modules/courses/en-exam12.js?v=1">
+<link rel="preload" as="script" href="./modules/courses/fr.js?v=2">
+<link rel="preload" as="script" href="./modules/course-player/exam.js?v=3">
+<link rel="preload" as="script" href="./modules/course-player/ui.js?v=8">
+<link rel="preload" as="script" href="./modules/rewards/core.js?v=174">
+<link rel="preload" as="script" href="./modules/companion/ui.js?v=117">
+<link rel="preload" as="script" href="./modules/scenes/map.js?v=165">
+<link rel="preload" as="script" href="./modules/card-art/art.js?v=147">
+<link rel="preload" as="script" href="./modules/card-art/people.js?v=135">
+<link rel="preload" as="script" href="./modules/card-art/food.js?v=135">
+<link rel="preload" as="script" href="./modules/card-art/things.js?v=135">
+<link rel="preload" as="script" href="./modules/card-art/places.js?v=135">
+<link rel="preload" as="script" href="./modules/card-art/more-people.js?v=135">
+<link rel="preload" as="script" href="./modules/card-art/more-things.js?v=135">
+<link rel="preload" as="script" href="./modules/rewards/gifts.js?v=174">
+<link rel="preload" as="script" href="./modules/rewards/ui.js?v=179">
+<link rel="preload" as="script" href="./modules/focused-home/ui.js?v=209">
+<link rel="preload" as="script" href="./modules/home-v2/ui.js?v=263">
+<link rel="preload" as="script" href="./modules/desktop-home/ui.js?v=150">
+<link rel="preload" as="script" href="./modules/test-library/ui.js?v=180">
+<link rel="preload" as="script" href="./modules/lesson-conversation/content.js?v=174">
+<link rel="preload" as="script" href="./modules/lesson-conversation/core.js?v=112">
+<link rel="preload" as="script" href="./modules/lesson-conversation/ui.js?v=112">
+<link rel="preload" as="script" href="./modules/ai-coach/core.js?v=169">
+<link rel="preload" as="script" href="./modules/ai-coach/ui.js?v=254">
+<link rel="preload" as="script" href="./modules/lexi/engine.js?v=4">
+<link rel="preload" as="script" href="./modules/lexi/lesson-help.js?v=1">
+<link rel="preload" as="script" href="./modules/word-builder/art.js?v=150">
+<link rel="preload" as="script" href="./modules/emoji/cards.js?v=146">
+<link rel="preload" as="script" href="./modules/emoji/variants.js?v=147">
+<link rel="preload" as="script" href="./modules/emoji/renderer.js?v=177">
+<link rel="preload" as="script" href="./modules/word-builder/game.js?v=172">
+<link rel="preload" as="script" href="./modules/kamer/game.js?v=198">
+<link rel="preload" as="script" href="./modules/learning-path/invitation.js?v=2">
+<link rel="preload" as="script" href="./modules/home-showcase/ui.js?v=255">
+<link rel="preload" as="script" href="./modules/learning-path/ui.js?v=263">
+<link rel="preload" as="script" href="./modules/dialogues/translations.js?v=177">
+<link rel="preload" as="script" href="./course-curriculum.js?v=178">
+<link rel="preload" as="script" href="./app.js?v=263">
+<link rel="preload" as="script" href="./modules/exam/exam-core.js?v=254">
+<link rel="preload" as="script" href="./modules/exam/exam11.js?v=176">
+<link rel="preload" as="script" href="./modules/exam/exam12-data.js?v=173">
+<link rel="preload" as="script" href="./modules/exam/exam12.js?v=177">
+<link rel="preload" as="script" href="./modules/diphthongs/lesson-core.js?v=87">
+<link rel="preload" as="script" href="./modules/diphthongs/widget.js?v=176">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#EB6A00">
@@ -10,13 +66,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="lerenbe.com">
 <meta name="application-name" content="lerenbe.com">
-<meta name="description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI Пітером і Дафною — для життя в Бельгії.">
+<meta name="description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI-репетитором Lexi — для життя в Бельгії.">
 <link rel="canonical" href="https://lerenbe.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="lerenbe.com">
 <meta property="og:url" content="https://lerenbe.com/">
 <meta property="og:title" content="Нідерландська для українців у Бельгії — A1.1–A1.2 | lerenbe.com">
-<meta property="og:description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI Пітером і Дафною — для життя в Бельгії.">
+<meta property="og:description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI-репетитором Lexi — для життя в Бельгії.">
 <meta property="og:image" content="https://lerenbe.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -24,9 +80,9 @@
 <meta property="og:locale" content="uk_UA">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Нідерландська для українців у Бельгії — A1.1–A1.2 | lerenbe.com">
-<meta name="twitter:description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI Пітером і Дафною — для життя в Бельгії.">
+<meta name="twitter:description" content="Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI-репетитором Lexi — для життя в Бельгії.">
 <meta name="twitter:image" content="https://lerenbe.com/og-image.jpg">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "lerenbe.com", "url": "https://lerenbe.com/", "description": "Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI Пітером і Дафною — для життя в Бельгії.", "applicationCategory": "EducationalApplication", "operatingSystem": "Web, Android, iOS", "inLanguage": "uk", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "educationalLevel": "A1 (CEFR)", "teaches": "Dutch language (Nederlands, Flemish usage) at level A1.1 and A1.2", "author": {"@type": "Person", "name": "Danylo Hembarskyi"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "lerenbe.com", "url": "https://lerenbe.com/", "description": "Безкоштовно вивчайте нідерландську українською: уроки A1.1 і A1.2, ігри, інтерактивний годинник та розмови з AI-репетитором Lexi — для життя в Бельгії.", "applicationCategory": "EducationalApplication", "operatingSystem": "Web, Android, iOS", "inLanguage": "uk", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "educationalLevel": "A1 (CEFR)", "teaches": "Dutch language (Nederlands, Flemish usage) at level A1.1 and A1.2", "author": {"@type": "Person", "name": "Danylo Hembarskyi"}}</script>
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <noscript><style>.seo-shell{display:block}</style></noscript>
 <link rel="manifest" href="./manifest.webmanifest">
@@ -156,7 +212,7 @@ header{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-
 .voice-dialog .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .speech-help{margin:10px auto 0;max-width:520px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);color:var(--ink);font-size:14px}
 .speech-help p{margin:0 0 8px}
-.speech-help a{display:inline-block;margin:3px 10px;color:var(--oranje);font-weight:900}
+.speech-help a{display:inline-flex;align-items:center;min-width:44px;min-height:44px;max-width:100%;padding:4px 8px;color:var(--oranje);font-weight:900;overflow-wrap:anywhere}
 .listen.is-speaking{outline:3px solid var(--oranje);outline-offset:3px;animation:speechPulse 1s ease-in-out infinite alternate}
 @keyframes speechPulse{to{filter:brightness(.85);transform:scale(1.03)}}
 
@@ -608,7 +664,7 @@ header{flex-wrap:nowrap}
 /* Lesson page (variant B): the topic is the header of the question card; no separate topic block, route button or hint row. */
 main[data-view="lesson"] #topicBar,main[data-view="lesson"] #pathReturn,main[data-view="lesson"] #lessonGuide,main[data-view="lesson"] .meta{display:none!important}
 .lesson-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--surface);border:2px solid var(--line);border-bottom:0;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:12px 14px 4px;margin-bottom:-16px;position:relative;z-index:1}
-.lh-topic{display:inline-flex;align-items:center;gap:6px;min-height:40px;max-width:calc(100% - 64px);padding:6px 14px;border:0;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lh-topic{display:inline-flex;align-items:center;gap:6px;min-height:44px;max-width:calc(100% - 64px);padding:6px 14px;border:0;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink);font:800 14px var(--font-body,inherit);cursor:pointer;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lh-topic{white-space:normal;overflow:visible;max-width:100%;flex-wrap:wrap;line-height:1.35}
 .study-row{flex-wrap:wrap}.study-row>.btn{white-space:nowrap;min-width:0;flex:1 1 auto}.study-row>.btn.primary{flex:2 1 auto}
 .lh-topic:focus-visible{outline:3px solid var(--oranje);outline-offset:2px}.lh-topic .lh-ch{color:var(--ink-2)}.lh-topic .lh-caret{font-size:11px;opacity:.7}
@@ -1051,15 +1107,18 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 /* Static summary inside #learningPath, shown only until the app renders */
 .seo-shell{display:none}
 .seo-shell{padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);line-height:1.5}.seo-shell h2{margin:0 0 10px;font-size:22px}.seo-shell h3{margin:18px 0 6px;font-size:17px}.seo-shell ul{margin:0;padding-inline-start:20px}.seo-shell li{margin:3px 0}
+/* TEST-032 · Lexi chat (modules/lexi/chat.js) full screen over the app; its own styles live in a shadow root */
+.lexi-host{position:fixed;inset:0;z-index:2147483000;overflow:auto;overscroll-behavior:contain;background:#f6f2e9}.lexi-host[data-theme=dark]{background:#15241f}html.lexi-open,html.lexi-open body{overflow:hidden}
 </style>
-<link rel="stylesheet" href="./modules/learning-path/style.css?v=195">
+<link rel="stylesheet" href="./modules/learning-path/style.css?v=196">
 <link rel="stylesheet" href="./modules/course-player/style.css?v=5">
 <link rel="stylesheet" href="./modules/learning-path/invitation.css?v=1">
 <link rel="stylesheet" href="./modules/rewards/style.css?v=102">
-<link rel="stylesheet" href="./modules/companion/style.css?v=102">
-<link rel="stylesheet" href="./modules/focused-home/style.css?v=207">
+<link rel="stylesheet" href="./modules/companion/style.css?v=103">
+<link rel="stylesheet" href="./modules/focused-home/style.css?v=263">
+<link rel="stylesheet" href="./modules/home-v2/style.css?v=5">
 <link rel="stylesheet" href="./modules/desktop-home/style.css?v=151">
-<link rel="stylesheet" href="./modules/home-showcase/style.css?v=219">
+<link rel="stylesheet" href="./modules/home-showcase/style.css?v=220">
 <link rel="stylesheet" href="./modules/word-builder/style.css?v=172">
 <link rel="stylesheet" href="./modules/kamer/style.css?v=195">
 <link rel="stylesheet" href="./modules/test-library/style.css?v=109">
@@ -1075,6 +1134,50 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 .ai-style-notice{margin:0;font-size:.82rem;color:var(--ink-2);line-height:1.4}.ai-chat-card .g-mic{margin-top:0}.ai-chat-card .g-chat{margin-bottom:0}
 .ai-chat-card{display:flex;flex-direction:column;gap:12px;padding-bottom:110px!important}.ai-chat-card .ai-chat{margin-bottom:0;gap:10px}.ai-chat-card .ai-style-row{margin:2px 0 0}.ai-chat-card .ai-style-row label{gap:6px}.ai-chat-card .ai-style-select{padding:6px 9px}.ai-chat-card .g-mic-row{margin-top:0}.ai-chat-card .g-type{margin-top:0}.ai-chat-card .ai-fix{margin-top:4px}
 .ai-style-row{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.ai-style-row label{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}.ai-style-select{max-width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);color:var(--fg,#222);font:inherit}
+</style>
+<style id="lexi-exam-b">
+/* TEST-033 · AI exam screens (A1.1 mock speaking exam, exam writing check) in the TEST-030 Concept B look: light canvas,
+   dark-green brand, Lexi's avatar beside her replies, one composer card. Only #card.lexi-b (set by aiRender / askRender
+   for exam screens, removed by gHead / setView); the exam logic and markup are unchanged. Tokens = design-lab/test-030/tokens.css. */
+#card.lexi-b{--lb-canvas:#f6f2e9;--lb-paper:#fffdf7;--lb-ink:#173e33;--lb-muted:#516553;--lb-line:#d1dac8;--lb-control:#7b8d79;--lb-brand:#225a45;--lb-on-brand:#fffef7;--lb-soft:#e8eddd;--lb-success:#25633c;--lb-error:#9d303d;--lb-error-soft:#fcebed;--lb-avatar:#f6f2e9;background:var(--lb-paper);color:var(--lb-ink);border-color:var(--lb-line)}
+:root[data-theme="dark"] #card.lexi-b{--lb-canvas:#15241f;--lb-paper:#20352a;--lb-ink:#f1f4e7;--lb-muted:#bdccba;--lb-line:#476047;--lb-control:#8b9d86;--lb-brand:#ecb284;--lb-on-brand:#223629;--lb-soft:#304836;--lb-success:#acdeb6;--lb-error:#ffc1c9;--lb-error-soft:#4c2c34;--lb-avatar:#f6f2e9}
+#card.lexi-b .g-back,#card.lexi-b .ex-restart,#card.lexi-b .ai-tr[aria-expanded="true"]{color:var(--lb-brand)}
+#card.lexi-b .ex-progress{background:var(--lb-soft);color:var(--lb-ink);border-radius:14px;padding:8px 14px;font-size:13px}
+#card.lexi-b .ex-progress{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px}
+#card.lexi-b .ex-restart{color:var(--lb-brand);min-height:44px;margin:0;padding:0}
+#card.lexi-b .ai-acts{gap:0 8px;align-items:center}
+#card.lexi-b .ai-chat{gap:14px}
+#card.lexi-b .ai-row{align-items:flex-start;gap:10px}
+#card.lexi-b .st-av.xs{width:56px;height:56px;border-radius:50%;overflow:hidden;background:var(--lb-avatar);flex:none}
+#card.lexi-b .g-bub{border-radius:20px;padding:12px 16px;font-size:16px;line-height:1.45}
+#card.lexi-b .g-bub.them,#card.lexi-b .ai-row .g-bub.them{background:var(--lb-canvas);color:var(--lb-ink);border:1px solid var(--lb-line);border-end-start-radius:6px}
+#card.lexi-b .g-bub.me{background:var(--lb-soft);color:var(--lb-ink);border:1px solid var(--lb-line);border-end-end-radius:6px}
+#card.lexi-b .g-bub.me small,#card.lexi-b .g-bub.me em,#card.lexi-b .g-bub em,#card.lexi-b .g-bub small{color:var(--lb-muted)}
+#card.lexi-b .ai-tr{color:var(--lb-muted);min-height:44px;padding:4px 8px}
+#card.lexi-b .ai-fix{align-self:flex-end;background:var(--lb-error-soft);border:0;border-inline-start:3px solid var(--lb-error);border-radius:0 14px 14px 0;color:var(--lb-ink);padding:12px 14px;gap:6px}
+#card.lexi-b .ai-fix small{color:var(--lb-error)}
+#card.lexi-b .ai-fix .btn{background:var(--lb-paper);color:var(--lb-ink);border:1px solid var(--lb-control);box-shadow:none}
+#card.lexi-b .ai-ex button{background:var(--lb-paper);border:1px solid var(--lb-control);color:var(--lb-ink);border-radius:14px;min-height:44px;padding:8px 12px}
+#card.lexi-b .ai-ex small,#card.lexi-b .ai-ex button span{color:var(--lb-muted)}
+#card.lexi-b .ai-chip{background:var(--lb-soft);color:var(--lb-ink);border:1px solid var(--lb-line);min-height:44px}
+#card.lexi-b .btn.primary,#card.lexi-b .g-type .btn[type=submit]{background:var(--lb-brand);color:var(--lb-on-brand);border-color:var(--lb-brand);box-shadow:none}
+#card.lexi-b .g-mic-btn{background:var(--lb-paper);color:var(--lb-brand);border:1px solid var(--lb-control);box-shadow:none;min-width:0;min-height:48px}
+#card.lexi-b .g-mic-btn.rec{background:var(--lb-brand);color:var(--lb-on-brand)}
+#card.lexi-b .g-type input{background:transparent;border:0;color:var(--lb-ink);min-height:48px;font-weight:600}
+#card.lexi-b .g-type input:focus-visible{outline:3px solid #235fd0;outline-offset:-3px}
+#card.lexi-b .g-heard{color:var(--lb-muted);margin:0}
+#card.lexi-b .g-heard:empty{display:none}
+#card.lexi-b .ai-compose-dock,#card.lexi-b>form.g-type{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px;background:var(--lb-canvas);border:1px solid var(--lb-control);border-radius:18px;padding:8px;box-shadow:0 8px 28px #294a2710}
+#card.lexi-b>form.g-type{display:flex}
+#card.lexi-b .ai-compose-dock .g-mic-row{grid-column:1;grid-row:1;margin:0}
+#card.lexi-b .ai-compose-dock .g-type{grid-column:2;grid-row:1;width:auto}
+#card.lexi-b .ai-compose-dock .g-heard{grid-column:1/-1;grid-row:2;padding:0 6px}
+#card.lexi-b .lexi-thinking .ai-typing{color:var(--lb-muted)}
+#card.lexi-b .g-mic-row:not(.ai-compose-dock .g-mic-row){justify-content:flex-start}
+@media(min-width:768px){#card.lexi-b .st-av.xs{width:72px;height:72px}#card.lexi-b .ai-col,#card.lexi-b .ai-row>.g-bub{max-width:min(640px,80%)}}
+/* phone: the mic is an icon (its full label stays its accessible name), so the message field keeps the row; while recording it shows «⏹ …» */
+@media(max-width:767px){#card.lexi-b .ai-compose-dock .g-mic-btn:not(.rec){font-size:0;width:48px;min-width:48px;padding:0}#card.lexi-b .ai-compose-dock .g-mic-btn:not(.rec)::before{content:"🎙️";font-size:22px;line-height:1}#card.lexi-b .ai-compose-dock .g-mic-btn.rec{font-size:14px}}
+@media(max-width:359px){#card.lexi-b .st-av.xs{width:44px;height:44px}#card.lexi-b .ai-compose-dock{grid-template-columns:minmax(0,1fr)}#card.lexi-b .ai-compose-dock .g-mic-row,#card.lexi-b .ai-compose-dock .g-type{grid-column:1;grid-row:auto}}
 </style>
 </head>
 <body>
@@ -1096,9 +1199,19 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 .onboard-banner img{display:block;width:min(80vw,310px);height:min(45vh,310px);object-fit:contain;margin:0 auto}
 .onboard-banner strong{font:900 20px "Nunito",system-ui,sans-serif}
 @media(prefers-reduced-motion:reduce){#splash{transition:none}}
+/* TEST-023: preserve touch targets even on the smallest header layout. */
+header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pill{min-width:44px;min-height:44px}
+@media(max-width:360px){main>header{flex-wrap:wrap}main>header .brand{flex:0 0 32px;min-width:32px}}
 </style>
+<!-- TEST-025 shared design foundation: presentation only. -->
+<link rel="stylesheet" href="./modules/design-system/tokens.css?v=1">
+<link rel="stylesheet" href="./modules/design-system/foundation.css?v=1">
+<link rel="stylesheet" href="./modules/design-system/home.css?v=1">
+<link rel="stylesheet" href="./modules/design-system/learning.css?v=1">
+<link rel="stylesheet" href="./modules/design-system/engagement.css?v=2">
+
 <div id="splash" hidden></div>
-<script src="./splash.js?v=205"></script>
+<script src="./splash.js?v=206"></script>
 <main data-view="path">
   <header>
     <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="lerenbe.com — на головну"><h1 id="appTitle">lerenbe.com</h1><p id="tagline"></p></div>
@@ -1294,8 +1407,8 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <!-- App modules: loaded after the page markup so the page (and its static summary) shows without waiting; their order is kept. -->
 <script src="./boot.js?v=193"></script>
 <script src="./modules/review/srs.js?v=175"></script>
-<script src="./modules/sync/merge.js?v=210"></script>
-<script src="./modules/insights/core.js?v=174"></script>
+<script src="./modules/sync/merge.js?v=211"></script>
+<script src="./modules/insights/core.js?v=175"></script>
 <script src="./modules/courses/registry.js?v=3"></script>
 <script src="./modules/learning-path/core.js?v=210"></script>
 <script src="./modules/courses/en.js?v=3"></script>
@@ -1306,7 +1419,7 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/course-player/exam.js?v=3"></script>
 <script src="./modules/course-player/ui.js?v=8"></script>
 <script src="./modules/rewards/core.js?v=174"></script>
-<script src="./modules/companion/ui.js?v=116"></script>
+<script src="./modules/companion/ui.js?v=117"></script>
 <script src="./modules/scenes/map.js?v=165"></script>
 <script src="./modules/card-art/art.js?v=147"></script>
 <script src="./modules/card-art/people.js?v=135"></script>
@@ -1318,13 +1431,16 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/rewards/gifts.js?v=174"></script>
 <script src="./modules/rewards/ui.js?v=179"></script>
 <script src="./modules/focused-home/ui.js?v=209"></script>
+<script src="./modules/home-v2/ui.js?v=263"></script>
 <script src="./modules/desktop-home/ui.js?v=150"></script>
 <script src="./modules/test-library/ui.js?v=180"></script>
 <script src="./modules/lesson-conversation/content.js?v=174"></script>
 <script src="./modules/lesson-conversation/core.js?v=112"></script>
 <script src="./modules/lesson-conversation/ui.js?v=112"></script>
 <script src="./modules/ai-coach/core.js?v=169"></script>
-<script src="./modules/ai-coach/ui.js?v=169"></script>
+<script src="./modules/ai-coach/ui.js?v=254"></script>
+<script src="./modules/lexi/engine.js?v=4" defer></script>
+<script src="./modules/lexi/lesson-help.js?v=1" defer></script>
 <script src="./modules/word-builder/art.js?v=150"></script>
 <script src="./modules/emoji/cards.js?v=146"></script>
 <script src="./modules/emoji/variants.js?v=147"></script>
@@ -1332,14 +1448,14 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 <script src="./modules/word-builder/game.js?v=172"></script>
 <script src="./modules/kamer/game.js?v=198"></script>
 <script src="./modules/learning-path/invitation.js?v=2"></script>
-<script src="./modules/home-showcase/ui.js?v=223"></script>
-<script src="./modules/learning-path/ui.js?v=212"></script>
+<script src="./modules/home-showcase/ui.js?v=255"></script>
+<script src="./modules/learning-path/ui.js?v=263"></script>
 <script src="./modules/dialogues/translations.js?v=177"></script>
 <script src="./course-curriculum.js?v=178"></script>
-<script src="./app.js?v=226"></script>
+<script src="./app.js?v=263"></script>
   <div class="modes-wrapper" id="modeButtons"></div>
    <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam-core.js?v=176" defer></script>
+<script src="./modules/exam/exam-core.js?v=254" defer></script>
 <script src="./modules/exam/exam11.js?v=176" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=177" defer></script>

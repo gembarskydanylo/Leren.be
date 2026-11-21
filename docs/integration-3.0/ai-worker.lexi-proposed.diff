@@ -1,0 +1,59 @@
+--- prod.js	2026-11-21 22:59:59
++++ proposed.js	2026-11-21 23:00:44
+@@ -14,7 +14,7 @@
+ //           ask  → {answer, examples: [{lang, text, translation}]}
+ //           memo → {memory}   (updated notes about the learner; the app keeps them on the device)
+ //           report → {ok}     (a learner flagged an AI answer; logged to Workers Logs for review)
+-const WORKER_VERSION = "2026-11-08-german-arch-v1"; // bump on every change: shows in the X-Leren-AI response header after a deploy
++const WORKER_VERSION = "2026-11-21-lexi-3.0-proposed"; // bump on every change: shows in the X-Leren-AI response header after a deploy
+ const ALLOWED_ORIGINS = ["https://gembarskydanylo.github.io", "https://lerenbe.com", "https://www.lerenbe.com", "http://localhost:8765"];
+ const LANG = {uk: "Ukrainian", en: "English", fr: "French", ar: "Arabic"};
+ // The explanation language follows the learner: the app setting (uk/en/fr/ar) by default, but a learner who writes in
+@@ -28,6 +28,8 @@
+   gemeente: "You work at the gemeente (town hall). The learner changes address; you ask for ID card and new address; mention the wijkagent visit.",
+   station: "You sell train tickets at a Belgian station. The learner buys a ticket (enkel / heen en terug), you give price, time and platform (spoor).",
+   exam11: "You are the learner's CVO teacher taking the SPEAKING exam of course 1.1 (chapters 8-11: daily routine, graag / niet graag, invitations and appointments, at the doctor, meals, advice with meer / minder) as a mock exam. The app gives you an EXAM SCRIPT for every turn with the exact question to ask: follow it strictly. Never make up other questions, never ask why, never repeat a question that was already answered correctly, no small talk. Keep every reply very short.",
++  school: "You are the teacher or secretary at the school of the learner's child (or at the learner's CVO language school). Talk about a meeting with the teacher, an absence note, school times and a school trip.",
++  werk: "You are a colleague or team lead at the learner's new job in Belgium. Talk about working hours, tasks for today, a short break, asking for help and calling in sick.",
+   buren: "You are the learner's new Flemish neighbour. Small talk: names, where from, how long here, invite for coffee."
+ };
+ // Condensed curricula (from the Leren.be knowledge base) used to ground corrections.
+@@ -72,7 +74,8 @@
+ };
+ const PERSONA = {
+   peter: "Peter, a calm, friendly Flemish language teacher of about 50 with a gentle sense of humour; you explain rules simply, like on a whiteboard",
+-  dafna: "Dafna, a warm, cheerful young Flemish woman and language coach"
++  dafna: "Dafna, a warm, cheerful young Flemish woman and language coach",
++  lexi: "Lexi, the LerenBe AI tutor: a friendly, clever, patient ginger cat with green eyes and glasses, a little playful, always supportive; you never pretend to be a human or a real teacher"
+ };
+ const SAFETY = `- Be kind and supportive. Do not give medical, legal or financial decisions; in such cases teach the words and suggest a professional.
+ - Never ask for or repeat passwords, national register numbers, bank or card numbers. Refuse unsafe or adult topics kindly and return to the lesson.`;
+@@ -99,8 +102,8 @@
+ function chatSystem(t, lang, level, scene, char, extra = "", style = "teacher") {
+   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
+   const sceneText = t === "nl" && scene && SCENES[scene] ? "Role-play situation: " + SCENES[scene] : "Free conversation about " + T.place + " and anything else the learner wants to talk about (news, culture, food, travel, their country). Follow their topic; if they have nothing to say, suggest one everyday topic.";
+-  const blocks = STYLE_RULES(L, level === "a12" ? "a12" : "a11"), current = scene === "exam11" || style === "exam" ? "exam" : blocks[style] ? style : "teacher";
+-  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
++  const blocks = STYLE_RULES(L, level === "a12" || level === "a21" ? "a12" : "a11"), current = scene === "exam11" || style === "exam" ? "exam" : blocks[style] ? style : "teacher";
++  return `You are ${PERSONA[char] || PERSONA.peter}. You help an adult ${level === "a21" ? "course A2.1 / A2" : level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"} learner practise ${T.name} by chatting. You are an AI tutor, not a human. The learner's own language is ${L}.
+ ${EXPLAIN_RULE(L, T.name)}
+ ${sceneText}
+ Current style (the learner may switch style between turns; follow ONLY this one, whatever style your earlier turns used, and never mention a switch): ${blocks[current]}
+@@ -161,12 +164,16 @@
+   const lines = [];
+   if (p && typeof p === "object") {
+     if (p.topic) lines.push(`current lesson topic in the app: ${clean(p.topic, 60)}`);
++    // LerenBe 3.0 Lesson Help: the current lesson, the exercise and the learner's answer — material, not instructions.
++    if (p.lesson) lines.push(`current lesson: «${clean(p.lesson, 80)}»`);
++    if (p.question) lines.push(`the exercise the learner is working on: «${clean(p.question, 200)}»`);
++    if (p.answer) lines.push(`the learner's answer to it: «${clean(p.answer, 200)}» (check it against the exercise; explain the rule, do not just give the solution)`);
+     if (Number.isFinite(p.learned)) lines.push(`words practised so far: ${Math.max(0, Math.min(100000, Math.round(p.learned)))}`);
+     const weak = list(p.weak, 8), mist = list(p.mistakes, 5);
+     if (weak.length) lines.push(`words the learner often gets wrong: ${weak.join("; ")}`);
+     if (mist.length) lines.push(`sentences the learner recently got corrected: ${mist.join("; ")}`);
+     // Optional structured learning progress; do not infer missing data.
+-    if (p.level && ["a11", "a12", "a2", "b1"].includes(p.level)) lines.push(`learner-selected level: ${p.level}`);
++    if (p.level && ["a11", "a12", "a21", "a2", "b1"].includes(p.level)) lines.push(`learner-selected level: ${p.level}`);
+     const review = list(p.review, 8), mastered = list(p.mastered, 8);
+     if (review.length) lines.push(`vocabulary due for review: ${review.join("; ")}`);
+     if (mastered.length) lines.push(`recently mastered words: ${mastered.join("; ")}`);
