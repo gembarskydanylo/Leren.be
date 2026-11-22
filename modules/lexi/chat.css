@@ -73,7 +73,27 @@
  .lexi-keyboard .ai-type .send{grid-column:3;grid-row:1;min-width:48px;padding-inline:12px}
  .lexi-keyboard .ai-type .send span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
  .lexi-keyboard .ai-type #counter{grid-column:1/-1;grid-row:2;font-size:.65rem;padding-inline:4px}
+}/* LerenBe 3.0: the keyboard can also cover the chat on phones in landscape (844–932 px wide) and on tablets: there too the chat
+   takes the visible part above it (chat.js sets .lexi-keyboard only when visualViewport is > 120 px shorter than the window). */
+@media(min-width:768px){
+ .lexi-keyboard .lexi-app{height:var(--lexi-viewport-height,100dvh);min-height:0;transform:translateY(var(--lexi-viewport-top,0px))}
+ .lexi-keyboard .layout{display:flex;flex-direction:column;flex:1;min-height:0}
+ .lexi-keyboard .ai-chat-card{flex:1 1 0;min-height:0;overflow:hidden}
+ .lexi-keyboard .chat-log{min-height:0;max-height:none;flex:1}
+ .lexi-keyboard .demo-strip,.lexi-keyboard .composer-hint,.lexi-keyboard .sidebar,.lexi-keyboard .context-strip,.lexi-keyboard .notice:empty{display:none}
+ .lexi-keyboard .chat-header{padding:6px 12px}
+ .lexi-keyboard .chat-header .lexi-av{display:block;width:40px;height:40px}
+ .lexi-keyboard .chat-log{padding:12px}
+ .lexi-keyboard .ai-type{margin:4px 8px 6px;padding:6px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px}
+ .lexi-keyboard .ai-type .composer-tools{display:contents}
+ .lexi-keyboard .ai-type input{grid-column:2;grid-row:1;min-height:44px;padding:6px}
+ .lexi-keyboard .ai-type .g-mic-btn{grid-column:1;grid-row:1}
+ .lexi-keyboard .ai-type .send{grid-column:3;grid-row:1;min-width:48px;padding-inline:12px}
+ .lexi-keyboard .ai-type .send span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ .lexi-keyboard .ai-type #counter{grid-column:1/-1;grid-row:2;font-size:.65rem;padding-inline:4px}
 }
+@media(max-height:550px){.lexi-keyboard .ai-chat-card{min-height:0}}
+
 @media(max-width:767px){.lexi-app:has(.ai-type input:focus) .sidebar{display:none}}
 @media(max-width:767px) and (max-height:550px){.lexi-app:has(.ai-type input:focus) .context-strip,.lexi-app:has(.ai-type input:focus) .demo-strip{display:none}}
 @media(max-width:359px){.chat-header .lexi-av{display:block}}
