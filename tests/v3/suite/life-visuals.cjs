@@ -109,6 +109,8 @@ const root=path.join(__dirname,'..','life');
    await page.click('.ls-hero .ls-primary');await page.waitForSelector('.ls-stage .ls-stage-say');
    if(withArt){assert.equal(await page.locator('.ls-stage-bg img').getAttribute('alt'),F.stories['first-day'].scenes.station.alt);assert.equal(await page.locator('.ls-stage-bg source').getAttribute('media'),'(min-width: 768px)');
     assert.equal(await page.locator('.ls-stage-char[data-character="annick"]').getAttribute('data-emotion'),F.stories['first-day'].scenes.station.characters.find(c=>c.id==='annick').emotion,'the scene\'s default emotion');assert(await page.locator('.ls-log .ls-avatar').count(),'portrait next to the line');
+    // LerenBe 3.0 (CI): wait until the image has finished loading before reading naturalWidth (it was read too early on a slow runner)
+    await page.waitForFunction(()=>{const i=document.querySelector('.ls-stage-bg img');return i&&i.complete},null,{timeout:5000}).catch(()=>{});
     assert(await page.evaluate(()=>document.querySelector('.ls-stage-bg img').naturalWidth>0),'the picture loads')}
    else{assert.equal(await page.locator('.ls-stage-ph').getAttribute('aria-label'),F.stories['first-day'].scenes.station.alt,'placeholder carries the alt text');assert.equal(await page.locator('.ls-stage img').count(),0)}
    assert.match(await page.locator('.ls-stage-say .ls-nl').textContent(),/Ben jij Anastasia/);assert.equal(await page.locator('.ls-stage-repeat').count(),1);assert(await page.locator('.ls-progress').count());
