@@ -446,3 +446,12 @@ Dutch»). Translations and explanations use the informal «ти» / «tu». The 
 so the chat prompt stays under the 9200-character guard (9185). Checked by `tests/v3/worker-security.cjs` and the new
 `question-uk` request of `tools/lexi-live-check.cjs` (16 requests). Production (226, chat with Peter) has the same card and is
 not changed.
+
+## 12. Release (owner's decision, 2026-11-22)
+
+The owner approved the merge of PR #63 together with the Worker («Сайт + Worker разом»). `tools/ai-worker.js` is now the
+proposal (`ai-worker.lexi-proposed.js`, byte-identical); the push to `main` deploys it with
+`.github/workflows/deploy-worker.yml` (same `wrangler.toml`: model `claude-haiku-5-5`, limits 12 / 40 / 300 per minute,
+60 per device per day). From then on `gembarskydanylo.github.io` (the Leren.be-test beta) is refused by the Worker.
+Rollback: section 5 (a revert of the merge commit restores the old `tools/ai-worker.js`, and the push redeploys it).
+Before the merge: production tests 80 / 80, v3 suite 37 / 37, proposed-Worker and Worker-security checks pass.
