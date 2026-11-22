@@ -2,13 +2,16 @@
 // Run: node tests/sw-install.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('sw.js','utf8');
-const critical=['./','./index.html','./app.js?v=264','./modules/lexi/engine.js?v=5','./boot.js?v=193','./course-curriculum.js?v=178','./manifest.webmanifest'];
+// The atomic app shell: the page, the manifest, Lexi's engine and every script / style of index.html (APP_SHELL in sw.js).
+const shellCtx=vm.createContext({self:{addEventListener(){}}});vm.runInContext(source+';globalThis.__s=APP_SHELL',shellCtx);
+const critical=[...new Set(['./','./index.html','./manifest.webmanifest','./modules/lexi/engine.js?v=5',...shellCtx.__s])];
+assert.ok(critical.length>70&&critical.includes('./app.js?v=264')&&critical.includes('./modules/learning-path/ui.js?v='+(source.match(/learning-path\/ui\.js\?v=(\d+)/)||[])[1]),'the shell holds app.js and the learning path');
 async function simulate(fail){
  const handlers={},added=[],opened=[],deleted=[];
  let waiting=0,claimed=0;
  const old=['leren-be-v167','unrelated-cache'];
  const cache={
-  async addAll(files){assert.deepEqual(Array.from(files),critical);if(fail==='critical')throw Error('critical asset unavailable');added.push(...files)},
+  async addAll(files){assert.deepEqual(Array.from(files),critical);if(fail==='critical'||fail==='shell-script')throw Error('critical asset unavailable');added.push(...files)},
   async add(file){if(fail==='optional'&&file.includes('img/'))throw Error('optional image unavailable');if(fail==='quota'&&added.length>=600){const e=Error('The quota has been exceeded.');e.name='QuotaExceededError';throw e}if(fail==='slow')await new Promise(r=>setTimeout(r,1));added.push(file)},
  };
  const caches={open:async name=>{opened.push(name);return cache},keys:async()=>old,delete:async key=>{deleted.push(key);return true}};
@@ -17,7 +20,7 @@ async function simulate(fail){
  vm.runInContext(source,ctx,{timeout:2000});
  let install;handlers.install({waitUntil:p=>install=p});
  let error=null;try{await install}catch(e){error=e}
- if(fail==='critical'){
+ if(fail==='critical'||fail==='shell-script'){
   assert(error,'critical failure must reject installation');assert.equal(waiting,0);
   return;
  }
@@ -34,6 +37,7 @@ async function simulate(fail){
  await simulate(null);
  await simulate('optional');
  await simulate('critical');
+ await simulate('shell-script'); // e.g. modules/learning-path/ui.js fails: the update waits, the old release keeps its whole cache
  await simulate('quota'); // storage full while caching optional media
  await simulate('slow'); // slow network: every file still arrives, one batch of 20 at a time
  console.log('PASS: full install, optional failure tolerance, critical failure safety, cache quota, slow network, cache activation');
