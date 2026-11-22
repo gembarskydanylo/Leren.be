@@ -54,7 +54,9 @@ for(const f of appFiles){assert(/^\.\//.test(f)&&!/^\.\/\//.test(f)&&!f.includes
 const byPath=new Map();for(const f of appFiles){const p=f.split('?')[0];assert(!byPath.has(p),'Two versions of one offline asset: '+byPath.get(p)+' / '+f);byPath.set(p,f)}
 const shellHtml=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const m of shellHtml.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="(\.?\/?[^"#:]+\?v=[^"]+)"/g)){const ref='./'+m[1].replace(/^\.?\//,'');const cached=byPath.get(ref.split('?')[0]);assert(cached,'index.html loads a file the offline cache lacks: '+ref);assert.equal(cached,ref,'offline cache holds another version than index.html loads')}
-const shell=JSON.parse((sw.match(/const critical = (\[[^\]]*\])/)||[])[1]||'[]');assert(shell.length>=5,'atomic app shell list not found');for(const f of shell)assert(appFiles.includes(f),'app shell file outside APP_FILES: '+f);
+const shellCtx=vm.createContext({self:{addEventListener(){}},console});vm.runInContext(sw+'\n;globalThis.__s=APP_SHELL;',shellCtx,{timeout:2000});const shell=Array.from(shellCtx.__s);
+const htmlRefs=[...new Set([...shellHtml.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="(\.?\/?[^"#:]+\?v=[^"]+)"/g)].map(m=>'./'+m[1].replace(/^\.?\//,'')))];
+assert.deepEqual([...shell].sort(),[...htmlRefs].sort(),'APP_SHELL in sw.js must list exactly the scripts / styles index.html loads');for(const f of shell)assert(appFiles.includes(f),'app shell file outside APP_FILES: '+f);
 // Negative regression: an asset appended after event registration must also be checked.
 const ghost='./__missing_precache_regression__.js';
 assert(swManifest(sw+'\nAPP_FILES.push("'+ghost+'");').includes(ghost));
