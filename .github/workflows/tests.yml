@@ -38,3 +38,6 @@ jobs:
       - name: LerenBe 3.0 tests (tests/v3)
         shell: bash
         run: node tests/v3/run.cjs
+      - name: Proposed Lexi Worker against the production Worker tests (mocked, not deployed)
+        shell: bash
+        run: node tests/v3/proposed-worker.cjs

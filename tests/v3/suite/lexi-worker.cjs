@@ -25,9 +25,10 @@ const CHAT = {learner_in_target: 'Ik woon in Gent.', reply: 'Leuk! Werk je ook i
  r = await call({mode: 'ask', target: 'nl', lang: 'uk', char: 'lexi', messages: [{role: 'user', content: 'de of het?'}]}); assert.match(r.system, /^You are Lexi, the LerenBe AI tutor[\s\S]*the language tutor inside the Leren\.be app/);
  console.log('PASS: identity — Lexi for chat and questions, also for unknown or missing ids; «peter» / «dafna» only for older app versions');
 
+ // LerenBe 3.0: the production prefix "Role-play situation: " is kept (production tests pin it); en/fr add "(speak …)"
  // roleplay in every studied language; exam stays Dutch
  for (const [t, scene, word] of [['nl', 'school', /school of the learner's child/], ['fr', 'werk', /new job in Belgium/], ['en', 'station', /train tickets/], ['fr', 'huisarts', /GP's assistant/], ['nl', 'gemeente', /town hall/], ['en', 'super', /supermarket/]]) {
-  r = await call(chat({target: t, scene, style: 'teacher'})); assert.match(r.system, /Role-play situation \(speak /, t + ' ' + scene); assert.match(r.system, word, t + ' ' + scene);
+  r = await call(chat({target: t, scene, style: 'teacher'})); assert.match(r.system, t === 'nl' ? /Role-play situation: / : /Role-play situation: \(speak /, t + ' ' + scene); assert.match(r.system, word, t + ' ' + scene);
  }
  r = await call(chat({target: 'fr', scene: 'exam11'})); assert.doesNotMatch(r.system, /Role-play situation/, 'the A1.1 mock exam is Dutch only');
  r = await call(chat({scene: 'hack'})); assert.match(r.system, /Free conversation about/, 'unknown scene → free conversation');
