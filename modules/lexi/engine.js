@@ -122,7 +122,7 @@
   return b;
  }
  function fail(code, extra) { const e = new Error(code); e.code = code; if (extra) Object.assign(e, extra); return e }
- // Normalised answers. chat → {kind:'chat', reply, translation, correction|null, verdict:'correct'|'incorrect'|null}
+ // Normalised answers. chat → {kind:'chat', reply, translation, correction|null, verdict:'correct'|'incorrect'|null, asks_about_language}
  //                    ask  → {kind:'ask', answer, examples:[{lang,text,translation}]}
  function normalize(mode, d, lastUser) {
   if (!d || typeof d !== 'object') throw fail('format');
@@ -137,7 +137,7 @@
   const c = d.correction, norm = s => String(s || '').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const fix = c && typeof c === 'object' && c.has_error === true && typeof c.corrected === 'string' && c.corrected.trim() && (!lastUser || norm(c.corrected) !== norm(lastUser))
    ? {has_error: true, original: String(c.original || lastUser || '').slice(0, 300), corrected: c.corrected.slice(0, 300), explanation: typeof c.explanation === 'string' ? c.explanation.slice(0, 300) : '', severity: c.severity === 'major' ? 'major' : 'minor'} : null;
-  return {kind: 'chat', reply: reply.trim().slice(0, 600), translation: typeof d.translation === 'string' ? d.translation.trim().slice(0, 600) : '', correction: fix, verdict: lastUser ? (fix ? 'incorrect' : 'correct') : null};
+  return {kind: 'chat', reply: reply.trim().slice(0, 600), translation: typeof d.translation === 'string' ? d.translation.trim().slice(0, 600) : '', correction: fix, verdict: lastUser ? (fix ? 'incorrect' : 'correct') : null, asks_about_language: d.asks_about_language === true};
  }
  const listeners = new Set();
  function on(fn) { listeners.add(fn); return () => listeners.delete(fn) }

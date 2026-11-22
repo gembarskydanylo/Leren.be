@@ -2,7 +2,7 @@
 // Run: node tests/sw-install.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('sw.js','utf8');
-const critical=['./','./index.html','./app.js?v=263','./modules/lexi/engine.js?v=4','./boot.js?v=193','./course-curriculum.js?v=178','./manifest.webmanifest'];
+const critical=['./','./index.html','./app.js?v=263','./modules/lexi/engine.js?v=5','./boot.js?v=193','./course-curriculum.js?v=178','./manifest.webmanifest'];
 async function simulate(fail){
  const handlers={},added=[],opened=[],deleted=[];
  let waiting=0,claimed=0;
