@@ -427,4 +427,4 @@ APP_FILES.push("./modules/design-system/tokens.css?v=1", "./modules/design-syste
 
 APP_FILES.push("./modules/design-system/learning.css?v=263");
 
-APP_FILES.push("./modules/design-system/engagement.css?v=2", "./modules/design-system/life.css?v=263", "./modules/design-system/guides.css?v=1");
+APP_FILES.push("./modules/design-system/engagement.css?v=3", "./modules/design-system/life.css?v=263", "./modules/design-system/guides.css?v=1");
