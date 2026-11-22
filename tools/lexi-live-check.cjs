@@ -4,6 +4,7 @@
 // (shape, language of the explanation, persona, correction, Lesson Help context, prompt injection) and goes into a
 // Markdown report for a human read; the automatic checks are heuristics, the read is the real verdict.
 //   node tools/lexi-live-check.cjs [report.md]     (server on http://localhost:8080; LEXI_URL to change)
+//   LEXI_SET=264 node tools/lexi-live-check.cjs    the release 264 scenario set (≈ 30 model calls, see below)
 // Refuses to run when the local server is in mock mode (nothing to check) or not running. No key is needed here.
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
@@ -45,6 +46,21 @@ const C = [
  {id: 'chat-fr', what: 'Розмова французькою (курс FR), пояснення англійською', b: {mode: 'chat', target: 'fr', lang: 'en', level: 'a11', char: 'lexi', scenario: 'free', messages: msg('Bonjour, je m’appelle Anna.')},
   ok: j => [j.reply && LAT_FR.test(j.reply) || 'reply should be French', !CYR.test(j.translation || '') || 'translation should be English']},
 ];
+// LEXI_SET=264: the release 264 set (tools/lexi-scenarios-264.cjs) instead of the 16 checks above: the same scenarios the free
+// mock test runs, sent in the shape the app's engine sends (modules/lexi/engine.js body()), checked by each scenario's `live`.
+// Scenarios that only make sense with scripted model output (mockOnly) or an older Worker (legacy) are left out.
+if (process.env.LEXI_SET === '264') {
+ const MODE = {free: ['chat', 'talk'], grammar: ['ask'], roleplay: ['chat', 'teacher'], lesson: ['ask'], speaking: ['chat', 'slow']};
+ C.length = 0;
+ for (const s of require('./lexi-scenarios-264.cjs').S) {
+  if (s.legacy || s.expect.mockOnly) continue;
+  const [mode, style] = MODE[s.scenario], x = s.ctx || {}, profile = {level: s.level};
+  for (const k of ['topic', 'lesson', 'question', 'answer', 'kind', 'expected']) if (x[k]) profile[k] = x[k];
+  const b = {mode, target: s.target, lang: s.ui, level: s.level, char: 'lexi', scenario: s.scenario, profile, messages: msg(s.say)};
+  if (style) b.style = style; if (s.scenario === 'lesson') b.focus = 'lesson'; if (mode === 'chat' && x.scene) b.scene = x.scene;
+  C.push({id: s.id, what: s.ui + ' · ' + s.target + ' · ' + s.level + ' · ' + s.scenario, b, ok: j => { const p = s.live(j); return p.length ? p : [true] }});
+ }
+}
 (async () => {
  let st; try { st = await (await fetch(URL_ + '/__lexi-local/status')).json() } catch { console.log('The local server is not running: start it with  node tools/lexi-local.cjs'); process.exit(2) }
  const dry = process.env.LEXI_DRY === '1'; // request shapes only, against the mock server (the answer checks then fail: mock text)
