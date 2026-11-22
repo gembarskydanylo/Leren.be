@@ -92,6 +92,7 @@
   const tx = el('span', 'hv-pick-text'); tx.append(el('small', '', t.learn), el('b', '', t.nl + (ln ? ' · ' + ln : '')));
   const ar = el('span', 'hv-pick-arrow', '▾'); ar.setAttribute('aria-hidden', 'true'); btn.append(badge('nl'), tx, ar);
   const grid = el('div', 'hv-course-grid'); grid.append(dutchCard(ctx, t, lang)); for (const id of OTHER()) grid.append(otherCard(id, t, lang));
+  if (grid.children.length === 1) grid.classList.add('hv-solo'); // only Dutch is live: its levels go side by side instead of one narrow column
   panel.append(grid); box.append(btn, panel);
   return box;
  }

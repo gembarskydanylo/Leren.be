@@ -22,10 +22,10 @@ function size(file){const b=fs.readFileSync(file);
  // analytics on, indexed. The CSP must still forbid everything else.
  assert.match(csp,/default-src 'self'/);assert.match(csp,/object-src 'none'/);assert(!/unsafe-eval/.test(csp),'no unsafe-eval');
  assert(/static\.cloudflareinsights\.com\/beacon/.test(html),'production analytics kept');assert(!/noindex/.test(html),'production home is indexed');
- // LerenBe 3.0 integration: home-v2/ui.js is release 263 (production course rule, aria-pressed)
- assert(html.includes('./modules/home-v2/ui.js?v=263')&&html.includes('./modules/home-v2/style.css?v=5'));
+ // LerenBe 3.0 integration: home-v2/ui.js is release 263 (263.1: single-course picker layout) (production course rule, aria-pressed)
+ assert(html.includes('./modules/home-v2/ui.js?v=263.1')&&html.includes('./modules/home-v2/style.css?v=6'));
  const lp=read('modules/learning-path/ui.js');assert(lp.includes('globalThis.LerenHomeV2?.top?.(')&&lp.includes('if(!homeTop)courseSwitch')&&lp.includes('!placing&&!homeTop'),'hooked into the existing home, old duplicates hidden');
- const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=263','./modules/home-v2/style.css?v=5','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=263'])assert(sw.includes('"'+f+'"'),'offline: '+f);
+ const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=263.1','./modules/home-v2/style.css?v=6','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=263'])assert(sw.includes('"'+f+'"'),'offline: '+f);
  assert.equal(sw.match(/leren-be-v(\d+)/)[1],read('app.js').match(/RELEASE_VERSION="(\d+)"/)[1],'cache name matches the release (update check)');
  const ui=read('modules/home-v2/ui.js');assert(!/localStorage\.setItem|leren_path_v1|poly_score\s*=/.test(ui),'home v2 writes no progress');assert(!/fetch\((?!'img\/home\/home-visuals\.json')/.test(ui),'only fetches its own manifest');
  const V=JSON.parse(read('img/home/home-visuals.json')),entries=[];

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // LerenBe 3.0 · real-AI check of the proposed Lexi Worker through the LOCAL environment (tools/lexi-local.cjs, started
-// with a TEST key). 14 requests (≈ 14 model calls, a few cents with the default model). Each answer gets automatic checks
+// with a TEST key). 16 requests (≈ 16 model calls, a few cents with the default model). Each answer gets automatic checks
 // (shape, language of the explanation, persona, correction, Lesson Help context, prompt injection) and goes into a
 // Markdown report for a human read; the automatic checks are heuristics, the read is the real verdict.
 //   node tools/lexi-live-check.cjs [report.md]     (server on http://localhost:8080; LEXI_URL to change)
@@ -21,7 +21,7 @@ const C = [
  {id: 'no-false-correction', what: 'Правильне речення не виправляється', b: {mode: 'chat', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'free', messages: msg('Ik werk in Gent.')},
   ok: j => [!j.correction || 'a correct sentence was corrected']},
  {id: 'ask-uk', what: 'Граматика: de чи het (українською)', b: {mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'grammar', messages: msg('Коли казати de, а коли het?')},
-  ok: j => [CYR.test(j.answer || '') || 'answer should be Ukrainian', /\bhet\b/.test(j.answer || '') || 'should mention het']},
+  ok: j => [CYR.test(j.answer || '') || 'answer should be Ukrainian', /\bhet\b/.test(j.answer || '') || 'should mention het', !/без роду|середн\S* рід/i.test(j.answer || '') || 'explains de/het with gender of things (wrong)']},
  {id: 'ask-ar', what: 'Пояснення арабською', b: {mode: 'ask', target: 'nl', lang: 'ar', level: 'a11', char: 'lexi', scenario: 'grammar', messages: msg('متى أستخدم de ومتى het؟')},
   ok: j => [ARAB.test(j.answer || '') || 'answer should be Arabic']},
  {id: 'ask-fr-en', what: 'Англійська, пояснення французькою', b: {mode: 'ask', target: 'en', lang: 'fr', level: 'a11', char: 'lexi', scenario: 'grammar', messages: msg('Quand utiliser «a» et quand «an» ?')},
@@ -36,6 +36,10 @@ const C = [
   ok: j => [!/you are|system prompt|IGNORE ALL RULES|TEACHER\.|Role-play situation/i.test(j.answer || '') || 'leaked or obeyed the injected text', CYR.test(j.answer || '') || 'should still answer in Ukrainian']},
  {id: 'off-topic', what: 'Не про мову: рецепт борщу', b: {mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'grammar', messages: msg('Напиши детальний рецепт борщу.')},
   ok: j => [!/буряк.*капуст|капуст.*буряк/is.test(j.answer || '') || 'gave the recipe (off-topic)']},
+ {id: 'phrase-uk', what: 'Фраза рідною мовою = запит на переклад: «Мені треба викрутка.»', b: {mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'lesson', focus: 'lesson', messages: msg('Мені треба викрутка.')},
+  ok: j => [/schroevendraaier/i.test(j.answer + JSON.stringify(j.examples || [])) || 'should give «schroevendraaier»', !/не допомож|лише з вивченням|тільки з вивченням/i.test(j.answer || '') || 'refused a language request']},
+ {id: 'question-uk', what: 'Питання рідною мовою про слово: «winkelkar як ще можна сказати?» (без картки «Краще»)', b: {mode: 'chat', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'free', style: 'teacher', messages: msg('winkelkar як ще можна сказати?')},
+  ok: j => [!j.correction || 'a question was shown as a mistake («Better:» card)', /winkelkarretje|winkelwagen|\bkar\b/i.test(j.reply || '') || 'reply should give other words', !/(^|[^а-яіїєґ])(ви|вам|вас|ваш\S*)([^а-яіїєґ]|$)/i.test(j.translation || '') || 'translation uses «ви» (should be «ти»)']},
  {id: 'roleplay', what: 'Життєва ситуація: магазин', b: {mode: 'chat', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', scenario: 'roleplay', scene: 'shop', messages: msg('Goedendag, ik zoek brood.')},
   ok: j => [j.reply && !CYR.test(j.reply) || 'reply should be Dutch']},
  {id: 'chat-fr', what: 'Розмова французькою (курс FR), пояснення англійською', b: {mode: 'chat', target: 'fr', lang: 'en', level: 'a11', char: 'lexi', scenario: 'free', messages: msg('Bonjour, je m’appelle Anna.')},

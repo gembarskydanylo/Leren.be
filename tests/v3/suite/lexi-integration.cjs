@@ -268,7 +268,7 @@ console.log('PASS: static — app chat = design lab + documented patches (port -
   {
    const {ctx, page, errors} = await open({sw: 'allow'});
    await page.evaluate(async () => { await navigator.serviceWorker.ready }); await page.reload(); await page.waitForFunction(() => !!navigator.serviceWorker.controller && !!window.LerenLexi);
-   const cached = await page.evaluate(async () => { const c = await caches.open((await caches.keys()).find(k => k.startsWith('leren-be-v'))); return Promise.all(['./modules/lexi/chat.js?v=261', './modules/lexi/copy.js?v=261', './modules/lexi/chat.css?v=261', './img/lexi/lexi.webp', './img/lexi/lexi-emotions.webp'].map(async u => !!(await c.match(u)))) });
+   const cached = await page.evaluate(async () => { const c = await caches.open((await caches.keys()).find(k => k.startsWith('leren-be-v'))); return Promise.all(['./modules/lexi/chat.js?v=262', './modules/lexi/copy.js?v=262', './modules/lexi/chat.css?v=262', './img/lexi/lexi.webp', './img/lexi/lexi-emotions.webp'].map(async u => !!(await c.match(u)))) });
    assert.deepEqual(cached, [true, true, true, true, true], 'chat files precached');
    await ctx.setOffline(true); await page.evaluate(() => { lexiOpen('free') }); await page.waitForSelector('.lexi-off', {timeout: 15000}); assert.equal(await page.locator('.lexi-host').count(), 0, 'offline at the start: the «Lexi is offline» card with retry');
    await ctx.setOffline(false);

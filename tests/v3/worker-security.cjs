@@ -105,5 +105,14 @@ const used = e => [...e.RATE.m.values()].map(v => JSON.parse(v)).reduce((a, d) =
  { sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', profile: {lesson: 'Les 3: Wonen', question: 'Ik ___ in Gent.', answer: 'woont'}, messages: [{role: 'user', content: 'Waarom is dit fout?'}]}));
   const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /current lesson: «Les 3: Wonen»/); assert.match(sys, /working on: «Ik ___ in Gent\.»/); assert.match(sys, /answer to it: «woont»/); }
  pass('226 app request shape still served with Peter in Dutch; Lexi persona (default for unknown characters); Lesson Help lesson, exercise and answer in the prompt');
+ // --- owner test 2026-11-22: a question about the language in the learner's own language is answered, not «corrected»
+ { const out = asks => ({ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', usage: {}, content: [{type: 'text', text: JSON.stringify({learner_in_target: 'Hoe zeg je winkelkar nog?', asks_about_language: asks, reply: 'Je kunt ook winkelkarretje of kar zeggen.', translation: 'Можна також сказати winkelkarretje або kar.', correction: {has_error: false, severity: 'minor', original: '', corrected: '', explanation: ''}})}]})});
+  const q = chat({messages: [{role: 'user', content: 'winkelkar як ще можна сказати?'}]});
+  model = () => out(true); let j = await (await call(req(q))).json(); assert.equal(j.correction, null, 'question about a word: no «Better:» card');
+  model = () => out(false); j = await (await call(req(q))).json(); assert.equal(j.correction?.has_error, true, 'a plain message in Ukrainian still gets «say it in Dutch»'); assert.equal(j.correction.corrected, 'Hoe zeg je winkelkar nog?');
+  model = null; sent = []; await call(req(chat())); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /informal \(ти\/tu\)/, "informal address rule");
+  assert.ok(sent.at(-1).output_config.format.schema.required.includes('asks_about_language'), 'schema asks for asks_about_language');
+ }
+ pass('a question about the language in the learner\'s own language: answered without a «Better:» card; plain own-language messages keep it; informal «ти»');
  console.log('PASS: proposed Worker security checks');
 })().catch(e => { console.error(e); process.exit(1) });

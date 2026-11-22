@@ -57,4 +57,5 @@
 :root[data-theme=dark] .hv-hero-copy .hv-title em,:root[data-theme=dark] .hv-hero-copy .hv-kicker{color:var(--lb-brand)}
 :root[data-theme=dark] .hv-hero-copy .hv-sub{color:var(--lb-muted)}
 .fh-hero-footer .fh-meter{height:8px;min-width:0;flex:1 1 100%;max-width:none}
+.fh-hero-footer.fh-has-progress{flex-direction:column;flex-wrap:nowrap;align-items:stretch}.fh-hero-footer.fh-has-progress>.fh-meter{flex:none;width:100%;max-width:100%;box-sizing:border-box}
 .hv-progress .hv-btn,.hv-benefits .hv-btn{background:var(--lb-surface);color:var(--lb-ink);border:1px solid var(--lb-line)}

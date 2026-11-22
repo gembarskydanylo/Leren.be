@@ -415,3 +415,34 @@ Logs: `/Volumes/Ai_Project/LerenBe-3.0-integration-2026-11-21/logs/final-stabili
 
 Real Lexi answers (no separate test quota; the production key is not used), physical Samsung, push / sign-in / sync /
 App Check on lerenbe.com.
+
+## 11. Owner test with real AI (2026-11-22, MacBook, Chrome + Safari, `tools/lexi-local.cjs` + test key)
+
+The owner ran 263 with the proposed Lexi Worker and a separate test key (11 model calls). Corrections, Ukrainian
+explanations, Arabic RTL and the language switch worked. Fixed after the test (checked by
+`tests/v3/suite/ui-fixes-263.cjs`, uk / en / fr / ar):
+
+| Found | Fix |
+|---|---|
+| «Report» ~7 px lower than «Read aloud» under every Lexi reply | `.message-voice{vertical-align:top}` (`modules/lexi/chat.css`) |
+| English «GAMIFIED BELGIUM» above «Let's talk with Lexi» in every language | translated `eyebrow` key (`modules/lexi/copy.js`, `chat.js`) |
+| Settings codes UKR / ENG / FRA next to UK / EN / FR in the header | Settings use the header codes; the tour text too |
+| «I'm learning»: Dutch flag on the home, Belgian flag in Settings | the home badge is the Belgian flag (the course is Dutch as in Belgium) |
+| «I'm learning» with only Dutch live: one narrow column, empty panel | `hv-solo`: the three levels side by side across the panel |
+| Safari: the hero «0 of 197 lessons done» bar drawn past the card edge | the progress footer is a column, the bar `width:100%` (`design-system/home.css`); WebKit not run here |
+| Lexi refused «Мені треба викрутка.» as off-topic | ask prompt: a phrase in the learner's language is a request to say it in the target language |
+| de/het answer listed «het huis» under -je words and «het = things without gender» | ask prompt: only true rules, examples must follow their rule, no gender of the learner's language |
+
+`tools/lexi-live-check.cjs` now has 16 requests (new: the phrase above; the de/het answer is checked for the gender claim).
+File versions: Lexi files `?v=262`, `home-v2/ui.js?v=263.1`, `home-v2/style.css?v=6`, `design-system/home.css?v=2`
+(none of them is in production; the bump refreshes test devices that already have 263). The release stays 263.
+`modules/lexi/chat.js`, `copy.js` and `chat.css` are generated from the TEST-030 lab, which is not in this repository:
+carry these three small patches into the lab before the next port.
+
+Also fixed (owner's decision after production screenshots, «winkelkar як ще можна сказати?» shown as «Better: Hoe zeg je
+winkelkar in het Nederlands?»): the chat answer has a new field `asks_about_language`; when the learner asks about a word or
+grammar in their own language, the Worker shows no «Better:» card (a plain own-language message still gets «say it in
+Dutch»). Translations and explanations use the informal «ти» / «tu». The rule lives in the answer schema and the Worker code,
+so the chat prompt stays under the 9200-character guard (9185). Checked by `tests/v3/worker-security.cjs` and the new
+`question-uk` request of `tools/lexi-live-check.cjs` (16 requests). Production (226, chat with Peter) has the same card and is
+not changed.

@@ -126,7 +126,7 @@ Rules:
 - No exercises unless asked: never start a repetition drill, a "Zeg maar:" line, a quiz or a task on your own. If you want to offer practice, offer it once as a choice and accept "no". If the learner answers an earlier drill, acknowledge briefly and return to their own goal.
 - Unclear or broken input (a fragment, mixed languages, a voice message that does not make sense): do not guess and do not correct. Ask ONE short clarifying question in simple A1 language (name two likely meanings if you can) and wait.
 - Level: A1 words and short sentences. If the learner is confused or repeats a mistake, simplify and give one short example; after clear success you may add one slightly harder familiar pattern (never in SLOW PRACTICE). Do not infer a formal level from a few answers.
-- translation: complete translation of reply into ${L}; every word translated, no Dutch, English or French words left (names excepted).
+- translation: complete translation of reply into ${L}, informal (ти/tu); every word translated, no Dutch, English or French words left (names excepted).
 - learner_in_target: the learner's last message in correct, natural ${T.name} with exactly the same meaning (keep time words, negation, number); if they wrote in their own language, this is the translation they should learn.
 - correction: has_error is true only if the learner's LAST message has a real mistake (grammar, word order, wrong word) or is not in the target language, and the current style allows reporting it; then original = their text, corrected = one natural sentence in the target language, explanation = one short sentence in ${L} (never in the target language), severity = "major" if the mistake blocks understanding, changes the meaning or is in the wrong language, otherwise "minor". Never invent errors and never change what the learner meant. If there is no mistake: has_error false, severity "minor", empty strings. Explain only the language, never blame speech recognition.
 - Natural A1 wording: wellbeing is «Goed, en met jou?» or «Het gaat goed», not a bare «Ik goed»; a mixed-language word becomes Dutch while keeping the learner's number (English "comics" → «strips»); «naar huis» is movement, «thuis» is the place; keep an article where Dutch needs one («een Nederlands boek»).
@@ -144,10 +144,12 @@ const EXAM11_COACH = L => `- EXAM COACH MODE: the learner is preparing the CVO D
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   if (lang === t && TARGET[t]) extra += SAME_LANG(L);
-  return `You are ${PERSONA[char] || PERSONA.lexi}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a21" ? "course A2.1 / A2" : level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.lexi}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}, informally (ти / tu). The learner is an adult beginner (${level === "a21" ? "course A2.1 / A2" : level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 ${EXPLAIN_RULE(L, T.name)}
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
+A word, phrase or sentence in the learner's own language that is not a question (for example «Мені треба викрутка.», «I need a screwdriver.») IS language learning: the learner wants to say it in ${T.name}. Give the natural ${T.name} sentence and a one-line note in ${L} (a new word, its article); never refuse it.
+Accuracy: state only rules that are true for ${T.name}; if there is no simple rule, say so and give the reliable cases only. Every example must really follow the rule it illustrates (do not list «het huis» under words in -je). Never explain grammar with grammatical gender of things in the learner's language.
 Grammar notes for ${T.name} (keep explanations consistent with them):
 ${T.grammar}
 Answer format:
@@ -248,7 +250,8 @@ const schemaFor = (mode, L) => mode === "memo"
       answer: {type: "string", description: `Written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
         properties: {lang: {type: "string", enum: ["nl", "en", "fr", "de"]}, text: STR, translation: {type: "string", description: `Translation into ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}}}
-  : {type: "object", additionalProperties: false, required: ["learner_in_target", "reply", "translation", "correction"], properties: {
+  : {type: "object", additionalProperties: false, required: ["learner_in_target", "asks_about_language", "reply", "translation", "correction"], properties: {
+      asks_about_language: {type: "boolean", description: "true when the learner's LAST message is a question in their own language about the language itself (a word, its meaning, another way to say it, grammar, pronunciation). Asking is not a mistake: answer the question in reply with the target-language words; no correction."},
       learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
       reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L} (or the learner's own language, see EXPLANATION LANGUAGE): translate every word, leave no words in the target language.`},
       correction: {type: "object", additionalProperties: false, required: ["has_error", "original", "corrected", "explanation", "severity"],
@@ -430,8 +433,10 @@ export default {
       if (c && sentenceKey(c.corrected) === sentenceKey(lastUser)) c = null;                     // "corrected" is what they wrote: there was nothing to fix
       else if (c && style === "talk" && !major) c = null;                                       // free talk: only mistakes that block understanding
       else if (c && !major && alternatives.includes(sentenceKey(c.corrected))) c = null;      // voice: the recognizer also heard the correct sentence, so it is an artefact, not the learner's mistake
+      const asks = o.asks_about_language === true;                                              // a question about the language in their own language is not a mistake: no «Better:» card
+      if (asks) c = null;
       const said = o.learner_in_target ? cut(latin(o.learner_in_target), 300) : "";
-      if (said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
+      if (!asks && said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {has_error: true, severity: "major", original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)}; // wrong language = major
       delivered = true;
       return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});

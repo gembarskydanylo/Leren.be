@@ -5493,7 +5493,7 @@ function lexiBlocked(title){const L=lexi(),a=L?L.availability():{ok:false,code:"
 // tools/lexi-ui-port.cjs), loaded on first use and shown full screen over the app in a shadow root (its styles cannot
 // touch the app, the app's cannot touch it). It talks only to LerenLexi; XP, the mistakes list and notes keep the rules
 // of the old chat. The A1.1 speaking exam and the exam writing check keep their own screens (aiStartExam / askStartExam).
-const LEXI_V="261";
+const LEXI_V="262";
 const LEXI_SCENE={super:"shop",huisarts:"doctor",station:"transport",gemeente:"municipality",werk:"work",school:"school"}; // worker id → chat id
 const LEXI_OLD_SCENES={cafe:{uk:"Кафе",en:"Café",fr:"Café",ar:"مقهى"},apotheek:{uk:"Аптека",en:"Pharmacy",fr:"Pharmacie",ar:"صيدلية"},buren:{uk:"Сусіди",en:"Neighbours",fr:"Voisins",ar:"الجيران"}};
 const LEXI_PRIVACY={uk:"Повідомлення надсилаються до AI через сервер lerenbe.com і не зберігаються. Голос розпізнає браузер; запис не зберігається.",en:"Messages go to the AI through the lerenbe.com server and are not stored. Your browser recognises speech; no recording is kept.",fr:"Les messages passent par le serveur lerenbe.com vers l’IA et ne sont pas conservés. Le navigateur reconnaît la voix ; rien n’est enregistré.",ar:"تُرسل الرسائل إلى الذكاء الاصطناعي عبر خادم lerenbe.com ولا تُحفظ. يتعرّف المتصفح على الصوت؛ لا يُحفظ أي تسجيل."};
@@ -6323,7 +6323,7 @@ const TOUR_STEPS=[
   fr:["🔥 Série et ⭐ points","🔥 : nombre de jours d'affilée où tu atteins ton objectif. ⭐ : tes points — un mot nouveau ou oublié rapporte 10, un mot bien connu 2. Touche 🔥 pour voir tes progrès."],
   ar:["🔥 السلسلة و⭐ النقاط","🔥 عدد الأيام المتتالية التي حققت فيها هدفك. ⭐ نقاطك: الكلمة الجديدة أو المنسية تعطي 10، والمعروفة جيدًا 2. اضغط 🔥 لفتح التقدّم."]},
  {id:"settings",at:["#settingsBtn"],
-  uk:["⚙ Налаштування","Тут мова, яку ти вчиш (🇧🇪 BE — нідерландська, як у Бельгії), мова пояснень (🇺🇦 UKR), голос, автоозвучення, темна тема, ціль дня та ця інструкція."],
+  uk:["⚙ Налаштування","Тут мова, яку ти вчиш (🇧🇪 BE — нідерландська, як у Бельгії), мова пояснень (🇺🇦 UK), голос, автоозвучення, темна тема, ціль дня та ця інструкція."],
   en:["⚙ Settings","Here you set the language you learn (🇧🇪 BE — Dutch as in Belgium), the explanation language, the voice, auto-play, dark theme, daily goal and this guide."],
   fr:["⚙ Réglages","Ici : la langue apprise (🇧🇪 BE — néerlandais de Belgique), la langue des explications, la voix, la lecture auto, le thème sombre, l'objectif du jour et ce guide."],
   ar:["⚙ الإعدادات","هنا تختار اللغة التي تتعلّمها (🇧🇪 BE — الهولندية كما في بلجيكا) ولغة الشرح والصوت والنطق التلقائي والوضع الداكن وهدف اليوم وهذا الشرح."]},
