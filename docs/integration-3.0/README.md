@@ -201,7 +201,11 @@ Not run here, with the reason printed by the runner (13 tests):
 - After a merge, roll back with a revert of the merge commit on `main`. Pages then serves 226 again.
 - The Service Worker sees a new `CACHE_NAME`, which needs a release above 263. So the revert must ship as release 264
   (226 content with `CACHE_NAME leren-be-v264`). Otherwise devices that already have v263 keep it.
-- Learner data does not need a rollback. 263 changes no learner key; the upgrade test checks this for 6 profiles.
+- Learner data does not need a rollback. 263 changes no learner key; the upgrade tests check this for 6 profiles and for
+  an interrupted update.
+- The Worker rolls back on its own (section 3). The app and the Worker are independent: the 226 app works with the
+  proposed Worker, and the 263 app works with the current one (Lexi then answers with the Peter prompt, and Lesson Help
+  gets no exercise context).
 - Backups (Ai_Project disk, `LerenBe-3.0-integration-2026-11-21/backups`):
   - a full bundle of the production checkout;
   - its untracked files;
@@ -211,16 +215,8 @@ Not run here, with the reason printed by the runner (13 tests):
 
 1. Deploy the proposed Worker, or decide to ship without it: Lexi with the Peter prompt, Lesson Help without context.
 2. Decide whether en/fr stay preview-only (the current production rule, kept here).
-3. On a real Android phone (Samsung), open `?multilang=1` and the normal home, then check:
-   - a lesson with listening, Lexi and Lesson Help;
-   - LIFE;
-   - offline after one visit;
-   - keyboard over the Lexi input;
-   - Back button, rotation and resume.
-4. On a real phone with an old install (226), check the update bar, one tap, and that the XP, streak and lessons are
-   unchanged.
-5. Check the 4 interface languages on a phone; ar must be right-to-left.
-6. App Check: monitoring only, no enforcement.
+3. Run the Samsung checklist in section 9.4 on a real phone (Chrome, and the installed app if there is one).
+4. App Check: monitoring only, no enforcement.
 
 ## 7. Release notes (263)
 
@@ -252,7 +248,8 @@ Notes on this run:
   - widths 320 and 390 in portrait, 844×390 and 1024 in landscape;
   - the uk, en, fr and ar interfaces;
   - 8 screens.
-- `perf-budget`: the render-blocking first screen is 759.9 KB of 760 KB. The budget was not raised.
+- `perf-budget`: the render-blocking first screen was 759.9 KB of 760 KB here; it is 718.8 KB after section 9. The
+  budget was not raised.
 
 **Not checked here (needs a real device or a production-like environment):**
 - a physical Samsung or Android phone: the keyboard over the Lexi input, real audio and TTS, the Back button, real
@@ -261,3 +258,101 @@ Notes on this run:
 - the proposed Worker on Cloudflare, with real rate-limit bindings;
 - Firebase sync, App Check and push on lerenbe.com;
 - an update from an old install on a real phone.
+
+## 9. Release audit (2026-11-22, PR #63)
+
+### 9.1 Problems found and what was done
+
+| # | Problem | Severity | Done |
+|---|---|---|---|
+| 1 | The saved Lexi notes (`memory`, sent back by the device) kept their new lines, so a line in them could pose as a rule in the system prompt (production 226 too) | medium | fixed in the proposed Worker: new lines are flattened inside the prompt. Regression test: `tests/v3/worker-security.cjs` |
+| 2 | An interrupted update left the 263 cache with holes, and the 226 cache was already gone. The missing files stayed missing offline (production 226 too) | medium | fixed in `sw.js` (`healCache`): page loads refill missing release files in the background and retry on the next load. Test: `tests/upgrade-interrupted.cjs` |
+| 3 | First screen at 759.9 of 760 KB | low | the word builder and Kamer load with `defer`; their titles join the menu in `start()`. Now 718.8 KB, so 41 KB of room. Test: `tests/deferred-games-browser.cjs` |
+| 4 | The `Origin` check only stops other websites' browser code. A script can send `Origin: https://lerenbe.com` (production 226 too) | by design of HTTP | not fixable with a header; see 9.2 |
+| 5 | A missing rate-limit binding is skipped, not refused (the comment says otherwise). The production `wrangler.toml` has all three bindings | low | kept: the production Worker tests rely on it. Check the bindings before deploying |
+| 6 | Without the proposed Worker, Lexi gets the Peter prompt and no exercise context | release blocker for Lexi | `tests/v3/suite/lexi-release-063.cjs` fails at its first step against `tools/ai-worker.js` and passes against the proposal |
+
+Measured, not changed:
+- Deferring the games does not move the home: on slow 4G (CPU ×4) the home appears at 7.57 s against 7.58 s before.
+  The first paint is 1.83 s against 1.94 s, within noise.
+  - Deferred scripts still download before `DOMContentLoaded`.
+  - A real speed-up needs on-demand loading of the games (follow-up).
+
+### 9.2 Worker security (`tests/v3/worker-security.cjs`, mocked model)
+
+- **Origin and CORS.** Other sites, look-alike hosts, `http://`, `null` and no Origin all get 403 before any model call.
+  The CORS headers never echo them.
+- **A forged Origin from a script** passes, as with any HTTP header. What caps the spend:
+  - 12 requests per minute per device;
+  - 40 per minute per network, also when the device id rotates;
+  - 300 per minute for everybody;
+  - 60 a day per device and 150 a day per network;
+  - a failing limiter refuses the request;
+  - `AI_OFF=1` stops every model call.
+- The real protection against scripts would be App Check enforcement, which is the owner's decision and is off here.
+- **Size:**
+  - bodies over 64 KB get 413;
+  - non-object JSON gets 400;
+  - at most 12 messages reach the model, 400 characters each in chat and 600 in questions;
+  - system and tool roles are dropped.
+- **Prompt injection.** The profile, notes and Lesson Help fields are clipped and put on one line, without `<>{}`. The
+  injection rule comes before them. The key is never in the prompt.
+- **Model errors.** A model 500 or 429, a refusal, text instead of JSON, JSON without a reply, a timeout or a network
+  error each give 502 or 504 with a code the app shows. None of them is charged.
+- **The 226 app's request** (`char: "peter"`, no target, no device id) is still served, with Peter in Dutch.
+- **Lexi** is the default persona. The Lesson Help lesson, exercise and answer are in the prompt.
+
+### 9.3 Lexi end to end (`tests/v3/suite/lexi-release-063.cjs`: app in Chromium → proposed Worker → mocked model)
+
+1. Free talk: the Lexi persona, no Peter or Dafna.
+2. Correction: a card only when `has_error` is true; the history is sent.
+3. Exercise help: the exercise is in the Worker prompt, explained in the interface language.
+4. «Explain simply»: production keeps the interface language different from the studied one, so the learner never
+   gets the same language.
+   - The exam reply «Перекласти українською» shows the translation that came with the reply.
+   - A direct French / French request gets the Worker rule «very simple French».
+5. Switching the language uk → en → fr → ar: each request explains in the new language, the exercise stays, and ar is
+   right-to-left.
+6. Resume: closed and reopened, the conversation and the exercise come back.
+7. Offline: nothing is sent, and a message is shown. Back online, the question goes out with the same exercise.
+8. Five more reopenings: one Lexi, the same exercise.
+9. A very long message: the input stops at its limit, and the model gets 400 characters at most. A forced
+   5000-character message is refused on the device.
+10. Broken answers (a 500, plain text, an HTML page, empty JSON, a 502 page): the error panel with Retry, one request
+    each, and the retry keeps the exercise.
+
+### 9.4 Samsung checklist (real phone; not verifiable in emulation)
+
+Prepare a phone with release 226 installed and some progress (XP, a finished lesson, a LIFE scene, a badge).
+Write down the XP, streak, lessons and badges first.
+1. Update 226 → 263.
+   - Exactly one update bar appears; there is no automatic reload.
+   - After one tap: the XP, streak, lessons, LIFE XP, badges with their dates, the interface language and the course
+     are the same.
+2. Interrupted update: start the update, switch on airplane mode during the download, close the app and open it
+   again.
+   - It opens offline with the same XP.
+   - Back online and opened twice, it ends on 263 and works offline: a lesson, LIFE, audio.
+3. Home at 360 and 412 px, portrait and landscape. Nothing is cut off or overlapping, and the bottom bar does not cover
+   the answers.
+4. A lesson with listening: real audio, Anastasia's voice in LIFE, and speech recognition in the speaking step.
+5. Lexi:
+   - the keyboard does not cover the input;
+   - Back closes Lexi and not the app;
+   - rotate during an answer;
+   - lock the screen and come back;
+   - airplane mode during a question shows a message, and Retry works afterwards.
+6. Lesson Help on a quiz, before and after answering: the answer refers to the exercise.
+7. Interface in uk, en, fr and ar. In ar, right-to-left, and the bottom labels are readable at 360 px.
+8. Offline after one visit: home, a lesson, LIFE, a game (Kamer, the word builder).
+9. Low memory: open Lexi 20 times; nothing slows down.
+10. Push reminders and sync on lerenbe.com (production services), with a test account, not a real learner's.
+
+### 9.5 Not verified (needs a real device or production)
+
+- Everything in 9.4.
+- The real model (all AI checks use a mock).
+- The proposed Worker on Cloudflare with real rate-limit bindings and KV.
+- Firebase sync, App Check and push on lerenbe.com.
+- The Cloudflare beacon.
+- The Android app (TWA) and Google Play.
