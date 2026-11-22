@@ -20,7 +20,8 @@ const ctx=vm.createContext({URL,Response,console,self:{location:{origin:'https:/
  caches:{match:async request=>{calls.push('cache');return cached},open:async()=>({put(){}})},
  fetch:async()=>{throw Error('offline')}});
 vm.runInContext(fs.readFileSync('sw.js','utf8'),ctx);
-async function request(path,extra={}){let result;listeners.fetch({request:{method:'GET',url:'https://example.test'+path,...extra},respondWith:p=>result=p});return result?await result:undefined}
+// LerenBe 3.0: a real FetchEvent has waitUntil; sw.js uses it on page loads to refill an interrupted download (healCache)
+async function request(path,extra={}){let result;listeners.fetch({request:{method:'GET',url:'https://example.test'+path,...extra},respondWith:p=>result=p,waitUntil:p=>{Promise.resolve(p).catch(()=>{})}});return result?await result:undefined}
 (async()=>{
  assert.equal(await request('/sw.js'),undefined);
  assert.equal(await request('/project/sw.js?version-check=123',{cache:'no-store'}),undefined);

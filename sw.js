@@ -77,6 +77,22 @@ async function freshManifest(request, event) {
   return (await net) || Response.error();
 }
 
+// LerenBe 3.0: an update whose download was interrupted still installs (optional files must not block it), but then the
+// release cache has holes and the previous cache is gone, so those files were missing offline until visited online. Once
+// a page load starts a background fetch of the missing release files (never delays a response); if some still fail,
+// the next page load tries again.
+let healing = null;
+function healCache() {
+  if (!healing) healing = (async () => {
+    const cache = await caches.open(CACHE_NAME), missing = [];
+    for (const file of APP_FILES) if (!(await cache.match(file))) missing.push(file);
+    let failed = 0;
+    for (let i = 0; i < missing.length; i += 10) failed += (await Promise.allSettled(missing.slice(i, i + 10).map(file => cache.add(file)))).filter(r => r.status === "rejected").length;
+    if (failed) healing = null; // offline or a flaky connection: the next page load tries again
+  })().catch(() => { healing = null; });
+  return healing;
+}
+
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
@@ -95,6 +111,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (request.mode === "navigate") {
+    event.waitUntil(healCache());
     event.respondWith((async () => {
       try {
         // no-cache: revalidate with the server, so a reload right after a deploy never gets a 10-minute-old page from the HTTP cache
