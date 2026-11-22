@@ -323,6 +323,9 @@ Measured, not changed:
 
 ### 9.4 Samsung checklist (real phone; not verifiable in emulation)
 
+The step-by-step version (Ukrainian, how to run 263 on the phone over USB without deploying anything, result table):
+[`SAMSUNG-TEST-CHECKLIST.md`](SAMSUNG-TEST-CHECKLIST.md).
+
 Prepare a phone with release 226 installed and some progress (XP, a finished lesson, a LIFE scene, a badge).
 Write down the XP, streak, lessons and badges first.
 1. Update 226 → 263.
@@ -356,3 +359,59 @@ Write down the XP, streak, lessons and badges first.
 - Firebase sync, App Check and push on lerenbe.com.
 - The Cloudflare beacon.
 - The Android app (TWA) and Google Play.
+
+## 10. Final stabilization (2026-11-22, HEAD after `d7599ed0`)
+
+### 10.1 What changed
+
+| Area | Found | Done | Test |
+|---|---|---|---|
+| TEST-044 (Leren.be-test PR #27) | 3.0 hid the brand name below 650 px; test repo is release 230 with the old orange header, so a merge was not possible | ported by hand: full «Lerenbe.com» from 320 px, flag + two-letter code switcher, 44 px targets, hover only on hover devices; styled for the light 3.0 header | `tests/header-mobile.cjs` (4 languages × 8 widths, RTL) |
+| Route button 761–999 px | white text on the white 3.0 header | ink on the subtle surface, title never cut | `header-mobile`, `mobile-043` |
+| Style budget | port added 1.3 KB gzip (45.2 > 45 KB) | budget unchanged; comments removed, rules folded → 44.7 KB | `perf-budget` |
+| Lesson Help → Worker | the app sends `kind` and (after answering) `expected`; the proposed Worker dropped both | both in the learner notes, cleaned and limited | `proposed-worker.cjs` lesson help context |
+| CEFR in questions | ask / Lesson Help knew only A1.1 / A1.2 (A2.1 learners described as A1.1; same gap in production) | A2.1 added | `proposed-worker.cjs` languages × levels (120 requests) |
+| Lexi + keyboard, landscape / tablet | input and Send under the keyboard at 844×390 and 768×1024 | TEST-033 keyboard layout at every width when the keyboard is up | `mobile-063` |
+| LIFE back link | 20 px tall | 44 px | `mobile-063` |
+| Dock «Dictionary» at 320 px (M-2) | cut | 10 px, −0.2 px tracking below 341 px | `mobile-043` sweep (macOS fonts; CI allowance kept) |
+
+### 10.2 Lexi memory (`tests/v3/suite/lexi-memory-063.cjs`, 40 open → send → reply → close cycles)
+
+Nodes −0.05, detached 0, listeners 0, heap 7.9 KB per cycle; documents 15 → 15; intervals 4 → 4, timeouts 1 → 0, animation
+frames 0; reopening works. Only the most recently closed chat still answers a WeakRef after a collection, and the next
+cycles free it: bounded, no leak. TEST-043's «222 nodes» was the lab's element handle (`memory-043`).
+
+### 10.3 Mobile (`mobile-043` + `mobile-063`, Chromium emulation)
+
+320×568, 360×800, 390×844, 412×915, 768×1024 and landscape 568×320, 800×360, 844×390, 915×412, 1024×768 × uk / en / fr / ar
+on home, quiz, answered quiz + Lesson Help, study, settings, Lexi, Lexi error, Course Player (320 states: only M-2, now fixed),
+plus Audio, Lesson Help answer, Lexi with keyboard, dock, LIFE list and scene (108 states, all pass).
+
+### 10.4 Migration 226 → 263
+
+`upgrade-3-0` six profiles now include English / French course progress, badges with dates, Arabic and French interface:
+every key byte-for-byte equal after the real Service Worker update. `upgrade-interrupted` (drop in the app shell / half-way):
+data unchanged, ends on 263, all 1080 files cached, offline OK.
+
+### 10.5 Release safety
+
+CSP identical to production and on every page; manifest, `.well-known`, Firebase rules, `wrangler.toml` and
+`tools/ai-worker.js` unchanged; App Check code identical (Firestore only; the Worker neither receives nor checks a token, and
+would need `X-Firebase-AppCheck` in its CORS headers before it could); only secret in the tree is the public Firebase web key
+that production also has; release 263 used nowhere else (Leren.be-test is 230); 1080 Service Worker files all present.
+
+### 10.6 Final local run (macOS, Chromium emulation, mocked AI, no network)
+
+| Suite | Result |
+|---|---|
+| Production `tests/*.cjs` | 80 pass, 0 fail, 0 skip (317 s) |
+| LerenBe 3.0 `tests/v3/run.cjs` | 36 pass, 0 fail, 0 skip, 13 not run (Leren.be-test-only, reasons in the runner) |
+| Proposed Worker vs production Worker tests | 8 pass + origin check + lesson help context + languages × levels |
+| Worker security | PASS |
+
+Logs: `/Volumes/Ai_Project/LerenBe-3.0-integration-2026-11-21/logs/final-stabilization-d7599ed0/`.
+
+### 10.7 Not run
+
+Real Lexi answers (no separate test quota; the production key is not used), physical Samsung, push / sign-in / sync /
+App Check on lerenbe.com.
