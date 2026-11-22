@@ -86,19 +86,48 @@ explanation language and German.
 - **`gembarskydanylo.github.io` removed from the allowed origins.** The Leren.be-test beta lives on that origin and
   today can use the production model and quota.
 
-All of this is checked by the v3 tests `lexi-worker`, `lexi-ai-038`, `lexi-explain-041` and `lesson-help-042`, against
-a mocked model with no key.
+How the proposal stays compatible with production:
+- the production rule text, the safety block and the cached prompt prefix are unchanged; the prompt stays under the
+  production length budget (`ai-dialogue-regression`, `< 9200` characters);
+- the prompt-injection rule is the first line of the learner notes (`learnerNotes`), so it sits outside the cached
+  part, right before the learner's own material;
+- role-play keeps the production prefix `Role-play situation: `; en and fr add `(speak English / French in it)`.
+
+**Checks (mocked model, test key `sk-test`, no network):**
+- `node tests/v3/proposed-worker.cjs` runs every production Worker test against the proposal: 8 of 8 pass
+  (ai-dialogue-regression, ai-dialogue-scenarios, ai-explain-language, ai-prompt-cache, ai-worker-limits, code-audit,
+  error-reports, exam12). It also checks the origins:
+  - github.io and other sites get a refusal before any model call;
+  - `lerenbe.com` is served.
+  - Control run: the current production Worker lets github.io reach the model.
+- v3 tests: `lexi-worker`, `lexi-ai-038`, `lexi-explain-041`, `lesson-help-042`, `lexi-reliability-043`, `lexi-app`.
+  They check:
+  - Lexi identity, and no Peter in the replies;
+  - Lesson Help context and the explanation language;
+  - one request on a double tap;
+  - Worker errors, 429 and timeouts shown with a Retry button;
+  - no uid, e-mail, name, XP or streak in the request.
 
 **Until the Worker is updated, Lexi still works** with the Peter wording in the system prompt. Lesson Help works but
 without the exercise context. This is the main open item (see the risks).
+
+**Deploying the Worker (owner, after the app merge decision; not done here):**
+1. Copy `docs/integration-3.0/ai-worker.lexi-proposed.js` over `tools/ai-worker.js` on a branch, run
+   `node tests/ai-*.cjs tests/code-audit.cjs tests/error-reports.cjs tests/exam12.cjs`, and open a PR.
+2. Merging that PR into `main` starts `deploy-worker.yml` (push on `tools/ai-worker.js`).
+   - The Worker can go first: the 226 app keeps working with it, because the extra fields are optional.
+   - The 226 app is served from lerenbe.com, which stays allowed.
+3. Check: one Lexi question on lerenbe.com, and one from `gembarskydanylo.github.io` (it must be refused).
+4. Rollback: `git revert` that commit on `main`. `deploy-worker.yml` redeploys the previous Worker. In Cloudflare, the
+   previous deployment can also be restored with `wrangler rollback`. No data migration is involved.
 
 ## 4. Tests
 
 - Production suite: `tests/*.cjs`. Every test is run as production runs it.
 - LerenBe 3.0 suite: `node tests/v3/run.cjs`. It runs the 46 TEST-only tests against this tree.
-  - The tests are kept unchanged, except the 4 adaptations listed below.
+  - The tests are kept unchanged, except the adaptations listed below.
   - It builds a temporary layout (`app/` and `life/` → repo root) with the *proposed* Worker.
-  - 11 tests that only make sense inside Leren.be-test are reported as NOT RUN, with the reason. They are never counted
+  - 13 tests that only make sense inside Leren.be-test are reported as NOT RUN, with the reason. They are never counted
     as PASS.
 - Upgrade test: `tests/upgrade-3-0.cjs`. A real Service Worker upgrade from 226 (`origin/main`) to 263 for 6 learner
   profiles (new learner, half a course, a lot of progress, damaged storage, studied offline, back after a long break).
@@ -107,7 +136,9 @@ without the exercise context. This is the main open item (see the risks).
     learner's progress already deserved (for example `lesson-1` and `lesson-5`).
   - The XP, the finished lessons (`leren_path_v1`) and the LIFE XP must be equal.
   - Home and a lesson must open offline afterwards.
-- CI: `.github/workflows/tests.yml` (pull_request and manual runs; tests only).
+- Proposed Worker: `node tests/v3/proposed-worker.cjs` (see section 3).
+- CI: `.github/workflows/tests.yml` (pull_request and manual runs; tests only): production tests, the v3 suite, the
+  proposed Worker.
 
 ### Production tests changed (intentional 3.0 changes; each test keeps its purpose)
 
@@ -144,6 +175,14 @@ Each change has a comment `LerenBe 3.0 integration` in the test.
 - `firebase-isolation`: the production tree must *not* carry the beta marker. The two beta hosts get the marker
   injected. All the guards and the browser part are unchanged.
 - `home-art-failure`, `design-system`: new file versions (263) and the LIFE page next to the app (no `<base>`).
+- `lexi-worker`: role-play keeps the production prefix `Role-play situation: `, and en/fr add `(speak …)`.
+- `memory-043` and `tools/test-043/perf-lab.cjs`: the Lexi «leak» of TEST-043 (≈ 222 DOM nodes per open/close) was the lab
+  itself.
+  - Its wait returned the `#draft` element. Playwright kept that handle alive, and the handle kept each closed Lexi tree.
+  - The heap snapshot shows the retainer as `(Global handles) / DevTools console`.
+  - With a boolean wait, 50 open/close cycles retain 0 nodes, 0 listeners and 0 timers (2 KB heap per cycle).
+  - With one message per cycle: 0.3 nodes per cycle, and 12 KB of heap, because the conversation is kept for resume.
+  - The bound is now tightened from 300 to 5 nodes per cycle.
 - `life-visuals`, `life-quality`: a stand-in image (`img/lexi/lexi.webp`) instead of the reference sheet. There is no
   check for the empty delivery folders.
 
