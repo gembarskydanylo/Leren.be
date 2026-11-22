@@ -18,11 +18,14 @@ function size(file){const b=fs.readFileSync(file);
 (async()=>{
  // ---- static
  const html=read('index.html'),csp=html.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)[1];
- assert.match(csp,/connect-src 'self';/);assert(!/googleapis|gstatic|apis\.google|workers\.dev|cloudflareinsights|www\.google\.com/.test(csp),'test snapshot CSP is closed to external services');
- assert(!/static\.cloudflareinsights\.com\/beacon/.test(html),'no analytics in the test snapshot');assert(/noindex,nofollow/.test(html));
- assert(html.includes('./modules/home-v2/ui.js?v=5')&&html.includes('./modules/home-v2/style.css?v=5'));
+ // LerenBe 3.0 integration: this is the production page — production CSP (Firebase, the AI Worker, Cloudflare analytics),
+ // analytics on, indexed. The CSP must still forbid everything else.
+ assert.match(csp,/default-src 'self'/);assert.match(csp,/object-src 'none'/);assert(!/unsafe-eval/.test(csp),'no unsafe-eval');
+ assert(/static\.cloudflareinsights\.com\/beacon/.test(html),'production analytics kept');assert(!/noindex/.test(html),'production home is indexed');
+ // LerenBe 3.0 integration: home-v2/ui.js is release 263 (production course rule, aria-pressed)
+ assert(html.includes('./modules/home-v2/ui.js?v=263')&&html.includes('./modules/home-v2/style.css?v=5'));
  const lp=read('modules/learning-path/ui.js');assert(lp.includes('globalThis.LerenHomeV2?.top?.(')&&lp.includes('if(!homeTop)courseSwitch')&&lp.includes('!placing&&!homeTop'),'hooked into the existing home, old duplicates hidden');
- const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=5','./modules/home-v2/style.css?v=5','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=254'])assert(sw.includes('"'+f+'"'),'offline: '+f);
+ const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=263','./modules/home-v2/style.css?v=5','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=263'])assert(sw.includes('"'+f+'"'),'offline: '+f);
  assert.equal(sw.match(/leren-be-v(\d+)/)[1],read('app.js').match(/RELEASE_VERSION="(\d+)"/)[1],'cache name matches the release (update check)');
  const ui=read('modules/home-v2/ui.js');assert(!/localStorage\.setItem|leren_path_v1|poly_score\s*=/.test(ui),'home v2 writes no progress');assert(!/fetch\((?!'img\/home\/home-visuals\.json')/.test(ui),'only fetches its own manifest');
  const V=JSON.parse(read('img/home/home-visuals.json')),entries=[];
@@ -41,7 +44,7 @@ function size(file){const b=fs.readFileSync(file);
  for(const it of items){for(const f of ['**Шлях:**','**Розмір:**','**Формат:**','**Художній опис:**','**Призначення:**','**Пріоритет:**'])assert(it.includes(f),it.split('\n')[0]+': '+f)}
  for(const [k,e] of entries)if(e.status==='missing')assert(bl.includes('app/'+e.src),'backlog lists '+e.src);
  assert(bl.includes('ART_REQUEST.md')&&!/Olena|Олена/.test(bl),'LIFE items come from ART_REQUEST, Anastasia only');
- console.log('PASS: home v2 static — closed CSP, hook into the existing home, offline files, home-visuals.json ('+entries.length+' slots, approved sizes verified), Codex backlog ('+items.length+' items)');
+ console.log('PASS: home v2 static — production CSP (LerenBe 3.0 integration), hook into the existing home, offline files, home-visuals.json ('+entries.length+' slots, approved sizes verified), Codex backlog ('+items.length+' items)');
  // ---- browser
  let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: browser part (Playwright is not installed)');return}
  const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff':'font/woff','.m4a':'audio/mp4','.webmanifest':'application/json','.jpg':'image/jpeg','.txt':'text/plain'};
@@ -51,7 +54,7 @@ function size(file){const b=fs.readFileSync(file);
  const release=read('app.js').match(/RELEASE_VERSION="(\d+)"/)[1];
  const open=async(w,h,{art=false,seed={}}={})=>{const ctx=await browser.newContext({viewport:{width:w,height:h},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[],outside=[],missing=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()===404)missing.push(r.url())});
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>{outside.push(r.request().url());r.abort()});
+  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>{(r.request().url().startsWith('https://static.cloudflareinsights.com/')||outside.push(r.request().url())) /* LerenBe 3.0 integration: production analytics beacon blocked, not counted */;r.abort()});
   const heroReq=[];page.on('request',r=>{if(/home-hero-(desktop|mobile)\.webp/.test(r.url()))heroReq.push(r.url())});
   if(!art){const vis=JSON.parse(JSON.stringify(V));vis.hero.status='missing';for(const v of ['desktop','mobile'])vis.hero[v].status='missing';
    await ctx.route('**/img/home/home-visuals.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(vis)}))}
@@ -74,7 +77,7 @@ function size(file){const b=fs.readFileSync(file);
     if(w>=768){const t=await page.evaluate(()=>{const h=document.querySelector('.hv-hero').getBoundingClientRect();let r=0;for(const e of document.querySelectorAll('.hv-hero-copy > *'))for(const q of e.getClientRects())r=Math.max(r,q.right);return {right:(r-h.left)/h.width}});
      assert(t.right<=0.6,'desktop: text ends at '+(t.right*100).toFixed(0)+'% of the HERO, characters start after 65%')}}
    else{assert.equal(await page.locator('.hv-hero picture, .hv-hero-art').count(),0,'no picture when the HERO is marked missing (emoji icons are the app\'s own renderer)');assert.deepEqual(heroReq,[],'missing HERO is not requested')}
-   assert.equal(await page.locator('.hv-cat').count(),1,'orange cat');assert.equal(await page.locator('.hv-course').count(),4,'Dutch, English, French, German');
+   assert.equal(await page.locator('.hv-cat').count(),1,'orange cat');assert.equal(await page.locator('.hv-course').count(),1,'LerenBe 3.0 integration: Dutch only for learners (English / French / German in preview mode, production rule)');
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal scroll at '+w);
    const cls=await page.evaluate(()=>window.__cls);assert(cls<0.1,'layout shift at '+w+(art?' with art':'')+': '+cls.toFixed(3));
    assert.match(await page.locator('.hv-stats').first().textContent(),/120/,'XP from the app');
@@ -90,7 +93,7 @@ function size(file){const b=fs.readFileSync(file);
    await page.click('.hv-pick-btn');await page.click('.hv-level[data-level="A1.2"]');await page.waitForSelector('.hv-level.is-active[data-level="A1.2"]',{state:'attached'});
    await page.click('.hv-pick-btn');await page.click('.hv-level[data-level="A1.1"]');await page.waitForSelector('.hv-level.is-active[data-level="A1.1"]',{state:'attached'});
    // English course player with recorded audio
-   await page.click('.hv-pick-btn');await page.click('.hv-course[data-course="en"] button');await page.waitForSelector('.cp-stage');await page.waitForTimeout(500);
+   /* LerenBe 3.0 integration: English only in preview mode (?multilang=1), production rule */await page.goto(base+'index.html?multilang=1');await page.waitForSelector('.hv-pick-btn');await page.click('.hv-pick-btn');await page.click('.hv-course[data-course="en"] button');await page.waitForSelector('.cp-stage');await page.waitForTimeout(500);
    await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word');await page.locator('.cp-sound').first().click();await page.waitForTimeout(300);
    assert((await page.evaluate(()=>globalThis.__cpRecorded||[])).length>0,'English card plays the recorded voice');await page.click('.cp-close');
    // rewards → progress view

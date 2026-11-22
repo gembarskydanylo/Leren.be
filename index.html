@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com https://static.cloudflareinsights.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://www.google.com https://leren-ai.gembarsky-d.workers.dev https://cloudflareinsights.com; frame-src 'self' https://leren-be.firebaseapp.com https://accounts.google.com https://www.google.com; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- TEST-027: a meta-tag CSP turns off Chrome's preload scanner for script tags, so the scripts below loaded one after another (slow 4G: first screen 12.9 s → 6.8 s with these hints). Keep this list equal to the script src list (tests/script-preload.cjs). -->
 <link rel="preload" as="script" href="./splash.js?v=206">
 <link rel="preload" as="script" href="./boot.js?v=193">
 <link rel="preload" as="script" href="./modules/review/srs.js?v=175">
@@ -1203,11 +1202,10 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pill{min-width:44px;min-height:44px}
 @media(max-width:360px){main>header{flex-wrap:wrap}main>header .brand{flex:0 0 32px;min-width:32px}}
 </style>
-<!-- TEST-025 shared design foundation: presentation only. -->
 <link rel="stylesheet" href="./modules/design-system/tokens.css?v=1">
 <link rel="stylesheet" href="./modules/design-system/foundation.css?v=1">
 <link rel="stylesheet" href="./modules/design-system/home.css?v=1">
-<link rel="stylesheet" href="./modules/design-system/learning.css?v=1">
+<link rel="stylesheet" href="./modules/design-system/learning.css?v=263">
 <link rel="stylesheet" href="./modules/design-system/engagement.css?v=2">
 
 <div id="splash" hidden></div>
@@ -1233,8 +1231,7 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
   </header>
 
   <section id="learningPath" class="learning-path" data-views="path" aria-label="Навчальний маршрут">
-    <!-- Static summary for search engines and for visitors without JavaScript; the app replaces it when it starts. -->
-    <article class="seo-shell">
+        <article class="seo-shell">
      <h2>Нідерландська мова українською — курси A1.1 і A1.2</h2>
      <p>lerenbe.com — безкоштовний тренажер нідерландської (фламандської) мови для україномовних початківців у Бельгії та Нідерландах. Уроки крок за кроком: вивчи слова, послухай їх і перевір себе. Як на курсах CVO та inburgering.</p>
      <h3>Що є в застосунку</h3>
@@ -1293,7 +1290,6 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
   <div class="meta" data-views="lesson toets games"><span id="prog"></span><span id="rnd"></span></div>
   <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-views="lesson toets games"><i id="barfill"></i></div>
   <section class="card" id="card" aria-live="polite" data-views="lesson toets games"></section>
-<!-- LEREN.BE — ІНТЕРАКТИВНИЙ УРОК ДИФТОНГІВ -->
 <section
   id="lerenbe-diphthongs-section"
   data-views="lesson"
@@ -1301,7 +1297,6 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 >
   <div data-lerenbe-diphthongs></div>
 </section>
-<!-- КІНЕЦЬ УРОКУ ДИФТОНГІВ -->
   <section class="dict-view" id="dictView" data-views="dict" hidden>
     <h2 class="view-title" id="dictTitle"></h2>
     <div class="dict-search"><span class="ico" aria-hidden="true" data-ico="search"></span><input type="search" id="searchInput" placeholder="Zoek een woord…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-labelledby="dictTitle"><button type="button" class="dx-clear" id="dictClear" aria-label="Clear" hidden>×</button></div>
@@ -1404,7 +1399,6 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <div id="searchModal" hidden></div>
 <button type="button" id="searchBtn" hidden></button><button type="button" id="searchClose" hidden></button>
 
-<!-- App modules: loaded after the page markup so the page (and its static summary) shows without waiting; their order is kept. -->
 <script src="./boot.js?v=193"></script>
 <script src="./modules/review/srs.js?v=175"></script>
 <script src="./modules/sync/merge.js?v=211"></script>
@@ -1454,8 +1448,7 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <script src="./course-curriculum.js?v=178"></script>
 <script src="./app.js?v=263"></script>
   <div class="modes-wrapper" id="modeButtons"></div>
-   <!-- LEREN.BE — МОДУЛЬ ДИФТОНГІВ -->
-<script src="./modules/exam/exam-core.js?v=254" defer></script>
+   <script src="./modules/exam/exam-core.js?v=254" defer></script>
 <script src="./modules/exam/exam11.js?v=176" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=177" defer></script>

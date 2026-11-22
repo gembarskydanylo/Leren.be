@@ -5,7 +5,7 @@
 //  🔴 real     — the character just talks at normal speed; text only on request, no translations, no sample
 // Voices: recorded Azure clips (audio/nl = male, audio/nl-f = female, same hash as app.js), device voice as fallback.
 import {STORIES, ROADMAP, storyById} from './stories/index.mjs?v=4';
-import {createStorySession, recordXp, XP_PER_STEP} from './story-engine.mjs?v=3';
+import {createStorySession, recordXp, XP_PER_STEP} from './story-engine.mjs?v=263';
 import {loadVisuals, sceneVisual, storyCover, characterImage, characterAlt, protagonistId, empty} from './visuals.mjs?v=3';
 import {T, localize, loadDict, translateDom, withLang} from './i18n.mjs?v=1';
 // en / fr / ar: the dictionary comes first, so every text below is already in the page's language (uk loads nothing).

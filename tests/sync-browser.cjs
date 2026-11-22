@@ -27,12 +27,12 @@ async function firestore(route){
 }
 const cloudData=uid=>JSON.parse(cloud.docs[uid].blob);
 (async()=>{
- await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const local='http://127.0.0.1:'+server.address().port,base='https://lerenbe.com/index.html'; // LerenBe 3.0 (TEST-028): account sync runs only on lerenbe.com, so the local files are served under that origin
  let browser;try{browser=await chromium.launch()}catch(e){console.log('SKIP: no Chromium');server.close();return}
  const errors=[];
  async function profile(name,seed,viewport){
   const ctx=await browser.newContext({viewport,serviceWorkers:'block'}),page=await ctx.newPage();page.on('pageerror',e=>errors.push(name+': '+e.message));page.on('dialog',d=>{page.lastDialog=d.message();d.type()==='confirm'?(page.confirmAnswer===false?d.dismiss():d.accept()):d.accept()});
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await ctx.route(/firestore\.googleapis\.com/,firestore);
+  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await ctx.route(/firestore\.googleapis\.com/,firestore);await ctx.route(/^https:\/\/lerenbe\.com\//,async r=>{const u=new URL(r.request().url());r.fulfill({response:await r.fetch({url:local+u.pathname+u.search})})});
   await page.addInitScript(([r,d])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',...d}))localStorage.setItem(k,v);sessionStorage.setItem('seeded','1')},[release,seed]);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath&&document.readyState!=='loading');return {ctx,page,name};
  }

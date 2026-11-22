@@ -5755,8 +5755,8 @@ async function aiSend(text,alts){
   if(!aiCurrent(s))return;
   const reply=j.reply;
   const lastUser=s.pendingUser;
-  if(lastUser&&(s.exam||s.style!=="talk"||j.correction&&j.correction.severity==="major")&&j.correction&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected,explanation:j.correction.explanation};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
-  if(s.exam&&lastUser){const ex=s.exam,err=!!j.correction;if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
+  if(lastUser&&(s.exam||s.style!=="talk"||j.correction&&j.correction.severity==="major")&&j.correction&&j.correction.has_error===true&&gNorm(j.correction.corrected)!==gNorm(lastUser.content)){lastUser.fix={corrected:j.correction.corrected,explanation:j.correction.explanation};if(target==="nl")logMistake(lastUser.fix.corrected,lastUser.fix.explanation)}
+  if(s.exam&&lastUser){const ex=s.exam,err=!!(j.correction&&j.correction.has_error);if(err&&ex.tries<1)ex.tries++;else{ex.i++;ex.tries=0;if(ex.i>=ex.list.length)ex.done=true}}
   s.msgs.push({role:"assistant",content:reply,tr:j.translation,verdict:j.verdict});s.pendingUser=null;s.busy=false;aiExamSave(s);aiRender();say(reply);
   const uc=s.msgs.filter(m=>m.role==="user").length;if(uc===5)gameDone("ai",30);
   if(uc>=2&&uc%3===2)aiRemember(s);

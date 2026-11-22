@@ -17,11 +17,11 @@ const root = path.join(__dirname, '..'), read = f => fs.readFileSync(path.join(r
  assert(!/row\.children\.forEach/.test(app), 'goal buttons: no HTMLCollection.forEach (threw on 5/20 min)');
  for (const l of ['uk', 'en', 'fr', 'ar']) assert(new RegExp(l + ':\\{lang:"[^"]+",next:').test(app), 'first-run texts in ' + l);
  assert(/startFirst,startPlacement,refresh/.test(lp), 'learning path exposes startFirst/startPlacement');
- assert(/Починаю з нуля/.test(fh) && /Вивчаю основи/.test(fh) && /Спілкуюся в повсякденних ситуаціях/.test(fh) && /CEFR/.test(lp), 'plain-words levels + CEFR note');
+ assert(/Починаю з нуля/.test(fh) && /Вивчаю основи/.test(fh) && /Спілкуюся в повсякденних ситуаціях/.test(fh) && /CEFR/.test(read('modules/home-v2/ui.js')), 'plain-words levels + CEFR note (LerenBe 3.0: in the home «Я вчу» picker)');
  assert(!/інтеграці|integration exam|inburgering/i.test(fh + lp), 'no level is tied to an integration exam');
  assert(/START_KEY="leren_start_known_v1"/.test(app) && !/localStorage\.clear|removeItem\("poly_score"|removeItem\("leren_path_v1"/.test(app.slice(app.indexOf('const ONB_UI'), app.indexOf('function firstRun'))), 'first run only adds its own key, removes nothing');
  const sw = read('sw.js'), html = read('index.html');
- for (const f of ['./modules/learning-path/ui.js?v=212', './modules/focused-home/ui.js?v=209', './modules/focused-home/style.css?v=207', './app.js?v=226']) { assert(sw.includes('"' + f + '"'), 'offline: ' + f); assert(html.includes(f), 'index: ' + f) }
+ for (const f of ['./modules/learning-path/ui.js?v=263', './modules/focused-home/ui.js?v=209', './modules/focused-home/style.css?v=263', './app.js?v=263']) { assert(sw.includes('"' + f + '"'), 'offline: ' + f); assert(html.includes(f), 'index: ' + f) }
  assert.equal(sw.match(/leren-be-v(\d+)/)[1], app.match(/RELEASE_VERSION="(\d+)"/)[1]);
  console.log('PASS: TEST-019 static — 3-step first run in 4 languages, start API, plain-words levels + CEFR, no exam link, versions');
 
@@ -114,9 +114,10 @@ const root = path.join(__dirname, '..'), read = f => fs.readFileSync(path.join(r
    assert.match(await page.locator('.fh-hero .fh-eyebrow').textContent(), /Твій наступний урок/);
    assert.match(await page.locator('.fh-hero .fh-primary').textContent(), /Почати навчання/, 'new → «Почати навчання»');
    assert.match(await page.locator('.fh-goal').textContent(), /20 хв: урок, повторення й гра або розмова/, 'plan for 20 min (lesson length unchanged)');
-   for (const name of ['Починаю з нуля', 'Вивчаю основи', 'Спілкуюся в повсякденних ситуаціях']) assert.equal(await page.locator('.fh-course', {hasText: name}).count(), 1, name);
-   assert.match(await page.locator('.fh-cefr').textContent(), /CEFR/); assert(!/інтеграці/i.test(await page.locator('#learningPath').textContent()), 'no exam link');
-   for (const sel of ['.fh-courses', '.hs-intro']) assert.equal(await page.locator(sel).count(), 1, sel + ': still on the home, below');
+   // LerenBe 3.0: the levels and the CEFR note live in the home «Я вчу» picker (home-v2) instead of the .fh-courses switcher
+   for (const name of ['Починаю з нуля', 'Вивчаю основи', 'Спілкуюся в повсякденних ситуаціях']) assert.equal(await page.locator('#hvPickPanel .hv-level', {hasText: name}).count(), 1, name);
+   assert.match(await page.locator('#hvPickPanel .hv-cefr').textContent(), /CEFR/); assert(!/інтеграці/i.test(await page.locator('#learningPath').textContent()), 'no exam link');
+   for (const sel of ['.hv-pick', '.fh-more']) assert.equal(await page.locator(sel).count(), 1, sel + ': still on the home, below');
    assert(await noHScroll(page), w + ': no horizontal scroll');
    await shot(page, tag + '-' + w + '-6-home-new');
    await page.click('.fh-hero .fh-primary'); await firstLessonOpen(page, 'home start ' + w);

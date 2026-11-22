@@ -12,7 +12,7 @@ const CHAT = {learner_in_target: 'Ik woon in Gent.', reply: 'Leuk! Werk je ook i
  // Sends one request; returns {status, json, system, messages} of the (mocked) model call.
  async function call(body, {origin, out = body.mode === 'ask' ? {answer: 'Відповідь.', examples: []} : CHAT} = {}) {
   let sys = null, msgs = null;
-  globalThis.fetch = async (u, o) => { const b = JSON.parse(o.body); sys = b.system; msgs = b.messages; return {ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', content: [{type: 'text', text: JSON.stringify(out)}]})} };
+  globalThis.fetch = async (u, o) => { const b = JSON.parse(o.body); sys = [].concat(b.system).map(x => typeof x === 'string' ? x : x.text).join(''); /* LerenBe 3.0 integration: the production Worker sends the system prompt as cached text blocks; join them */ msgs = b.messages; return {ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', content: [{type: 'text', text: JSON.stringify(out)}]})} };
   try { const r = await worker.fetch(req(body, origin), env(), {waitUntil() {}}); return {status: r.status, json: await r.json(), system: sys, messages: msgs} } finally { globalThis.fetch = real }
  }
  const chat = (x = {}) => ({mode: 'chat', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', messages: [{role: 'user', content: 'Ik woon in Gent.'}], ...x});

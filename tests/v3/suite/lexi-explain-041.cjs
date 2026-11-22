@@ -15,7 +15,7 @@ const LANG = {uk: 'Ukrainian', en: 'English', fr: 'French', ar: 'Arabic'};
  const L = ctx.LerenLexi, real = globalThis.fetch; let seen = null, body = null;
  L.configure({endpoint: 'http://localhost:8765/ai', local: () => true, production: () => false, online: () => true, fetch: async (u, o) => {
   body = JSON.parse(o.body);
-  globalThis.fetch = async (_, mo) => { seen = JSON.parse(mo.body); const ask = body.mode === 'ask'; return {ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', content: [{type: 'text', text: JSON.stringify(ask ? {answer: 'A', examples: []} : {reply: 'Ok', translation: 'T', learner_in_target: '', correction: null})}]})} };
+  globalThis.fetch = async (_, mo) => { seen = JSON.parse(mo.body); if (Array.isArray(seen.system)) seen.system = seen.system.map(x => x.text).join(''); /* LerenBe 3.0 integration: the production Worker sends the system prompt as cached text blocks; join them */ const ask = body.mode === 'ask'; return {ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', content: [{type: 'text', text: JSON.stringify(ask ? {answer: 'A', examples: []} : {reply: 'Ok', translation: 'T', learner_in_target: '', correction: null})}]})} };
   try { return await worker.fetch(new Request('https://w.example/', {method: 'POST', headers: {...o.headers, Origin: 'http://localhost:8765'}, body: o.body}), {PROVIDER: 'anthropic', ANTHROPIC_KEY: 'k', RATE: kv()}, {waitUntil() {}}) } finally { globalThis.fetch = real }
  }});
  let n = 0;

@@ -59,7 +59,7 @@
   const nl = el('article', 'hv-course is-live'); nl.dataset.course = 'nl';
   { const hd = el('div', 'hv-course-head'); hd.append(badge('nl'), t.nl); nl.append(hd) }
   for (const lv of ctx.levels || []) {
-   const row = button('', () => { lv.pick?.(); after?.() }, 'hv-level' + (lv.active ? ' is-active' : '')); row.disabled = !!lv.soon; row.dataset.level = lv.level;
+   const row = button('', () => { lv.pick?.(); after?.() }, 'hv-level' + (lv.active ? ' is-active' : '')); row.disabled = !!lv.soon; row.dataset.level = lv.level; row.setAttribute('aria-pressed', String(!!lv.active));
    const pct = lv.total ? Math.round(100 * lv.done / lv.total) : 0, bar = el('span', 'hv-bar'), f = el('span'); f.style.width = pct + '%'; bar.append(f);
    const ln = (LEVEL_NAME[lang] || LEVEL_NAME.uk)[lv.level] || lv.level;
    const code = lv.level === 'A2' ? 'A2.1' : lv.level; // the A2 course covers A2.1 (COURSE-CURRICULUM.md); the stored ID stays A2
@@ -68,9 +68,8 @@
   if ((ctx.levels || []).length) nl.append(el('p', 'hv-cefr', (LEVEL_NAME[lang] || LEVEL_NAME.uk).cefr));
   return nl;
  }
- // LerenBe 3.0 integration: production rule kept — courses with status 'planned' (English, French, German) appear only in
- // preview mode (lerenbe.com/?multilang=1, LerenCourses.available); without the registry every language is listed.
- const OTHER = () => { const R = globalThis.LerenCourses; let ok = null; try { ok = R?.available ? new Set(R.available(localStorage).map(c => c.id)) : null } catch {} return ['en', 'fr', 'de'].filter(id => !ok || ok.has(id)) };
+ // planned courses: preview only (production)
+ const OTHER = () => { let ok; try { ok = new Set(LerenCourses.available(localStorage).map(c => c.id)) } catch {} return ['en', 'fr', 'de'].filter(id => !ok || ok.has(id)) };
  function otherCard(id, t, lang) {
   const R = globalThis.LerenCourses, P = globalThis.LerenCoursePlayer;
   const info = R?.COURSES?.[id], hasPack = !!globalThis.LerenCourseData?.[id], c = el('article', 'hv-course'); c.dataset.course = id;

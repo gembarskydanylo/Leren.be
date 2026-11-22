@@ -9,6 +9,9 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 const L1='en_hello:en_greet:0',L2='en_hello:en_greet:5';
 const DUTCH={leren_path_v1:'{"version":1,"started":true,"completed":{"comm:t_greet:0":4},"mistakes":[]}',leren_path_rewards_v1:'{"comm:t_greet:0":4}'};
+// LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
+// .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  // 5. Offline: every file of the new courses is in the service worker's precache, with the version index.html loads.
  const sw=read('sw.js'),html=read('index.html');
@@ -41,7 +44,7 @@ const DUTCH={leren_path_v1:'{"version":1,"started":true,"completed":{"comm:t_gre
   const nl=await A.page.evaluate(()=>{const l=LerenLearningPath.catalog(DATA,LerenCurriculum).lessons[1];return [recordPathResult(l.id,5,l.ids.length),recordPathResult(l.id,5,l.ids.length)]});assert.deepEqual(nl,[25,0],'Dutch lesson XP as before');
   report.push('lesson/exam XP once, Dutch independent');
   // 6. Minutes while the English player is open (route screen underneath)
-  await A.page.evaluate(()=>{setView('path');learningPath.open()});await A.page.click('.cp-preview [data-course="en"]');await A.page.waitForSelector('.cp-stage');
+  await A.page.evaluate(()=>{setView('path');learningPath.open()});await pickCourse(A.page,'en');await A.page.waitForSelector('.cp-stage');
   const ms=await A.page.evaluate(()=>{const before=JSON.stringify(localStorage.getItem('leren_minutes_v2'));actMark();const got=actStep(Date.now()+5000);return {view,got,changed:JSON.stringify(localStorage.getItem('leren_minutes_v2'))!==before}});
   await A.page.click('.cp-stage .cp-primary');assert(await A.page.evaluate(()=>!!localStorage.getItem('leren_path_v1@en')),'English route saved when a lesson starts');
   assert.equal(ms.view,'path');assert(ms.got>0&&ms.changed,'study time counted with the player open: '+JSON.stringify(ms));report.push('minutes counted');

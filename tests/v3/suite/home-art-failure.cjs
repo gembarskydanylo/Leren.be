@@ -7,9 +7,11 @@ let chromium;
 try {({chromium} = require('playwright'))} catch {console.log('SKIP: home art failure browser check requires Playwright');process.exit(0)}
 const root = path.join(__dirname, '../app');
 const storyPage = fs.readFileSync(path.join(root, 'learn-life-story.html'), 'utf8');
-assert(storyPage.includes('<base href="../life/">'), 'home story uses the existing LIFE asset root');
-assert(storyPage.includes('story-ui.mjs?v=6-i18n'), 'home story uses the visual renderer');
-assert(storyPage.includes('href="../app/"'), 'return to current homepage');
+// LerenBe 3.0 integration: in production the LIFE story page sits next to the app (no <base href="../life/">, assets under
+// ./modules/learn-life and ./assets/lerenbe-life), renderer release 263, and «back» goes to the home ./ .
+assert(!storyPage.includes('<base '), 'home story loads LIFE from the app root (no <base>)');
+assert(storyPage.includes('story-ui.mjs?v=263'), 'home story uses the visual renderer');
+assert(/href="\.\/"/.test(storyPage), 'return to current homepage');
 // The home entrance must load the same LIFE versions as life/learn-life-story.html (otherwise a service worker keeps an old copy).
 const lifePage = fs.readFileSync(path.join(__dirname, '../life/learn-life-story.html'), 'utf8'), vers = h => (h.match(/story(?:-ui\.mjs|\.css)\?v=[^"]+/g) || []).sort();
 assert.deepEqual(vers(storyPage), vers(lifePage), 'LIFE versions match life/learn-life-story.html');

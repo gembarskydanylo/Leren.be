@@ -23,7 +23,7 @@ const TNAME = {nl: /Dutch as spoken in Belgium/, fr: /French as spoken in Belgiu
  let model = null, seen = null, envX = {}, origin = 'http://localhost:8765';
  const realFetch = globalThis.fetch;
  const toWorker = async (url, opts) => {
-  globalThis.fetch = async (u, o) => { seen = JSON.parse(o.body); return model(seen, o) };
+  globalThis.fetch = async (u, o) => { seen = JSON.parse(o.body); if (Array.isArray(seen.system)) seen.system = seen.system.map(x => x.text).join(''); /* LerenBe 3.0 integration: the production Worker sends the system prompt as cached text blocks; join them */ return model(seen, o) };
   try {
    const r = await worker.fetch(new Request('https://leren-ai-test.example/', {method: 'POST', headers: {...opts.headers, Origin: origin, 'CF-Connecting-IP': '203.0.113.7'}, body: opts.body, signal: opts.signal}),
     {PROVIDER: 'anthropic', ANTHROPIC_KEY: 'sk-test-only', RATE: kv(), ...envX}, {waitUntil() {}});

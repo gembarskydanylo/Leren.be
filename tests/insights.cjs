@@ -40,7 +40,7 @@ assert.equal(I.goal(undefined),10);assert.equal(I.goal(15),15);assert.equal(I.go
  same([a12.lezen.n,a12.lezen.ok,a12.lezen.pct,a12.lezen.exam],[12,11,92,90]);assert.equal(a12.luisteren.pct,null,'4 answers: no percentage yet');
  same([a12.schrijven.tasks,a12.schrijven.avg],[2,80]);same(a12.spreken,{n:2,exam:3});assert(!('pct' in a12.spreken),'no speaking percentage');
  same([a11.lezen.n,a11.lezen.ok,a11.luisteren.n],[1,0,0],'A1.1 and A1.2 apart');
- assert.equal(I.skillLog(s,'a21','lezen',true).a21,undefined);assert.equal(I.summary({},'a11',null).lezen.n,0);
+ assert.equal(I.skillLog(s,'b9','lezen',true).b9,undefined,'unknown level ignored');assert.equal(I.skillLog({},'a21','lezen',true).a21.lezen.n,1,'LerenBe 3.0 (TEST-027): A2 answers are counted too');assert.equal(I.summary({},'a11',null).lezen.n,0);
  let r={};for(let i=0;i<40;i++)r=I.skillLog(r,'a11','lezen',true);assert.equal(r.a11.lezen.r.length,30,'recent window of 30');
  same(I.cleanSkills({a11:{lezen:{ok:9,n:3,r:'1x0'}}}).a11.lezen,{ok:3,n:3,r:'10'},'broken values repaired');}
 
@@ -100,7 +100,7 @@ assert.equal(I.goal(undefined),10);assert.equal(I.goal(15),15);assert.equal(I.go
  const lp=read('modules/learning-path/ui.js');assert(lp.indexOf("bridge.goalText(g)")<lp.indexOf("node('h3','',t(result.kind==='lesson'?'result':'resultReview'))"));
  for(const l of ['uk','en','fr','ar']){const u=I.ui(l);assert(u.lessonDone&&u.goalMet&&u.goalLeft(4,10).includes('4'))}
  assert.equal(I.ui('uk').goalLeft(4,10),'Мета дня: 4 з 10 хв. Урок зараховано — решту можна добрати пізніше.');
- assert(!/dailyGoal\(\)/.test(html),'the points goal is gone');assert(html.includes('<script src="./modules/insights/core.js?v=174"></script>'));assert(read('sw.js').includes('"./modules/insights/core.js?v=174"'));
+ assert(!/dailyGoal\(\)/.test(html),'the points goal is gone');assert(html.includes('<script src="./modules/insights/core.js?v=175"></script>'));assert(read('sw.js').includes('"./modules/insights/core.js?v=175"'));
  for(const hook of ['skillLog(mode==="audio"?"luisteren":"lezen",ok)','skillLog("schrijven",good)','slipLog("klinkers",ok)','slipLog("werkwoorden",ok)','slipLog("scheidbaar",ok)','slipLog("omdat",!s.tries)','listenOnce(a=>{skillSpoke();ok(a)}'])assert(html.includes(hook),hook);
  const core=read('modules/exam/exam-core.js');assert(core.includes('examLog(KEY,it,ok)')&&core.includes('examSpoke(KEY)')&&core.includes('practice:part=>'));}
 console.log('PASS: active minutes (hidden, idle, sleep), goal 5–30 min default 10, streak across DST/new year/time zones without losing the best, skills per course (no speaking %), exam grammar points, Peter\'s advice with the omdat example and direct exercises, 9 new badges once with reasons in 4 languages, old badges kept');

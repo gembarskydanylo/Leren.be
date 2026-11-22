@@ -17,6 +17,9 @@ await p.evaluate(()=>{const b=[...document.querySelectorAll('button')].find(x=>/
 await p.evaluate(()=>{const t=document.querySelector('[data-tab="learn"]');t&&t.click()});await p.waitForTimeout(500);all.push(await p.evaluate(text));
 const T=all.join(' || ');
 for(const bad of ['0балів','губиПідніми','(скоро)Вивчено','озвученняголос','Автоозвученняслово','Нагадуваннянагадаю','(необов’язково)Прогрес','ui1 / 3'])assert(!T.includes(bad),'still glued: '+bad);
-for(const good of ['Автоозвучення ','Нагадування ','(необов’язково) ','балів ','губи ','Звук 1 з 3'])assert(T.includes(good),'missing: '+good);
+// LerenBe 3.0 (TEST-028): push reminders are a production service, shown only on lerenbe.com — this local copy has no
+// «Нагадування» row (the glued «Нагадуваннянагадаю» check above still guards it wherever it is shown).
+const remindShown=await p.evaluate(()=>{const r=document.getElementById('remindRow');return !!r&&!r.hidden});
+for(const good of ['Автоозвучення ',...(remindShown?['Нагадування ']:[]),'(необов’язково) ','балів ','губи ','Звук 1 з 3'])assert(T.includes(good),'missing: '+good);
 console.log('PASS: no glued words in plain-text reading (8 reported examples fixed, visible text of 8 screens and the diphthong lesson clean); every image on these screens has alt text');
 await b.close();server.close()})().catch(e=>{console.error(e);process.exit(1)});

@@ -7,7 +7,9 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const repo = path.join(__dirname, '..'), app = fs.readFileSync(path.join(repo, 'app/app.js'), 'utf8'), html = fs.readFileSync(path.join(repo, 'app/index.html'), 'utf8');
 // ---- static
-assert(/<meta name="leren-env" content="beta">/.test(html), 'the beta snapshot is marked leren-env=beta');
+// LerenBe 3.0 integration: this is the production tree, so it must NOT carry the beta marker (Leren.be-test's snapshot does);
+// the browser part below adds the marker itself for the two beta hosts.
+assert(!/<meta name="leren-env" content="beta">/.test(html), 'the production copy is not marked leren-env=beta');
 assert(/function prodServices\(\)\{try\{return \/\(\^\|\\\.\)lerenbe\\\.com\$\/\.test\(location\.hostname\)&&document\.querySelector\('meta\[name="leren-env"\]'\)\?\.content!=="beta"\}catch\(e\)\{return false\}\}/.test(app), 'prodServices(): lerenbe.com and not beta, false on any error');
 const count = re => (app.match(re) || []).length;
 // Every place that loads the Firebase SDK or calls Firestore. A new one must be guarded and counted here.
@@ -26,7 +28,7 @@ const guards = [
 for (const [re, what] of guards) assert(re.test(app), 'guarded: ' + what);
 // the App Check import sits behind appCheckHeaders' guard; the other SDK imports behind prodOnly()
 assert(/if\(!prodServices\(\)\)return Promise\.resolve\(h\);\n if\(!appCheckP\)appCheckP=import\(FB_SDK/.test(app), 'App Check SDK import only after the guard');
-console.log('PASS: static — beta marker, prodServices() rule, 6 SDK imports and 3 Firestore endpoints all behind the guard');
+console.log('PASS: static — no beta marker in production, prodServices() rule, 6 SDK imports and 3 Firestore endpoints all behind the guard');
 
 (async () => {
  let chromium; try { ({chromium} = require('playwright')) } catch { console.log('SKIP: browser part (Playwright is not installed)'); return }
@@ -38,7 +40,7 @@ console.log('PASS: static — beta marker, prodServices() rule, 6 SDK imports an
   let f = path.join(repo, decodeURIComponent(u.pathname)); if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
   if (!f.startsWith(repo) || !fs.existsSync(f)) return route.fulfill({status: 404, body: ''});
   let body = fs.readFileSync(f);
-  if (f.endsWith(path.join('app', 'index.html'))) { let s = body.toString('utf8').replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, ''); if (!marker) s = s.replace('<meta name="leren-env" content="beta">', ''); body = s }
+  if (f.endsWith(path.join('app', 'index.html'))) { let s = body.toString('utf8').replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/, ''); if (!marker) s = s.replace('<meta name="leren-env" content="beta">', ''); else if (!s.includes('<meta name="leren-env" content="beta">')) s = s.replace('<head>', '<head>\n<meta name="leren-env" content="beta">'); body = s }
   return route.fulfill({status: 200, body, headers: {'content-type': T[path.extname(f)] || 'application/octet-stream'}});
  };
  const rel = app.match(/RELEASE_VERSION="(\d+)"/)[1];

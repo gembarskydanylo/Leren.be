@@ -1,7 +1,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 assert(fs.existsSync('img/mascot/fill-gap-cat.png'),'Gap questions have their own single-cat illustration');
-assert(script.includes('it?.type==="gap"||it?.gap')&&fs.readFileSync('sw.js','utf8').includes('./img/mascot/fill-gap-cat.png'),'Gap illustration is selected in questions and precached offline');
+// LerenBe 3.0 (TEST-027): gap questions draw the ✍️ picture; the unused 349 KB fill-gap-cat.png is no longer precached.
+assert(script.includes('it?.type==="gap"||it?.gap')&&script.includes('isGap?"✍️"')&&!fs.readFileSync('sw.js','utf8').includes('"./img/mascot/fill-gap-cat.png"'),'Gap illustration is selected in questions (offline: built in, no extra download)');
 function fn(name){const start=script.indexOf('function '+name+'(');return script.slice(start,script.indexOf('\n}',start)+2)}
 const grow=script.slice(script.indexOf('const GROW_UI='),script.indexOf('const growU='));
 const onboarding=script.slice(script.indexOf('const ONBOARD_SKIP='),script.indexOf('function welcomeScreen('));

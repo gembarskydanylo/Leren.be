@@ -6,6 +6,9 @@ let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Pla
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.json':'application/json','.woff':'font/woff','.webmanifest':'application/json'};
 const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!file.startsWith(root)||!fs.existsSync(file)){res.statusCode=404;return res.end()}if(fs.statSync(file).isDirectory())file=path.join(file,'index.html');res.setHeader('content-type',types[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res)});
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
+// LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
+// .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
@@ -18,7 +21,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
   // 1. Preview: a whole French lesson on a phone.
   {const {ctx,page,errors}=await open('?multilang=1');
    const enBefore=await page.evaluate(()=>localStorage.getItem('leren_path_v1@en')),nlBefore=await page.evaluate(()=>localStorage.getItem('leren_path_v1'));
-   await page.click('.cp-preview [data-course="fr"]');await page.waitForSelector('.cp-stage .cp-primary');
+   await pickCourse(page,'fr');await page.waitForSelector('.cp-stage .cp-primary');
    assert.match(await page.locator('.cp-title').textContent(),/Французька 1\.1/);assert.equal(await page.locator('.cp-card').count(),6);assert.equal(await page.locator('.cp-lessons li').count(),36);
    assert.equal(await page.locator('.cp-level').count(),0,'one level: no level headings');assert.equal(await page.locator('.cp-exam').count(),0,'no French exam yet');
    await page.click('.cp-stage .cp-primary');assert.equal(await page.locator('.cp-word').getAttribute('lang'),'fr');assert.equal(await page.locator('.cp-word').textContent(),'Bonjour !');
@@ -38,10 +41,10 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    assert.equal(st.rw['fr_hello:fr_greet:0'],5,'reward record in the French key');
    assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: French lesson 5/5, +25 XP, saved in @fr, en/nl untouched')}
   // 2. French interface learning French: the translation is Ukrainian, never the French text itself.
-  {const {ctx,page,errors}=await open('?multilang=1','fr');await page.click('.cp-preview [data-course="fr"]');await page.click('.cp-stage .cp-primary');
+  {const {ctx,page,errors}=await open('?multilang=1','fr');await pickCourse(page,'fr');await page.click('.cp-stage .cp-primary');
    assert.equal(await page.locator('.cp-tr').first().textContent(),'Добрий день! / Вітаю!');assert.deepEqual(errors,[]);await ctx.close();report.push('fr interface: no French-as-translation')}
   // 3. English interface: English translation; voice asked for fr-BE.
-  {const {ctx,page,errors}=await open('?multilang=1','en');await page.click('.cp-preview [data-course="fr"]');await page.click('.cp-stage .cp-primary');
+  {const {ctx,page,errors}=await open('?multilang=1','en');await pickCourse(page,'fr');await page.click('.cp-stage .cp-primary');
    assert.equal(await page.locator('.cp-tr').first().textContent(),'Hello!');assert.equal(await page.evaluate(()=>LerenCourses.VOICE.fr),'fr-BE');assert.deepEqual(errors,[]);await ctx.close();report.push('en interface: English translation, fr-BE voice')}
   console.log('PASS: French 1.1 lesson — '+report.join('; '));
  }finally{await browser.close();server.close()}

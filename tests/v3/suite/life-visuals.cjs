@@ -18,7 +18,8 @@ const root=path.join(__dirname,'..','life');
  assert.deepEqual(problems,[],problems.join('\n'));
  for(const p of V.manifestPaths(M))assert(fs.existsSync(path.join(root,p)),'file named in the manifest exists: '+p);
  assert.equal(V.manifestPaths(M).length,0,'no art delivered yet: every slot is null');
- for(const d of ['reference','characters/anastasia','characters/annick','characters/jan','characters/peter','characters/sofie','characters/van-den-berg','characters/hero-male','stories/first-day','stories/supermarket','stories/commune','stories/fence','stories/doctor','backgrounds','ui'])assert(fs.statSync(path.join(root,'assets/lerenbe-life',d)).isDirectory(),d);
+ // LerenBe 3.0 integration: the artist workspace (reference sheets, empty delivery folders) stays in Leren.be-test; production
+ // only carries the manifests — the paths they name are checked above (none delivered yet).
  const appText=['learn-life-story.html','modules/learn-life/story-ui.mjs','modules/learn-life/visuals.mjs','modules/learn-life/story.css'].map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n');
  assert(!/reference\/[\w-]+\.(webp|png|jpe?g)/i.test(appText),'the app never loads reference sheets');
  // safe paths
@@ -42,8 +43,7 @@ const root=path.join(__dirname,'..','life');
  assert.deepEqual(Object.keys(M.characters),CAST,'all seven approved characters');
  for(const id of CAST){const c=M.characters[id];assert(c.name&&c.role&&c.appearance&&c.alt,id+': described');
   for(const pose of ['full','portrait'])assert.deepEqual(Object.keys(c[pose]).sort(),['happy','neutral','surprised','thinking'],id+' '+pose+': 4 separate emotion files');
-  for(const pose of ['full','portrait'])for(const e of V.EMOTIONS)assert.equal(c[pose][e],null,id+' '+pose+'-'+e+': no art yet');
-  assert(fs.statSync(path.join(root,'assets/lerenbe-life/characters',id)).isDirectory(),'folder for '+id)}
+  for(const pose of ['full','portrait'])for(const e of V.EMOTIONS)assert.equal(c[pose][e],null,id+' '+pose+'-'+e+': no art yet');} // LerenBe 3.0 integration: no empty delivery folder per character in production (artist workspace stays in Leren.be-test)
  assert.equal(M.protagonist,'anastasia');assert.deepEqual(M.protagonistAlternatives,['hero-male']);assert.equal(M.characters['hero-male'].future,true);
  assert.equal(V.protagonistId(M),'anastasia');assert.equal(V.protagonistId(M,'hero-male'),'hero-male','ready for a future hero choice');assert.equal(V.protagonistId(M,'jan'),'anastasia','only an approved alternative');
  const fdScenes=M.stories['first-day'].scenes;assert.deepEqual(Object.keys(fdScenes),['station','machine','meet','tram','flat','neighbour','tomorrow']);
@@ -96,7 +96,7 @@ const root=path.join(__dirname,'..','life');
  const server=http.createServer((req,res)=>{let f=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!f.startsWith(root)||!fs.existsSync(f)||fs.statSync(f).isDirectory()){res.statusCode=404;return res.end()}res.setHeader('content-type',types[path.extname(f)]||'application/octet-stream');fs.createReadStream(f).pipe(res)});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
- const art=fs.readFileSync(path.join(root,'assets/lerenbe-life/reference/visual-style-and-cast.webp')); // test stand-in for delivered art
+ const art=fs.readFileSync(path.join(root,'img/lexi/lexi.webp')); // test stand-in for delivered art (LerenBe 3.0 integration: no reference sheets in production)
  const report=[];
  try{for(const [w,h] of [[390,844],[1280,800]]){
   for(const withArt of [false,true]){

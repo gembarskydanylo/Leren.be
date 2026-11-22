@@ -68,9 +68,9 @@ const assert=require('node:assert/strict');
  const rec=JSON.parse(mem.get(E.XP_KEY));assert.equal(Object.values(rec).reduce((a,v)=>a+v,0),maxB);assert.equal(E.recordXp(st,S.id,'station',0),rec['first-day:station']);
  for(const m of E.MODES){s.setMode(m);assert.equal(E.createStorySession(S,st).state.mode,m)}assert.deepEqual([...E.MODES],['learn','practice','real']);
  // older saved progress (engine 1) still loads: best per scene and the mode
- {const {st:o}=mk();o.setItem('leren_life_story_v1_first-day',JSON.stringify({mode:'real',best:{station:3,tram:99,ghost:2},missed:['Hallo!']}));
+ {const {st:o}=mk();o.setItem('leren_life_story_v1_first-day',JSON.stringify({mode:'real',best:{station:3,tram:99,ghost:2},missed:['Hallo! Ben jij Olena?','not a story line','Tot ziens!']}));
   const old=E.createStorySession(S,o);assert.equal(old.state.mode,'real');assert.equal(old.state.best.station,3);assert.equal(old.state.best.tram,E.gradedSteps(S.scenes.find(x=>x.id==='tram')).length,'capped');
-  assert(!('ghost' in old.state.best));assert.deepEqual([...old.state.missed],['Hallo!']);assert.deepEqual({...old.state.flags},{})}
+  assert(!('ghost' in old.state.best));assert.deepEqual([...old.state.missed],['Tot ziens!'],'LerenBe 3.0: a line renamed in the story (Olena → Anastasia) and text that is not in the story drop out of the review list; progress is kept');assert(!old.state.missed.includes('not a story line'));assert.deepEqual({...old.state.flags},{})}
  // blocked storage
  const bad=E.createStorySession(S,{getItem:()=>'{broken',setItem(){throw Error('blocked')}});assert.equal(bad.xp(),0);const r0=bad.play('station');r0.next();assert.equal(r0.answer(99),null);
  console.log(`PASS: LIFE Engine 2.0 — branches (ticket had/buy, ${S.scenes.length} scenes incl. 1 by choice), several right answers with reactions, repeat explains and costs nothing, people and choices remembered, 3 skills (word order checked), 3 help levels, ${maxB} XP on the longer path, old progress loads`);

@@ -41,12 +41,13 @@ const repo = path.join(__dirname, '..'), root = path.join(repo, 'app');
    // «Я вчу» — one button at the top: opens every language and the Dutch levels; picking a level changes the label and the lesson
    assert.match(await page.locator('.hv-pick-btn').textContent(), /Я вчу.*Нідерландська · Починаю з нуля/); assert.equal(await page.getAttribute('.hv-pick-btn', 'aria-expanded'), 'false'); assert.equal(await page.locator('.hv-pick-panel').isVisible(), false);
    const cta = await page.evaluate(() => document.querySelector('.fh-primary').getBoundingClientRect().bottom); assert(cta <= h, w + ': lesson button stays on the first screen under the picker (' + Math.round(cta) + ')');
-   await page.click('.hv-pick-btn'); assert.equal(await page.getAttribute('.hv-pick-btn', 'aria-expanded'), 'true'); assert.deepEqual(await page.$$eval('.hv-pick-panel .hv-course', x => x.map(e => e.dataset.course)), ['nl', 'en', 'fr', 'de']);
+   await page.click('.hv-pick-btn'); assert.equal(await page.getAttribute('.hv-pick-btn', 'aria-expanded'), 'true'); assert.deepEqual(await page.$$eval('.hv-pick-panel .hv-course', x => x.map(e => e.dataset.course)), ['nl'], 'LerenBe 3.0 integration: production rule — English / French / German only in preview (?multilang=1)');
    assert.deepEqual(await page.$$eval('.hv-pick-panel .hv-level-name', x => x.map(e => e.textContent)), ['Починаю з нуля', 'Вивчаю основи', 'Спілкуюся в повсякденних ситуаціях']); assert(await page.locator('.hv-pick-panel .hv-cefr').count(), 'CEFR note');
    assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('.hv-pick button')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height < 44 }).length), 0, w + ': picker targets ≥ 44 px'); await shot(page, w + '-picker-open');
    await page.click('.hv-pick-panel .hv-level[data-level="A1.2"]'); await page.waitForFunction(() => /Вивчаю основи/.test(document.querySelector('.hv-pick-btn')?.textContent || '')); assert.equal(await page.evaluate(() => localStorage.getItem('poly_level')), 'a12'); assert.equal(await page.locator('.hv-pick-panel').isVisible(), false, 'closes after the choice');
    await page.click('.hv-pick-btn'); await page.click('.hv-pick-panel .hv-level[data-level="A1.1"]'); await page.waitForFunction(() => /Починаю з нуля/.test(document.querySelector('.hv-pick-btn')?.textContent || ''));
-   await page.click('.hv-pick-btn'); await page.click('.hv-pick-panel .hv-course[data-course="en"] button'); await page.waitForSelector('.cp-stage'); await page.goto(B); await page.waitForSelector('.fh-more'); await page.waitForTimeout(300);
+   // LerenBe 3.0 integration: English opens from the picker in preview mode (?multilang=1), as in production
+   await page.goto(B + (B.includes('?') ? '&' : '?') + 'multilang=1'); await page.waitForSelector('.hv-pick-btn'); await page.click('.hv-pick-btn'); await page.click('.hv-pick-panel .hv-course[data-course="en"] button'); await page.waitForSelector('.cp-stage'); await page.goto(B); await page.waitForSelector('.fh-more'); await page.waitForTimeout(300);
    // everything from the folded part is one tap away
    await page.click('.fh-more-tile[data-more="topics"]'); await page.waitForFunction(() => document.querySelector('#learningPath').dataset.screen === 'map'); await page.click('.fh-back'); await page.waitForSelector('.fh-more');
    await page.click('.fh-more-tile[data-more="games"]'); await page.waitForFunction(() => view === 'games'); await page.evaluate(() => setView('path')); await page.waitForSelector('.fh-more');
@@ -65,7 +66,7 @@ const repo = path.join(__dirname, '..'), root = path.join(repo, 'app');
    await page.click('.fh-hero .fh-primary'); await page.waitForFunction(() => document.querySelector('#learningPath').dataset.screen === 'lesson'); // the main button still opens a lesson
    assert.deepEqual(errors, []); await ctx.close(); report.push(w + ' px (' + s.height + ' → full ' + f.height + ')');
   }
-  assert.deepEqual(external, [], 'no request leaves the test site');
+  assert.deepEqual(external.filter(u => !u.startsWith('https://static.cloudflareinsights.com/')), [], 'no request leaves the test site'); // LerenBe 3.0 integration: production analytics beacon (blocked)
   console.log('PASS: TEST-022 browser (emulated) — ' + report.join(', '));
  } finally { await browser.close(); server.close() }
 })().catch(e => { console.error(e); process.exit(1) });

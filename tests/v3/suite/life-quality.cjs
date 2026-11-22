@@ -58,7 +58,7 @@ const A = 'assets/lerenbe-life/';
  await new Promise(r => server.listen(0, '127.0.0.1', r)); const base = 'http://127.0.0.1:' + server.address().port + '/learn-life-story.html?s=first-day';
  let browser; try { browser = await chromium.launch() } catch { console.log('SKIP: no Chromium'); server.close(); return }
  const M = JSON.parse(fs.readFileSync(path.join(root, A, 'visual-manifest.json'), 'utf8'));
- const art = fs.readFileSync(path.join(root, A, 'reference/visual-style-and-cast.webp')); // a test stand-in served at the artist's paths
+ const art = fs.readFileSync(path.join(root, 'img/lexi/lexi.webp')); // a test stand-in served at the artist's paths (LerenBe 3.0 integration: no reference sheets in production)
  const S = Object.fromEntries(firstDay.scenes.map(s => [s.id, s]));
  const external = [], report = [];
  // Audio stub: plays for __dur ms, fires ended/pause/error like a media element; counts how many play at once.

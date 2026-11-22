@@ -7,6 +7,9 @@ let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Pla
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.json':'application/json','.woff':'font/woff','.webmanifest':'application/json'};
 const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComponent(new URL(req.url,'http://x').pathname));if(!file.startsWith(root)||!fs.existsSync(file)){res.statusCode=404;return res.end()}if(fs.statSync(file).isDirectory())file=path.join(file,'index.html');res.setHeader('content-type',types[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res)});
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
+// LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
+// .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
@@ -17,12 +20,12 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
  const report=[];
  try{
   // 1. Without preview: nothing new for learners.
-  {const {ctx,page,errors}=await open('');assert.equal(await page.locator('.cp-preview').count(),0,'no preview card for learners');assert.deepEqual(errors,[]);await ctx.close()}
+  {const {ctx,page,errors}=await open('');assert.equal(await page.locator('.cp-preview').count(),0,'no preview card for learners');assert.deepEqual(await page.locator('#hvPickPanel .hv-course').evaluateAll(b=>b.map(x=>x.dataset.course)),['nl'],'only Dutch in the home picker for learners');assert.deepEqual(errors,[]);await ctx.close()}
   // 2. Preview: play a whole English lesson.
   {const {ctx,page,errors}=await open('?multilang=1');
-   const btns=await page.locator('.cp-preview button').evaluateAll(b=>b.map(x=>x.dataset.course));assert.deepEqual(btns,['en','fr','de'],'English, French, German in preview');
+   const btns=await page.locator('#hvPickPanel .hv-course:not([data-course="nl"])').evaluateAll(b=>b.map(x=>x.dataset.course));assert.deepEqual(btns,['en','fr','de'],'English, French, German in preview');
    const dutchBefore=await page.evaluate(()=>localStorage.getItem('leren_path_v1'));
-   await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-stage .cp-lessons');
+   await pickCourse(page,'en');await page.waitForSelector('.cp-stage .cp-lessons');
    assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.1/);assert.equal(await page.locator('.cp-card').count(),12,'6 chapters per level');assert.deepEqual(await page.locator('.cp-level').allTextContents(),['1.1 · Breakthrough (A1)','1.2 · Waystage (A2)'],'level headings');assert.equal(await page.locator('.cp-card').first().locator('.cp-lessons li').count(),6,'6 lessons in chapter 1');assert.equal(await page.locator('.cp-lessons li').count(),72,'36 lessons in English 1.1 and 36 in 1.2');
    const lay=await page.evaluate(()=>({btn:document.querySelector('.cp-stage .cp-primary').getBoundingClientRect().bottom,open:[...document.querySelectorAll('details.cp-card')].filter(d=>d.open).map(d=>d.dataset.chapter)}));
    assert(lay.btn<=844,'start button on the first screen: '+lay.btn);assert.deepEqual(lay.open,['en_hello'],'only the current chapter is open');
@@ -47,16 +50,17 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    assert.equal(store.nl,dutchBefore,'Dutch route untouched');assert.deepEqual(store.en.mistakes,[],'a listening mistake is cleared once the word is answered right in the check step');
    // next lesson, and the course home after reopening shows lesson 1 done
    await page.locator('.cp-stage .cp-primary',{hasText:'Наступний урок'}).click();await page.waitForSelector('.cp-word');
-   await page.click('.cp-close');await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-lessons');
+   await page.click('.cp-close');await pickCourse(page,'en');await page.waitForSelector('.cp-lessons');
    assert.equal(await page.locator('.cp-lessons li.is-done').count(),1);assert.match(await page.locator('.cp-stage .cp-primary').textContent(),/Продовжити/);
    // French and German: coming soon
-   for(const l of ['de']){await page.click('.cp-close');await page.click(`.cp-preview [data-course="${l}"]`);await page.waitForSelector('.cp-soon');}
+   // LerenBe 3.0: German has no lesson pack yet; the picker shows it with a disabled «soon» button instead of a soon page
+   for(const l of ['de']){await page.click('.cp-close');await page.evaluate(()=>learningPath.home());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');assert.equal(await page.locator(`#hvPickPanel .hv-course[data-course="${l}"] button`).isDisabled(),true,l+' soon');}
    assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: full lesson 5/5, saved in @en, Dutch untouched, de soon')}
   // 2a. English 1.1 finished: the course moves on to 1.2 (title, open chapter, first 1.2 lesson), 1.1 results kept.
   {const {ctx,page,errors}=await open('?multilang=1');
    await page.evaluate(()=>{const P=LerenCourseData.en,core=LerenLearningPath,course=core.catalog(P.data,P.curriculum,{text:'en'}),m=core.create(course,localStorage,{key:'leren_path_v1@en'});
     for(const l of course.lessons)if(l.level==='1.1'||course.chapters.find(c=>c.id===l.chapter).level==='1.1')m.state.completed[l.id]=5;m.state.started=true;m.save()});
-   await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-stage .cp-primary');
+   await pickCourse(page,'en');await page.waitForSelector('.cp-stage .cp-primary');
    assert.match(await page.locator('.cp-title').textContent(),/Англійська 1\.2/,'title shows level 1.2');
    assert.deepEqual(await page.evaluate(()=>[...document.querySelectorAll('details.cp-card')].filter(d=>d.open).map(d=>d.dataset.chapter)),['en_lastweek'],'first 1.2 chapter open');
    assert.equal(await page.locator('.cp-lessons li.is-done').count(),36);await page.click('.cp-stage .cp-primary');
@@ -68,7 +72,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());await ctx.route('**/audio/en/manifest.json',r=>r.fulfill({status:404,body:''}));
    await page.addInitScript(([r])=>{try{const s=window.speechSynthesis;if(s)s.getVoices=()=>[{lang:'uk-UA',name:'Lesya'}]}catch(e){}if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,v)},[release]);
    await page.goto(base+'?multilang=1');await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});
-   await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-novoice');
+   await pickCourse(page,'en');await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-novoice');
    assert.match(await page.locator('.cp-novoice').textContent(),/немає голосу для цієї мови \(англійська\)/);assert.deepEqual(errors,[]);await ctx.close();report.push('no English voice: warning')}
   // 2c. Recorded audio (audio/en/manifest.json): the card plays the recording, so no missing-voice warning even without an English device voice.
   {const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -76,11 +80,11 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.addInitScript(([r])=>{try{const s=window.speechSynthesis;if(s)s.getVoices=()=>[{lang:'uk-UA',name:'Lesya'}]}catch(e){}if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,v)},[release]);
    await page.goto(base+'?multilang=1');await page.waitForFunction(()=>window.learningPath);const h=await page.evaluate(()=>audioHash('Hello!'));
    await ctx.route('**/audio/en/manifest.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify([h])}));
-   await page.evaluate(()=>{setView('path');learningPath.open()});await page.click('.cp-preview [data-course="en"]');await page.waitForTimeout(300);await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word');
+   await page.evaluate(()=>{setView('path');learningPath.open()});await pickCourse(page,'en');await page.waitForTimeout(300);await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word');
    assert.equal(await page.locator('.cp-novoice').count(),0,'no warning when the card is recorded');await page.locator('.cp-sound').first().click();
    assert((await page.evaluate(()=>globalThis.__cpRecorded||[])).includes(h),'recording requested for the card');assert.deepEqual(errors,[]);await ctx.close();report.push('recorded audio used')}
   // 3. Arabic interface: right-to-left player, Arabic translations.
-  {const {ctx,page,errors}=await open('?multilang=1','ar');await page.click('.cp-preview [data-course="en"]');await page.click('.cp-stage .cp-primary');
+  {const {ctx,page,errors}=await open('?multilang=1','ar');await pickCourse(page,'en');await page.click('.cp-stage .cp-primary');
    assert.equal(await page.locator('.cp-stage').getAttribute('dir'),'rtl');assert.equal(await page.locator('.cp-tr').first().textContent(),'مرحبًا!');assert.deepEqual(errors,[]);await ctx.close();report.push('ar: rtl')}
   console.log('PASS: first English lesson — '+report.join('; '));
  }finally{await browser.close();server.close()}

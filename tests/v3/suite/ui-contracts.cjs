@@ -91,7 +91,7 @@ console.log('PASS: static — contract surface present in app/ (mount API, engin
    // 7 · settings persist through the host's saveStore (poly_*).
    await page.evaluate(() => { uiLang = 'fr'; saveStore() }); await reload(page);
    assert.equal(await page.evaluate(() => uiLang), 'fr'); assert.equal(await ls(page, 'poly_level'), 'a11');
-   assert.deepEqual(errors, []); assert.deepEqual(outside, [], 'no request leaves the test server'); await c.close();
+   assert.deepEqual(errors, []); assert.deepEqual(outside.filter(u => !u.startsWith('https://static.cloudflareinsights.com/')), [], 'no request leaves the test server'); // LerenBe 3.0 integration: production's cookieless Cloudflare analytics beacon is allowed (it is not AI or Firebase) await c.close();
   }
   // 8 · an old save: one route over A1.1+A1.2 (no course/entries), points only in poly_score (before the v175 ledger), card states.
   {

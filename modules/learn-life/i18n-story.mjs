@@ -234,7 +234,6 @@ export const DICT = {
 'Не всі слова розпізнано. Скажи ще раз, трохи повільніше.': ['Not all words were recognised. Say it again, a little more slowly.', 'Tous les mots n’ont pas été reconnus. Redis-le un peu plus lentement.', 'لم يتم التعرف على كل الكلمات. قلها مرة أخرى ببطء أكثر قليلًا.'],
 // ---- page (learn-life-story.html)
 'LerenBe LIFE · Історії — lerenbe.com': ['LerenBe LIFE · Stories — lerenbe.com', 'LerenBe LIFE · Histoires — lerenbe.com', 'LerenBe LIFE · قصص — lerenbe.com'],
-'← Тест': ['← Test', '← Test', '→ الاختبار'],
 '🟢 Початківець': ['🟢 Beginner', '🟢 Débutant', '🟢 مبتدئ'],
 '🟡 Практика': ['🟡 Practice', '🟡 Pratique', '🟡 تدريب'],
 '🔴 Реальне життя': ['🔴 Real life', '🔴 Vraie vie', '🔴 الحياة الواقعية'],

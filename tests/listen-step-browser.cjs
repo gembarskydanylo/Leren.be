@@ -25,7 +25,7 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
     return {sound:root.querySelectorAll('.lp-sound').length,pic:pic.getBoundingClientRect().height,btnBg:getComputedStyle(btn).backgroundColor,btnText:btn.textContent,btnOneLine:btn.getBoundingClientRect().height<70,btnIcon:!!btn.querySelector('img,.lbe-emoji')||btn.textContent.includes('🎧'),sameRow:Math.abs(pic.getBoundingClientRect().top+pic.getBoundingClientRect().height/2-(btn.getBoundingClientRect().top+btn.getBoundingClientRect().height/2))<4,
      head:root.querySelector('.lp-listen-head').textContent,opts:opts.length,lastBottom:Math.max(...opts.map(o=>o.getBoundingClientRect().bottom)),dockTop,eyebrow:root.querySelector('.lp-eyebrow').textContent,h2:root.querySelector('h2').textContent}});
    const tag=w+'x'+h+'/'+theme;
-   assert.equal(r.sound,0,tag+': no big headphones');assert(r.pic<=80,tag+': picture '+r.pic);assert.equal(r.btnBg,'rgb(253, 218, 36)',tag+': yellow Listen button');assert(r.btnIcon&&/Послухати/.test(r.btnText),tag+': 🎧 Послухати');assert(r.sameRow,tag+': picture and button in one row');
+   assert.equal(r.sound,0,tag+': no big headphones');assert(r.pic<=80,tag+': picture '+r.pic);assert.equal(r.btnBg,theme==='dark'?'rgb(255, 177, 140)':'rgb(184, 70, 22)',tag+': Listen button in the LerenBe 3.0 brand colour --lb-brand (production 226: yellow #fdda24)');assert(r.btnIcon&&/Послухати/.test(r.btnText),tag+': 🎧 Послухати');assert(r.sameRow,tag+': picture and button in one row');
    assert.match(r.head,/^\d \/ \d · /,tag+': counter and task on one line');assert.equal(r.opts,4);assert.equal(r.eyebrow,'A1.1',tag+': topic name not repeated above the lesson title');assert(r.btnOneLine,tag+': button text on one line');
    if(w===390)assert(r.lastBottom<=r.dockTop,tag+': all answers visible without scrolling ('+r.lastBottom+' > '+r.dockTop+')');
    await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),`listen-step-${w}x${h}-${theme}.png`)});
@@ -33,6 +33,6 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.evaluate(()=>{const m=learningPath.model,w=m.current();[...document.querySelectorAll('#learningPath .lp-options button')].find(b=>b.textContent===w.uk).click()});await page.waitForSelector('#learningPath .lp-feedback.lp-correct');
    assert.deepEqual(errors,[],tag);done.push(tag+(r.lastBottom<=r.dockTop?' (all answers on screen)':''));await ctx.close();
   }
-  console.log('PASS: compact listening step on '+done.join(', ')+': no big headphones, ≤80px picture and yellow 🎧 button in one row, counter + task on one line');
+  console.log('PASS: compact listening step on '+done.join(', ')+': no big headphones, ≤80px picture and brand-colour 🎧 button in one row, counter + task on one line');
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);server.close();process.exit(1)});

@@ -38,7 +38,7 @@ const root = path.join(__dirname, '..', 'app'), app = fs.readFileSync(path.join(
    if (u.startsWith('https://www.gstatic.com/firebasejs/')) return r.fulfill({contentType: 'text/javascript', body: /firebase-auth\.js$/.test(u) ? FAKE_AUTH : /firebase-app\.js$/.test(u) ? FAKE_APP : /firebase-app-check\.js$/.test(u) ? FAKE_APPCHECK : 'export {}'});
    if (u.startsWith('https://firestore.googleapis.com/')) { fsCalls.push(r.request().method()); return firestore(r) }
    if (u.startsWith('https://leren-ai.')) return; // AI worker: never answers
-   real.push(u); r.abort() });
+   if (!u.startsWith('https://static.cloudflareinsights.com/')) real.push(u); r.abort() }); // LerenBe 3.0 integration: production analytics beacon (blocked, not Firebase)
   await page.addInitScript(([rel, seed]) => { if (sessionStorage.getItem('s')) return; sessionStorage.setItem('s', '1'); localStorage.clear();
    for (const [k, v] of Object.entries({leren_release_seen: JSON.stringify(rel), poly_ui: 'uk', leren_home_v1: 'path', leren_welcome_seen: 'true', leren_onboarding_language_v1: '1', leren_start_known_v1: 'zero', ...seed})) localStorage.setItem(k, v) }, [release, seed]);
   await page.clock.install(); await page.goto(B); await page.clock.runFor(3000); await page.waitForSelector('.hv');

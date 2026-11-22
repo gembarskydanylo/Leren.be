@@ -6,6 +6,7 @@
 // Tests that only make sense inside Leren.be-test (its design lab, its git refs, its beta isolation) are listed in
 // NOT_HERE with the reason and reported as NOT RUN — never as PASS.
 //   node tests/v3/run.cjs [name-filter]      → PASS / FAIL / SKIP / NOT RUN per test, exit 1 on any FAIL
+//   V3_VERBOSE=1 node tests/v3/run.cjs x      → also prints the whole output of each failing test
 const fs = require('node:fs'), path = require('node:path'), os = require('node:os'), {spawnSync} = require('node:child_process');
 const repo = path.join(__dirname, '..', '..'), suite = path.join(__dirname, 'suite'), filter = new RegExp(process.argv[2] || '.');
 const NOT_HERE = {
@@ -19,6 +20,8 @@ const NOT_HERE = {
  'lexi-features-033.cjs': 'tests the design-lab source of the Lexi UI (Codex lab, only in Leren.be-test)',
  'lexi-integration.cjs': 'starts with tools/lexi-ui-port.cjs --check against design-lab (only in Leren.be-test); the app side of Lexi is covered by lexi-app, lexi-reliability-043, lesson-help-042, lexi-ai-038',
  'lexi-test-worker.cjs': 'checks the separate test Worker config of Leren.be-test (tools/lexi-test-worker.toml, lexi-test-server.cjs)',
+ 'personal-coach.cjs': 'tests the Leren.be-test root beta snapshot (modules/personal-coach, inline script), which is neither the 3.0 app nor production',
+ 'rewards.cjs': 'pins the older rewards copy of the Leren.be-test root beta snapshot (8 badges, inline script); production modules/rewards/core.js is byte-identical to the 3.0 app one (9 badges, incl. the first-exam badge)',
  'appcheck-verify.cjs': 'App Check prototype of Leren.be-test (tools/appcheck-verify.mjs); not part of this integration (App Check enforcement stays off)',
 };
 function layout() {
@@ -38,8 +41,9 @@ for (const f of fs.readdirSync(path.join(L, 'tests')).filter(f => f.endsWith('.c
  if (NOT_HERE[f]) { res.push(['NOT RUN', f, NOT_HERE[f]]); continue }
  const t0 = Date.now(), r = spawnSync(process.execPath, [path.join(L, 'tests', f)], {cwd: L, encoding: 'utf8', maxBuffer: 1 << 26, timeout: 15 * 60000});
  const out = (r.stdout || '') + (r.stderr || ''), st = r.status === 0 ? (/^SKIP/m.test(out) && !/^PASS/m.test(out) ? 'SKIP' : 'PASS') : 'FAIL';
- res.push([st, f, ((Date.now() - t0) / 1000).toFixed(0) + 's', st === 'FAIL' ? out.trim().split('\n').slice(-12).join('\n   ') : out.trim().split('\n').filter(l => /^(PASS|SKIP)/.test(l)).slice(0, 3).join(' | ').slice(0, 300)]);
+ res.push([st, f, ((Date.now() - t0) / 1000).toFixed(0) + 's', st === 'FAIL' ? [...out.split('\n').filter(l => /^(\S*Error|AssertionError|FAIL)/.test(l)).slice(0, 3), ...out.trim().split('\n').slice(-12)].join('\n   ') : out.trim().split('\n').filter(l => /^(PASS|SKIP)/.test(l)).slice(0, 3).join(' | ').slice(0, 300)]);
  console.log(res.at(-1).slice(0, 3).join(' '));
+ if (st === 'FAIL' && process.env.V3_VERBOSE) console.log(out);
 }
 for (const [st, f, why] of res.filter(r => r[0] === 'NOT RUN')) console.log(st, f, '—', why);
 const n = s => res.filter(r => r[0] === s).length;

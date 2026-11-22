@@ -195,7 +195,6 @@
 /* TEST-019: today's plan from the daily goal, under the next-lesson title */
 .fh-goal{font-size:14px;line-height:1.5;margin:0 0 14px;padding:8px 12px;border-radius:12px;background:var(--oranje-soft,#ffe7cf);color:var(--ink);max-width:460px}
 @media (max-width:560px){.fh-goal{grid-column:1/-1;max-width:none}}
-.fh-cefr{margin:-4px 0 14px;font-size:13px;line-height:1.45;color:var(--ink-2,#6f5a47)}
 /* TEST-022: short «More» block on the beginner's home; secondary actions keep a 44 px tap height */
 .fh-more{margin:18px 0;padding:18px;border-radius:22px;background:var(--surface,#fff);border:1px solid var(--line,#eed9c4);display:grid;gap:10px}
 .fh-more h2{margin:0;font:900 19px/1.2 var(--font-display,inherit)}.fh-more .lp-caption{margin:0}

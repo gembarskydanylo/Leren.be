@@ -24,7 +24,9 @@ const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k
    await page.goto('https://'+host+'/index.html');await page.waitForFunction(()=>typeof appCheckHeaders==='function');
    const t0=Date.now();const h=await page.evaluate(()=>appCheckHeaders({Authorization:'Bearer x'}));const ms=Date.now()-t0;
    // The Auth apps (reminders and account sync) get App Check on the same Firebase app, so sign-in requests carry the token.
-   await page.evaluate(()=>import(FB_SDK+'firebase-app.js').then(a=>Promise.all([fbApp(a,'push'),fbApp(a,'acct')])));
+   // LerenBe 3.0 (TEST-028): off lerenbe.com the Firebase apps are not created at all (prodOnly() throws) — stricter than before.
+   const made=await page.evaluate(()=>import(FB_SDK+'firebase-app.js').then(a=>Promise.all([fbApp(a,'push'),fbApp(a,'acct')])).then(()=>'made',e=>String(e.message||e)));
+   if(/(^|\.)lerenbe\.com$/.test(host))assert.equal(made,'made',host+': Firebase apps created');else assert.match(made,/production services are off/,host+': Firebase apps refused off lerenbe.com');
    const ac=await page.evaluate(()=>globalThis.__ac||null);await ctx.close();return{h,ac,ms,errors}};
   const ok=await run('lerenbe.com');
   assert.deepEqual(ok.h,{Authorization:'Bearer x','X-Firebase-AppCheck':'tok-123'},'token header added');
@@ -43,7 +45,7 @@ const FAKE_CHECK='export class ReCaptchaEnterpriseProvider{constructor(k){this.k
   assert(rvSource.includes("appId:'1:533895640416:web:770d52f1926e13a186da05'},'reviews')"),'missing Firebase appId for reviews');
   const rv=fs.readFileSync(path.join(root,'reviews.js'),'utf8');assert(rv.includes(`new ReCaptchaEnterpriseProvider('${KEY}')`)&&/lerenbe\\\.com\$\/\.test\(location\.hostname\)/.test(rv),'reviews.js App Check');
   // Every Firestore REST call in app.js sends the App Check headers.
-  const app=fs.readFileSync(path.join(root,'app.js'),'utf8'),calls=app.split('fetch(').slice(1).filter(x=>/^(docUrl\(|"https:\/\/firestore\.googleapis\.com)/.test(x));
+  const app=fs.readFileSync(path.join(root,'app.js'),'utf8'),calls=app.split(/fetchT?\(/).slice(1).filter(x=>/^(docUrl\(|"https:\/\/firestore\.googleapis\.com)/.test(x));
   assert(calls.length>=4);for(const c of calls)assert(c.slice(0,400).includes('appCheckHeaders('),'Firestore call without App Check: '+c.slice(0,80));
   console.log(`PASS: App Check — token header on lerenbe.com and www, no header and no wait (${down.ms} ms) when unavailable, off elsewhere; ${calls.length} Firestore calls covered`);
  }finally{await browser.close()}

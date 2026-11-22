@@ -135,8 +135,8 @@
   const reply = typeof d.reply === 'string' && d.reply.trim() ? d.reply : typeof d.reply_nl === 'string' ? d.reply_nl : '';
   if (!reply.trim()) throw fail('format');
   const c = d.correction, norm = s => String(s || '').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
-  const fix = c && typeof c === 'object' && c.has_error !== false && typeof c.corrected === 'string' && c.corrected.trim() && (!lastUser || norm(c.corrected) !== norm(lastUser))
-   ? {original: String(c.original || lastUser || '').slice(0, 300), corrected: c.corrected.slice(0, 300), explanation: typeof c.explanation === 'string' ? c.explanation.slice(0, 300) : '', severity: c.severity === 'major' ? 'major' : 'minor'} : null;
+  const fix = c && typeof c === 'object' && c.has_error === true && typeof c.corrected === 'string' && c.corrected.trim() && (!lastUser || norm(c.corrected) !== norm(lastUser))
+   ? {has_error: true, original: String(c.original || lastUser || '').slice(0, 300), corrected: c.corrected.slice(0, 300), explanation: typeof c.explanation === 'string' ? c.explanation.slice(0, 300) : '', severity: c.severity === 'major' ? 'major' : 'minor'} : null;
   return {kind: 'chat', reply: reply.trim().slice(0, 600), translation: typeof d.translation === 'string' ? d.translation.trim().slice(0, 600) : '', correction: fix, verdict: lastUser ? (fix ? 'incorrect' : 'correct') : null};
  }
  const listeners = new Set();
