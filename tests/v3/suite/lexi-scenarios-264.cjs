@@ -26,7 +26,9 @@ const limiter = () => ({async limit() { return {success: true} }});
  let B; try { B = await browser() } catch (e) { if (/Executable doesn't exist/.test(e.message)) { console.log('SKIP: ' + e.message); return } throw e }
  await B.b.close();
  const W = (await import('data:text/javascript;base64,' + Buffer.from(src).toString('base64'))).default;
- const env = {PROVIDER: 'anthropic', ANTHROPIC_KEY: 'sk-test', RATE: kv(), PER_IP: limiter(), IP_CEIL: limiter(), ALL: limiter()};
+ // all scenarios come from one test «network»: the daily quotas (60 / 150, tested in worker-security) would stop the set after
+ // ~40 scenarios, so this run lifts them; per-minute limiters are mocked as always open
+ const env = {PROVIDER: 'anthropic', ANTHROPIC_KEY: 'sk-test', RATE: kv(), PER_IP: limiter(), IP_CEIL: limiter(), ALL: limiter(), DAILY_LIMIT: '5000', DAILY_IP_LIMIT: '5000'};
  let cur = null, sent = [];
  const realFetch = globalThis.fetch;
  globalThis.fetch = async (url, opt) => { if (!String(url).includes('api.anthropic.com')) return realFetch(url, opt);

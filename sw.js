@@ -4,7 +4,7 @@ const APP_FILES = ["./course-curriculum.js?v=178", "./modules/card-art/art.js?v=
 
 // TEST-034: beta texts of the reviews and privacy pages in the interface language
 APP_FILES.push("./reviews-i18n.js?v=1", "./privacy-lang.js?v=1");
-APP_FILES.push("./modules/lexi/lesson-help.js?v=1", "./modules/lexi/chat.js?v=264", "./modules/lexi/copy.js?v=264", "./modules/lexi/mock.js?v=264", "./modules/lexi/chat.css?v=264", "./img/lexi/lexi.webp", "./img/lexi/lexi-emotions.webp");
+APP_FILES.push("./modules/lexi/lesson-help.js?v=264", "./modules/lexi/chat.js?v=264", "./modules/lexi/copy.js?v=264", "./modules/lexi/mock.js?v=264", "./modules/lexi/chat.css?v=264", "./img/lexi/lexi.webp", "./img/lexi/lexi-emotions.webp");
 APP_FILES.push("./modules/home-showcase/ui.js?v=255", "./modules/home-showcase/style.css?v=220", "./img/home/hero-cat-v196-512.webp", "./img/chars/peter-card.webp", "./img/chars/dafna-card.webp");
 // TEST-017: HERO pictures (img/home/home-hero-*.webp) are not precached — each device caches only the one it shows.
 // This note also changes the worker bytes, so installed test copies re-fetch img/home/home-visuals.json with the approved art.

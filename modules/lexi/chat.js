@@ -43,7 +43,9 @@ export function mountLexiChat(root,{engine,voice=null,demo=false,initial={},cont
    const type=r.reply_type;
    if(type==='question')return 'help';if(type==='grammar'||type==='explanation')return 'simpler';if(type==='translation')return 'examples';if(type)return null;
    if(r.asks_about_language===true)return 'simpler';
-   return /[?？]/.test(String(m.content||''))?'help':null}
+   // older Worker (no reply_type): «help» only when a short reply ENDS with a question to the learner — not for a «?» inside
+   // a quoted example, a long explanation or a reply with a translation that is not a question
+   const c=String(m.content||'').trim();return c.length<=240&&/[?？؟]$/.test(c.replace(/[\s»”"')\]]+$/,''))?'help':null}
   const ACTION_LABEL={help:'help',simpler:'simpler',examples:'showExamples',retry:'retry'};
   function coach(){let h='';const last=[...s.messages].reverse().find(m=>m.role==='assistant'),act=last&&!s.busy&&!s.error&&!s.pending&&!s.practice?actionFor(last):null;
   if(act)h+=btn(act,s.helpBusy?t().helpLoading:t()[ACTION_LABEL[act]],'','help-button',s.helpBusy);

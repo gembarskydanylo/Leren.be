@@ -106,8 +106,20 @@ async function engine() {
   const b = await box(page, '.lp-exercise .lesson-help'); assert.ok(b.height >= 44, 'LP target'); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await page.click('.lp-exercise .lesson-help'); await page.waitForSelector(S + '.ai-chat-card'); await ask(page, 'Waarom?'); const j = lastChat();
   assert.equal(j.profile.kind, 'study'); assert.ok(j.profile.question, 'LP: the word is in the request'); assert.equal(j.target, 'nl');
+  // release 264: a quiz step of the Learning Path — before answering no sample answer (Lexi must not give the solution);
+  // after a wrong answer the right word reaches Lexi (before, the path never sent it, so Lexi kept refusing to explain)
+  await page.evaluate(() => document.querySelector('.lexi-host')?.remove?.()); await page.evaluate(() => typeof lexiClose === 'function' && lexiClose());
+  for (let i = 0; i < 40; i++) { const st = await page.evaluate(() => { const r = document.getElementById('learningPath'); if (r.querySelector('.lp-options') && !r.querySelector('.lp-feedback')) return 'quiz'; r.querySelector('.lp-primary')?.click(); return 'next' }); if (st === 'quiz') break; await page.waitForTimeout(80) }
+  await page.waitForSelector('#learningPath .lp-options + * .lesson-help, #learningPath .lp-exercise .lesson-help', {timeout: 10000});
+  const n1 = seen.length; await page.evaluate(() => document.querySelector('#learningPath .lp-exercise .lesson-help').click()); await page.waitForSelector(S + '.ai-chat-card'); await ask(page, 'Яка відповідь?');
+  const q1 = seen.slice(n1).filter(x => x.mode !== 'memo').at(-1); assert.ok(q1, 'LP quiz: a request'); assert.ok(['quiz', 'listen'].includes(q1.profile.kind), 'LP: an answer step (' + q1.profile.kind + ')'); assert.ok(!q1.profile.expected && !q1.profile.answer, 'LP quiz before answering: no sample answer');
+  await page.evaluate(() => typeof lexiClose === 'function' && lexiClose()); await page.keyboard.press('Escape');
+  const right = await page.evaluate(() => { const m = learningPath.model, w = m.current(), s = m.state.session, want = s.phase === 1 ? w.uk : w.nl, b = [...document.querySelectorAll('#learningPath .lp-options button')].find(x => x.textContent !== want); b.click(); return w.nl });
+  await page.waitForSelector('#learningPath .lp-feedback .lesson-help, #learningPath .lp-exercise .lesson-help', {timeout: 10000}); await page.waitForTimeout(300);
+  const n2 = seen.length; await page.evaluate(() => document.querySelector('#learningPath .lp-exercise .lesson-help').click()); await page.waitForTimeout(400); await ask(page, 'Чому неправильно?');
+  const q2 = seen.slice(n2).filter(x => x.mode !== 'memo').at(-1); assert.ok(q2, 'LP after answering: a request'); assert.ok(q2.profile.expected && q2.profile.expected.includes(right), 'LP after a wrong answer: the right word is sent (' + JSON.stringify(q2.profile) + ')');
   assert.equal(errors.length, 0, errors.join()); await ctx.close();
-  console.log('PASS: Learning Path — button, kind=study with the word, nl, 320 px');
+  console.log('PASS: Learning Path — button, kind=study with the word, nl, 320 px; quiz: no sample answer before answering, the right word after a wrong answer');
  }
 
  // ---- Course Player (en)
