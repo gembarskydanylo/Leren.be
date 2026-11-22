@@ -21,9 +21,10 @@ const CHAT = {learner_in_target: 'Ik woon in Gent.', reply: 'Leuk! Werk je ook i
  let r = await call(chat()); assert.equal(r.status, 200); assert.match(r.system, /^You are Lexi, the LerenBe AI tutor/); assert.doesNotMatch(r.system, /You are (Peter|Dafna)/);
  r = await call(chat({char: 'whoever'})); assert.match(r.system, /^You are Lexi/, 'unknown id → Lexi');
  r = await call(chat({char: undefined})); assert.match(r.system, /^You are Lexi/, 'no id → Lexi');
- r = await call(chat({char: 'peter'})); assert.match(r.system, /^You are Peter/, 'app versions before 254 keep their tutor until they update');
+ for (const c of ['peter', 'dafna', 'lotte']) { r = await call(chat({char: c})); assert.match(r.system, /^You are Lexi/, c + ' (older apps) → Lexi'); assert.doesNotMatch(r.system, /Peter|Dafna/, c + ': no old persona'); }
+ r = await call({mode: 'ask', target: 'nl', lang: 'uk', char: 'dafna', messages: [{role: 'user', content: 'de of het?'}]}); assert.match(r.system, /^You are Lexi/, 'ask with dafna → Lexi');
  r = await call({mode: 'ask', target: 'nl', lang: 'uk', char: 'lexi', messages: [{role: 'user', content: 'de of het?'}]}); assert.match(r.system, /^You are Lexi, the LerenBe AI tutor[\s\S]*the language tutor inside the Leren\.be app/);
- console.log('PASS: identity — Lexi for chat and questions, also for unknown or missing ids; «peter» / «dafna» only for older app versions');
+ console.log('PASS: identity — Lexi for chat and questions, also for unknown or missing ids; also when older apps send «peter» / «dafna»');
 
  // LerenBe 3.0: the production prefix "Role-play situation: " is kept (production tests pin it); en/fr add "(speak …)"
  // roleplay in every studied language; exam stays Dutch

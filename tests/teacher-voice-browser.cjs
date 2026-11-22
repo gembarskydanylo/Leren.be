@@ -1,4 +1,5 @@
-// The AI teacher's voice follows the chosen teacher: Peter -> male voice, Dafna -> female voice (device voices, as AI replies are not pre-recorded).
+// The voice setting picks the voice: Peter's voice -> male device voice, Dafna's voice -> female (device voices, as AI replies are not pre-recorded).
+// v264: Lexi is the only AI teacher; the old teacher choice (leren_char) no longer changes the voice.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 let chromium;try{({chromium}=require('playwright'))}catch{console.log('SKIP: Playwright is not installed');process.exit(0)}
 const root=path.join(__dirname,'..'),types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json'};
@@ -17,12 +18,12 @@ const server=http.createServer((req,res)=>{let f=path.join(root,decodeURICompone
    window.SpeechSynthesisUtterance=function(t){this.text=t;this.pitch=1;this.rate=1;this.addEventListener=(e,f)=>{if(e==='start')this.onstart=f}};
   });
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.mouse.click(5,5);
-  const speak=async ch=>{await page.evaluate(c=>{lsSet('leren_char',c);lsSet('leren_rec_voice','');lsSet('leren_voice_force_tts',true);lsSet('leren_voice_nl','');window.__spoken.length=0;sayTTS('Hallo, ik ben je leraar.')},ch);await page.waitForTimeout(100);return page.evaluate(()=>window.__spoken[0])};
+  const speak=async ch=>{await page.evaluate(c=>{lsSet('leren_char',c==='dafna'?'peter':'dafna');lsSet('leren_rec_voice',c==='dafna'?'f':'m');lsSet('leren_voice_force_tts',true);lsSet('leren_voice_nl','');window.__spoken.length=0;sayTTS('Hallo, ik ben je leraar.')},ch);await page.waitForTimeout(100);return page.evaluate(()=>window.__spoken[0])};
   const p=await speak('peter'),d=await speak('dafna');
   assert.equal(p.voice,'Xander','Peter speaks with the male voice');assert.equal(d.voice,'Ellen','Dafna speaks with the female voice');
   // only one Dutch voice available: the pitch still differs
   await page.evaluate(()=>{speechSynthesis.getVoices=()=>[{name:'Dutch',lang:'nl-NL',voiceURI:'Dutch'}];refreshSpeechVoices()});
   const p2=await speak('peter'),d2=await speak('dafna');assert(p2.pitch<1&&d2.pitch>1,'pitch differs with a single Dutch voice');
-  assert.deepEqual(errors,[]);console.log('PASS: teacher voice follows Peter (male) / Dafna (female)');
+  assert.deepEqual(errors,[]);console.log('PASS: the voice setting picks the voice: Peter (male) / Dafna (female), whatever the old teacher choice');
  }finally{await browser.close();server.close()}
 })();

@@ -2,7 +2,7 @@
 // model, test key only, no network, nothing deployed. Covers: origin and CORS, a forged Origin header from a script,
 // rate limits (per device, per network, everybody) and the daily caps, failing limiters, request size and message
 // clipping, prompt-injection material in the profile / notes / Lesson Help fields, model errors, bad model output,
-// timeouts (a failed call is not charged), the 226 app's request shape (char "peter", no target, no device id) and Lexi.
+// timeouts (a failed call is not charged), the 226 app's request shape (char "peter", no target, no device id, answered by Lexi).
 //   node tests/v3/worker-security.cjs   → PASS lines, exit 1 on the first failure
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const src = fs.readFileSync(path.join(__dirname, '..', '..', 'docs/integration-3.0/ai-worker.lexi-proposed.js'), 'utf8');
@@ -99,12 +99,12 @@ const used = e => [...e.RATE.m.values()].map(v => JSON.parse(v)).reduce((a, d) =
 
  // --- the 226 app's request (char peter, no target, no device id) and Lexi
  { sent = []; const r = await call(req({mode: 'chat', lang: 'uk', level: 'a11', char: 'peter', messages: [{role: 'user', content: 'Hallo'}]}, {'X-Leren-Device': ''}));
-  assert.equal(r.status, 200, '226 request'); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Peter/); assert.match(sys, /practise Dutch/); }
+  assert.equal(r.status, 200, '226 request'); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Lexi/); assert.doesNotMatch(sys, /You are (Peter|Dafna)/); assert.match(sys, /practise Dutch/); }
  { sent = []; await call(req(chat({char: 'lexi'}))); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Lexi/); assert.doesNotMatch(sys, /Peter/); }
  { sent = []; await call(req(chat({char: 'nobody'}))); assert.match(sent.at(-1).system.map(b => b.text).join(''), /You are Lexi/, 'unknown character → Lexi'); }
  { sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', profile: {lesson: 'Les 3: Wonen', question: 'Ik ___ in Gent.', answer: 'woont'}, messages: [{role: 'user', content: 'Waarom is dit fout?'}]}));
   const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /current lesson: «Les 3: Wonen»/); assert.match(sys, /working on: «Ik ___ in Gent\.»/); assert.match(sys, /answer to it: «woont»/); }
- pass('226 app request shape still served with Peter in Dutch; Lexi persona (default for unknown characters); Lesson Help lesson, exercise and answer in the prompt');
+ pass('226 app request shape (char peter) still served in Dutch, by Lexi; Lexi is the only persona; Lesson Help lesson, exercise and answer in the prompt');
  // --- owner test 2026-11-22: a question about the language in the learner's own language is answered, not «corrected»
  { const out = asks => ({ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', usage: {}, content: [{type: 'text', text: JSON.stringify({learner_in_target: 'Hoe zeg je winkelkar nog?', asks_about_language: asks, reply: 'Je kunt ook winkelkarretje of kar zeggen.', translation: 'Можна також сказати winkelkarretje або kar.', correction: {has_error: false, severity: 'minor', original: '', corrected: '', explanation: ''}})}]})});
   const q = chat({messages: [{role: 'user', content: 'winkelkar як ще можна сказати?'}]});

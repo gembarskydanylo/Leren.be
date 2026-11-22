@@ -1929,7 +1929,11 @@ let audioSets={m:new Set(),f:new Set()},audioEl=null;
 function loadAudioManifest(){for(const k in AUDIO_DIRS){try{fetch(AUDIO_DIRS[k]+"manifest.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))audioSets[k]=new Set(a)}).catch(()=>{})}catch(e){}}}
 const REC_VOICE="__recorded",REC_VOICE_F="__recorded_f";
 const REC_RATE=.85; // recordings are made at -10%; played at 0.85 they are about 0.77 of normal speed (device voices use rate .75)
-function recVoice(){const v=lsGet("leren_rec_voice","");return v==="m"||v==="f"?v:(lsGet("leren_char","peter")==="dafna"?"f":"m")}
+// v264: Lexi is the only AI teacher. The old Peter/Dafna "teacher" choice only picked the recorded voice:
+// carry it over once into the voice setting, after that the voice is chosen only in the voice settings.
+function migrateCharVoice(){if(lsGet("leren_voice_migrated",false))return;const v=lsGet("leren_rec_voice","");if(v!=="m"&&v!=="f"){const c=lsGet("leren_char","");if(c==="dafna"||c==="lotte")lsSet("leren_rec_voice","f")}lsSet("leren_voice_migrated",true)}
+migrateCharVoice();
+function recVoice(){const v=lsGet("leren_rec_voice","");return v==="f"?"f":"m"}
 function recordedAvailable(){return targetLang==="nl"&&(audioSets.m.size>0||audioSets.f.size>0)}
 function useRecorded(){return targetLang==="nl"&&!lsGet("leren_voice_force_tts",false)}
 function playRecorded(text,button,onDone){
@@ -3990,7 +3994,7 @@ function renderShellText(){
  $("tagline").textContent=targetLang==="nl"?guideText.brand:({en:"English",fr:"Français"})[targetLang]||guideText.brand;
  const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)),el("span","comp-points-label",pgU().xp));sc.title=(u.points||"Points")+": "+score;
  const pathBack=$("pathReturn");if(pathBack)pathBack.textContent=({uk:"‹ До навчального маршруту",en:"‹ Back to my learning path",fr:"‹ Retour au parcours",ar:"العودة إلى مسار التعلّم ›"})[uiLang];
- fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();if(typeof renderCharRow==="function")renderCharRow();
+ fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();
 }
 const PROGRESS_EMPTY_UI={
  uk:{title:'Перший крок — і тут з’являться твої результати',text:'Урок займає 5–10 хвилин. За навчання та нові рекорди ти отримуватимеш бали.',start:'Почати урок →',results:'Після першого тесту тут з’явиться твій результат.'},
@@ -4122,7 +4126,7 @@ function firstRun(){
   const list=el("div","goal-list");
   [[g.lvlNew,g.lvlNewS,false],[g.lvlKnow,g.lvlKnowS.replace("{n}",String(TOETS.find(t=>t.kind==="leveltest"&&t.unlocks==="a12")?.questions.length||0)),true]].forEach(([t,sub,test])=>{
    const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
-   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(()=>{lsSet("leren_tour_done",true);afterTourEnd()}),250)};list.appendChild(b)});
+   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>{lsSet("leren_tour_done",true);afterTourEnd()},250)};list.appendChild(b)});
   panel.appendChild(list);
   const skip=el("button","tour-skip",ONBOARD_SKIP[uiLang]||ONBOARD_SKIP.uk);skip.type="button";skip.onclick=()=>{skipOnboarding();close()};panel.appendChild(skip);
  });
@@ -5240,30 +5244,6 @@ const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
 // text templates: {N}=name (nl/en/fr), {Nu}=Ukrainian name, {Na}=Arabic name, {male|female}
 const cx=t=>{if(typeof t!=="string")return t;const c=curChar();return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g,(_,m,f)=>c.m?m:f).replace(/\{Nu\}/g,c.u).replace(/\{Na\}/g,c.a).replace(/\{N\}/g,c.n)};
 const cxDeep=o=>typeof o==="string"?cx(o):Array.isArray(o)?o.map(cxDeep):o&&typeof o==="object"?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,typeof v==="function"?v:cxDeep(v)])):o;
-const CHAR_UI={uk:{pick:"Обери вчителя",pickHint:"Пітер і Дафна навчають нас із котом. Обери, з ким практикувати розмови; змінити вчителя можна в налаштуваннях.",row:"Вчитель",peter:"Вчитель. Пояснює правила спокійно, як на дошці",dafna:"Вчителька з Бельгії. Практикує живі щоденні розмови",chosen:"Обрано",go:"Далі"},
- en:{pick:"Choose your teacher",pickHint:"Peter and Dafna teach you and the cat. Choose a teacher for conversation practice; change this in Settings.",row:"Teacher",peter:"Teacher. Explains rules calmly, like on the whiteboard",dafna:"Belgian teacher. Practise everyday conversations",chosen:"Chosen",go:"Next"},
- fr:{pick:"Choisis ton professeur",pickHint:"Peter et Dafna vous enseignent, à toi et au chat. Choisis un professeur pour les dialogues, modifiable dans les réglages.",row:"Professeur",peter:"Professeur. Explique calmement, comme au tableau",dafna:"Professeure belge. Pratique les conversations du quotidien",chosen:"Choisi",go:"Suivant"},
- ar:{pick:"اختر معلّمك",pickHint:"بيتر ودافنا يعلّمانك أنت والقط. اختر معلّماً للمحادثة ويمكنك تغييره من الإعدادات.",row:"المعلّم",peter:"معلّم. يشرح القواعد بهدوء كما على السبورة",dafna:"معلّمة بلجيكية. تدرّب على محادثات الحياة اليومية",chosen:"تم الاختيار",go:"التالي"}};
-const chU=()=>CHAR_UI[uiLang]||CHAR_UI.uk;
-function charPicker(onPick){
- const u=chU(),wrap=el("div","ch-pick");wrap.setAttribute("role","radiogroup");wrap.setAttribute("aria-label",u.pick);
- Object.entries(CHARS).forEach(([id,c])=>{const on=charId()===id&&lsGet("leren_char",null)!=null;
-  const b=el("button","ch-card"+(on?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("role","radio");b.setAttribute("aria-checked",on?"true":"false");
-  const fig=el("div","ch-fig ch-"+id);fig.innerHTML=c.svg("happy",true);
-  b.append(fig,el("strong","",c.n),el("span","",u[id]));if(on)b.appendChild(el("em","ch-badge","✓ "+u.chosen));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");onPick&&onPick(id)};wrap.appendChild(b)});
- return wrap;
-}
-function pickCharPopup(then){
- const u=chU();popup((panel,close,m)=>{m.dataset.lock="1";panel.classList.add("ch-panel");panel.append(el("h2","goal-title",u.pick),el("p","goal-hint",u.pickHint),charPicker(()=>{close();renderCharRow();if(then)setTimeout(then,200)}))});
-}
-function renderCharRow(){
- const row=$("charRow");if(!row)return;const u=chU();$("charLabel").textContent=u.row;
- const box=$("charSeg");box.replaceChildren();
- Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");b.setAttribute("aria-label",uiLang==="uk"?c.u:uiLang==="ar"?c.a:c.n);
-  const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
-}
 const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
 const SCENE_ART={
  cafe:bg("cafe","#FFEFD8","#FFD49C")+`<path d="M80 0v24M240 0v24" stroke="#5A3622" stroke-width="2"/><path d="M64 38a16 14 0 0 1 32 0zM224 38a16 14 0 0 1 32 0z" fill="#EB6A00"/><ellipse cx="80" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/><ellipse cx="240" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/>
@@ -5403,8 +5383,7 @@ function storyState(){return lsGet("leren_story",{done:[],best:{}})}
 function logMistake(nl,why){const m=lsGet("leren_mistakes",[]).filter(x=>x.nl!==nl);m.unshift({nl,why,d:dayStr()});lsSet("leren_mistakes",m.slice(0,30))}
 function storyMap(){
  const st=storyState(),card=gHead("Een dag in België","");
- if(lsGet("leren_char",null)==null){pickCharPopup(storyMap);return}
- const head=el("div","st-head");const av=el("button","st-av st-av-btn");av.type="button";av.title=chU().row;av.setAttribute("aria-label",chU().pick);av.innerHTML=charSvg("happy");av.onclick=()=>pickCharPopup(storyMap);head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
+ const head=el("div","st-head");const av=el("div","st-av");av.setAttribute("aria-hidden","true");av.innerHTML=charSvg("happy");head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
  const grid=el("div","st-map");
  SCENES.forEach((sc,i)=>{const open=i===0||st.done.includes(SCENES[i-1].id),done=st.done.includes(sc.id);
   const b=el("button","st-place"+(done?" done":"")+(open?"":" locked"));b.type="button";
@@ -6089,7 +6068,7 @@ function initLearningPath(){
   gameCards:()=>gameCards(),
   game:id=>{if(id==="kamer1"&&curLevel==="a21")switchCourse("a11");setView("games");gameStart(id)?.()},
   clock:()=>{switchCourse("a11");currentCat="nums";tab="clock";saveStore();buildNav();setView("lesson");newRound()},
-  chat:()=>aiStart(), // every "talk to AI" button opens Lexi; the voice/teacher choice (leren_char) is not touched
+  chat:()=>aiStart(), // every "talk to AI" button opens Lexi (the only AI teacher)
   lexi:(scenario,ctx)=>lexiOpen(scenario,ctx),
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),

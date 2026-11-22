@@ -3,7 +3,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=require(__dirname+'/lib/app-source.cjs')(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 let voice='peter',last;
 class Audio {constructor(src){last=this;this.src=src}pause(){}play(){return Promise.resolve()}}
-const ctx=vm.createContext({Audio,targetLang:'nl',window:{speechSynthesis:{cancel(){}}},updateSpeechState(){},lsGet:(k,f)=>k==='leren_char'?voice:f});
+const ctx=vm.createContext({Audio,targetLang:'nl',window:{speechSynthesis:{cancel(){}}},updateSpeechState(){},lsGet:(k,f)=>k==='leren_rec_voice'?(voice==='dafna'?'f':'m'):k==='leren_voice_migrated'?true:f,lsSet(){}}); // v264: the voice comes from the voice setting (Peter = m, Dafna = f), not from a teacher choice
 vm.runInContext('let speechToken=0;\n'+script.slice(script.indexOf('const audioNorm='),script.indexOf('// Device speech.')),ctx);
 vm.runInContext('audioSets={m:new Set([audioHash("bom"),audioHash("boom"),audioHash("kat")]),f:new Set([audioHash("bom"),audioHash("boom"),audioHash("kat")])}',ctx);
 assert.equal(ctx.audioHash('bom'),'7dc692a9');assert.equal(ctx.audioHash('boom'),'c79493aa');assert.notEqual(ctx.audioHash('bom'),ctx.audioHash('boom'));
