@@ -9,6 +9,9 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 const TYPED={w5:'My name is Olena.',w6:'am',w7:"I've got two children.",w8:'How much is it?'};
 const TYPED12={w5:'was',w6:'bought',w7:"I've got a headache.",w8:'Would you like to come to dinner?'};
+// LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
+// .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html?multilang=1';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
@@ -19,7 +22,7 @@ const TYPED12={w5:'was',w6:'bought',w7:"I've got a headache.",w8:'Would you like
   await page.addInitScript(([r,v])=>{if(!v){try{delete window.speechSynthesis;delete Window.prototype.speechSynthesis;delete window.SpeechSynthesisUtterance}catch(e){}} // like a browser without speech: the API does not exist
    if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,val] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true'}))localStorage.setItem(k,val)},[release,voice]);
   await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});
-  await page.click('.cp-preview [data-course="en"]');await page.waitForSelector('.cp-exam[data-exam="'+exam+'"]');await page.click('.cp-exam[data-exam="'+exam+'"]');await page.waitForSelector('.ex-intro');page.__exam=exam;return{ctx,page,errors}};
+  await pickCourse(page,'en');await page.waitForSelector('.cp-exam[data-exam="'+exam+'"]');await page.click('.cp-exam[data-exam="'+exam+'"]');await page.waitForSelector('.ex-intro');page.__exam=exam;return{ctx,page,errors}};
  // Answers one item; wrong=true picks a wrong option / wrong text.
  const answer=async(page,wrong)=>{
   const id=await page.locator('.cp-body').getAttribute('data-item');const it=await page.evaluate(([id,ex])=>{const E=LerenCourseExams[ex];return [...E.reading.flatMap(t=>t.items),...E.listening,...E.writing,...E.speaking].find(x=>x.id===id)},[id,page.__exam||'en11']);

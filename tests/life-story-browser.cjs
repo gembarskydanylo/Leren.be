@@ -61,7 +61,8 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
   await page.locator('.ls-panel .ls-primary').click();assert.equal(await page.locator('.ls-opt-uk').count(),0,'replies without translation');
   // 🔴 real: hidden text, no translation button
   await page.locator('.ls-mode [data-mode="real"]').click();await page.locator('.ls-scene-head .ls-icon').click();await page.click('.ls-scenes li[data-scene="station"] .ls-scene');
-  assert.equal(await page.locator('.ls-nl.is-hidden').count(),1);assert.equal(await page.locator('.ls-translate').count(),0);await page.locator('.ls-reveal').click();assert.equal(await page.locator('.ls-nl.is-hidden').count(),0);
+  // LerenBe 3.0: the scene picture repeats the current line in a speech bubble (.ls-stage-say), hidden too, with its own «Текст» button
+  const H='.ls-nl.is-hidden:not(.ls-stage-say .ls-nl)';assert.equal(await page.locator(H).count(),1);assert.equal(await page.locator('.ls-stage-say .ls-nl.is-hidden').count(),1,'stage bubble hidden too');assert.equal(await page.locator('.ls-translate').count(),0);await page.locator('.ls-reveal').click();assert.equal(await page.locator(H).count(),0);
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_life_story_v1_first-day')).mode),'real','mode saved, progress kept');
   assert.equal(Object.values(await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_life_xp_v1')))).reduce((a,b)=>a+b,0),xp);
   report.push('practice: translation on request; real life: hidden text; switching keeps progress');

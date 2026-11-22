@@ -54,7 +54,8 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
    const [dl]=await Promise.all([page.waitForEvent('download'),page.locator('#insBackup .btn.primary').click()]);
    assert.match(dl.suggestedFilename(),/^leren-progress-\d{4}-\d{2}-\d{2}\.json$/);const file=path.join(os.tmpdir(),'leren-backup-test.json');await dl.saveAs(file);
    const atBackup=await snap(),backup=JSON.parse(fs.readFileSync(file,'utf8'));assert.equal(backup.v,4);assert.match(backup.sha256,/^[0-9a-f]{64}$/);for(const k of keys)assert.equal(backup.keys[k],atBackup[k],'in the backup: '+k);for(const k of ['poly_toetsbest','leren_exam12','poly_streak','leren_skills_v1','leren_minutes_v1','leren_goal_min','leren_achievements_v1'])assert.equal(atBackup[k],before[k],'unchanged by the app: '+k);
-   assert.equal(await page.locator('#insBackup').count(),0,'reminder gone after a backup');
+   // LerenBe 3.0 (CI): the reminder goes when the clipboard write settles (backupExport → done), which is asynchronous; wait for it
+   await page.locator('#insBackup').waitFor({state:'detached',timeout:5000}).catch(()=>{});assert.equal(await page.locator('#insBackup').count(),0,'reminder gone after a backup');
    log('delete');// "Delete site data": everything gone, then restore from the file through the Restore button.
    await page.evaluate(()=>{localStorage.clear();sessionStorage.setItem('seeded','1')});await page.reload();await page.waitForFunction(()=>window.learningPath);
    assert.equal(await page.evaluate(()=>localStorage.getItem('poly_toetsbest')),null);

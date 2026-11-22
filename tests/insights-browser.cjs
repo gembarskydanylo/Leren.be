@@ -52,7 +52,8 @@ function oldData(){
    await page.screenshot({path:path.join(SHOTS,`insights-${name}-${theme}-${who}-progress.png`),fullPage:false});
    // Text and background differ in this theme (cards follow light/dark).
    const colors=await page.evaluate(()=>{const s=getComputedStyle(document.getElementById('insSkills'));return [s.color,s.backgroundColor]});assert.notEqual(colors[0],colors[1]);
-   if(theme==='dark')assert.match(colors[1],/rgb\(39, 31, 25\)/,'dark card');
+   // LerenBe 3.0 design system: the dark card is --lb-surface #1e302a (production 226: #271f19)
+   if(theme==='dark')assert.match(colors[1],/rgb\(30, 48, 42\)/,'dark card');
    // Goal choice: 5, 10, 15, 20, 30 minutes.
    await page.evaluate(()=>openGoalModal());assert.equal(await page.locator('#goalModal .goal-opt').count(),5);assert.equal(await page.locator('#goalModal .goal-opt.correct').getAttribute('data-goal'),'10');
    await page.locator('#goalModal .goal-opt[data-goal="15"]').click();assert.equal(await page.evaluate(()=>goalMin()),15);await page.locator('#goalModal .goal-opt[data-goal="10"]').click();await page.locator('#goalModal .btn.primary').click();

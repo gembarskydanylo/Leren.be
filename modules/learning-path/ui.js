@@ -46,7 +46,6 @@
   function courseSwitch(detail){
    const items=[['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level,key])=>({level,key,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0})}));
    root.appendChild(LerenFocus.courses({lang,active:model.course,items,detail,onPick(level){if(pickCourse(level))render()}}));
-   root.appendChild(node('p','fh-cefr',(CEFR[lang]||CEFR.uk))); // TEST-019: what A1/A2 mean, in one sentence (no exam link)
   }
   function hero(){
    const session=model.state.session,paused=session?.kind==='lesson'&&(session.phase<2||session.index<session.ids.length)&&chapter(model.lesson(session.lesson)).level===model.course?model.lesson(session.lesson):null,next=paused||model.recommended(),placing=!!model.state.placement,stats=model.stats(),started=placing||!!paused||stats.done>0||model.state.started&&model.course===model.levels[0],f=LerenFocus.tr(lang),ch=next&&chapter(next);
@@ -59,26 +58,49 @@
    // Guided route: words that need review come first, as a short warm-up before the next lesson (once a day).
    const due=bridge.due?bridge.due():[],warm=!placing&&!paused&&next&&model.warmupDue(due)?model.warmupIds(due).length:0;
    const showcase=globalThis.LerenShowcase?.create({lang,level:model.course,gameCards:()=>bridge.gameCards?.()||[],onGames:()=>bridge.games?.(),onGame:id=>bridge.game?.(id),onClock:()=>bridge.clock?.(),onChat:id=>bridge.chat?.(id),onRoute:()=>root.querySelector('.fh-hero')?.scrollIntoView({behavior:'smooth',block:'start'})});
+   // TEST-016 home v2 (modules/home-v2): HERO, interface language, course cards, LIFE, progress — built from this route's
+   // own levels and actions. Without the module the original banner and preview card stay.
    // TEST-019: «Your next lesson» is the first and most visible block for everyone (new: «Start learning», with
-   // progress: «Continue learning»); the banner, courses and levels, games and AI follow below — nothing is hidden.
+   // progress: «Continue learning»); the HERO, courses and levels, games and AI follow below — nothing is hidden.
    const labels=START[lang]||START.uk;
+   // TEST-022: the language and level choice is one button at the very top of the home («Я вчу …»).
+   const levelList=[['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level])=>({level,active:level===model.course,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0}),pick:()=>{if(pickCourse(level))render()}}));
+   const hasPicker=!!globalThis.LerenHomeV2?.picker;
+   if(hasPicker)root.appendChild(LerenHomeV2.picker({lang,levels:levelList}));
    root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,goal:goalLine(),startLabel:labels[0],resumeLabel:labels[1],onBegin:beginNext,onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
-   if(LerenFocus.banner)root.appendChild(LerenFocus.banner());
+   // TEST-022 calm home: until three lessons are done (or the learner asks for everything) the long blocks stay folded.
+   const doneLessons=Object.keys(model.state.completed).length,wantAll=(()=>{try{return localStorage.getItem('leren_home_all_v1')==='1'}catch{return false}})();
+   // TEST-020 Learning: the topics of the active course with the engine's own counts (read-only); a stop opens its chapter map.
+   const route=course.chapters.filter(c=>c.level===model.course).map(c=>({id:c.id,title:title(c),...model.stats(c.id),current:next?.chapter===c.id,open:()=>openMap(c.id)}));
+   const homeTop=globalThis.LerenHomeV2?.top?.({lang,started,secondary:true,picker:hasPicker,onContinue:beginNext,route,routeOpen:placing||doneLessons>=3||wantAll,stats:bridge.stats?.(),rewards:()=>bridge.rewards(),levels:levelList});
+   if(homeTop)root.appendChild(homeTop);
+   else{if(LerenFocus.banner)root.appendChild(LerenFocus.banner());
    // New languages, preview only (lerenbe.com/?multilang=1): English, French, German open in their own player.
-   {const pc=globalThis.LerenCoursePlayer?.previewCard?.(lang);if(pc)root.appendChild(pc)}
+   {const pc=globalThis.LerenCoursePlayer?.previewCard?.(lang);if(pc)root.appendChild(pc)}}
    // Below the next lesson: course and level choice, then the showcase (games, AI) — for new and returning learners alike.
    const put=el=>root.appendChild(el);
-   courseSwitch(()=>panelContent());
-   if(bridge.stats&&LerenFocus.progressCard&&!placing){const ps=bridge.stats();put(LerenFocus.progressCard({lang,streak:ps.streak,min:ps.min,goal:ps.goal,points:ps.points,done:stats.done,total:stats.total,started,onMore:()=>bridge.rewards(),onBegin:beginNext}))}
-   if(showcase)root.appendChild(showcase.intro);
+   if(!homeTop)courseSwitch(()=>panelContent()); // home v2 has its own course cards
+   if(bridge.stats&&LerenFocus.progressCard&&!placing&&!homeTop){const ps=bridge.stats();put(LerenFocus.progressCard({lang,streak:ps.streak,min:ps.min,goal:ps.goal,points:ps.points,done:stats.done,total:stats.total,started,onMore:()=>bridge.rewards(),onBegin:beginNext}))}
+   // TEST-022: a calm home for beginners. Until three lessons are done (or the learner asks for everything), the long
+   // showcase (games gallery, clock, characters, reviews, FAQ, topic preview) is folded into one short «More» block;
+   // every part stays one tap away. Duplicates of the next-lesson button and of the LIFE entrance are dropped.
+   const simple=!!homeTop&&!placing&&doneLessons<3&&!wantAll;
+   const setAll=on=>{try{if(on)localStorage.setItem('leren_home_all_v1','1');else localStorage.removeItem('leren_home_all_v1')}catch{}render()};
+   if(homeTop&&showcase){showcase.intro.querySelector('.hs-text-link')?.remove();showcase.features.querySelector('.hs-life')?.remove()}
+   root.dataset.home=simple?'simple':'full';
+   if(showcase&&!simple)root.appendChild(showcase.intro);
    if(talkOpen()&&!paused){const card=node('div','fh-talk-resume');card.append(node('span','',talkText('resume')+' · '+(bridge.lessonLabel(model.lesson(conversation.state.lesson).tab,lang)||'')),LerenFocus.button('💬 '+talkText('resume')+' →',()=>beginTalk(conversation.state.lesson),'fh-talk-btn'));root.appendChild(card)}
    // Peter's advice (from the learner's own results) right under the next step; it opens the exercise itself.
    const advice=!warm&&!placing&&bridge.advice?bridge.advice():null;
    if(advice){const card=node('div','fh-advice'),face=node('img','fh-advice-face');face.src=bridge.person?.().image||'./img/chars/peter.webp';face.alt=bridge.person?.().name||'Peter';face.width=44;face.height=44;const text=node('div','fh-advice-text');text.append(node('strong','',(bridge.person?.().name||'Peter')+':'),node('p','',advice.text));card.append(face,text,LerenFocus.button(advice.label,advice.run,'fh-advice-btn'));root.appendChild(card)}
-   if(showcase)root.appendChild(showcase.features);
+   if(simple){const m=MORE[lang]||MORE.uk,box=node('section','fh-more'),grid=node('div','fh-more-grid');box.setAttribute('aria-label',m.title);
+    const tile=(icon,label,hint,fn,id)=>{const b=LerenFocus.button('',fn,'fh-more-tile');b.dataset.more=id;const ic=node('span','fh-more-icon',icon);ic.setAttribute('aria-hidden','true');const tx=node('span','fh-more-text');tx.append(node('strong','',label),node('small','',hint));b.append(ic,tx);return b};
+    grid.append(tile('🎮',m.games,m.gamesHint,()=>bridge.games?.(),'games'),tile('💬',m.chat,m.chatHint,()=>bridge.chat?.('peter'),'chat'),tile('🕒',m.clock,m.clockHint,()=>bridge.clock?.(),'clock'),tile('🗺️',m.topics,m.topicsHint,()=>openMap(),'topics'));
+    box.append(node('h2','',m.title),node('p','lp-caption',m.hint),grid,LerenFocus.button(m.all+' ↓',()=>setAll(true),'fh-more-all'));root.appendChild(box)}
+   if(showcase&&!simple)root.appendChild(showcase.features);
    const overview=node('section','fh-overview'),heading=node('div','fh-section-heading');heading.append(node('h2','',f.topics),LerenFocus.button(f.all+' →',()=>openMap()));overview.append(heading);
-   const tiles=node('div','fh-topic-grid fh-preview-grid'),own=course.chapters.filter(c=>c.level===model.course),start=Math.max(0,own.findIndex(c=>c.id===ch?.id)),others=own.filter(c=>c.id!==ch?.id),preview=[...own.slice(start+1),...own.slice(0,start)].filter(c=>c.id!==ch?.id).slice(0,2);for(const c of preview.length?preview:others.slice(0,2))tiles.appendChild(topicTile(c));overview.appendChild(tiles);root.appendChild(overview);
-   const extras=node('div','fh-extras');extras.append(LerenFocus.button('✦ '+f.gifts,()=>bridge.rewards(),'fh-extra-link'),LerenFocus.button(f.about,()=>LerenFocus.about(lang),'fh-extra-link'));root.appendChild(extras);note();
+   const tiles=node('div','fh-topic-grid fh-preview-grid'),own=course.chapters.filter(c=>c.level===model.course),start=Math.max(0,own.findIndex(c=>c.id===ch?.id)),others=own.filter(c=>c.id!==ch?.id),preview=[...own.slice(start+1),...own.slice(0,start)].filter(c=>c.id!==ch?.id).slice(0,2);for(const c of preview.length?preview:others.slice(0,2))tiles.appendChild(topicTile(c));overview.appendChild(tiles);if(!simple)root.appendChild(overview);
+   const extras=node('div','fh-extras');extras.append(LerenFocus.button('✦ '+f.gifts,()=>bridge.rewards(),'fh-extra-link'),LerenFocus.button(f.about,()=>LerenFocus.about(lang),'fh-extra-link'));if(homeTop&&wantAll&&doneLessons<3)extras.append(LerenFocus.button((MORE[lang]||MORE.uk).less,()=>setAll(false),'fh-extra-link fh-less'));root.appendChild(extras);note();
   }
   // Daily goal (5/10/20 min from the first run or settings): suggests how much to do today; lessons keep their length.
   const GOAL={uk:{plan:g=>g<=5?'Ціль на сьогодні — '+g+' хв: одна частина уроку.':g<=15?'Ціль на сьогодні — '+g+' хв: урок і коротке повторення слів.':'Ціль на сьогодні — '+g+' хв: урок, повторення й гра або розмова.',now:(m,g)=>'Сьогодні: '+m+' з '+g+' хв.',met:(m,g)=>'Ціль на сьогодні виконано ✓ ('+m+' з '+g+' хв). Можна продовжити.'},
@@ -86,12 +108,15 @@
    fr:{plan:g=>g<=5?'Objectif du jour — '+g+' min : une partie de leçon.':g<=15?'Objectif du jour — '+g+' min : une leçon et une courte révision.':'Objectif du jour — '+g+' min : une leçon, une révision et un jeu ou une discussion.',now:(m,g)=>'Aujourd’hui : '+m+' sur '+g+' min.',met:(m,g)=>'Objectif du jour atteint ✓ ('+m+' sur '+g+' min). Tu peux continuer.'},
    ar:{plan:g=>g<=5?'هدف اليوم — '+g+' دقائق: جزء من درس.':g<=15?'هدف اليوم — '+g+' دقيقة: درس ومراجعة قصيرة للكلمات.':'هدف اليوم — '+g+' دقيقة: درس ومراجعة ولعبة أو محادثة.',now:(m,g)=>'اليوم: '+m+' من '+g+' دقيقة.',met:(m,g)=>'تحقق هدف اليوم ✓ ('+m+' من '+g+' دقيقة). يمكنك المتابعة.'}};
   function goalLine(){const st=bridge.stats?.();if(!st||!st.goal)return '';const G=GOAL[lang]||GOAL.uk;return st.min>=st.goal?G.met(st.min,st.goal):G.plan(st.goal)+(st.min>0?' '+G.now(st.min,st.goal):'')}
-  const CEFR={uk:'A1, A2 — рівні європейської шкали CEFR: від A1 (перші слова й прості фрази) до C2 (вільне володіння). A1.1 і A1.2 — дві половини рівня A1.',en:'A1, A2 are levels of the European CEFR scale: from A1 (first words and simple phrases) to C2 (fluent). A1.1 and A1.2 are the two halves of A1.',fr:'A1, A2 sont des niveaux de l’échelle européenne CECR : de A1 (premiers mots et phrases simples) à C2 (maîtrise). A1.1 et A1.2 sont les deux moitiés de A1.',ar:'A1 وA2 مستويان في الإطار الأوروبي المرجعي CEFR: من A1 (الكلمات الأولى والعبارات البسيطة) إلى C2 (الإتقان). A1.1 وA1.2 نصفا المستوى A1.'};
+  const MORE={uk:{title:'Ще в LerenBe',hint:'Спершу пройди кілька уроків. Решта чекає тут і відкриється на головній після третього уроку.',games:'Ігри',gamesHint:'Слова й фрази у грі',chat:'Поговорити з AI',chatHint:'Lexi відповість на питання',clock:'Годинник',clockHint:'Котра година?',topics:'Усі теми',topicsHint:'Карта курсу',all:'Показати все на головній',less:'Показувати менше'},
+   en:{title:'More in LerenBe',hint:'Do a few lessons first. The rest waits here and opens on the home after your third lesson.',games:'Games',gamesHint:'Words and phrases in play',chat:'Talk to AI',chatHint:'Lexi answers your questions',clock:'Clock',clockHint:'What time is it?',topics:'All topics',topicsHint:'Course map',all:'Show everything on the home',less:'Show less'},
+   fr:{title:'Plus dans LerenBe',hint:'Fais d’abord quelques leçons. Le reste attend ici et s’ouvrira sur l’accueil après ta troisième leçon.',games:'Jeux',gamesHint:'Mots et phrases en jouant',chat:'Parler à l’IA',chatHint:'Lexi répond à tes questions',clock:'Horloge',clockHint:'Quelle heure est-il ?',topics:'Tous les thèmes',topicsHint:'Plan du cours',all:'Tout afficher sur l’accueil',less:'Afficher moins'},
+   ar:{title:'المزيد في LerenBe',hint:'أنجز بضعة دروس أولاً. الباقي ينتظر هنا ويظهر في الصفحة الرئيسية بعد درسك الثالث.',games:'الألعاب',gamesHint:'كلمات وعبارات باللعب',chat:'تحدّث مع الذكاء الاصطناعي',chatHint:'Lexi يجيب عن أسئلتك',clock:'الساعة',clockHint:'كم الساعة؟',topics:'كل المواضيع',topicsHint:'خريطة الدورة',all:'اعرض كل شيء في الرئيسية',less:'اعرض أقل'}};
   const START={uk:['Почати навчання','Продовжити навчання'],en:['Start learning','Continue learning'],fr:['Commencer à apprendre','Continuer à apprendre'],ar:['ابدأ التعلّم','تابع التعلّم']};
   const WARM={uk:n=>'Спершу повторимо '+n+' '+(n<5?'слова':'слів')+', які ти починаєш забувати, потім — новий урок.',en:n=>'First we review '+n+' words you are starting to forget, then a new lesson.',fr:n=>'D’abord on révise '+n+' mots que tu commences à oublier, puis une nouvelle leçon.',ar:n=>'أولاً نراجع '+n+' كلمات بدأت تنساها، ثم درس جديد.'};
   const warmPlan=n=>(WARM[lang]||WARM.uk)(n);
   function courseMap(){
-   const f=LerenFocus.tr(lang),head=node('div','fh-map-heading');head.append(node('p','fh-eyebrow',f.course+' A1'),node('h2','',mapChapter?title(course.chapters.find(c=>c.id===mapChapter)):f.map),node('p','lp-caption',f.mapHint));root.appendChild(head);
+   const f=LerenFocus.tr(lang),head=node('div','fh-map-heading');head.append(node('p','fh-eyebrow',f.course+' '+((mapChapter?course.chapters.find(c=>c.id===mapChapter)?.level:mapLevel)==='A2'?'A2.1':'A1')),node('h2','',mapChapter?title(course.chapters.find(c=>c.id===mapChapter)):f.map),node('p','lp-caption',f.mapHint));root.appendChild(head);
    if(!mapChapter){const levels=node('div','fh-levels');levels.setAttribute('aria-label',f.levelHint);for(const level of model.levels){const b=LerenFocus.button(level,()=>{if(pickCourse(level))render()},'fh-level');b.setAttribute('aria-pressed',String(mapLevel===level));levels.appendChild(b)}root.appendChild(levels);const grid=node('div','fh-topic-grid');for(const ch of course.chapters.filter(c=>c.level===mapLevel))grid.appendChild(topicTile(ch));root.appendChild(grid);root.appendChild(LerenFocus.button(f.newPlace,()=>{model.place();go('placement')}));return}
    const ch=course.chapters.find(c=>c.id===mapChapter),st=model.stats(ch.id),summary=node('div','fh-chapter-summary');summary.append(LerenFocus.meter(st.done,st.total,title(ch)),node('span','lp-caption',st.done+' / '+st.total+' '+f.lessons));root.appendChild(summary);
    const list=node('ol','fh-lesson-list');for(const l of ch.lessons){const done=Object.hasOwn(model.state.completed,l.id),active=model.recommended()?.id===l.id,state=done?'done':active?'current':'ahead',li=node('li','is-'+state),b=button('',()=>begin(l));b.className='fh-lesson-row';const label=node('span','fh-lesson-copy');label.append(node('strong','',lessonTitle(l)),node('small','',done&&!model.mastered(l.id)?t('review'):f[state]));b.append(node('span','fh-lesson-marker',done?'✓':String(ch.lessons.indexOf(l)+1)),label,node('span','fh-lesson-end',done?'✓':active?'→':f.time));if(active)b.setAttribute('aria-current','step');li.appendChild(b);list.appendChild(li)}root.appendChild(list);
@@ -110,7 +135,7 @@
   function illustration(w){
    const figure=node('figure','lp-word-art');
    if(w.id==='b_wakker'||w.nl==='wakker worden'){
-    const img=node('img');img.src='./img/learning-path/wake-cat-v1.png';img.alt='Кіт прокидається і потягується біля будильника';figure.appendChild(img);
+    const img=node('img');img.src='./img/learning-path/wake-cat-v1-656.webp';img.alt='Кіт прокидається і потягується біля будильника';figure.appendChild(img);
    }else{
     const icon=String(w.icon||'📚'),svg=icon.startsWith('<')?icon:(globalThis.LerenCardArt?.A?.[icon]||'');figure.setAttribute('aria-label',w.nl);
     if(svg){figure.classList.add('lp-drawn');figure.innerHTML=svg}

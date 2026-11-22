@@ -19,10 +19,12 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.evaluate(s=>{setView('path');if(s){const m=learningPath.model,l=LerenLearningPath.catalog(DATA,LerenCurriculum).lessons.find(x=>x.chapter==='opening');m.begin(l.id);m.save()}learningPath.open();scrollTo(0,0)},started);
    await page.waitForTimeout(600);
    const r=await page.evaluate(()=>{const lp=document.getElementById('learningPath'),p=[...lp.querySelectorAll('.fh-primary')],hero=lp.querySelector('.fh-hero'),show=lp.querySelector('.hs-intro, [class*="showcase"]');
-    const y=e=>e?e.getBoundingClientRect().top+scrollY:null;return{primaries:p.map(b=>b.textContent.trim()),heroY:y(hero),showY:y(show),btnBottom:p[0]?p[0].getBoundingClientRect().bottom+scrollY:null,card:lp.querySelector('.fh-pcard-empty')?.innerText||''}});
+    const y=e=>e?e.getBoundingClientRect().top+scrollY:null;return{primaries:p.map(b=>b.textContent.trim()),heroY:y(hero),showY:y(show),btnBottom:p[0]?p[0].getBoundingClientRect().bottom+scrollY:null,card:lp.querySelector('.fh-pcard-empty')?.innerText||'',all:lp.innerText}});
    assert.equal(r.primaries.length,1,(started?'started':'new')+': one primary action, got '+JSON.stringify(r.primaries));
    if(r.showY!=null)assert(r.heroY<r.showY,'TEST-019: the next lesson above the showcase for everyone '+JSON.stringify(r));assert(r.btnBottom<=844,'main button on the first screen: '+r.btnBottom);
-   if(!started)assert.match(r.primaries[0],/Почати навчання/);if(started){assert.match(r.primaries[0],/Продовжити навчання/);assert.match(r.card,/Перший урок уже розпочато/)}
+   if(!started)assert.match(r.primaries[0],/Почати навчання/);if(started){assert.match(r.primaries[0],/Продовжити навчання/);// LerenBe 3.0: the calm home (home-v2) has no separate progress card for beginners; when a card is shown it must say the
+    // first lesson is under way, and nothing on the home may still offer to «start the first lesson».
+    if(r.card)assert.match(r.card,/Перший урок уже розпочато/);assert.doesNotMatch(r.all,/Почати перший урок/)}
    assert.deepEqual(errors,[]);report.push((started?'started':'new')+': '+r.primaries[0]+(started?' at '+Math.round(r.btnBottom)+'px':''));await ctx.close();
   }
   console.log('PASS: home order — '+report.join('; '));
