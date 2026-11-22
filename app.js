@@ -4624,7 +4624,6 @@ const KS_UI={
 };
 Object.keys(G_UI).forEach(l=>{const k=KS_UI[l]||KS_UI.en;G_UI[l].ks=k.title;G_UI[l].ksS=k.sub});
 // --- 12. Spell the word: picture → Dutch word from letter tiles (modules/word-builder) ---
-Object.keys(G_UI).forEach(l=>{if(!window.LerenWordBuilder)return;const k=LerenWordBuilder.tr(l);G_UI[l].wb=k.title;G_UI[l].wbS=k.sub});
 function wbStart(){
  if(!window.LerenWordBuilder){toast(gU().nlOnly);return}
  gState={wb:1};
@@ -4632,8 +4631,6 @@ function wbStart(){
   done:xp=>{if(xp)toast(gU().pts(xp));gameDone("wb",xp)},home:renderGamesHome});
 }
 // --- 13. Kamer van Pieter: CSS-3D room (A2, modules/kamer) ---
-Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.tr(l);G_UI[l].kamer=k.title;G_UI[l].kamerS=k.sub});
-Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.A1T?LerenKamer.A1T(l):null;if(!k)return;G_UI[l].kamer1=k.title;G_UI[l].kamer1S=k.sub});
 function kamer1Start(){
  if(!window.LerenKamer){toast(gU().nlOnly);return}
  gState={kamer1:1};
@@ -6193,7 +6190,15 @@ function textGaps(root){
 let textGapQueue=new Set(),textGapFrame=0;
 function textGapsLater(node){if(node&&node.nodeType===1)textGapQueue.add(node.parentElement||node);if(!textGapFrame)textGapFrame=requestAnimationFrame(()=>{textGapFrame=0;const q=[...textGapQueue];textGapQueue.clear();for(const n of q)if(n.isConnected)textGaps(n)})}
 function textGapsWatch(){textGaps(document.body);new MutationObserver(list=>{for(const m of list){if(m.type==="characterData"){textGapsLater(m.target.parentElement);continue}if(m.type==="attributes"){textGapsLater(m.attributeName==="data-view"?document.body.firstElementChild:m.target.firstElementChild||m.target);continue}for(const n of m.addedNodes)if(n.nodeType===1)textGapsLater(n);else if(n.nodeType===3&&n.textContent.trim())textGapsLater(n.parentElement)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["hidden","data-view"]})}
+// LerenBe 3.0: the word builder and Kamer games load with `defer` (they are not on the first screen), so their titles
+// join G_UI in start(), which runs on DOMContentLoaded, after every deferred script.
+function gameTitles(){
+ Object.keys(G_UI).forEach(l=>{if(!window.LerenWordBuilder)return;const k=LerenWordBuilder.tr(l);G_UI[l].wb=k.title;G_UI[l].wbS=k.sub});
+ Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.tr(l);G_UI[l].kamer=k.title;G_UI[l].kamerS=k.sub});
+ Object.keys(G_UI).forEach(l=>{if(!window.LerenKamer)return;const k=LerenKamer.A1T?LerenKamer.A1T(l):null;if(!k)return;G_UI[l].kamer1=k.title;G_UI[l].kamer1S=k.sub});
+}
 function start(){
+ gameTitles();
  try{
   const t=localStorage.getItem("poly_theme");
   document.documentElement.dataset.theme=(t==="dark"||t==="glass")?"dark":"light"; // old "glass" was a dark look
