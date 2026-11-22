@@ -5,8 +5,8 @@
 // one tap → this release; then every key must be byte-for-byte the same, except the release bookkeeping keys in CHANGES
 // (and new keys the new release adds), and the visible numbers must be equal. Finally offline: home and a lesson open.
 // The finished lessons are read from leren_path_v1 (the route model of release 226 only exists once the route is opened).
-// Profiles: new learner, half a course, a lot of progress, damaged storage, learner who studied offline, learner back
-// after a long break.
+// Profiles: new learner, half a course, a lot of progress (+ English / French course progress, badges with their dates),
+// damaged storage, learner who studied offline (French interface), learner back after a long break (Arabic interface).
 const fs = require('node:fs'), path = require('node:path'), http = require('node:http'), os = require('node:os'), assert = require('node:assert/strict'), {execSync} = require('node:child_process');
 const repo = path.join(__dirname, '..'), PREV = process.env.PREV || 'origin/main';
 const cacheOf = s => (s.match(/const CACHE_NAME = "(leren-be-v\d+)"/) || [])[1];
@@ -33,11 +33,13 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
  const PROFILES = {
   'new learner': {seed: {}, act: async () => {}},
   'half a course': {seed: BASE, act: async p => p.evaluate(() => { for (let i = 0; i < 12; i++) addXP(10, 'q:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 6); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })},
-  'a lot of progress': {seed: {...BASE, poly_streak: '23', poly_toetsbest: JSON.stringify({t1: 9, t2: 10, t3: 8}), leren_life_xp_v1: JSON.stringify({'first-day:station': 40, 'first-day:tram': 35, 'fence-neighbour:mark-1': 20}), leren_achievements_v1: JSON.stringify({first: 1, ten: 1, streak7: 1}), leren_exam11: JSON.stringify({best: 86, done: 1})},
-   act: async p => p.evaluate(() => { for (let i = 0; i < 400; i++) addXP(5 + (i % 7), 'big:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 40); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })},
+  'a lot of progress': {seed: {...BASE, poly_streak: '23', poly_toetsbest: JSON.stringify({t1: 9, t2: 10, t3: 8}), leren_life_xp_v1: JSON.stringify({'first-day:station': 40, 'first-day:tram': 35, 'fence-neighbour:mark-1': 20}), leren_achievements_v1: JSON.stringify({version: 1, earned: {'xp-100': '2026-09-02T08:15:00.000Z', 'xp-250': '2026-09-10T19:40:00.000Z'}}), leren_exam11: JSON.stringify({best: 86, done: 1})},
+   act: async p => p.evaluate(() => { for (let i = 0; i < 400; i++) addXP(5 + (i % 7), 'big:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 40); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })
+    .then(() => p.evaluate(async () => { for (const lang of ['en', 'fr']) { const pack = LerenCourseData[lang], c = LerenLearningPath.catalog(pack.data, pack.curriculum, {text: pack.text});
+     const m = LerenLearningPath.create(c, localStorage, {key: LerenCourses.key('leren_path_v1', lang)}); m.start(); for (const l of c.lessons.slice(0, lang === 'en' ? 7 : 3)) m.state.completed[l.id] = (l.ids || [1]).length; m.save() } }))},
   'damaged storage': {seed: {...BASE, poly_score: 'abc', leren_xp_v2: '{bad json', leren_path_v1: 'null', poly_progress: '[1,2', leren_life_xp_v1: '"x"', leren_skills_v2: '<img src=x onerror=alert(1)>', leren_minutes_v2: '-5'}, act: async () => {}},
-  'studied offline': {seed: BASE, offline: true, act: async p => p.evaluate(() => { for (let i = 0; i < 8; i++) addXP(10, 'off:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const l = m.recommended(); m.state.completed[l.id] = l.ids.length; m.save() })},
-  'back after a long break': {seed: {...BASE, leren_release_seen: '"150"', poly_streak: '4', poly_daily: JSON.stringify({d: '2026-01-05', n: 3}), leren_week: JSON.stringify({w: '2026-01-05', d: [1, 1, 0]})}, act: async p => p.evaluate(() => { for (let i = 0; i < 30; i++) addXP(10, 'old:' + i) })},
+  'studied offline': {seed: {...BASE, poly_ui: 'fr'}, offline: true, act: async p => p.evaluate(() => { for (let i = 0; i < 8; i++) addXP(10, 'off:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const l = m.recommended(); m.state.completed[l.id] = l.ids.length; m.save() })},
+  'back after a long break': {seed: {...BASE, poly_ui: 'ar', leren_release_seen: '"150"', poly_streak: '4', poly_daily: JSON.stringify({d: '2026-01-05', n: 3}), leren_week: JSON.stringify({w: '2026-01-05', d: [1, 1, 0]})}, act: async p => p.evaluate(() => { for (let i = 0; i < 30; i++) addXP(10, 'old:' + i) })},
  };
  const snap = page => page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^(leren_|poly_)/.test(k)) o[k] = localStorage.getItem(k) } return o });
  const visible = page => page.evaluate(() => ({xp: typeof score === 'number' ? score : null, lessons: (() => { try { return Object.keys(JSON.parse(localStorage.getItem('leren_path_v1') || '{}')?.completed || {}).length } catch { return 'invalid' } })(),
@@ -59,6 +61,11 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
    await P.act(page); await page.waitForTimeout(300);
    if (P.offline) { await ctx.setOffline(false); offline = false }
    const before = await snap(page), vb = await visible(page);
+   // the profile really holds what must survive: English / French course progress, dated badges, interface language
+   if (name === 'a lot of progress') { for (const k of ['leren_path_v1@en', 'leren_path_v1@fr']) assert.ok(Object.keys(JSON.parse(before[k] || '{}').completed || JSON.parse(before[k] || '{}').state?.completed || {}).length || /completed/.test(before[k] || ''), name + ': ' + k + ' has progress before the upgrade');
+    assert.match(before.leren_achievements_v1, /"xp-100":"2026-09-02T08:15:00.000Z","xp-250":"2026-09-10T19:40:00.000Z"/, name + ': dated badge before the upgrade') }
+   if (name === 'back after a long break') assert.equal(before.poly_ui, 'ar', name + ': Arabic interface before the upgrade');
+   if (name === 'studied offline') assert.equal(before.poly_ui, 'fr', name + ': French interface before the upgrade');
    // deploy this tree
    root = repo; const n0 = navs.length;
    await page.evaluate(() => navigator.serviceWorker.getRegistration().then(r => r.update()));
