@@ -3661,7 +3661,7 @@ DX.search=(ix,raw,{lang="uk",pos="",limit=60}={})=>{
 
 // ========== DICTIONARY UI (data: dict/nl.json + lesson words; engine: DX) ==========
 const DICT_UI={
- uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",
+ uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",retry:"Спробувати ще раз",
   words:n=>"У словнику "+n.toLocaleString("uk")+" "+(n%10===1&&n%100!==11?"слово":n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?"слова":"слів")+" · A1–A2",found:n=>"Знайдено: "+n,none:"Нічого не знайдено",did:"Можливо, ти мав на увазі:",
   all:"Усі",pos:{n:"ім.",v:"дієсл.",adj:"прикм.",adv:"присл.",prep:"прийм.",conj:"спол.",pron:"займ.",num:"числ.",det:"займ.",int:"виг.",phr:"вираз"},
   filters:[["","Усі"],["n","Іменники"],["v","Дієслова"],["adj","Прикметники"],["phr","Вирази"]],
@@ -3670,7 +3670,7 @@ const DICT_UI={
   irr:"неправильне дієслово",withZijn:"з zijn",withBoth:"з hebben або zijn",adjForm:"Перед іменником",cmp:"Порівняння",
   ex:"Приклад",fromLessons:"З уроків",en:"Англ.",listen:"Слухати",star:"Додати до «Мої слова»",unstar:"Прибрати з «Мої слова»",
   wod:"Слово дня",recent:"Нещодавно шукали",mine:"Мої слова",mineEmpty:"Натисни ☆ біля слова, щоб зберегти його тут.",tryT:"Спробуй:",clear:"Очистити"},
- en:{ph:"Dutch or English word",loading:"Loading dictionary…",offline:"The full dictionary needs an internet connection. Showing lesson words.",
+ en:{ph:"Dutch or English word",loading:"Loading dictionary…",offline:"The full dictionary needs an internet connection. Showing lesson words.",retry:"Try again",
   words:n=>n.toLocaleString("en")+" words · A1–A2",found:n=>n+" found",none:"Nothing found",did:"Did you mean:",
   all:"All",pos:{n:"noun",v:"verb",adj:"adj.",adv:"adv.",prep:"prep.",conj:"conj.",pron:"pron.",num:"num.",det:"det.",int:"interj.",phr:"phrase"},
   filters:[["","All"],["n","Nouns"],["v","Verbs"],["adj","Adjectives"],["phr","Phrases"]],
@@ -3679,12 +3679,12 @@ const DICT_UI={
   irr:"irregular verb",withZijn:"with zijn",withBoth:"with hebben or zijn",adjForm:"Before a noun",cmp:"Comparison",
   ex:"Example",fromLessons:"From lessons",en:"EN",listen:"Listen",star:"Add to My words",unstar:"Remove from My words",
   wod:"Word of the day",recent:"Recent searches",mine:"My words",mineEmpty:"Tap ☆ next to a word to save it here.",tryT:"Try:",clear:"Clear"}};
-DICT_UI.fr=Object.assign({},DICT_UI.en,{pos:{n:"nom",v:"verbe",adj:"adj.",adv:"adv.",prep:"prép.",conj:"conj.",pron:"pron.",num:"num.",det:"dét.",int:"interj.",phr:"expression"},pl:"pl.",sg:"sg.",deW:"mot en de",hetW:"mot en het",both:"de ou het",ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
+DICT_UI.fr=Object.assign({},DICT_UI.en,{pos:{n:"nom",v:"verbe",adj:"adj.",adv:"adv.",prep:"prép.",conj:"conj.",pron:"pron.",num:"num.",det:"dét.",int:"interj.",phr:"expression"},pl:"pl.",sg:"sg.",deW:"mot en de",hetW:"mot en het",both:"de ou het",ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",offline:"Le dictionnaire complet a besoin d’Internet. Je montre les mots des leçons.",retry:"Réessayer",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
  filters:[["","Tout"],["n","Noms"],["v","Verbes"],["adj","Adjectifs"],["phr","Expressions"]],wod:"Mot du jour",recent:"Recherches récentes",mine:"Mes mots",mineEmpty:"Touche ☆ à côté d'un mot pour l'enregistrer ici.",tryT:"Essaie :",listen:"Écouter",ex:"Exemple",fromLessons:"Des leçons",present:"Présent",past:"Passé",perfect:"Passé composé"});
-DICT_UI.ar=Object.assign({},DICT_UI.en,{pos:{n:"اسم",v:"فعل",adj:"صفة",adv:"ظرف",prep:"حرف جر",conj:"أداة ربط",pron:"ضمير",num:"عدد",det:"أداة",int:"تعجب",phr:"عبارة"},pl:"جمع",sg:"مفرد",deW:"كلمة de",hetW:"كلمة het",both:"de أو het",ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
+DICT_UI.ar=Object.assign({},DICT_UI.en,{pos:{n:"اسم",v:"فعل",adj:"صفة",adv:"ظرف",prep:"حرف جر",conj:"أداة ربط",pron:"ضمير",num:"عدد",det:"أداة",int:"تعجب",phr:"عبارة"},pl:"جمع",sg:"مفرد",deW:"كلمة de",hetW:"كلمة het",both:"de أو het",ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",offline:"يحتاج القاموس الكامل إلى الإنترنت. أعرض كلمات الدروس.",retry:"حاول مرة أخرى",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
  filters:[["","الكل"],["n","أسماء"],["v","أفعال"],["adj","صفات"],["phr","عبارات"]],wod:"كلمة اليوم",recent:"عمليات البحث الأخيرة",mine:"كلماتي",mineEmpty:"اضغط ☆ بجانب الكلمة لحفظها هنا.",tryT:"جرّب:",listen:"استمع",ex:"مثال",fromLessons:"من الدروس"});
 const dU=()=>DICT_UI[uiLang]||DICT_UI.en;
-const DICT={ix:null,loading:null,offline:false,pos:"",open:-1,corpus:null};
+const DICT={ix:null,loading:null,offline:false,retryAt:0,fails:0,pos:"",open:-1,corpus:null};
 function dictTr(e){return uiLang==="uk"?e.uk:uiLang==="fr"?(e.fr||e.en):uiLang==="ar"?(e.ar||e.en):e.en}
 function dictMerge(list){
  const key=(w,p)=>w.toLowerCase()+"|"+p,byKey=new Map(),byW=new Map(),byPl=new Map();
@@ -3701,14 +3701,20 @@ function dictMerge(list){
  });
  return list;
 }
-function dictLoad(){
- if(DICT.ix)return Promise.resolve(DICT.ix);
+// LRN-001: a failed download (offline, server error, broken file) leaves the lesson-word fallback in place and is retried —
+// when the dictionary is opened again after a bounded exponential backoff with jitter (≈5 s, 10 s … max 5 min), at once when
+// the browser goes online, or with «Try again». One request at a time; a failed download is never kept as the full dictionary.
+function dictLoad(force){
  if(DICT.loading)return DICT.loading;
+ if(DICT.ix&&!DICT.offline)return Promise.resolve(DICT.ix);
+ if(DICT.ix&&DICT.offline&&!force&&Date.now()<DICT.retryAt)return Promise.resolve(DICT.ix);
  DICT.loading=fetch("dict/nl.json").then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
-  .catch(()=>{DICT.offline=true;return[]})
-  .then(list=>{DICT.ix=DX.build(dictMerge(list));DICT.loading=null;return DICT.ix});
+  .then(list=>{if(!Array.isArray(list)||!list.length)throw new Error("Invalid dictionary");DICT.ix=DX.build(dictMerge(list));DICT.offline=false;DICT.fails=0;DICT.retryAt=0;return DICT.ix})
+  .catch(()=>{DICT.offline=true;DICT.fails=Math.min(DICT.fails+1,8);const wait=Math.min(300000,5000*2**(DICT.fails-1));DICT.retryAt=Date.now()+Math.round(wait*(.75+Math.random()*.5));if(!DICT.ix)DICT.ix=DX.build(dictMerge([]));return DICT.ix})
+  .finally(()=>{DICT.loading=null});
  return DICT.loading;
 }
+window.addEventListener("online",()=>{if(!DICT.offline)return;DICT.retryAt=0;dictLoad().then(()=>{if(typeof runSearch==="function")runSearch()})});
 function dictCorpus(){
  if(DICT.corpus)return DICT.corpus;const c=[],seen=new Set();
  const add=(nl,uk,en)=>{if(!nl||seen.has(nl))return;seen.add(nl);c.push({nl,uk:uk||"",en:en||"",t:new Set(DX.norm(nl).split(" "))})};
@@ -3817,8 +3823,10 @@ function runSearch(){
  inp.placeholder=u.ph;const clr=$("dictClear");if(clr)clr.hidden=!inp.value;
  dictFilters();
  if(!DICT.ix){box.replaceChildren(el("div","search-empty",u.loading));dictLoad().then(()=>runSearch());return}
+ // fallback in use: reopening the dictionary tries the full one again once its backoff is over (never more than one request)
+ if(DICT.offline&&!DICT.loading&&Date.now()>=DICT.retryAt)dictLoad().then(()=>runSearch());
  box.replaceChildren();
- if(DICT.offline)box.appendChild(el("p","dx-offline",u.offline));
+ if(DICT.offline){const p=el("p","dx-offline",u.offline+" "),b=el("button","dx-retry",DICT.loading?u.loading:u.retry);b.type="button";b.disabled=!!DICT.loading;b.onclick=()=>{b.disabled=true;b.textContent=u.loading;dictLoad(true).then(()=>runSearch())};p.appendChild(b);box.appendChild(p)}
  const raw=inp.value||"";
  const hint=$("dictHint");if(hint)hint.hidden=!!raw.trim();
  if(!raw.trim()){meta.textContent=u.words(DICT.ix.entries.length);dictHome(box);return}

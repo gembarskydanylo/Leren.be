@@ -1,3 +1,5 @@
+// NOTE (2026-11-22, LRN-001): older copy — app.js holds the dictionary UI the app runs and is newer (word list fixes,
+// plural lookup, recovery with backoff). Change app.js; tests/dictionary-recovery.cjs tests app.js. Kept for history.
 // ========== DICTIONARY UI (data: dict/nl.json + lesson words; engine: DX) ==========
 const DICT_UI={
  uk:{ph:"Слово нідерландською або українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",
