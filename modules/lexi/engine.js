@@ -122,22 +122,24 @@
   return b;
  }
  function fail(code, extra) { const e = new Error(code); e.code = code; if (extra) Object.assign(e, extra); return e }
- // Normalised answers. chat → {kind:'chat', reply, translation, correction|null, verdict:'correct'|'incorrect'|null, asks_about_language}
- //                    ask  → {kind:'ask', answer, examples:[{lang,text,translation}]}
+ // Normalised answers. chat → {kind:'chat', reply, translation, correction|null, verdict:'correct'|'incorrect'|null, asks_about_language, reply_type, explain}
+ //                    ask  → {kind:'ask', answer, examples:[{lang,text,translation}], answer_type}
+ // Structured reply types (LerenBe 3.0 audit): '' = unknown, e.g. an older Worker; the chat then falls back safely.
+ const REPLY_TYPES = ['question', 'grammar', 'translation', 'explanation', 'correction', 'conversation'], ANSWER_TYPES = ['grammar', 'translation', 'exercise', 'other'];
  function normalize(mode, d, lastUser) {
   if (!d || typeof d !== 'object') throw fail('format');
   if (mode === 'ask') {
    if (typeof d.answer !== 'string' || !d.answer.trim()) throw fail('format');
    const ex = (Array.isArray(d.examples) ? d.examples : []).filter(e => e && typeof e.text === 'string' && e.text.trim() && TARGETS[e.lang]).slice(0, 3)
     .map(e => ({lang: e.lang, text: e.text.slice(0, 300), translation: typeof e.translation === 'string' ? e.translation.slice(0, 400) : ''}));
-   return {kind: 'ask', answer: d.answer.trim().slice(0, 1500), examples: ex};
+   return {kind: 'ask', answer: d.answer.trim().slice(0, 1500), examples: ex, answer_type: ANSWER_TYPES.includes(d.answer_type) ? d.answer_type : ''};
   }
   const reply = typeof d.reply === 'string' && d.reply.trim() ? d.reply : typeof d.reply_nl === 'string' ? d.reply_nl : '';
   if (!reply.trim()) throw fail('format');
   const c = d.correction, norm = s => String(s || '').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const fix = c && typeof c === 'object' && c.has_error === true && typeof c.corrected === 'string' && c.corrected.trim() && (!lastUser || norm(c.corrected) !== norm(lastUser))
    ? {has_error: true, original: String(c.original || lastUser || '').slice(0, 300), corrected: c.corrected.slice(0, 300), explanation: typeof c.explanation === 'string' ? c.explanation.slice(0, 300) : '', severity: c.severity === 'major' ? 'major' : 'minor'} : null;
-  return {kind: 'chat', reply: reply.trim().slice(0, 600), translation: typeof d.translation === 'string' ? d.translation.trim().slice(0, 600) : '', correction: fix, verdict: lastUser ? (fix ? 'incorrect' : 'correct') : null, asks_about_language: d.asks_about_language === true};
+  return {kind: 'chat', reply: reply.trim().slice(0, 600), translation: typeof d.translation === 'string' ? d.translation.trim().slice(0, 600) : '', correction: fix, verdict: lastUser ? (fix ? 'incorrect' : 'correct') : null, asks_about_language: d.asks_about_language === true, reply_type: REPLY_TYPES.includes(d.reply_type) ? d.reply_type : '', explain: d.asks_about_language === true && typeof d.explain === 'string' ? d.explain.trim().slice(0, 900) : ''};
  }
  const listeners = new Set();
  function on(fn) { listeners.add(fn); return () => listeners.delete(fn) }

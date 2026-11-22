@@ -178,6 +178,7 @@ function learnerNotes(p, mode, memory, style = "teacher") {
     if (p.lesson) lines.push(`current lesson: «${clean(p.lesson, 80)}»`);
     if (["study", "quiz", "build", "listen", "write", "talk"].includes(p.kind)) lines.push(`exercise type: ${p.kind}`);
     if (p.question) lines.push(`the exercise the learner is working on: «${clean(p.question, 200)}»`);
+    if (["quiz", "build", "listen", "write"].includes(p.kind) && !p.answer && !p.expected) lines.push("the learner has NOT answered this exercise yet: do not give the solution, do not translate the asked word or sentence and do not name the right option; give a hint (the rule, a similar example with other words, the first letter) and let them try");
     if (p.answer) lines.push(`the learner's answer to it: «${clean(p.answer, 200)}» (check it against the exercise; explain the rule, do not just give the solution)`);
     // the app sends the course's sample answer only after the learner has answered (modules/lexi/lesson-help.js)
     if (p.expected) lines.push(`the course's correct answer (the learner has already answered): «${clean(p.expected, 200)}»`);
@@ -243,14 +244,18 @@ const SAY_IT = {uk: t => `Ти написав не ${TNAME.uk[t] || TNAME.uk.nl}
   en: t => `That wasn't ${TNAME.en[t] || TNAME.en.nl}. This is how to say it ${TNAME.en[t] || TNAME.en.nl} — repeat it out loud.`,
   fr: t => `Ce n'était pas ${TNAME.fr[t] || TNAME.fr.nl}. Voilà comment le dire ${TNAME.fr[t] || TNAME.fr.nl} — répète-le à voix haute.`,
   ar: t => `لم تكتب ${TNAME.ar[t] || TNAME.ar.nl}. هكذا تقولها ${TNAME.ar[t] || TNAME.ar.nl} — كرّرها بصوت عالٍ.`};
+const REPLY_TYPES = ["question", "grammar", "translation", "explanation", "correction", "conversation"], ANSWER_TYPES = ["grammar", "translation", "exercise", "other"];
 const schemaFor = (mode, L) => mode === "memo"
   ? {type: "object", additionalProperties: false, required: ["memory"], properties: {memory: {type: "string", description: `Notes about the learner in ${L}.`}}}
   : mode === "ask"
-  ? {type: "object", additionalProperties: false, required: ["answer", "examples"], properties: {
+  ? {type: "object", additionalProperties: false, required: ["answer_type", "answer", "examples"], properties: {
+      answer_type: {type: "string", enum: ANSWER_TYPES, description: "What the answer mainly is: grammar = explains a grammar rule or a difference (de/het, geen/niet, word order…); translation = gives the meaning or translation of a word or phrase; exercise = gives a task or quiz; other = anything else (a study tip, a declined question)."},
       answer: {type: "string", description: `Written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`},
       examples: {type: "array", items: {type: "object", additionalProperties: false, required: ["lang", "text", "translation"],
         properties: {lang: {type: "string", enum: ["nl", "en", "fr", "de"]}, text: STR, translation: {type: "string", description: `Translation into ${L} (or the learner's own language, see EXPLANATION LANGUAGE).`}}}}}}
-  : {type: "object", additionalProperties: false, required: ["learner_in_target", "asks_about_language", "reply", "translation", "correction"], properties: {
+  : {type: "object", additionalProperties: false, required: ["learner_in_target", "asks_about_language", "reply_type", "explain", "reply", "translation", "correction"], properties: {
+      reply_type: {type: "string", enum: REPLY_TYPES, description: "What your reply mainly does: question = it asks the learner something they should answer; grammar = it explains a grammar rule; translation = it gives the meaning of a word or phrase; explanation = another explanation about the language; correction = it mainly corrects the learner's last message; conversation = a reaction or statement without a question for the learner."},
+      explain: {type: "string", description: `Only when asks_about_language is true: the whole answer to the learner's question, written in ${L} (or the learner's own language, see EXPLANATION LANGUAGE), short and simple (max about 80 words), with the target-language words and 1–2 examples in «guillemets»; true rules only, mention exceptions. Then reply is just ONE short target-language sentence that continues the conversation, and translation translates only reply. Otherwise an empty string.`},
       asks_about_language: {type: "boolean", description: "true when the learner's LAST message is a question in their own language about the language itself (a word, its meaning, another way to say it, grammar, pronunciation). Asking is not a mistake: answer the question in reply with the target-language words; no correction."},
       learner_in_target: {type: "string", description: "The learner's LAST message said naturally and correctly in the target language, with exactly the same meaning (keep tense, negation and time words such as tomorrow/yesterday)."},
       reply: {type: "string", description: "In the target language."}, translation: {type: "string", description: `Complete translation of reply into ${L} (or the learner's own language, see EXPLANATION LANGUAGE): translate every word, leave no words in the target language.`},
@@ -419,7 +424,7 @@ export default {
         const ex = (Array.isArray(o.examples) ? o.examples : []).filter(e => e && e.text && ["nl", "en", "fr", "de"].includes(e.lang)).slice(0, 3)
           .map(e => ({lang: e.lang, text: cut(e.text, 200), translation: cut(e.translation, 200)}));
         delivered = true;
-        return json({answer: cut(o.answer, 1500), examples: ex});
+        return json({answer: cut(o.answer, 1500), examples: ex, answer_type: ANSWER_TYPES.includes(o.answer_type) ? o.answer_type : ""});
       }
       const reply = o && (o.reply || o.reply_nl);
       if (!reply) return json({error: "format"}, 502);
@@ -439,7 +444,10 @@ export default {
       if (!asks && said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {has_error: true, severity: "major", original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)}; // wrong language = major
       delivered = true;
-      return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c, asks_about_language: asks});
+      let type = REPLY_TYPES.includes(o.reply_type) ? o.reply_type : "";                             // "" = unknown: the app falls back safely
+      if (type === "correction" && !c) type = "";                                                // the card was dropped above, so it is not a correction any more
+      const explain = asks && typeof o.explain === "string" ? cut(o.explain, 900) : "";          // in the learner's language: no latin()
+      return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c, asks_about_language: asks, reply_type: type, explain});
     } catch (e) {
       const late = e && e.name === "AbortError";
       return json({error: late ? "timeout" : "ai"}, late ? 504 : 502);
