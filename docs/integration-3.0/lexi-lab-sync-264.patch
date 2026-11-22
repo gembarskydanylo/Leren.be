@@ -1,6 +1,6 @@
 diff -u gen/chat.css br/chat.css
 --- gen/chat.css	2026-11-22 22:58:07
-+++ br/chat.css	2026-11-22 22:58:07
++++ br/chat.css	2026-11-22 23:34:29
 @@ -2,7 +2,7 @@
  :host{color-scheme:light;--canvas:#f6f2e9;--paper:#fffdf7;--ink:#173e33;--muted:#516553;--line:#d1dac8;--brand:#225a45;--brand-hover:#174632;--on-brand:#fffef7;--accent:#f2ca57;--on-accent:#283d2d;--soft:#e8eddd;--success:#25633c;--success-soft:#e5f2e3;--error:#9d303d;--error-soft:#fcebed;--warn:#765118;--warn-soft:#fff0cc;--focus:#235fd0;--heading:Nunito;--body:Nunito;--radius:22px;--radius-sm:12px;--shadow:0 8px 28px #294a2710;--tap:44px;--motion:160ms}
  :host([data-theme=dark]){color-scheme:dark;--canvas:#15241f;--paper:#20352a;--ink:#f1f4e7;--muted:#bdccba;--line:#476047;--brand:#ecb284;--brand-hover:#f6c69f;--on-brand:#223629;--accent:#edb684;--on-accent:#1c3527;--soft:#304836;--success:#acdeb6;--success-soft:#264531;--error:#ffc1c9;--error-soft:#4c2c34;--warn:#f3d69b;--warn-soft:#413725;--focus:#9fcaff;--heading:Unbounded;--radius:16px;--shadow:none}
@@ -40,7 +40,7 @@ diff -u gen/chat.css br/chat.css
  @media(max-width:359px){.chat-header .lexi-av{display:block}}
 diff -u gen/chat.js br/chat.js
 --- gen/chat.js	2026-11-22 22:58:07
-+++ br/chat.js	2026-11-22 22:58:07
++++ br/chat.js	2026-11-22 23:34:29
 @@ -16,7 +16,12 @@
   const settingsOpen=()=>s.settings===null?!s.messages.length&&!matchMedia('(max-width:767px) and (max-height:759px)').matches:s.settings,t=()=>copy(s.ui),max=()=>['grammar','lesson'].includes(s.scenario)?600:300,style=()=>({free:['talk','teacher','slow'].includes(s.style)?s.style:'talk',speaking:'slow',roleplay:'teacher'})[s.scenario];
   // TEST-033: features of the earlier chat (modules/ai-coach): «I don't know what to answer», practising a correction, light corrections, auto voice.
@@ -55,7 +55,7 @@ diff -u gen/chat.js br/chat.js
   const chatScenario=()=>!['grammar','lesson'].includes(s.scenario),canSpeak=()=>!!(voice?.speak&&engine.voice?.().speak);
   function avatar(size='',emotion=({welcome:'welcome',listening:'listening',thinking:'thinking',speaking:'speaking',correct:'success',incorrect:'encourage',error:'encourage',offline:'encourage',idle:'speaking'})[s.state]){return `<span class="avatar ${size} ${emotion}" role="img" aria-label="Lexi"></span>`}
   const select=(name,values,label)=>`<label>${escape(label)}<select name="${name}">${Object.entries(values).map(([id,label])=>`<option value="${id}" ${s[name]===id?'selected':''}>${escape(label)}</option>`).join('')}</select></label>`;
-@@ -25,24 +30,38 @@
+@@ -25,24 +30,40 @@
   function feedback(result,i){if(result.kind==='ask')return `<p dir="auto">${escape(result.answer)}</p>${(result.examples||[]).slice(0,3).map(e=>`<blockquote><small>${escape(t().example)}</small><p lang="${escape(e.lang)}" dir="ltr">${escape(e.text)}</p><p dir="auto">${escape(e.translation)}</p></blockquote>`).join('')}`;
   const c=result.correction,practise=c?btn('practise',t().practise,'','message-voice practise',s.busy||s.helpBusy||!!s.pending).replace('data-action="practise"',`data-action="practise" data-i="${i}"`):'';
   const correction=!c?'':style()!=='talk'?`<section class="ai-fix"><strong>${escape(t().corrected)}</strong><del lang="${s.target}" dir="ltr">${escape(c.original)}</del><b lang="${s.target}" dir="ltr">${escape(c.corrected)}</b><p dir="auto">${escape(c.explanation)}</p>${practise}</section>`:`<div class="light-fix"><p><small>${escape(t().better)}</small> <b lang="${s.target}" dir="ltr">${escape(c.corrected)}</b></p>${c.explanation?`<details><summary>${escape(t().why)}</summary><p dir="auto">${escape(c.explanation)}</p></details>`:''}${practise}</div>`;
@@ -75,7 +75,9 @@ diff -u gen/chat.js br/chat.js
 +   const type=r.reply_type;
 +   if(type==='question')return 'help';if(type==='grammar'||type==='explanation')return 'simpler';if(type==='translation')return 'examples';if(type)return null;
 +   if(r.asks_about_language===true)return 'simpler';
-+   return /[?？]/.test(String(m.content||''))?'help':null}
++   // older Worker (no reply_type): «help» only when a short reply ENDS with a question to the learner — not for a «?» inside
++   // a quoted example, a long explanation or a reply with a translation that is not a question
++   const c=String(m.content||'').trim();return c.length<=240&&/[?？؟]$/.test(c.replace(/[\s»”"')\]]+$/,''))?'help':null}
 +  const ACTION_LABEL={help:'help',simpler:'simpler',examples:'showExamples',retry:'retry'};
 +  function coach(){let h='';const last=[...s.messages].reverse().find(m=>m.role==='assistant'),act=last&&!s.busy&&!s.error&&!s.pending&&!s.practice?actionFor(last):null;
 +  if(act)h+=btn(act,s.helpBusy?t().helpLoading:t()[ACTION_LABEL[act]],'','help-button',s.helpBusy);
@@ -102,7 +104,7 @@ diff -u gen/chat.js br/chat.js
   root.querySelector('.chat-log').scrollTop=oldScroll;if(key){const el=root.querySelector(key);el?.focus({preventScroll:true});if(selection&&el?.setSelectionRange)el.setSelectionRange(...selection)} }
   function bind(){unsub?.();unsub=engine.on(e=>{if(e.type==='state'&&e.state==='thinking'&&s.busy&&(!e.scenario||e.scenario===s.scenario)){s.state=e.state;render()}})}
   function reset(){epoch++;s.settings=null;s.help=null;s.helpBusy=false;s.helpError=false;s.practice=null;stopVoice?.();stopVoice=null;s.busy=false;s.pending=null;s.error=null;s.until=0;s.messages=[];s.state='welcome';s.notice=t().changed;clearInterval(interval);bind();render()}
-@@ -60,7 +79,7 @@
+@@ -60,7 +81,7 @@
   function edit(cancel=false){if(!s.pending)return;if(!cancel)s.draft=s.pending.content;s.messages=s.messages.filter(m=>m!==s.pending);s.pending=null;s.error=s.until>Date.now()?s.error:null;s.state=s.error?'error':'idle';render();root.querySelector('[name=draft]')?.focus()}
   function preview(state,code='network'){reset();s.notice='';s.state=state;if(state==='error'||state==='offline'){s.error={code:state==='offline'?'offline':code,wait:code==='slow'?{seconds:3}:code==='limit'?{at:Date.now()+86400000}:null};s.pending={role:'user',content:'Ik werken in België.'};s.messages=[s.pending];if(code==='limit')s.until=s.error.wait.at;if(code==='slow'){s.until=Date.now()+3000;interval=setInterval(()=>{render();if(Date.now()>=s.until)clearInterval(interval)},1000)}}
   if(['correct','incorrect','idle'].includes(state)){const bad=state==='incorrect';s.messages=[{role:'user',content:bad?'Ik werken in België.':'Ik werk in België.'},{role:'assistant',content:'Goed zo.',result:state==='idle'?{kind:'ask',answer:'Ik + werk.',examples:[{lang:'nl',text:'Ik werk in België.',translation:'Я працюю в Бельгії.'}]}:{kind:'chat',reply:'Leuk je te ontmoeten!',translation:'Приємно познайомитися!',verdict:bad?'incorrect':'correct',correction:bad?{original:'Ik werken in België.',corrected:'Ik werk in België.',explanation:'Ik + werk.',severity:'minor'}:null}}];if(bad)s.scenario='roleplay'}render()}
@@ -113,7 +115,7 @@ diff -u gen/chat.js br/chat.js
   if(a==='use'){const x=s.help?.examples[+b.dataset.k];if(x){s.draft=x.text.slice(0,max());s.help=null;s.practice=null;render();scrollEnd();root.querySelector('[name=draft]')?.focus()}}
 diff -u gen/copy.js br/copy.js
 --- gen/copy.js	2026-11-22 22:58:07
-+++ br/copy.js	2026-11-22 22:58:07
++++ br/copy.js	2026-11-22 23:34:29
 @@ -8,11 +8,17 @@
  // TEST-033: features of the earlier chat, brought back (texts of modules/ai-coach/ui.js and of the old style picker).
  const moreKeys=['styleLabel','talk','teacher','slow','styleChanged','autoVoice','better','why','help','helpLoading','hint','use','note','helpError','practise','repeat','check','practiceAgain','practiceOk','limits','newExample','backToChat'];
@@ -135,7 +137,7 @@ diff -u gen/copy.js br/copy.js
  export const sceneIds=['shop','school','work','doctor','transport','municipality'];
 diff -u gen/mock.js br/mock.js
 --- gen/mock.js	2026-11-22 22:58:07
-+++ br/mock.js	2026-11-22 22:58:07
++++ br/mock.js	2026-11-22 23:34:29
 @@ -7,6 +7,6 @@
   async send(scenario,context,messages,extra={}){this.emit('thinking');await new Promise(r=>setTimeout(r,500));if(failNext){const code=failNext;failNext=null;this.emit(code==='offline'?'offline':'error',code);throw{code,wait:code==='slow'?{seconds:3}:code==='limit'?{at:Date.now()+86400000}:null}}
   const examples={nl:['Ik werk in België.','Ik werken in België.','Leuk je te ontmoeten. Hoe gaat het?'],en:['I work in Belgium.','I works in Belgium.','Nice to meet you. How are you?'],fr:['Je travaille en Belgique.','Je travailler en Belgique.','Enchanté ! Comment allez-vous ?']},[good,bad,reply]=examples[context.target];const last=messages.at(-1)?.content||'';
