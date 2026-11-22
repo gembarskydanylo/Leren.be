@@ -229,3 +229,35 @@ Not run here, with the reason printed by the runner (13 tests):
 - New design system: mobile spacing, 44–64px touch targets, light and dark themes.
 - LIFE: story engine 2.0 with scene pictures, available in en, fr and ar.
 - Unchanged: XP, streaks, lessons, LIFE XP, Firebase sync, offline mode, nl audio, exams, courses (en/fr still in preview).
+
+## 8. Final local run (2026-11-22, macOS, Chromium emulation, mocked AI, no network)
+
+| Suite | Result | Exit | Time |
+|---|---|---|---|
+| Production `tests/*.cjs` | 77 pass, 0 fail, 0 skip | 0 | 210 s |
+| LerenBe 3.0 `tests/v3/run.cjs` | 33 pass, 0 fail, 0 skip, 13 not run (reasons above) | 0 | 395 s |
+| Proposed Worker `tests/v3/proposed-worker.cjs` | 8 pass, 0 fail, plus the origin check | 0 | 3 s |
+
+Notes on this run:
+- An earlier production run broke half-way: the Ai_Project disk dropped out, and every later test failed with
+  `ENOENT uv_cwd`. Nothing was wrong with the code. That run was repeated in full; the result above is the repeat.
+- `upgrade-3-0`, 226 → 263, 6 profiles:
+  - XP 0 / 120 / 3292 / 0 / 80 / 300;
+  - finished lessons 0 / 6 / 40 / 0 / 1 / 0;
+  - LIFE XP 95 for «a lot of progress»;
+  - all unchanged after the upgrade.
+  - New badges the progress already deserved were added (lesson-1, lesson-5, lesson-10, chapter-1). Every earlier badge
+    kept its date.
+- `mobile-043` (emulation, not a phone) covers:
+  - widths 320 and 390 in portrait, 844×390 and 1024 in landscape;
+  - the uk, en, fr and ar interfaces;
+  - 8 screens.
+- `perf-budget`: the render-blocking first screen is 759.9 KB of 760 KB. The budget was not raised.
+
+**Not checked here (needs a real device or a production-like environment):**
+- a physical Samsung or Android phone: the keyboard over the Lexi input, real audio and TTS, the Back button, real
+  rotation, low memory;
+- the real model through the Worker (all AI checks use a mock);
+- the proposed Worker on Cloudflare, with real rate-limit bindings;
+- Firebase sync, App Check and push on lerenbe.com;
+- an update from an old install on a real phone.
