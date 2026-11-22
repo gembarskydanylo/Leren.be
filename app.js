@@ -1718,10 +1718,10 @@ function topicPickerUI(){
  return labels[uiLang]||labels.uk;
 }
 // Descriptions of pictures for screen readers (and when images do not load), in the interface language.
-const ALT_UI={uk:{peter:"Пітер, вчитель нідерландської",dafna:"Дафна, вчителька нідерландської",cat:"Кіт-маскот lerenbe.com",topic:t=>"Ілюстрація до теми «"+t+"»",game:t=>"Ілюстрація до гри «"+t+"»"},
- en:{peter:"Peter, Dutch teacher",dafna:"Dafna, Dutch teacher",cat:"lerenbe.com cat mascot",topic:t=>"Illustration for the topic “"+t+"”",game:t=>"Illustration for the game “"+t+"”"},
- fr:{peter:"Peter, professeur de néerlandais",dafna:"Dafna, professeure de néerlandais",cat:"Le chat mascotte de lerenbe.com",topic:t=>"Illustration du thème « "+t+" »",game:t=>"Illustration du jeu « "+t+" »"},
- ar:{peter:"بيتر، مدرّس الهولندية",dafna:"دافنا، مدرّسة الهولندية",cat:"القط تميمة lerenbe.com",topic:t=>"رسم توضيحي لموضوع «"+t+"»",game:t=>"رسم توضيحي للعبة «"+t+"»"}};
+const ALT_UI={uk:{peter:"Пітер, персонаж курсу",dafna:"Дафна, персонаж курсу",cat:"Кіт-маскот lerenbe.com",topic:t=>"Ілюстрація до теми «"+t+"»",game:t=>"Ілюстрація до гри «"+t+"»"},
+ en:{peter:"Peter, a course character",dafna:"Dafna, a course character",cat:"lerenbe.com cat mascot",topic:t=>"Illustration for the topic “"+t+"”",game:t=>"Illustration for the game “"+t+"”"},
+ fr:{peter:"Peter, personnage du cours",dafna:"Dafna, personnage du cours",cat:"Le chat mascotte de lerenbe.com",topic:t=>"Illustration du thème « "+t+" »",game:t=>"Illustration du jeu « "+t+" »"},
+ ar:{peter:"بيتر، شخصية في الدورة",dafna:"دافنا، شخصية في الدورة",cat:"القط تميمة lerenbe.com",topic:t=>"رسم توضيحي لموضوع «"+t+"»",game:t=>"رسم توضيحي للعبة «"+t+"»"}};
 const altU=()=>ALT_UI[uiLang]||ALT_UI.uk;
 function topicArt(info){
  const img=el("img","topic-art");img.src=info.image;img.alt=info.title?altU().topic(info.title):"";img.width=160;img.height=108;return img;

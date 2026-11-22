@@ -23,7 +23,7 @@ const OLD_TEACHER = /Обери вчителя|Choose your teacher|Choisis ton p
   await page.goto(B.base + '/app/index.html'); await page.waitForFunction(() => typeof setView === 'function' && typeof storyMap === 'function', null, {timeout: 20000}); await page.waitForTimeout(300);
   return {ctx, page, errors, sent};
  };
- const ls = (page, k) => page.evaluate(k => JSON.parse(localStorage.getItem(k)), k);
+ const ls = (page, k) => page.evaluate(k => { try { return JSON.parse(localStorage.getItem(k)) } catch (e) { return localStorage.getItem(k) } }, k);
  try {
   // 1 · Settings, 4 languages × phone / desktop
   for (const ui of ['uk', 'en', 'fr', 'ar']) for (const vp of [{width: 360, height: 760}, {width: 1440, height: 900}]) {
@@ -46,10 +46,14 @@ const OLD_TEACHER = /Обери вчителя|Choose your teacher|Choisis ton p
   const cases = [
    ['old dafna, no voice', {leren_char: '"dafna"'}, 'f'], ['older lotte', {leren_char: '"lotte"'}, 'f'], ['old peter', {leren_char: '"peter"'}, 'm'],
    ['no choice at all', {}, 'm'], ['dafna + Peter voice picked', {leren_char: '"dafna"', leren_rec_voice: '"m"'}, 'm'], ['peter + Dafna voice picked', {leren_char: '"peter"', leren_rec_voice: '"f"'}, 'f'],
-   ['Lexi tests value', {leren_char: '"lexi"'}, 'm']];
+   ['Lexi tests value', {leren_char: '"lexi"'}, 'm'],
+   ['broken stored value (not JSON)', {leren_char: 'dafna{', leren_rec_voice: '%'}, 'm'], ['unknown voice value + dafna', {leren_char: '"dafna"', leren_rec_voice: '"x"'}, 'f'],
+   ['empty voice + dafna + device voice forced', {leren_char: '"dafna"', leren_rec_voice: '""', leren_voice_force_tts: 'true'}, 'f'],
+   ['already migrated: Peter voice kept although dafna', {leren_char: '"dafna"', leren_rec_voice: '"m"', leren_voice_migrated: 'true'}, 'm'],
+   ['progress untouched', {leren_char: '"dafna"', poly_score: '1234'}, 'f']];
   for (const [name, extra, want] of cases) {
    const {ctx, page, errors} = await open('uk', extra);
-   const r = await page.evaluate(() => ({voice: recVoice(), saved: JSON.parse(localStorage.getItem('leren_rec_voice')), flag: JSON.parse(localStorage.getItem('leren_voice_migrated'))}));
+   const r = await page.evaluate(() => { const j = k => { try { return JSON.parse(localStorage.getItem(k)) } catch (e) { return localStorage.getItem(k) } }; return {voice: recVoice(), saved: j('leren_rec_voice'), flag: j('leren_voice_migrated')} });
    if (r.voice !== want) bad.push('migration «' + name + '»: voice ' + r.voice + ', want ' + want);
    if (r.flag !== true) bad.push('migration «' + name + '»: not marked as done');
    if (name === 'old dafna, no voice') {
@@ -59,6 +63,8 @@ const OLD_TEACHER = /Обери вчителя|Choose your teacher|Choisis ton p
     if (await ls(page, 'leren_char') !== 'dafna') bad.push('the story character changed with the voice');
    }
    if (name === 'older lotte' && await ls(page, 'leren_char') === 'lotte' && await page.evaluate(() => charId()) !== 'dafna') bad.push('lotte is no longer read as dafna');
+   if (name === 'progress untouched' && await ls(page, 'poly_score') !== 1234) bad.push('migration changed the XP (' + await ls(page, 'poly_score') + ')');
+   if (name === 'empty voice + dafna + device voice forced' && await ls(page, 'leren_voice_force_tts') !== true) bad.push('migration changed the device-voice choice');
    if (errors.length) bad.push('migration «' + name + '»: page errors ' + errors.join(' / ').slice(0, 160));
    await ctx.close();
   }
