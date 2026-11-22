@@ -60,3 +60,27 @@ main>header .header-language select{box-shadow:none}
 main>header .brand{min-height:44px}
 @media(max-width:650px){main>header .brand{flex-basis:44px;min-width:44px}}
 .dh-icon{min-width:44px;min-height:44px;border-radius:12px;background:var(--lb-subtle);color:var(--lb-ink);box-shadow:none}
+/* TEST-044 (ported into 3.0): phones keep the whole «Lerenbe.com» next to the cat mark, the language switcher shows a flag +
+   two-letter code over the native select, and every header control keeps a 44 px target. Styled for the light 3.0 header. */
+main>header .header-language .hl-box{background:var(--lb-subtle);color:var(--lb-ink);border:1px solid var(--lb-line);border-radius:10px;box-shadow:none}
+main>header .header-language .hl-box:focus-within{outline-color:var(--lb-brand)}
+/* the design-system select rules above (padding, border, 44 px height) would undo the invisible select that sits exactly over the box */
+main>header .header-language select{inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);max-width:none;min-height:0;padding:0;border:0;font-size:16px;background:transparent}
+@media(max-width:650px){
+ main>header{flex-wrap:nowrap}
+ main>header .brand{flex:1 1 0;min-width:0}
+ main>header{gap:6px}
+ main>header .brand{gap:5px}
+ main>header .brand::before{width:26px;height:26px;border-radius:8px}
+ main>header .brand h1{display:block;font-size:clamp(10px,calc((100cqw - 33px)/6.2),18px)}
+ main>header .hdr-stats .streak-pill,main>header .hdr-stats .score-pill{color:var(--lb-ink)}
+ main>header .hdr-stats .streak-pill.off{color:var(--lb-muted)}
+}
+@media(max-width:360px){main>header{gap:4px;padding-inline:6px}main>header .brand{gap:4px}main>header .brand::before{width:22px;height:22px;border-radius:7px}main>header .brand h1{font-size:clamp(10px,calc((100cqw - 28px)/6.2),18px)}main>header .header-language .hl-box{min-width:46px;padding:0 4px}}
+/* The route button was drawn for the orange header (white text on #fff2): on the light 3.0 header it was unreadable (761–999 px).
+   Same colours as the other header controls; one line each, cut with … instead of growing the header to 4 lines. */
+main>header .comp-header-route{background:var(--lb-subtle);color:var(--lb-ink);border:1px solid var(--lb-line);border-radius:12px;padding:6px 12px;min-height:44px;justify-content:center}
+main>header .comp-header-route strong,main>header .comp-header-route small{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+main>header .comp-header-route small{color:var(--lb-muted)}
+main>header .comp-header-route:focus-visible{outline-color:var(--lb-brand)}
+@media(max-width:340px){main>header .header-language .hl-box{font-size:12px}main>header .header-language .hl-face{gap:2px}main>header .hl-flag{width:16px;height:11px;border-radius:2px}}
