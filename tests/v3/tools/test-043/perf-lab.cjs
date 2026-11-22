@@ -34,7 +34,9 @@ async function run({rounds = 60} = {}) {
  for (let i = 0; i < rounds / 5; i++) for (const v of views) await page.evaluate(v => setView(v), v); const v1 = await counters(cdp, page);
  out.views = {switches: rounds, before: v0, after: v1, listenersPerSwitch: +((v1.listeners - v0.listeners) / rounds).toFixed(2), nodesPerSwitch: +((v1.nodes - v0.nodes) / rounds).toFixed(1)};
  // Lexi open / send / close
- const lexiCycle = async () => { await page.evaluate(() => lexiOpen('free', {})); await page.waitForFunction(() => document.querySelector('.lexi-host')?.shadowRoot?.querySelector('#draft'));
+ // LerenBe 3.0: the wait returns a boolean. It returned the #draft element before, and Playwright kept that element handle
+ // (a DevTools global handle) alive, which kept each closed Lexi tree (≈ 222 nodes) in memory: the «P-1 leak» was this lab.
+ const lexiCycle = async () => { await page.evaluate(() => lexiOpen('free', {})); await page.waitForFunction(() => !!document.querySelector('.lexi-host')?.shadowRoot?.querySelector('#draft'));
   await page.evaluate(() => lexiClose()); };
  for (let i = 0; i < 3; i++) await lexiCycle(); const l0 = await counters(cdp, page); const n = Math.round(rounds / 3);
  for (let i = 0; i < n; i++) await lexiCycle(); const l1 = await counters(cdp, page);
