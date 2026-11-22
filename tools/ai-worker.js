@@ -40,12 +40,12 @@ const GRAMMAR_NL = `- Main clause: verb in 2nd position (Ik woon in België). Af
 - Long vowel written double in closed syllable: slapen → ik slaap; double consonant becomes single: zwemmen → ik zwem; z→s, v→f at the end of the stem: lezen → ik lees, geven → ik geef; stem on d + t = dt (hij vindt).
 - zijn: ik ben, jij bent, u bent, hij/zij is, wij zijn. hebben: ik heb, jij hebt, u heeft, hij heeft, wij hebben.
 - Separable verbs: the particle goes to the end (opstaan → Ik sta om zeven uur op; meenemen → Ik neem een paraplu mee).
-- Negation: geen before an indefinite noun (Ik heb geen auto), niet otherwise (Ik werk niet).
+- Negation: geen instead of een or no article before a noun (Ik heb geen auto, geen tijd); niet otherwise (Ik werk niet).
 - Questions: question word + verb + subject (Waar woon jij?); yes/no: verb first (Woon jij in Gent?).
-- Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het.
+- Articles: de/het must be learned with the noun (het station, het huis, de winkel, de apotheek); diminutives -je are het; plurals always de.
 - Polite: u (formal), alstublieft / alsjeblieft, graag (Ik wil graag een koffie).
-- Course A1.1 (first part of A1): introductions, personal details, prices/weather, time, birthdays, opening hours, forms, daily routine, invitations/plans, health, eating habits, groceries. Include possessives, inversion, niet/geen, separable verbs, modal verbs + infinitive, gaan + infinitive, aan het + infinitive, want/omdat, imperatives, frequency and plurals.
-- Course A1.2 (second part of A1, NOT A2): family/holiday accounts, shopping and exchanges, second-hand ads, travel disruptions, online appointments, messages and short articles/instructions, household tasks, work and job interviews, pharmacy and GP, directions and town services, children's school, free time and clubs, neighbours and feelings, future plans. Practise perfectum (hebben/zijn + participle, also separable verbs: opgestaan, ingevuld), common past forms (was, had), comparisons, reasons with want and omdat (verb at the end), gaan + infinitive and connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
+- Course A1.1 (first part of A1): introductions, personal details, prices/weather, time, birthdays, opening hours, forms, daily routine, plans, health, food and groceries. Include possessives, inversion, niet/geen, separable verbs, modal verbs + infinitive, gaan + infinitive, aan het + infinitive, want/omdat, imperatives, frequency and plurals.
+- Course A1.2 (second part of A1, NOT A2): family and holidays, shopping/exchanges, second-hand ads, travel disruptions, online appointments, messages, short texts, household tasks, work and job interviews, pharmacy and GP, directions, town services, children's school, free time/clubs, neighbours, feelings, future plans. Practise perfectum (hebben; zijn for movement/change: gaan, komen, blijven, worden; participle, also separable verbs: opgestaan, ingevuld), was/had, comparisons, want/omdat (verb last with omdat), gaan + infinitive, connected explanations. Use the current course scope; do not introduce perfectum to 1.1 unless the learner asks.`;
 const GRAMMAR_EN = `- Word order: subject + verb + object (I live in Belgium). Questions with do/does (Do you work? Where does she live?); with be/can: invert (Are you tired? Can you help?).
 - Present simple: he/she/it + -s (she works, he goes, it has); negative don't/doesn't + base verb.
 - be: I am, you are, he/she/it is, we/they are. have got / has got.
@@ -56,9 +56,9 @@ const GRAMMAR_EN = `- Word order: subject + verb + object (I live in Belgium). Q
 const GRAMMAR_FR = `- Word order: sujet + verbe + complément (J'habite en Belgique). Questions: est-ce que…? or intonation (Tu travailles ?); formal inversion (Où habitez-vous ?).
 - Present tense: -er verbs (je parle, tu parles, il parle, nous parlons, vous parlez, ils parlent); être (je suis, tu es, il est, nous sommes, vous êtes, ils sont), avoir (j'ai, tu as, il a, nous avons, vous avez, ils ont), aller, faire.
 - Gender: le/la/l', un/une; adjectives agree (un petit café, une petite maison). Plural les/des.
-- Negation: ne … pas (Je ne travaille pas); de after negation (Je n'ai pas de voiture).
+- Negation: ne … pas (Je ne travaille pas); un/une/des become de after negation (Je n'ai pas de voiture), not after être (Ce n'est pas un chat).
 - Polite: vous (formal), s'il vous plaît, je voudrais…
-- Belgian usage: septante (70), nonante (90); déjeuner = lunch in BE is 'dîner', breakfast 'déjeuner'.
+- Belgian usage: septante (70), nonante (90), but quatre-vingts (80); meals: déjeuner = breakfast, dîner = lunch, souper = evening meal.
 - A1+: passé composé (j'ai travaillé, je suis allé), futur proche (je vais manger).`;
 const GRAMMAR_DE = `- Word order: verb in 2nd position (Ich wohne in Belgien; Heute arbeite ich); in yes/no questions the verb comes first (Wohnst du in Gent?).
 - Present tense: ich wohne, du wohnst, er/sie wohnt, wir wohnen, ihr wohnt, sie/Sie wohnen; sein (ich bin, du bist, er ist, wir sind, Sie sind), haben (ich habe, du hast, er hat).
