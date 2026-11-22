@@ -439,7 +439,7 @@ export default {
       if (!asks && said && /[\u0400-\u04FF\u0600-\u06FF]/.test(lastUser) && (!c || /[\u0400-\u04FF\u0600-\u06FF]/.test(c.corrected)))
         c = {has_error: true, severity: "major", original: cut(lastUser, 300), corrected: said, explanation: (SAY_IT[body.lang] || SAY_IT.en)(body.target)}; // wrong language = major
       delivered = true;
-      return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c});
+      return json({reply: cut(latin(reply), 400), reply_nl: cut(latin(reply), 400), translation: cut(o.translation, 400), correction: c, asks_about_language: asks});
     } catch (e) {
       const late = e && e.name === "AbortError";
       return json({error: late ? "timeout" : "ai"}, late ? 504 : 502);
