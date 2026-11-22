@@ -1,5 +1,5 @@
 diff --git a/tools/ai-worker.js b/docs/integration-3.0/ai-worker.lexi-proposed.js
-index 8bcff64a..7464ff95 100644
+index 8bcff64a..6e2e9f79 100644
 --- a/tools/ai-worker.js
 +++ b/docs/integration-3.0/ai-worker.lexi-proposed.js
 @@ -14,8 +14,10 @@
@@ -65,7 +65,7 @@ index 8bcff64a..7464ff95 100644
  ${EXPLAIN_RULE(L, T.name)}
  Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
  If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
-@@ -161,19 +172,25 @@ function learnerNotes(p, mode, memory, style = "teacher") {
+@@ -161,20 +172,27 @@ function learnerNotes(p, mode, memory, style = "teacher") {
    const lines = [];
    if (p && typeof p === "object") {
      if (p.topic) lines.push(`current lesson topic in the app: ${clean(p.topic, 60)}`);
@@ -87,9 +87,12 @@ index 8bcff64a..7464ff95 100644
      if (p.pace && ["slow", "normal", "challenge"].includes(p.pace)) lines.push(`learner-selected pace: ${p.pace}`);
    }
 -  let s = "";
+-  if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
 +  // LerenBe 3.0: the prompt-injection rule sits right before the learner's own material (profile, notes, lesson context),
 +  // outside the cached rules, so the production rule text and its length budget are unchanged.
 +  let s = mode === "memo" ? "" : INJECTION_RULE;
-   if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
++  // LerenBe 3.0: the notes come back from the device, so their new lines are flattened: a line in them can never pose as a rule
++  if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory.replace(/\s*[\r\n]+\s*/g, " ")}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
    const use = mode === "ask" ? "Use it to pick examples that fit the learner."
      : style === "talk" ? "Use it only to keep your Dutch at the learner's level; do not steer the conversation towards these words unless the learner asks what to practise."
+     : style === "slow" ? "Prefer the current topic and the mastered words; do not introduce review or weak words as new vocabulary."

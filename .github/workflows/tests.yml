@@ -41,3 +41,6 @@ jobs:
       - name: Proposed Lexi Worker against the production Worker tests (mocked, not deployed)
         shell: bash
         run: node tests/v3/proposed-worker.cjs
+      - name: Proposed Lexi Worker security checks (mocked, not deployed)
+        shell: bash
+        run: node tests/v3/worker-security.cjs

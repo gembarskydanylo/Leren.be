@@ -191,7 +191,8 @@ function learnerNotes(p, mode, memory, style = "teacher") {
   // LerenBe 3.0: the prompt-injection rule sits right before the learner's own material (profile, notes, lesson context),
   // outside the cached rules, so the production rule text and its length budget are unchanged.
   let s = mode === "memo" ? "" : INJECTION_RULE;
-  if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
+  // LerenBe 3.0: the notes come back from the device, so their new lines are flattened: a line in them can never pose as a rule
+  if (memory) s += `- What you remember about the learner from earlier conversations (your own notes): ${memory.replace(/\s*[\r\n]+\s*/g, " ")}\n  ${mode === "ask" ? "Use it to make explanations and examples personal." : "If you know their name, use it when you greet them; now and then refer naturally to what you know (e.g. ask how things are at their work). Never recite these notes."}\n`;
   const use = mode === "ask" ? "Use it to pick examples that fit the learner."
     : style === "talk" ? "Use it only to keep your Dutch at the learner's level; do not steer the conversation towards these words unless the learner asks what to practise."
     : style === "slow" ? "Prefer the current topic and the mastered words; do not introduce review or weak words as new vocabulary."
