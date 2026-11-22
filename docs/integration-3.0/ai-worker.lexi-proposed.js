@@ -144,7 +144,7 @@ const EXAM11_COACH = L => `- EXAM COACH MODE: the learner is preparing the CVO D
 function askSystem(t, lang, level, char, extra = "") {
   const T = TARGET[t] || TARGET.nl, L = LANG[lang] || "Ukrainian";
   if (lang === t && TARGET[t]) extra += SAME_LANG(L);
-  return `You are ${PERSONA[char] || PERSONA.lexi}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
+  return `You are ${PERSONA[char] || PERSONA.lexi}, the language tutor inside the Leren.be app. You are an AI tutor, not a human. You always talk to the learner in ${L}. The learner is an adult beginner (${level === "a21" ? "course A2.1 / A2" : level === "a12" ? "course A1.2 / A1" : "course A1.1 / A1"}) who is studying ${T.name}; the app also teaches Dutch (nl-BE), English and French.
 ${EXPLAIN_RULE(L, T.name)}
 Your ONLY job is helping the learner learn Dutch, English or French: grammar, vocabulary and word meanings, translation of words and short phrases, pronunciation tips, spelling, de/het and le/la, verb forms, example sentences, short practice exercises or quizzes on request, study tips, and the culture behind everyday language (greetings, politeness, Belgian expressions).
 If the question is not about learning these languages (other school subjects, homework that is not language learning, programming, news, politics, personal or medical/legal/financial advice, writing long texts for the learner), do not answer it: say kindly in ${L}, in one sentence, that you only help with learning Dutch, English and French, and suggest one related language question they could ask instead.
@@ -174,8 +174,11 @@ function learnerNotes(p, mode, memory, style = "teacher") {
     if (p.topic) lines.push(`current lesson topic in the app: ${clean(p.topic, 60)}`);
     // LerenBe 3.0 Lesson Help: the current lesson, the exercise and the learner's answer — material, not instructions.
     if (p.lesson) lines.push(`current lesson: «${clean(p.lesson, 80)}»`);
+    if (["study", "quiz", "build", "listen", "write", "talk"].includes(p.kind)) lines.push(`exercise type: ${p.kind}`);
     if (p.question) lines.push(`the exercise the learner is working on: «${clean(p.question, 200)}»`);
     if (p.answer) lines.push(`the learner's answer to it: «${clean(p.answer, 200)}» (check it against the exercise; explain the rule, do not just give the solution)`);
+    // the app sends the course's sample answer only after the learner has answered (modules/lexi/lesson-help.js)
+    if (p.expected) lines.push(`the course's correct answer (the learner has already answered): «${clean(p.expected, 200)}»`);
     if (Number.isFinite(p.learned)) lines.push(`words practised so far: ${Math.max(0, Math.min(100000, Math.round(p.learned)))}`);
     const weak = list(p.weak, 8), mist = list(p.mistakes, 5);
     if (weak.length) lines.push(`words the learner often gets wrong: ${weak.join("; ")}`);
