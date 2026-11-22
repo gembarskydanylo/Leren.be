@@ -11,6 +11,7 @@ PR: #65 (`audit/lerenbe-3-0-quality` → `main`, Draft). Production зараз �
 - [x] Мобільна матриця `FULL_MATRIX=1 node tests/v3/run.cjs mobile-matrix` — 312 станів, PASS
 - [ ] CI `tests.yml` на останньому коміті PR #65 — зелений
 - [x] `RELEASE_VERSION` = 264, `CACHE_NAME` = `leren-be-v264`, `app.js?v=264`; усі змінені скрипти з новим `?v=` (тест `code-audit.cjs`)
+- [x] Сторінка відгуків: чесний текст, `noindex`, без sitemap, `reviews-i18n.js?v=2` (`reviews-honest.cjs`)
 - [x] `tools/ai-worker.js` = `docs/integration-3.0/ai-worker.lexi-proposed.js`
 - [x] PR не змінює `firestore.rules`, `firebase.json`, `wrangler.toml` і workflows: розгортається лише сайт і Worker
 
@@ -51,7 +52,7 @@ curl -s https://lerenbe.com/sw.js | grep CACHE_NAME
 
 ## 6. Наступні PR (після 264)
 
-1. #67 — сторінка відгуків (`noindex`, чесний текст). Незалежна, лише сайт.
+1. #67 — уже входить у #65 (сторінка відгуків кешується Service Worker, тож потребує нового релізу). #67 закрити без злиття.
 2. #66 — атомарна оболонка Service Worker. Після злиття #65 змінити базу на `main`; разом із ним підняти реліз до **265**.
 3. #62 — SEO-метадані: rebase на `main`, потім злиття.
 4. #45, #46 — CSP для App Check: перевірити актуальність, один закрити.

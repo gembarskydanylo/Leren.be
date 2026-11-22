@@ -10,6 +10,12 @@ assert.doesNotMatch(html.replace(/<!--[\s\S]*?-->/g, ''), TEST, 'reviews.html ca
 assert.doesNotMatch(i18n.replace(/\/\/.*$/gm, ''), TEST, 'reviews-i18n.js calls the page a test version');
 assert.ok(!html.includes('href="#write"'), 'no button to the hidden review form');
 assert.ok(!/reviews\.js/.test(html), 'the live Firebase script is not loaded (no data collection)');
+// the page and its texts are in the Service Worker cache: the changed texts need a new ?v= in both places, or phones keep the old page
+const {execSync} = require('node:child_process'), sw = read('sw.js'), ver = (t, f) => (t.match(new RegExp(f.replace('.', '\\.') + '\\?v=([\\w.-]+)')) || [])[1];
+assert.ok(ver(html, 'reviews-i18n.js'), 'reviews.html loads reviews-i18n.js with a version');
+assert.equal(ver(sw, 'reviews-i18n.js'), ver(html, 'reviews-i18n.js'), 'sw.js caches reviews-i18n.js at the version reviews.html loads');
+let prod = null; try { prod = execSync(`git -C "${root}" show origin/main:reviews-i18n.js`, {encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']}) } catch {}
+if (prod && prod !== i18n) { const old = ver(execSync(`git -C "${root}" show origin/main:reviews.html`, {encoding: 'utf8'}), 'reviews-i18n.js'); assert.notEqual(ver(html, 'reviews-i18n.js'), old, 'reviews-i18n.js changed since production, so its ?v= must change too (was ' + old + ')') }
 assert.match(html, /<meta name="robots" content="noindex">/, 'the temporary page is noindex');
 assert.ok(!read('sitemap.xml').includes('reviews.html'), 'the temporary page is not in the sitemap');
 (async () => {

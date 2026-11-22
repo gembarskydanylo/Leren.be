@@ -25,7 +25,7 @@ Production-домен — **lerenbe.com** (`CNAME`). `leren.be` — чужий �
 | `/learn-life.html` | Так | — | — | **Немає** | Виправляє PR #62 |
 | `/learn-life-story.html` | Так | — | **0** | **Немає** | Виправляє PR #62 |
 | `/privacy.html` | **Немає description** | — | — | — | Виправляє PR #62 |
-| `/reviews.html` | — | — | — | — | Справжніх відгуків немає, форма прихована. PR #67: чесний текст і `noindex`, прибрано з sitemap |
+| `/reviews.html` | — | — | — | — | Справжніх відгуків немає, форма прихована. Реліз 264 (PR #65, перенесено з #67): чесний текст і `noindex`, прибрано з sitemap |
 | `/guides/` + 4 посібники | ≈ 400 слів кожен | **Немає** | — | — | `noindex,nofollow`, у sitemap немає, підвал «Тестова версія LerenBe». Рішення власника |
 
 PR #62 (SEO-метадані) зараз у конфлікті з `main` — потрібен rebase після релізу 264.
@@ -33,7 +33,7 @@ PR #62 (SEO-метадані) зараз у конфлікті з `main` — п�
 ## 3. Рекомендації
 
 1. Після 264: rebase PR #62 → OG для LIFE-сторінок, h1 на `learn-life-story.html`, description для `privacy.html`.
-2. Злити PR #67 (reviews: `noindex`, без обіцянок відгуків, яких немає).
+2. Reviews (`noindex`, без обіцянок відгуків, яких немає) — у релізі 264.
 3. Посібники `/guides/`: власник вирішує, чи вони готові. Якщо так — прибрати `noindex,nofollow`, додати canonical, прибрати підвал «Тестова версія», додати в sitemap. Доти не індексувати.
 4. Структуровані дані (`WebApplication`, `Offer`, `Person`) на головній — є; після появи справжніх відгуків не додавати рейтинг без джерела.
 5. Не додавати hreflang, поки всі мови живуть на одній URL.
@@ -48,8 +48,8 @@ PR #62 (SEO-метадані) зараз у конфлікті з `main` — п�
 | `https://lerenbe.com/learn-life.html` | Indexed; після #62 — OG у живому тесті | Після #62 |
 | `https://lerenbe.com/learn-life-story.html` | Indexed; після #62 — h1 | Після #62 |
 | `https://lerenbe.com/privacy.html` | Indexed | Після #62 |
-| `https://lerenbe.com/reviews.html` | Після #67: «Excluded by noindex» — це правильно | Після #67 |
+| `https://lerenbe.com/reviews.html` | Після 264: «Excluded by noindex» — це правильно | Після 264 |
 | `https://lerenbe.com/guides/` і 4 посібники | Зараз «Excluded by noindex» — правильно, доки власник не вирішить | Після рішення |
-| `https://lerenbe.com/sitemap.xml` | Sitemaps → Submitted, 5 (після #67 — 4) URL, без помилок | Після #67 |
+| `https://lerenbe.com/sitemap.xml` | Sitemaps → Submitted, 5 (після 264 — 4) URL, без помилок | Після 264 |
 
 Також у Search Console: **Pages** (причини виключення), **Core Web Vitals** (мобільні), **Enhancements** (структуровані дані).

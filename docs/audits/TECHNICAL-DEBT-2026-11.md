@@ -17,7 +17,7 @@
 | D11 | P3 | Два однакові файли Worker (`tools/ai-worker.js`, `docs/integration-3.0/ai-worker.lexi-proposed.js`) | Розходження | Після релізу лишити один, другий — посилання | `docs/integration-3.0/` |
 | D12 | P3 | Відкриті старі PR #45, #46; PR #62 у конфлікті | Плутанина, застарілі зміни | Rebase #62 після 264; закрити або оновити #45, #46 | GitHub |
 | D13 | P3 | `/guides/` — тестова версія з `noindex`, без canonical | Втрачений SEO-трафік або передчасна індексація | Рішення власника, див. [SEO-AUDIT-2026-11.md](../seo/SEO-AUDIT-2026-11.md) | `guides/` |
-| D14 | P3 | `/reviews.html` обіцяв відгуки, яких немає | Довіра користувачів | Draft PR #67 | `reviews.html` |
+| D14 | — | `/reviews.html` обіцяв відгуки, яких немає | — | **Виправлено в 264** (PR #65) | `reviews.html` |
 | D15 | P3 | CI триває ≈ 17 хв | Повільний цикл | Розділити браузерні й швидкі тести на паралельні jobs | `.github/workflows/tests.yml` |
 | D16 | P3 | Мобільна матриця (312 станів, ≈ 2 хв) лише за `FULL_MATRIX=1` | Не запускається в CI | Нічний запуск у CI | `tests/v3/suite/mobile-matrix-264.cjs` |
 | D17 | — | Немає перевірок на фізичних пристроях, Safari, Firefox, TalkBack, VoiceOver | Невідомі проблеми на справжніх телефонах | [SAMSUNG-264.md](../testing/SAMSUNG-264.md); BrowserStack або реальні пристрої | — |
