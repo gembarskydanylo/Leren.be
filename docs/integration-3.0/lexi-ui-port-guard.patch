@@ -1,0 +1,31 @@
+--- a/tools/lexi-ui-port.cjs	2026-11-23 09:07:12
++++ b/tools/lexi-ui-port.cjs	2026-11-23 09:07:12
+@@ -1,7 +1,7 @@
+ // TEST-032 · Brings Codex's Lexi chat (design-lab/test-030/lexi, TEST-030) into the app (app/modules/lexi/) without
+ // rewriting it: the design-lab files stay the source, this script copies them and applies small, named patches.
+ // Every patch is additive: with the new options left out, the component behaves exactly as in the design lab.
+-// Run after Codex changes the lab:  node tools/lexi-ui-port.cjs [version]   (check only: --check)
++// Run after Codex changes the lab:  node tools/lexi-ui-port.cjs [version]   (check only: --check; --force: allow dropping app fixes)
+ // The approved Lexi artwork is copied byte for byte (tests compare the SHA-256 with the lab files).
+ 'use strict';
+ const fs = require('node:fs'), path = require('node:path');
+@@ -63,6 +63,19 @@
+  [path.join(OUT, 'chat.css')]: HEAD('chat.css') + tok + '\n' + css + '\n' + extraCss + '\n',
+ };
+ const art = [['assets/lexi-master-proposal.webp', 'lexi.webp'], ['assets/lexi-emotions-proposal.webp', 'lexi-emotions.webp']];
++// Fixes made in the app (releases 262–264) that the lab may not have yet. If the app file has one of them and the newly
++// generated file would not, the script stops instead of silently undoing it: carry the fix into the lab first
++// (Leren.be: docs/integration-3.0/lexi-lab-sync-264.patch), or pass --force when dropping it is intended.
++const KEEP = {
++ 'chat.js': [['context action from reply_type', 'function actionFor('], ['explanation in the interface language', 'result.explain?'], ['older-Worker fallback: a short reply ending with a question', 'c.length<=240'], ['«explain more simply» request', "kind==='simpler'"]],
++ 'copy.js': [['«Explain more simply» label', 'simpler:('], ['«Show examples» label', 'showExamples:('], ['«Try again» label', 'retry:('], ['speaking-practice caption', 'eyebrow:(']],
++ 'chat.css': [['keyboard layout on tablets / landscape', '.lexi-keyboard .lexi-app{height:var(--lexi-viewport-height']],
++ 'mock.js': [['mock correction carries has_error', 'has_error:true']],
++};
++const FORCE = args.includes('--force'), lost = [];
++for (const [f, text] of Object.entries(files)) { if (!fs.existsSync(f)) continue; const cur = fs.readFileSync(f, 'utf8');
++ for (const [name, mark] of KEEP[path.basename(f)] || []) if (cur.includes(mark) && !text.includes(mark)) lost.push(path.relative(ROOT, f) + ': ' + name) }
++if (lost.length && !FORCE) { console.error('Stopped: regenerating would undo fixes the app has and the lab does not:\n - ' + lost.join('\n - ') + '\nCarry them into design-lab/test-030 first (Leren.be docs/integration-3.0/lexi-lab-sync-264.patch), or run with --force to drop them on purpose.'); process.exit(1) }
+ let stale = [];
+ for (const [f, text] of Object.entries(files)) { if (!fs.existsSync(f) || fs.readFileSync(f, 'utf8') !== text) { stale.push(path.relative(ROOT, f)); if (!CHECK) fs.writeFileSync(f, text) } }
+ for (const [from, to] of art) { const a = fs.readFileSync(path.join(LAB, from)), t = path.join(IMG, to); if (!fs.existsSync(t) || !fs.readFileSync(t).equals(a)) { stale.push(path.relative(ROOT, t)); if (!CHECK) { fs.mkdirSync(IMG, {recursive: true}); fs.writeFileSync(t, a) } } }
