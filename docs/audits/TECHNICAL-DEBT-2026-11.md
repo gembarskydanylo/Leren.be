@@ -4,7 +4,7 @@
 
 | # | Пріоритет | Борг | Ризик | Що зробити | Де |
 |---|---|---|---|---|---|
-| D1 | P2 | Лабораторія TEST-030 відстає від `main`: `tools/lexi-ui-port.cjs` затре виправлення 262–264 у `modules/lexi/chat.js`, `copy.js`, `mock.js`, `chat.css` | Регресії Lexi UI при наступній генерації | Застосувати `docs/integration-3.0/lexi-lab-sync-264.patch` у лабораторії або оголосити `modules/lexi/` джерелом. Доти генератор не запускати | Leren.be-test |
+| D1 | P2 | Лабораторія TEST-030 відстає від `main`: `tools/lexi-ui-port.cjs` затре виправлення 262–264 у `modules/lexi/chat.js`, `copy.js`, `mock.js`, `chat.css` | Регресії Lexi UI при наступній генерації | Застосувати `docs/integration-3.0/lexi-lab-sync-264.patch` у лабораторії або оголосити `modules/lexi/` джерелом. Захист уже є: `tests/lexi-ui-fixes.cjs` (CI) і `lexi-ui-port-guard.patch` для генератора | Leren.be-test |
 | D2 | P2 | Немає загального денного бюджету AI | Витрати при атаці з багатьох IP | Див. [AI-WORKER-RISK-ASSESSMENT.md](../security/AI-WORKER-RISK-ASSESSMENT.md), W1 | `tools/ai-worker.js` |
 | D3 | P2 | Критичний набір Service Worker не містить усіх файлів оболонки `index.html` | Після оновлення без мережі частина скриптів може бути відсутня | Draft PR #66 (`sw/atomic-app-shell`): `APP_SHELL` = усі посилання `index.html`, атомарне встановлення | `sw.js` |
 | D4 | P3 | `tools/dict-ui.js` — стара копія UI словника; справжній код у `app.js` | Хтось виправить не той файл | Видалити або згенерувати з `app.js` (позначено NOTE) | `tools/dict-ui.js` |

@@ -458,6 +458,10 @@ Before the merge: production tests 80 / 80, v3 suite 37 / 37, proposed-Worker an
 
 ## 13. Contextual «help me answer» (after release 263, owner screenshot 2026-11-22)
 
+> Superseded in release 264: the action under a reply now comes from the Worker's `reply_type` (the «?» rule is only the
+> fallback for an older Worker, and only for a short reply that ends with a question), and `RELEASE_VERSION` is 264.
+> Current state: `docs/audits/LERENBE-3-0-QUALITY-REPORT.md`, sections 11–13.
+
 Production 263: «Не знаю, що відповісти» stood under Lexi's de/het explanation, where there was nothing to answer.
 
 - `modules/lexi/chat.js` (`asksLearner`): the button is shown only when Lexi's last reply contains a question (`?`), and never

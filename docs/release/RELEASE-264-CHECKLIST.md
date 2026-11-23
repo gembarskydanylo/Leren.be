@@ -20,7 +20,8 @@ PR: #65 (`audit/lerenbe-3-0-quality` → `main`, Draft). Production зараз �
 - [ ] Справжній AI — [LEXI-REAL-AI-TESTS.md](../testing/LEXI-REAL-AI-TESTS.md): 0 розв'язків у Lesson Help до відповіді, 0 Peter/Dafna, ≥ 26 / 31 правильних кнопок
 - [ ] Samsung — [SAMSUNG-264.md](../testing/SAMSUNG-264.md): пункти 1–5 PASS; 7–10, 13–15 PASS або записані
 - [ ] Власник: ліміт витрат на ключі Anthropic перевірено ([W8](../security/AI-WORKER-RISK-ASSESSMENT.md))
-- [ ] Власник: рішення про лабораторію TEST-030 (патч `docs/integration-3.0/lexi-lab-sync-264.patch` або `modules/lexi/` як джерело)
+- [x] Захист від повторної генерації: `tests/lexi-ui-fixes.cjs` у CI
+- [ ] Власник: застосувати в Leren.be-test `docs/integration-3.0/lexi-ui-port-guard.patch` (генератор) і `lexi-lab-sync-264.patch` (лабораторія) або оголосити `modules/lexi/` джерелом
 - [ ] Опис PR #65 оновлено, Draft знято власником
 
 ## 3. Злиття і розгортання (власник)
