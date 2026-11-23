@@ -32,13 +32,13 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
  // each profile: storage before PREV starts, then actions with PREV's code
  const PROFILES = {
   'new learner': {seed: {}, act: async () => {}},
-  'half a course': {seed: BASE, act: async p => p.evaluate(() => { for (let i = 0; i < 12; i++) addXP(10, 'q:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 6); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })},
-  'a lot of progress': {seed: {...BASE, poly_streak: '23', poly_toetsbest: JSON.stringify({t1: 9, t2: 10, t3: 8}), leren_life_xp_v1: JSON.stringify({'first-day:station': 40, 'first-day:tram': 35, 'fence-neighbour:mark-1': 20}), leren_achievements_v1: JSON.stringify({version: 1, earned: {'xp-100': '2026-09-02T08:15:00.000Z', 'xp-250': '2026-09-10T19:40:00.000Z'}}), leren_exam11: JSON.stringify({best: 86, done: 1})},
+  'half a course': {seed: {...BASE, leren_char: '"peter"', leren_rec_voice: '"f"'}, voice: 'f', act: async p => p.evaluate(() => { for (let i = 0; i < 12; i++) addXP(10, 'q:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 6); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })},
+  'a lot of progress': {voice: 'f', seed: {...BASE, leren_char: '"dafna"', poly_streak: '23', poly_toetsbest: JSON.stringify({t1: 9, t2: 10, t3: 8}), leren_life_xp_v1: JSON.stringify({'first-day:station': 40, 'first-day:tram': 35, 'fence-neighbour:mark-1': 20}), leren_achievements_v1: JSON.stringify({version: 1, earned: {'xp-100': '2026-09-02T08:15:00.000Z', 'xp-250': '2026-09-10T19:40:00.000Z'}}), leren_exam11: JSON.stringify({best: 86, done: 1})},
    act: async p => p.evaluate(() => { for (let i = 0; i < 400; i++) addXP(5 + (i % 7), 'big:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons.slice(0, 40); for (const l of ls) m.state.completed[l.id] = (l.ids || [1]).length; m.save() })
     .then(() => p.evaluate(async () => { for (const lang of ['en', 'fr']) { const pack = LerenCourseData[lang], c = LerenLearningPath.catalog(pack.data, pack.curriculum, {text: pack.text});
      const m = LerenLearningPath.create(c, localStorage, {key: LerenCourses.key('leren_path_v1', lang)}); m.start(); for (const l of c.lessons.slice(0, lang === 'en' ? 7 : 3)) m.state.completed[l.id] = (l.ids || [1]).length; m.save() } }))},
   'damaged storage': {seed: {...BASE, poly_score: 'abc', leren_xp_v2: '{bad json', leren_path_v1: 'null', poly_progress: '[1,2', leren_life_xp_v1: '"x"', leren_skills_v2: '<img src=x onerror=alert(1)>', leren_minutes_v2: '-5'}, act: async () => {}},
-  'studied offline': {seed: {...BASE, poly_ui: 'fr'}, offline: true, act: async p => p.evaluate(() => { for (let i = 0; i < 8; i++) addXP(10, 'off:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const l = m.recommended(); m.state.completed[l.id] = l.ids.length; m.save() })},
+  'studied offline': {voice: 'm', seed: {...BASE, poly_ui: 'fr', leren_char: '"peter"'}, offline: true, act: async p => p.evaluate(() => { for (let i = 0; i < 8; i++) addXP(10, 'off:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const l = m.recommended(); m.state.completed[l.id] = l.ids.length; m.save() })},
   'back after a long break': {seed: {...BASE, poly_ui: 'ar', leren_release_seen: '"150"', poly_streak: '4', poly_daily: JSON.stringify({d: '2026-01-05', n: 3}), leren_week: JSON.stringify({w: '2026-01-05', d: [1, 1, 0]})}, act: async p => p.evaluate(() => { for (let i = 0; i < 30; i++) addXP(10, 'old:' + i) })},
  };
  const snap = page => page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^(leren_|poly_)/.test(k)) o[k] = localStorage.getItem(k) } return o });
@@ -81,14 +81,24 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
    const added = Object.keys(before).filter(grows).filter(k => before[k] !== after[k]); if (added.length) notes.push(name + ': new badges ' + Object.keys(JSON.parse(after.leren_achievements_v1).earned).filter(id => !(id in (JSON.parse(before.leren_achievements_v1).earned || {}))).join(','));
    assert.deepEqual(changed.map(k => k + ': ' + String(before[k]).slice(0, 80) + ' → ' + String(after[k]).slice(0, 80)), [], name + ': learner data unchanged by the upgrade');
    assert.deepEqual(va, vb, name + ': XP, finished lessons and LIFE XP unchanged');
+   // release 264: the AI teacher is always Lexi; the old teacher choice becomes the voice once (Dafna → female voice), a voice
+   // the learner chose stays, and the story guide (leren_char) is kept
+   if (P.voice) { assert.equal(await page.evaluate(() => recVoice()), P.voice, name + ': recorded voice after the upgrade'); assert.equal(after.leren_char, before.leren_char, name + ': story guide kept');
+    await page.reload(); await page.waitForFunction(() => typeof recVoice === 'function', null, {timeout: 30000}); assert.equal(await page.evaluate(() => recVoice()), P.voice, name + ': voice stays after a reload') }
    await page.waitForFunction(n => caches.keys().then(k => k.length === 1 && k[0] === n), curCache, {timeout: 30000});
    // offline after the upgrade: home and a lesson
    offline = true; await ctx.setOffline(true); await page.reload(); await page.waitForFunction(() => typeof setView === 'function', null, {timeout: 30000});
    await page.evaluate(() => { lessonMode = 'quiz'; mode = 'quiz'; setView('lesson'); buildNav(); newRound() }); await page.waitForSelector('#card .opt', {timeout: 15000});
    assert.deepEqual(errors, [], name + ': no page errors');
+   // the reviews page and its texts come from the new cache too (production 263 had the beta snapshot): offline it opens the
+   // release 264 note (noindex, reviews-i18n.js?v=2), never the old page
+   if (name === 'new learner') { const rv = await page.evaluate(n => caches.open(n).then(async c => ({html: await (await c.match('./reviews.html'))?.text(), v2: !!await c.match('./reviews-i18n.js?v=2'), v1: !!await c.match('./reviews-i18n.js?v=1')})), curCache);
+    assert.match(rv.html || '', /name="robots" content="noindex"/, 'reviews.html in the new cache is the 264 page'); assert.ok(rv.v2 && !rv.v1, 'reviews-i18n.js?v=2 cached, ?v=1 gone');
+    await page.goto(B + 'reviews.html'); const t = await page.evaluate(() => ({robots: document.querySelector('meta[name=robots]')?.content, write: !!document.querySelector('a[href="#write"]')}));
+    assert.equal(t.robots, 'noindex', 'offline reviews page is the new one'); assert.equal(t.write, false, 'no «Write a review» button offline') }
    results.push(`${name} (XP ${vb.xp}, lessons ${vb.lessons}, LIFE ${vb.life}, ${Object.keys(before).length} keys)`);
    await ctx.close();
   }
-  console.log(`PASS: upgrade ${prevCache} (${PREV}) → ${curCache} with a real worker, update bar + one tap, every learner key and XP / lessons / LIFE XP unchanged, offline home + lesson after — ` + results.join('; ') + (notes.length ? ' | ' + notes.join('; ') : ''));
+  console.log(`PASS: upgrade ${prevCache} (${PREV}) → ${curCache} with a real worker, update bar + one tap, every learner key and XP / lessons / LIFE XP unchanged, offline home + lesson after, offline reviews page is the 264 one, Dafna → female voice once — ` + results.join('; ') + (notes.length ? ' | ' + notes.join('; ') : ''));
  } finally { await browser.close(); server.close(); fs.rmSync(prevRoot, {recursive: true, force: true}) }
 })().catch(e => { console.error(e); process.exit(1) });
