@@ -31,7 +31,10 @@
    read: h => {
     const study = !!q(h, '.fh-study-actions'), listen = !!q(h, '.lp-listen-head') && !q(h, '.lp-check-row'), word = text(h, '.lp-word');
     if (word) last.path = word;
-    return {kind: study ? 'study' : listen ? 'listen' : 'quiz', question: listen ? '' : word || last.path || '', answer: '', expected: ''};
+    // After the answer the feedback shows the right word and its translation: send them as the course's sample answer, so
+    // Lexi may explain the solution (before the answer the Worker forbids it). The picked option is not on screen any more.
+    const fb = q(h, '.lp-feedback'), expected = fb ? [text(fb, '.lp-word'), text(fb, '.lp-word + p')].filter(Boolean).join(' — ') : '';
+    return {kind: study ? 'study' : listen ? 'listen' : 'quiz', question: listen ? '' : word || last.path || '', answer: '', expected};
    }},
   {id: 'player',
    find: d => { const e = q(d, '.cp-q, .cp-word'); return e ? e.parentElement : null },

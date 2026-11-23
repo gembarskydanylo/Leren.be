@@ -14,7 +14,9 @@ translateDom();
 
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n };
-const btn = (label, fn, cls = 'ls-btn') => { const b = el('button', cls, label); b.type = 'button'; b.onclick = fn; return b };
+// audit 3.0: the second click of a double tap (detail 2+) would land on the NEXT step's button in the same place (steps re-render
+// at once): it skipped a line or answered the next question. A click counts only once; keyboard activation (detail 0) is unchanged.
+const btn = (label, fn, cls = 'ls-btn') => { const b = el('button', cls, label); b.type = 'button'; b.onclick = e => { if (e && e.detail > 1) return; fn(e) }; return b };
 const store = (() => { try { const k = '__ls'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return localStorage } catch { return {getItem: () => null, setItem: () => {}} } })();
 const shuffle = a => { const x = [...a]; for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]] } return x };
 
@@ -230,7 +232,7 @@ function renderStep() {
  } else if (s.type === 'reply') {
   panel.append(el('p', 'ls-prompt', s.prompt));
   s.options.forEach((o, i) => { const b = btn('', () => {
-    const r = current.answer(i);
+    const r = current.answer(i); if (!r) return;
     if (r.repeat) { setHero('thinking'); bubble('me', o.nl, o.uk); const prev = lastLine(); if (prev) { bubble(prev.who, prev.nl, prev.uk, {slow: true}); showSpoken(prev.who, prev.nl, prev.uk, 'neutral'); say(prev.nl, speaker(prev.who).voice, true) }
      renderStep(); feedback(true, T('Добре, що перепитав(ла)! {0}', r.explain || T('Тепер повільніше.'))); return }
     if (r.ok) { setHero('happy'); bubble('me', o.nl, o.uk); say(o.nl, ME.voice);

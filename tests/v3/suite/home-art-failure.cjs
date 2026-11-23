@@ -10,7 +10,7 @@ const storyPage = fs.readFileSync(path.join(root, 'learn-life-story.html'), 'utf
 // LerenBe 3.0 integration: in production the LIFE story page sits next to the app (no <base href="../life/">, assets under
 // ./modules/learn-life and ./assets/lerenbe-life), renderer release 263, and «back» goes to the home ./ .
 assert(!storyPage.includes('<base '), 'home story loads LIFE from the app root (no <base>)');
-assert(storyPage.includes('story-ui.mjs?v=263'), 'home story uses the visual renderer');
+assert(storyPage.includes('story-ui.mjs?v=264'), 'home story uses the visual renderer');
 assert(/href="\.\/"/.test(storyPage), 'return to current homepage');
 // The home entrance must load the same LIFE versions as life/learn-life-story.html (otherwise a service worker keeps an old copy).
 const lifePage = fs.readFileSync(path.join(__dirname, '../life/learn-life-story.html'), 'utf8'), vers = h => (h.match(/story(?:-ui\.mjs|\.css)\?v=[^"]+/g) || []).sort();

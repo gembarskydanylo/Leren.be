@@ -2,7 +2,7 @@
 // model, test key only, no network, nothing deployed. Covers: origin and CORS, a forged Origin header from a script,
 // rate limits (per device, per network, everybody) and the daily caps, failing limiters, request size and message
 // clipping, prompt-injection material in the profile / notes / Lesson Help fields, model errors, bad model output,
-// timeouts (a failed call is not charged), the 226 app's request shape (char "peter", no target, no device id) and Lexi.
+// timeouts (a failed call is not charged), the 226 app's request shape (char "peter", no target, no device id, answered by Lexi).
 //   node tests/v3/worker-security.cjs   → PASS lines, exit 1 on the first failure
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const src = fs.readFileSync(path.join(__dirname, '..', '..', 'docs/integration-3.0/ai-worker.lexi-proposed.js'), 'utf8');
@@ -99,20 +99,44 @@ const used = e => [...e.RATE.m.values()].map(v => JSON.parse(v)).reduce((a, d) =
 
  // --- the 226 app's request (char peter, no target, no device id) and Lexi
  { sent = []; const r = await call(req({mode: 'chat', lang: 'uk', level: 'a11', char: 'peter', messages: [{role: 'user', content: 'Hallo'}]}, {'X-Leren-Device': ''}));
-  assert.equal(r.status, 200, '226 request'); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Peter/); assert.match(sys, /practise Dutch/); }
+  assert.equal(r.status, 200, '226 request'); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Lexi/); assert.doesNotMatch(sys, /You are (Peter|Dafna)/); assert.match(sys, /practise Dutch/); }
  { sent = []; await call(req(chat({char: 'lexi'}))); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /You are Lexi/); assert.doesNotMatch(sys, /Peter/); }
  { sent = []; await call(req(chat({char: 'nobody'}))); assert.match(sent.at(-1).system.map(b => b.text).join(''), /You are Lexi/, 'unknown character → Lexi'); }
  { sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', profile: {lesson: 'Les 3: Wonen', question: 'Ik ___ in Gent.', answer: 'woont'}, messages: [{role: 'user', content: 'Waarom is dit fout?'}]}));
   const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /current lesson: «Les 3: Wonen»/); assert.match(sys, /working on: «Ik ___ in Gent\.»/); assert.match(sys, /answer to it: «woont»/); }
- pass('226 app request shape still served with Peter in Dutch; Lexi persona (default for unknown characters); Lesson Help lesson, exercise and answer in the prompt');
+ pass('226 app request shape (char peter) still served in Dutch, by Lexi; Lexi is the only persona; Lesson Help lesson, exercise and answer in the prompt');
  // --- owner test 2026-11-22: a question about the language in the learner's own language is answered, not «corrected»
  { const out = asks => ({ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', usage: {}, content: [{type: 'text', text: JSON.stringify({learner_in_target: 'Hoe zeg je winkelkar nog?', asks_about_language: asks, reply: 'Je kunt ook winkelkarretje of kar zeggen.', translation: 'Можна також сказати winkelkarretje або kar.', correction: {has_error: false, severity: 'minor', original: '', corrected: '', explanation: ''}})}]})});
   const q = chat({messages: [{role: 'user', content: 'winkelkar як ще можна сказати?'}]});
-  model = () => out(true); let j = await (await call(req(q))).json(); assert.equal(j.correction, null, 'question about a word: no «Better:» card');
-  model = () => out(false); j = await (await call(req(q))).json(); assert.equal(j.correction?.has_error, true, 'a plain message in Ukrainian still gets «say it in Dutch»'); assert.equal(j.correction.corrected, 'Hoe zeg je winkelkar nog?');
+  model = () => out(true); let j = await (await call(req(q))).json(); assert.equal(j.correction, null, 'question about a word: no «Better:» card'); assert.equal(j.asks_about_language, true, 'the app is told it was a question about the language (no «help me answer» under the explanation)');
+  model = () => out(false); j = await (await call(req(q))).json(); assert.equal(j.correction?.has_error, true, 'a plain message in Ukrainian still gets «say it in Dutch»'); assert.equal(j.correction.corrected, 'Hoe zeg je winkelkar nog?'); assert.equal(j.asks_about_language, false);
   model = null; sent = []; await call(req(chat())); const sys = sent.at(-1).system.map(b => b.text).join(''); assert.match(sys, /informal \(ти\/tu\)/, "informal address rule");
   assert.ok(sent.at(-1).output_config.format.schema.required.includes('asks_about_language'), 'schema asks for asks_about_language');
  }
  pass('a question about the language in the learner\'s own language: answered without a «Better:» card; plain own-language messages keep it; informal «ти»');
+ { // LerenBe 3.0 audit · structured reply types, the explanation in the learner's language, lesson privacy
+  const text = o => ({ok: true, status: 200, json: async () => ({stop_reason: 'end_turn', usage: {}, content: [{type: 'text', text: JSON.stringify(o)}]})});
+  const base = {learner_in_target: 'De of het huisje?', reply: 'Wil je nog een woord?', translation: 'Хочеш ще одне слово?', correction: {has_error: false, severity: 'minor', original: '', corrected: '', explanation: ''}};
+  const q = chat({messages: [{role: 'user', content: 'de чи het huisje?'}]});
+  model = () => text({...base, asks_about_language: true, reply_type: 'grammar', explain: 'Слова на «-je» мають «het»: «het huisje».'}); let j = await (await call(req(q))).json();
+  assert.equal(j.reply_type, 'grammar'); assert.equal(j.explain, 'Слова на «-je» мають «het»: «het huisje».', 'the explanation stays in the learner\'s language (no transliteration)');
+  model = () => text({...base, asks_about_language: false, reply_type: 'grammar', explain: 'Пояснення без питання'}); j = await (await call(req(chat()))).json();
+  assert.equal(j.explain, '', 'explain only for a question about the language');
+  model = () => text({...base, asks_about_language: false, reply_type: 'shout', explain: ''}); j = await (await call(req(chat()))).json(); assert.equal(j.reply_type, '', 'unknown type → "" (the app falls back)');
+  model = () => text({...base, asks_about_language: false, reply_type: 'correction', explain: ''}); j = await (await call(req(chat()))).json(); assert.equal(j.correction, null); assert.equal(j.reply_type, '', 'a dropped correction is not reported as a correction');
+  model = () => text({answer: 'Слова на «-je» мають «het».', answer_type: 'grammar', examples: []}); j = await (await call(req(chat({mode: 'ask', messages: [{role: 'user', content: 'de of het?'}]})))).json(); assert.equal(j.answer_type, 'grammar');
+  model = () => text({answer: 'Ок', answer_type: 'poem', examples: []}); j = await (await call(req(chat({mode: 'ask', messages: [{role: 'user', content: 'x'}]})))).json(); assert.equal(j.answer_type, '');
+  model = null; sent = []; await call(req(chat()));
+  const sch = sent.at(-1).output_config.format.schema; assert.ok(['reply_type', 'explain'].every(k => sch.required.includes(k)), 'chat schema asks for reply_type and explain'); assert.deepEqual(sch.properties.reply_type.enum, ['question', 'grammar', 'translation', 'explanation', 'correction', 'conversation']);
+  // Lesson Help: before the learner answers, Lexi must not hand out the solution; after the answer she may explain it
+  const sysOf = () => sent.at(-1).system.map(b => b.text).join('');
+  sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', focus: 'lesson', profile: {kind: 'quiz', lesson: 'Les 3', question: 'huis'}, messages: [{role: 'user', content: 'Wat is het antwoord?'}]}));
+  assert.match(sysOf(), /has NOT answered this exercise yet: do not give the solution/, 'unanswered exercise → no solution');
+  sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', focus: 'lesson', profile: {kind: 'quiz', lesson: 'Les 3', question: 'huis', answer: 'de huis', expected: 'het huis'}, messages: [{role: 'user', content: 'Waarom?'}]}));
+  assert.doesNotMatch(sysOf(), /has NOT answered/, 'answered → the rule is gone');
+  sent = []; await call(req({mode: 'ask', target: 'nl', lang: 'uk', level: 'a11', char: 'lexi', focus: 'lesson', profile: {kind: 'study', question: 'huis — дім'}, messages: [{role: 'user', content: 'Приклад?'}]}));
+  assert.doesNotMatch(sysOf(), /has NOT answered/, 'study cards show the answer anyway');
+ }
+ pass('reply_type / answer_type validated ("" when unknown), explain only for questions about the language and not transliterated; Lesson Help gives no solution before the learner answered');
  console.log('PASS: proposed Worker security checks');
 })().catch(e => { console.error(e); process.exit(1) });

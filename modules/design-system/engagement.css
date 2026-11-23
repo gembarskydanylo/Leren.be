@@ -1,5 +1,5 @@
 /* Stage C: real progress, goals, settings and supporting app views. */
-.progress-view,.dict-view{max-width:1000px;margin:0 auto;color:var(--lb-ink)}
+.progress-view,.dict-view{max-width:min(100%,1000px);min-width:0;margin:0 auto;color:var(--lb-ink)} /* audit 3.0: min-width 0 — the filter chips made the Arabic dictionary 18 px wider than the screen */
 .progress-view h2,.dict-view h2,.set-title{font:900 var(--lb-title)/1.2 var(--lb-heading);letter-spacing:-.03em}
 .pv-grid{gap:16px}.pv-tile,.pv-insights,.ins-card,.pp,.g-card,.test-card,.tl-card{background:var(--lb-surface);color:var(--lb-ink);border:1px solid var(--lb-line);border-radius:20px;box-shadow:var(--lb-shadow)}
 .pv-tile{padding:24px}.pv-tile strong{font:900 2.25rem/1.1 var(--lb-heading);color:var(--lb-brand)}.pv-tile span{color:var(--lb-muted);font-size:.875rem}

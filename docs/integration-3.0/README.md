@@ -455,3 +455,25 @@ proposal (`ai-worker.lexi-proposed.js`, byte-identical); the push to `main` depl
 60 per device per day). From then on `gembarskydanylo.github.io` (the Leren.be-test beta) is refused by the Worker.
 Rollback: section 5 (a revert of the merge commit restores the old `tools/ai-worker.js`, and the push redeploys it).
 Before the merge: production tests 80 / 80, v3 suite 37 / 37, proposed-Worker and Worker-security checks pass.
+
+## 13. Contextual «help me answer» (after release 263, owner screenshot 2026-11-22)
+
+> Superseded in release 264: the action under a reply now comes from the Worker's `reply_type` (the «?» rule is only the
+> fallback for an older Worker, and only for a short reply that ends with a question), and `RELEASE_VERSION` is 264.
+> Current state: `docs/audits/LERENBE-3-0-QUALITY-REPORT.md`, sections 11–13.
+
+Production 263: «Не знаю, що відповісти» stood under Lexi's de/het explanation, where there was nothing to answer.
+
+- `modules/lexi/chat.js` (`asksLearner`): the button is shown only when Lexi's last reply contains a question (`?`), and never
+  after a reply in Lexi's question mode (`kind: 'ask'`) or a reply to a question about the language (`asks_about_language`).
+- `modules/lexi/copy.js`: Ukrainian label «Допоможи відповісти» (same meaning as EN/FR/AR «Help me answer»).
+  `chat.js` and `copy.js` are generated from the TEST-030 lab (not in this repo): this patch must be carried into the lab.
+- `modules/lexi/engine.js`: the normalised chat answer keeps `asks_about_language`.
+- `tools/ai-worker.js` (= `docs/integration-3.0/ai-worker.lexi-proposed.js`): the chat response returns `asks_about_language`.
+  Older app versions ignore the extra field; the new app without the new Worker still hides the button after replies without `?`.
+- Versions: Lexi assets `?v=264`, `engine.js?v=5`. `RELEASE_VERSION` stays 263 — the owner decides the release number at merge
+  (bump to 264 so `sw.js` / the update banner pick it up).
+- Tests: `tests/v3/suite/lexi-help-context.cjs` (uk/en/fr/ar: shown after a question, hidden after an explanation, after an
+  answer about the language and after a plain reply), `tests/v3/worker-security.cjs` (flag in the response).
+- Not done (ideas from the owner's note, separate decision): «Explain simpler» under explanations, «Show examples» under a
+  translated word. A correction already has its own «Practise the correction» button.

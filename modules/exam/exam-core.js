@@ -89,7 +89,7 @@ function home(){
  });
  c.appendChild(grid);
  if(D.ai&&typeof AI_ENDPOINT!=="undefined"&&AI_ENDPOINT&&targetLang==="nl"){
-  const nm="Lexi";const fix=t=>t.replace(/Peter/g,nm);
+  const nm="Lexi";const fix=t=>String(t||"").replace(/Peter|بيتر/g,nm); // Lexi is the only AI teacher (also in Arabic texts)
   c.appendChild(el("h3","ex-aih",u.ai));c.appendChild(el("p","ex-sub",fix(u.aiS)));
   const mk=(id,t,d,fn)=>{const b=el("button","btn toets-pick ex-ai");b.type="button";b.dataset.ai=id;const av=el("span","tp-no ex-av");try{av.innerHTML=typeof lexiAv==="function"?lexiAv():"🤖"}catch(e){av.textContent="🤖"}b.appendChild(av);const tx=el("span","tp-text");tx.append(el("strong","",fix(t)),el("small","tp-meta",fix(d)));b.appendChild(tx);b.onclick=fn;c.appendChild(b)};
   let aiRun=null;try{aiRun=lsGet(D.ai.store,null)}catch(e){}
@@ -248,7 +248,7 @@ function write(w,back){
  };
  md.onclick=()=>{model.hidden=!model.hidden;md.textContent=model.hidden?u.wModel:u.wHideModel};
  row.append(ck,md);
- if(typeof AI_ENDPOINT!=="undefined"&&AI_ENDPOINT){const ai=el("button","btn",(U().wAi).replace(/Peter/g,"Lexi"));ai.type="button";ai.onclick=()=>{const t=ta.value.trim();if(t.length<20){toast(U().wAiEmpty);return}
+ if(typeof AI_ENDPOINT!=="undefined"&&AI_ENDPOINT){const ai=el("button","btn",String(U().wAi||"").replace(/Peter|بيتر/g,"Lexi"));ai.type="button";ai.onclick=()=>{const t=ta.value.trim();if(t.length<20){toast(U().wAiEmpty);return}
   askStart({focus:D.focus,send:"Kijk mijn e-mail na ("+D.examName+"). Opdracht: "+w.task+(w.card?"\nUitnodiging: "+w.card.replace(/\n/g," "):"")+"\n\nMijn e-mail:\n"+t})};row.appendChild(ai)}
  c.append(row,res,model);
 }

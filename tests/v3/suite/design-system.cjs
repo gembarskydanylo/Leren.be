@@ -3,7 +3,7 @@
 const fs = require('node:fs'), path = require('node:path'), http = require('node:http');
 const assert = require('node:assert/strict'), {chromium} = require('playwright');
 const repo = path.resolve(__dirname, '..'), read = f => fs.readFileSync(path.join(repo, f), 'utf8');
-const versions = {tokens:1, foundation:2, /* TEST-044 header */ home:2, /* owner test 2026-11-22: hero progress footer */ learning:263, /* LerenBe 3.0 integration: phone listening-step fix */  engagement:2, life:263, /* LerenBe 3.0 integration: desktop stage fix */  guides:1};
+const versions = {tokens:1, foundation:2, /* TEST-044 header */ home:2, /* owner test 2026-11-22: hero progress footer */ learning:263, /* LerenBe 3.0 integration: phone listening-step fix */  engagement:3, /* audit 3.0: Arabic dictionary width */ life:263, /* LerenBe 3.0 integration: desktop stage fix */  guides:1};
 const css = name => 'design-system/' + name + '.css?v=' + versions[name];
 const html = read('app/index.html'), sw = read('app/sw.js');
 for (const name of Object.keys(versions)) {

@@ -1718,10 +1718,10 @@ function topicPickerUI(){
  return labels[uiLang]||labels.uk;
 }
 // Descriptions of pictures for screen readers (and when images do not load), in the interface language.
-const ALT_UI={uk:{peter:"Пітер, вчитель нідерландської",dafna:"Дафна, вчителька нідерландської",cat:"Кіт-маскот lerenbe.com",topic:t=>"Ілюстрація до теми «"+t+"»",game:t=>"Ілюстрація до гри «"+t+"»"},
- en:{peter:"Peter, Dutch teacher",dafna:"Dafna, Dutch teacher",cat:"lerenbe.com cat mascot",topic:t=>"Illustration for the topic “"+t+"”",game:t=>"Illustration for the game “"+t+"”"},
- fr:{peter:"Peter, professeur de néerlandais",dafna:"Dafna, professeure de néerlandais",cat:"Le chat mascotte de lerenbe.com",topic:t=>"Illustration du thème « "+t+" »",game:t=>"Illustration du jeu « "+t+" »"},
- ar:{peter:"بيتر، مدرّس الهولندية",dafna:"دافنا، مدرّسة الهولندية",cat:"القط تميمة lerenbe.com",topic:t=>"رسم توضيحي لموضوع «"+t+"»",game:t=>"رسم توضيحي للعبة «"+t+"»"}};
+const ALT_UI={uk:{peter:"Пітер, персонаж курсу",dafna:"Дафна, персонаж курсу",cat:"Кіт-маскот lerenbe.com",topic:t=>"Ілюстрація до теми «"+t+"»",game:t=>"Ілюстрація до гри «"+t+"»"},
+ en:{peter:"Peter, a course character",dafna:"Dafna, a course character",cat:"lerenbe.com cat mascot",topic:t=>"Illustration for the topic “"+t+"”",game:t=>"Illustration for the game “"+t+"”"},
+ fr:{peter:"Peter, personnage du cours",dafna:"Dafna, personnage du cours",cat:"Le chat mascotte de lerenbe.com",topic:t=>"Illustration du thème « "+t+" »",game:t=>"Illustration du jeu « "+t+" »"},
+ ar:{peter:"بيتر، شخصية في الدورة",dafna:"دافنا، شخصية في الدورة",cat:"القط تميمة lerenbe.com",topic:t=>"رسم توضيحي لموضوع «"+t+"»",game:t=>"رسم توضيحي للعبة «"+t+"»"}};
 const altU=()=>ALT_UI[uiLang]||ALT_UI.uk;
 function topicArt(info){
  const img=el("img","topic-art");img.src=info.image;img.alt=info.title?altU().topic(info.title):"";img.width=160;img.height=108;return img;
@@ -1929,7 +1929,11 @@ let audioSets={m:new Set(),f:new Set()},audioEl=null;
 function loadAudioManifest(){for(const k in AUDIO_DIRS){try{fetch(AUDIO_DIRS[k]+"manifest.json",{cache:"no-cache"}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))audioSets[k]=new Set(a)}).catch(()=>{})}catch(e){}}}
 const REC_VOICE="__recorded",REC_VOICE_F="__recorded_f";
 const REC_RATE=.85; // recordings are made at -10%; played at 0.85 they are about 0.77 of normal speed (device voices use rate .75)
-function recVoice(){const v=lsGet("leren_rec_voice","");return v==="m"||v==="f"?v:(lsGet("leren_char","peter")==="dafna"?"f":"m")}
+// v264: Lexi is the only AI teacher. The old Peter/Dafna "teacher" choice only picked the recorded voice:
+// carry it over once into the voice setting, after that the voice is chosen only in the voice settings.
+function migrateCharVoice(){if(lsGet("leren_voice_migrated",false))return;const v=lsGet("leren_rec_voice","");if(v!=="m"&&v!=="f"){const c=lsGet("leren_char","");if(c==="dafna"||c==="lotte")lsSet("leren_rec_voice","f")}lsSet("leren_voice_migrated",true)}
+migrateCharVoice();
+function recVoice(){const v=lsGet("leren_rec_voice","");return v==="f"?"f":"m"}
 function recordedAvailable(){return targetLang==="nl"&&(audioSets.m.size>0||audioSets.f.size>0)}
 function useRecorded(){return targetLang==="nl"&&!lsGet("leren_voice_force_tts",false)}
 function playRecorded(text,button,onDone){
@@ -3657,7 +3661,7 @@ DX.search=(ix,raw,{lang="uk",pos="",limit=60}={})=>{
 
 // ========== DICTIONARY UI (data: dict/nl.json + lesson words; engine: DX) ==========
 const DICT_UI={
- uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",
+ uk:{ph:"Нідерландською чи українською",loading:"Завантажую словник…",offline:"Повний словник недоступний без інтернету. Показую слова з уроків.",retry:"Спробувати ще раз",
   words:n=>"У словнику "+n.toLocaleString("uk")+" "+(n%10===1&&n%100!==11?"слово":n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?"слова":"слів")+" · A1–A2",found:n=>"Знайдено: "+n,none:"Нічого не знайдено",did:"Можливо, ти мав на увазі:",
   all:"Усі",pos:{n:"ім.",v:"дієсл.",adj:"прикм.",adv:"присл.",prep:"прийм.",conj:"спол.",pron:"займ.",num:"числ.",det:"займ.",int:"виг.",phr:"вираз"},
   filters:[["","Усі"],["n","Іменники"],["v","Дієслова"],["adj","Прикметники"],["phr","Вирази"]],
@@ -3666,7 +3670,7 @@ const DICT_UI={
   irr:"неправильне дієслово",withZijn:"з zijn",withBoth:"з hebben або zijn",adjForm:"Перед іменником",cmp:"Порівняння",
   ex:"Приклад",fromLessons:"З уроків",en:"Англ.",listen:"Слухати",star:"Додати до «Мої слова»",unstar:"Прибрати з «Мої слова»",
   wod:"Слово дня",recent:"Нещодавно шукали",mine:"Мої слова",mineEmpty:"Натисни ☆ біля слова, щоб зберегти його тут.",tryT:"Спробуй:",clear:"Очистити"},
- en:{ph:"Dutch or English word",loading:"Loading dictionary…",offline:"The full dictionary needs an internet connection. Showing lesson words.",
+ en:{ph:"Dutch or English word",loading:"Loading dictionary…",offline:"The full dictionary needs an internet connection. Showing lesson words.",retry:"Try again",
   words:n=>n.toLocaleString("en")+" words · A1–A2",found:n=>n+" found",none:"Nothing found",did:"Did you mean:",
   all:"All",pos:{n:"noun",v:"verb",adj:"adj.",adv:"adv.",prep:"prep.",conj:"conj.",pron:"pron.",num:"num.",det:"det.",int:"interj.",phr:"phrase"},
   filters:[["","All"],["n","Nouns"],["v","Verbs"],["adj","Adjectives"],["phr","Phrases"]],
@@ -3675,12 +3679,12 @@ const DICT_UI={
   irr:"irregular verb",withZijn:"with zijn",withBoth:"with hebben or zijn",adjForm:"Before a noun",cmp:"Comparison",
   ex:"Example",fromLessons:"From lessons",en:"EN",listen:"Listen",star:"Add to My words",unstar:"Remove from My words",
   wod:"Word of the day",recent:"Recent searches",mine:"My words",mineEmpty:"Tap ☆ next to a word to save it here.",tryT:"Try:",clear:"Clear"}};
-DICT_UI.fr=Object.assign({},DICT_UI.en,{pos:{n:"nom",v:"verbe",adj:"adj.",adv:"adv.",prep:"prép.",conj:"conj.",pron:"pron.",num:"num.",det:"dét.",int:"interj.",phr:"expression"},pl:"pl.",sg:"sg.",deW:"mot en de",hetW:"mot en het",both:"de ou het",ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
+DICT_UI.fr=Object.assign({},DICT_UI.en,{pos:{n:"nom",v:"verbe",adj:"adj.",adv:"adv.",prep:"prép.",conj:"conj.",pron:"pron.",num:"num.",det:"dét.",int:"interj.",phr:"expression"},pl:"pl.",sg:"sg.",deW:"mot en de",hetW:"mot en het",both:"de ou het",ph:"Un mot en néerlandais ou en français",loading:"Chargement du dictionnaire…",offline:"Le dictionnaire complet a besoin d’Internet. Je montre les mots des leçons.",retry:"Réessayer",words:n=>n.toLocaleString("fr")+" mots · A1–A2",found:n=>n+" résultats",none:"Rien trouvé",did:"Vouliez-vous dire :",
  filters:[["","Tout"],["n","Noms"],["v","Verbes"],["adj","Adjectifs"],["phr","Expressions"]],wod:"Mot du jour",recent:"Recherches récentes",mine:"Mes mots",mineEmpty:"Touche ☆ à côté d'un mot pour l'enregistrer ici.",tryT:"Essaie :",listen:"Écouter",ex:"Exemple",fromLessons:"Des leçons",present:"Présent",past:"Passé",perfect:"Passé composé"});
-DICT_UI.ar=Object.assign({},DICT_UI.en,{pos:{n:"اسم",v:"فعل",adj:"صفة",adv:"ظرف",prep:"حرف جر",conj:"أداة ربط",pron:"ضمير",num:"عدد",det:"أداة",int:"تعجب",phr:"عبارة"},pl:"جمع",sg:"مفرد",deW:"كلمة de",hetW:"كلمة het",both:"de أو het",ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
+DICT_UI.ar=Object.assign({},DICT_UI.en,{pos:{n:"اسم",v:"فعل",adj:"صفة",adv:"ظرف",prep:"حرف جر",conj:"أداة ربط",pron:"ضمير",num:"عدد",det:"أداة",int:"تعجب",phr:"عبارة"},pl:"جمع",sg:"مفرد",deW:"كلمة de",hetW:"كلمة het",both:"de أو het",ph:"كلمة بالهولندية أو العربية",loading:"جارٍ تحميل القاموس…",offline:"يحتاج القاموس الكامل إلى الإنترنت. أعرض كلمات الدروس.",retry:"حاول مرة أخرى",words:n=>n.toLocaleString("ar")+" كلمة · A1–A2",found:n=>"النتائج: "+n,none:"لم يتم العثور على شيء",did:"هل تقصد:",
  filters:[["","الكل"],["n","أسماء"],["v","أفعال"],["adj","صفات"],["phr","عبارات"]],wod:"كلمة اليوم",recent:"عمليات البحث الأخيرة",mine:"كلماتي",mineEmpty:"اضغط ☆ بجانب الكلمة لحفظها هنا.",tryT:"جرّب:",listen:"استمع",ex:"مثال",fromLessons:"من الدروس"});
 const dU=()=>DICT_UI[uiLang]||DICT_UI.en;
-const DICT={ix:null,loading:null,offline:false,pos:"",open:-1,corpus:null};
+const DICT={ix:null,loading:null,offline:false,retryAt:0,fails:0,pos:"",open:-1,corpus:null};
 function dictTr(e){return uiLang==="uk"?e.uk:uiLang==="fr"?(e.fr||e.en):uiLang==="ar"?(e.ar||e.en):e.en}
 function dictMerge(list){
  const key=(w,p)=>w.toLowerCase()+"|"+p,byKey=new Map(),byW=new Map(),byPl=new Map();
@@ -3697,14 +3701,20 @@ function dictMerge(list){
  });
  return list;
 }
-function dictLoad(){
- if(DICT.ix)return Promise.resolve(DICT.ix);
+// LRN-001: a failed download (offline, server error, broken file) leaves the lesson-word fallback in place and is retried —
+// when the dictionary is opened again after a bounded exponential backoff with jitter (≈5 s, 10 s … max 5 min), at once when
+// the browser goes online, or with «Try again». One request at a time; a failed download is never kept as the full dictionary.
+function dictLoad(force){
  if(DICT.loading)return DICT.loading;
+ if(DICT.ix&&!DICT.offline)return Promise.resolve(DICT.ix);
+ if(DICT.ix&&DICT.offline&&!force&&Date.now()<DICT.retryAt)return Promise.resolve(DICT.ix);
  DICT.loading=fetch("dict/nl.json").then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
-  .catch(()=>{DICT.offline=true;return[]})
-  .then(list=>{DICT.ix=DX.build(dictMerge(list));DICT.loading=null;return DICT.ix});
+  .then(list=>{if(!Array.isArray(list)||!list.length)throw new Error("Invalid dictionary");DICT.ix=DX.build(dictMerge(list));DICT.offline=false;DICT.fails=0;DICT.retryAt=0;return DICT.ix})
+  .catch(()=>{DICT.offline=true;DICT.fails=Math.min(DICT.fails+1,8);const wait=Math.min(300000,5000*2**(DICT.fails-1));DICT.retryAt=Date.now()+Math.round(wait*(.75+Math.random()*.5));if(!DICT.ix)DICT.ix=DX.build(dictMerge([]));return DICT.ix})
+  .finally(()=>{DICT.loading=null});
  return DICT.loading;
 }
+window.addEventListener("online",()=>{if(!DICT.offline)return;DICT.retryAt=0;dictLoad().then(()=>{if(typeof runSearch==="function")runSearch()})});
 function dictCorpus(){
  if(DICT.corpus)return DICT.corpus;const c=[],seen=new Set();
  const add=(nl,uk,en)=>{if(!nl||seen.has(nl))return;seen.add(nl);c.push({nl,uk:uk||"",en:en||"",t:new Set(DX.norm(nl).split(" "))})};
@@ -3813,8 +3823,10 @@ function runSearch(){
  inp.placeholder=u.ph;const clr=$("dictClear");if(clr)clr.hidden=!inp.value;
  dictFilters();
  if(!DICT.ix){box.replaceChildren(el("div","search-empty",u.loading));dictLoad().then(()=>runSearch());return}
+ // fallback in use: reopening the dictionary tries the full one again once its backoff is over (never more than one request)
+ if(DICT.offline&&!DICT.loading&&Date.now()>=DICT.retryAt)dictLoad().then(()=>runSearch());
  box.replaceChildren();
- if(DICT.offline)box.appendChild(el("p","dx-offline",u.offline));
+ if(DICT.offline){const p=el("p","dx-offline",u.offline+" "),b=el("button","dx-retry",DICT.loading?u.loading:u.retry);b.type="button";b.disabled=!!DICT.loading;b.onclick=()=>{b.disabled=true;b.textContent=u.loading;dictLoad(true).then(()=>runSearch())};p.appendChild(b);box.appendChild(p)}
  const raw=inp.value||"";
  const hint=$("dictHint");if(hint)hint.hidden=!!raw.trim();
  if(!raw.trim()){meta.textContent=u.words(DICT.ix.entries.length);dictHome(box);return}
@@ -3990,7 +4002,7 @@ function renderShellText(){
  $("tagline").textContent=targetLang==="nl"?guideText.brand:({en:"English",fr:"Français"})[targetLang]||guideText.brand;
  const sc=$("score");sc.replaceChildren(ico("star"),el("span","",String(score)),el("span","comp-points-label",pgU().xp));sc.title=(u.points||"Points")+": "+score;
  const pathBack=$("pathReturn");if(pathBack)pathBack.textContent=({uk:"‹ До навчального маршруту",en:"‹ Back to my learning path",fr:"‹ Retour au parcours",ar:"العودة إلى مسار التعلّم ›"})[uiLang];
- fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();if(typeof renderCharRow==="function")renderCharRow();
+ fillIcons();renderTopicBar();if(typeof renderPushRow==="function")renderPushRow();
 }
 const PROGRESS_EMPTY_UI={
  uk:{title:'Перший крок — і тут з’являться твої результати',text:'Урок займає 5–10 хвилин. За навчання та нові рекорди ти отримуватимеш бали.',start:'Почати урок →',results:'Після першого тесту тут з’явиться твій результат.'},
@@ -4122,7 +4134,7 @@ function firstRun(){
   const list=el("div","goal-list");
   [[g.lvlNew,g.lvlNewS,false],[g.lvlKnow,g.lvlKnowS.replace("{n}",String(TOETS.find(t=>t.kind==="leveltest"&&t.unlocks==="a12")?.questions.length||0)),true]].forEach(([t,sub,test])=>{
    const b=el("button","opt goal-opt");b.type="button";b.append(el("strong","",t),el("span","",sub));
-   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>pickCharPopup(()=>{lsSet("leren_tour_done",true);afterTourEnd()}),250)};list.appendChild(b)});
+   b.onclick=()=>{lsSet("leren_level_asked",true);pendingLevelTest=test;close();setTimeout(()=>{lsSet("leren_tour_done",true);afterTourEnd()},250)};list.appendChild(b)});
   panel.appendChild(list);
   const skip=el("button","tour-skip",ONBOARD_SKIP[uiLang]||ONBOARD_SKIP.uk);skip.type="button";skip.onclick=()=>{skipOnboarding();close()};panel.appendChild(skip);
  });
@@ -5240,30 +5252,6 @@ const charSvg=(mood,full)=>curChar().svg(mood||"happy",full);
 // text templates: {N}=name (nl/en/fr), {Nu}=Ukrainian name, {Na}=Arabic name, {male|female}
 const cx=t=>{if(typeof t!=="string")return t;const c=curChar();return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g,(_,m,f)=>c.m?m:f).replace(/\{Nu\}/g,c.u).replace(/\{Na\}/g,c.a).replace(/\{N\}/g,c.n)};
 const cxDeep=o=>typeof o==="string"?cx(o):Array.isArray(o)?o.map(cxDeep):o&&typeof o==="object"?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,typeof v==="function"?v:cxDeep(v)])):o;
-const CHAR_UI={uk:{pick:"Обери вчителя",pickHint:"Пітер і Дафна навчають нас із котом. Обери, з ким практикувати розмови; змінити вчителя можна в налаштуваннях.",row:"Вчитель",peter:"Вчитель. Пояснює правила спокійно, як на дошці",dafna:"Вчителька з Бельгії. Практикує живі щоденні розмови",chosen:"Обрано",go:"Далі"},
- en:{pick:"Choose your teacher",pickHint:"Peter and Dafna teach you and the cat. Choose a teacher for conversation practice; change this in Settings.",row:"Teacher",peter:"Teacher. Explains rules calmly, like on the whiteboard",dafna:"Belgian teacher. Practise everyday conversations",chosen:"Chosen",go:"Next"},
- fr:{pick:"Choisis ton professeur",pickHint:"Peter et Dafna vous enseignent, à toi et au chat. Choisis un professeur pour les dialogues, modifiable dans les réglages.",row:"Professeur",peter:"Professeur. Explique calmement, comme au tableau",dafna:"Professeure belge. Pratique les conversations du quotidien",chosen:"Choisi",go:"Suivant"},
- ar:{pick:"اختر معلّمك",pickHint:"بيتر ودافنا يعلّمانك أنت والقط. اختر معلّماً للمحادثة ويمكنك تغييره من الإعدادات.",row:"المعلّم",peter:"معلّم. يشرح القواعد بهدوء كما على السبورة",dafna:"معلّمة بلجيكية. تدرّب على محادثات الحياة اليومية",chosen:"تم الاختيار",go:"التالي"}};
-const chU=()=>CHAR_UI[uiLang]||CHAR_UI.uk;
-function charPicker(onPick){
- const u=chU(),wrap=el("div","ch-pick");wrap.setAttribute("role","radiogroup");wrap.setAttribute("aria-label",u.pick);
- Object.entries(CHARS).forEach(([id,c])=>{const on=charId()===id&&lsGet("leren_char",null)!=null;
-  const b=el("button","ch-card"+(on?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("role","radio");b.setAttribute("aria-checked",on?"true":"false");
-  const fig=el("div","ch-fig ch-"+id);fig.innerHTML=c.svg("happy",true);
-  b.append(fig,el("strong","",c.n),el("span","",u[id]));if(on)b.appendChild(el("em","ch-badge","✓ "+u.chosen));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");onPick&&onPick(id)};wrap.appendChild(b)});
- return wrap;
-}
-function pickCharPopup(then){
- const u=chU();popup((panel,close,m)=>{m.dataset.lock="1";panel.classList.add("ch-panel");panel.append(el("h2","goal-title",u.pick),el("p","goal-hint",u.pickHint),charPicker(()=>{close();renderCharRow();if(then)setTimeout(then,200)}))});
-}
-function renderCharRow(){
- const row=$("charRow");if(!row)return;const u=chU();$("charLabel").textContent=u.row;
- const box=$("charSeg");box.replaceChildren();
- Object.entries(CHARS).forEach(([id,c])=>{const b=el("button","ch-mini"+(charId()===id?" on":""));b.type="button";b.dataset.char=id;b.setAttribute("aria-pressed",charId()===id?"true":"false");b.setAttribute("aria-label",uiLang==="uk"?c.u:uiLang==="ar"?c.a:c.n);
-  const a=el("span","ch-av");a.innerHTML=c.svg("happy");b.append(a,el("span","",c.n));
-  b.onclick=()=>{lsSet("leren_char",id);lsSet("leren_rec_voice","");lsSet("leren_voice_force_tts",false);lsSet("leren_voice_nl","");renderCharRow();const c=$("card");if(view==="games"&&c&&c.querySelector(".g-home-head"))renderGamesHome()};box.appendChild(b)});
-}
 const bg=(id,a,b)=>`<defs><linearGradient id="sc-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="160" fill="url(#sc-${id})"/>`;
 const SCENE_ART={
  cafe:bg("cafe","#FFEFD8","#FFD49C")+`<path d="M80 0v24M240 0v24" stroke="#5A3622" stroke-width="2"/><path d="M64 38a16 14 0 0 1 32 0zM224 38a16 14 0 0 1 32 0z" fill="#EB6A00"/><ellipse cx="80" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/><ellipse cx="240" cy="42" rx="9" ry="4" fill="#FFF3B0" opacity=".9"/>
@@ -5403,8 +5391,7 @@ function storyState(){return lsGet("leren_story",{done:[],best:{}})}
 function logMistake(nl,why){const m=lsGet("leren_mistakes",[]).filter(x=>x.nl!==nl);m.unshift({nl,why,d:dayStr()});lsSet("leren_mistakes",m.slice(0,30))}
 function storyMap(){
  const st=storyState(),card=gHead("Een dag in België","");
- if(lsGet("leren_char",null)==null){pickCharPopup(storyMap);return}
- const head=el("div","st-head");const av=el("button","st-av st-av-btn");av.type="button";av.title=chU().row;av.setAttribute("aria-label",chU().pick);av.innerHTML=charSvg("happy");av.onclick=()=>pickCharPopup(storyMap);head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
+ const head=el("div","st-head");const av=el("div","st-av");av.setAttribute("aria-hidden","true");av.innerHTML=charSvg("happy");head.append(av,el("div","st-say",stU().hello));card.appendChild(head);
  const grid=el("div","st-map");
  SCENES.forEach((sc,i)=>{const open=i===0||st.done.includes(SCENES[i-1].id),done=st.done.includes(sc.id);
   const b=el("button","st-place"+(done?" done":"")+(open?"":" locked"));b.type="button";
@@ -5493,7 +5480,7 @@ function lexiBlocked(title){const L=lexi(),a=L?L.availability():{ok:false,code:"
 // tools/lexi-ui-port.cjs), loaded on first use and shown full screen over the app in a shadow root (its styles cannot
 // touch the app, the app's cannot touch it). It talks only to LerenLexi; XP, the mistakes list and notes keep the rules
 // of the old chat. The A1.1 speaking exam and the exam writing check keep their own screens (aiStartExam / askStartExam).
-const LEXI_V="262";
+const LEXI_V="264";
 const LEXI_SCENE={super:"shop",huisarts:"doctor",station:"transport",gemeente:"municipality",werk:"work",school:"school"}; // worker id → chat id
 const LEXI_OLD_SCENES={cafe:{uk:"Кафе",en:"Café",fr:"Café",ar:"مقهى"},apotheek:{uk:"Аптека",en:"Pharmacy",fr:"Pharmacie",ar:"صيدلية"},buren:{uk:"Сусіди",en:"Neighbours",fr:"Voisins",ar:"الجيران"}};
 const LEXI_PRIVACY={uk:"Повідомлення надсилаються до AI через сервер lerenbe.com і не зберігаються. Голос розпізнає браузер; запис не зберігається.",en:"Messages go to the AI through the lerenbe.com server and are not stored. Your browser recognises speech; no recording is kept.",fr:"Les messages passent par le serveur lerenbe.com vers l’IA et ne sont pas conservés. Le navigateur reconnaît la voix ; rien n’est enregistré.",ar:"تُرسل الرسائل إلى الذكاء الاصطناعي عبر خادم lerenbe.com ولا تُحفظ. يتعرّف المتصفح على الصوت؛ لا يُحفظ أي تسجيل."};
@@ -6089,7 +6076,7 @@ function initLearningPath(){
   gameCards:()=>gameCards(),
   game:id=>{if(id==="kamer1"&&curLevel==="a21")switchCourse("a11");setView("games");gameStart(id)?.()},
   clock:()=>{switchCourse("a11");currentCat="nums";tab="clock";saveStore();buildNav();setView("lesson");newRound()},
-  chat:()=>aiStart(), // every "talk to AI" button opens Lexi; the voice/teacher choice (leren_char) is not touched
+  chat:()=>aiStart(), // every "talk to AI" button opens Lexi (the only AI teacher)
   lexi:(scenario,ctx)=>lexiOpen(scenario,ctx),
   person:()=>{const id=charId();return {name:id==="dafna"?"Dafna":"Peter",image:"./img/chars/"+id+".webp"}},
   canListen:()=>!!(window.SpeechRecognition||window.webkitSpeechRecognition),
@@ -6229,7 +6216,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="263";
+const RELEASE_VERSION="264";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

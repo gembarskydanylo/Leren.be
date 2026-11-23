@@ -47,6 +47,14 @@ for(const file of appFiles){
  assert(fs.existsSync(path.join(root,local)),`Missing offline asset: ${file}`);
 }
 assert(appFiles.some(f=>f.split('?')[0]==='./dict/nl.json'),'Dictionary missing from offline cache');
+// LRN-002 (264): the final list (after every loop and push) has only local paths of this site, one version per file, and
+// every script / style that index.html loads is cached with exactly the version index.html asks for (an older version
+// in the cache means the offline app runs stale code); the atomic app shell is part of the list.
+for(const f of appFiles){assert(/^\.\//.test(f)&&!/^\.\/\//.test(f)&&!f.includes('..')&&!/^[a-z]+:/i.test(f),'Offline asset outside the site: '+f)}
+const byPath=new Map();for(const f of appFiles){const p=f.split('?')[0];assert(!byPath.has(p),'Two versions of one offline asset: '+byPath.get(p)+' / '+f);byPath.set(p,f)}
+const shellHtml=fs.readFileSync(path.join(root,'index.html'),'utf8');
+for(const m of shellHtml.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="(\.?\/?[^"#:]+\?v=[^"]+)"/g)){const ref='./'+m[1].replace(/^\.?\//,'');const cached=byPath.get(ref.split('?')[0]);assert(cached,'index.html loads a file the offline cache lacks: '+ref);assert.equal(cached,ref,'offline cache holds another version than index.html loads')}
+const shell=JSON.parse((sw.match(/const critical = (\[[^\]]*\])/)||[])[1]||'[]');assert(shell.length>=5,'atomic app shell list not found');for(const f of shell)assert(appFiles.includes(f),'app shell file outside APP_FILES: '+f);
 // Negative regression: an asset appended after event registration must also be checked.
 const ghost='./__missing_precache_regression__.js';
 assert(swManifest(sw+'\nAPP_FILES.push("'+ghost+'");').includes(ghost));

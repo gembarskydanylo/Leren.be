@@ -18,7 +18,7 @@
 <link rel="preload" as="script" href="./modules/course-player/exam.js?v=3">
 <link rel="preload" as="script" href="./modules/course-player/ui.js?v=8">
 <link rel="preload" as="script" href="./modules/rewards/core.js?v=174">
-<link rel="preload" as="script" href="./modules/companion/ui.js?v=117">
+<link rel="preload" as="script" href="./modules/companion/ui.js?v=264">
 <link rel="preload" as="script" href="./modules/scenes/map.js?v=165">
 <link rel="preload" as="script" href="./modules/card-art/art.js?v=147">
 <link rel="preload" as="script" href="./modules/card-art/people.js?v=135">
@@ -38,8 +38,8 @@
 <link rel="preload" as="script" href="./modules/lesson-conversation/ui.js?v=112">
 <link rel="preload" as="script" href="./modules/ai-coach/core.js?v=169">
 <link rel="preload" as="script" href="./modules/ai-coach/ui.js?v=254">
-<link rel="preload" as="script" href="./modules/lexi/engine.js?v=4">
-<link rel="preload" as="script" href="./modules/lexi/lesson-help.js?v=1">
+<link rel="preload" as="script" href="./modules/lexi/engine.js?v=5">
+<link rel="preload" as="script" href="./modules/lexi/lesson-help.js?v=264">
 <link rel="preload" as="script" href="./modules/word-builder/art.js?v=150">
 <link rel="preload" as="script" href="./modules/emoji/cards.js?v=146">
 <link rel="preload" as="script" href="./modules/emoji/variants.js?v=147">
@@ -51,9 +51,9 @@
 <link rel="preload" as="script" href="./modules/learning-path/ui.js?v=263">
 <link rel="preload" as="script" href="./modules/dialogues/translations.js?v=177">
 <link rel="preload" as="script" href="./course-curriculum.js?v=178">
-<link rel="preload" as="script" href="./app.js?v=263">
-<link rel="preload" as="script" href="./modules/exam/exam-core.js?v=254">
-<link rel="preload" as="script" href="./modules/exam/exam11.js?v=176">
+<link rel="preload" as="script" href="./app.js?v=264">
+<link rel="preload" as="script" href="./modules/exam/exam-core.js?v=264">
+<link rel="preload" as="script" href="./modules/exam/exam11.js?v=264">
 <link rel="preload" as="script" href="./modules/exam/exam12-data.js?v=173">
 <link rel="preload" as="script" href="./modules/exam/exam12.js?v=177">
 <link rel="preload" as="script" href="./modules/diphthongs/lesson-core.js?v=87">
@@ -744,6 +744,7 @@ main[data-view="lesson"] #lerenbe-diphthongs-section{width:min(100%,760px);margi
 .dx-chip{min-height:38px;padding:0 14px;border-radius:var(--r-pill);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 15px var(--font-body,inherit);cursor:pointer}
 .dx-wod .dx-row{border-color:var(--oranje);background:linear-gradient(135deg,color-mix(in srgb,var(--oranje) 10%,var(--surface)),var(--surface))}
 .dx-empty-s,.dx-did,.dx-offline{margin:0 4px 10px;color:var(--ink-2);font-size:14px}
+.dx-retry{margin-inline-start:6px;min-height:44px;padding:6px 14px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}.dx-retry:disabled{opacity:.6;cursor:progress}
 .dx-did{font-weight:700}
 :root[data-theme="dark"] .dx-art.de{background:#1C3460;color:#BBD5FF}:root[data-theme="dark"] .dx-art.het{background:#4A2214;color:#FFC2AC}:root[data-theme="dark"] .dx-art.both{background:#35204F;color:#DCC6FF}
 
@@ -1054,23 +1055,9 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 .st-banner{margin:-6px 0 12px;border-radius:var(--r-md);overflow:hidden;aspect-ratio:2/0.75;max-width:100%}
 .st-banner.sm{aspect-ratio:2/0.55}
 .st-av.xs{width:38px;height:38px}
-.st-av-btn{padding:0;border:0;background:none;border-radius:50%;cursor:pointer;transition:transform .15s}.st-av-btn:active{transform:scale(.94)}
 .g-card .g-av{width:72px;height:72px;font-size:0}.g-card .g-av svg{width:100%;height:100%;display:block}
 .kl-who{margin-bottom:10px}
-.ch-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
-.ch-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px 14px;border-radius:var(--r-md);border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 var(--depth-sm) 0 var(--edge);transition:transform .12s}
-.ch-card:active{transform:translateY(2px)}
-.ch-card.on{border-color:var(--oranje);box-shadow:0 var(--depth-sm) 0 var(--oranje)}
-.ch-fig{width:100%;max-width:150px;aspect-ratio:332/650;border-radius:16px;padding:8px 6px 0;overflow:hidden}
-.ch-fig .ch-ph{width:100%;height:100%;display:block}
 .ch-peter{background:linear-gradient(180deg,#D7F5EE,#9ED7EA)}.ch-dafna{background:linear-gradient(180deg,#FFF0B8,#FFC48A)}
-.ch-card strong{font-family:var(--font-display);font-size:18px}
-.ch-card span{font-size:13px;color:var(--ink-2);line-height:1.3}
-.ch-badge{position:absolute;top:8px;inset-inline-end:8px;font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:var(--oranje);color:#fff}
-.ch-seg{display:flex;gap:6px;flex:none}
-.ch-mini{display:flex;align-items:center;gap:6px;min-height:40px;padding:3px 10px 3px 3px;border-radius:99px;border:2px solid var(--line);background:var(--surface-2);color:var(--ink);font:800 13px var(--font-body,inherit);cursor:pointer}
-.ch-mini.on{border-color:var(--oranje);background:color-mix(in srgb,var(--oranje) 14%,var(--surface))}
-.ch-av{width:30px;height:30px;display:block}
 .ch-ph{position:relative;display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(160deg,#C9F1E8,#4FAFD0)}
 .ch-ph.ch-dafna{background:linear-gradient(160deg,#FFE27A,#FF9A3D)}
 .ch-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;user-select:none}
@@ -1080,7 +1067,6 @@ button.om-chip{cursor:pointer}button.om-chip:hover{border-color:var(--role-v)}
 @keyframes ch-sad{30%{transform:translateX(-3%)}60%{transform:translateX(3%)}}
 @keyframes ch-hop{40%{transform:translateY(-6%) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.ch-ph img{animation:none!important;transition:none!important}}
-@media (max-width:380px){.ch-mini>span:last-child{display:none}.ch-mini{padding:3px}}
 .st-own{margin:10px 0 6px;text-align:center;color:var(--ink-2);font-size:13.5px;font-weight:700}
 .st-fb b{cursor:pointer;text-decoration:underline dotted}
 .ai-row{display:flex;gap:8px;align-items:flex-end}
@@ -1215,7 +1201,7 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <link rel="stylesheet" href="./modules/design-system/foundation.css?v=2">
 <link rel="stylesheet" href="./modules/design-system/home.css?v=2">
 <link rel="stylesheet" href="./modules/design-system/learning.css?v=263">
-<link rel="stylesheet" href="./modules/design-system/engagement.css?v=2">
+<link rel="stylesheet" href="./modules/design-system/engagement.css?v=3">
 
 <div id="splash" hidden></div>
 <script src="./splash.js?v=206"></script>
@@ -1362,7 +1348,6 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
         </select></span></div>
       <div class="set-row" id="voiceRow"><span class="ico" data-ico="mic"></span><span class="set-l"><span id="voiceRowLabel"></span><small id="voiceRowValue"></small></span>
         <button class="set-btn" id="voiceSettingsBtn" type="button"></button></div>
-      <div class="set-row" id="charRow"><span class="ico" data-ico="chat"></span><span class="set-l" id="charLabel"></span><span class="ch-seg" id="charSeg"></span></div>
       <div class="set-row"><span class="ico" data-ico="volume"></span><span class="set-l"><span id="autoRowLabel"></span><small id="autoRowHint"></small></span>
         <button class="switch" id="autoSpeechToggle" type="button" role="switch" aria-checked="false" aria-labelledby="autoRowLabel"><i></i></button></div>
       <div class="set-row"><span class="ico" data-ico="moon"></span><span class="set-l" id="themeRowLabel"></span>
@@ -1422,7 +1407,7 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <script src="./modules/course-player/exam.js?v=3"></script>
 <script src="./modules/course-player/ui.js?v=8"></script>
 <script src="./modules/rewards/core.js?v=174"></script>
-<script src="./modules/companion/ui.js?v=117"></script>
+<script src="./modules/companion/ui.js?v=264"></script>
 <script src="./modules/scenes/map.js?v=165"></script>
 <script src="./modules/card-art/art.js?v=147"></script>
 <script src="./modules/card-art/people.js?v=135"></script>
@@ -1442,8 +1427,8 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <script src="./modules/lesson-conversation/ui.js?v=112"></script>
 <script src="./modules/ai-coach/core.js?v=169"></script>
 <script src="./modules/ai-coach/ui.js?v=254"></script>
-<script src="./modules/lexi/engine.js?v=4" defer></script>
-<script src="./modules/lexi/lesson-help.js?v=1" defer></script>
+<script src="./modules/lexi/engine.js?v=5" defer></script>
+<script src="./modules/lexi/lesson-help.js?v=264" defer></script>
 <script src="./modules/word-builder/art.js?v=150" defer></script>
 <script src="./modules/emoji/cards.js?v=146"></script>
 <script src="./modules/emoji/variants.js?v=147"></script>
@@ -1455,10 +1440,10 @@ header .hdr-btn{min-width:44px;min-height:44px}main>header .hdr-stats .streak-pi
 <script src="./modules/learning-path/ui.js?v=263"></script>
 <script src="./modules/dialogues/translations.js?v=177"></script>
 <script src="./course-curriculum.js?v=178"></script>
-<script src="./app.js?v=263"></script>
+<script src="./app.js?v=264"></script>
   <div class="modes-wrapper" id="modeButtons"></div>
-   <script src="./modules/exam/exam-core.js?v=254" defer></script>
-<script src="./modules/exam/exam11.js?v=176" defer></script>
+   <script src="./modules/exam/exam-core.js?v=264" defer></script>
+<script src="./modules/exam/exam11.js?v=264" defer></script>
 <script src="./modules/exam/exam12-data.js?v=173" defer></script>
 <script src="./modules/exam/exam12.js?v=177" defer></script>
 <script src="./modules/diphthongs/lesson-core.js?v=87" defer></script>
