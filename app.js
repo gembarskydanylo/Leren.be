@@ -3877,6 +3877,8 @@ const ICONS={
  star:'<path fill="currentColor" stroke="none" d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3 1.1-6.5-4.7-4.6 6.5-.9z"/>',
  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3.3 3.2 14.7 0 18M12 3c-3.2 3.3-3.2 14.7 0 18"/>',
  chat:'<path d="M4 4.5h16v11.5H9.5L4 20.5z"/><path d="M8 9h8M8 12.5h5"/>',
+ today:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
+ more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
  volume:'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>',
  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
@@ -3929,8 +3931,49 @@ function setView(v){
   if(v==="progress")renderProgressView()}
  applyView();if(prev!==v)window.scrollTo({top:0});
 }
+// TEST-050: «Today with Lexi». The guided home and the 5-tab navigation (Today · Learn · Lexi · Games · More) are on for the Dutch
+// course when both modules loaded. Every existing screen stays reachable: the course map, tests and free practice under
+// Learn; dictionary, progress, profile, LIFE, clock and settings under More.
+const guidedOn=()=>!!(window.LerenGuided&&window.LerenToday&&targetLang==="nl");
+function guidedTab(){let chat=false;try{chat=!!lexiView}catch(e){}if(chat)return "lexi";if(view==="games")return "games";if(view==="path")return learningPath&&learningPath.screen==="map"?"learn":"today";if(view==="lesson"||view==="toets")return "learn";return "more"}
+function openLearn(){setHomePref("path");setView("path");if(learningPath)learningPath.map();renderDock()}
+function openToday(){setHomePref("path");setView("path");if(learningPath)learningPath.today();renderDock()}
+function openClock(){switchCourse("a11");currentCat="nums";tab="clock";saveStore();buildNav();setView("lesson");newRound()}
+function openMore(){
+ LerenToday.more({lang:uiLang,items:[
+  {id:"profile",icon:"👤",run:openProfile},{id:"dict",icon:"🔎",run:()=>setView("dict")},{id:"progress",icon:"🏆",run:()=>setView("progress")},
+  {id:"tests",icon:"📝",run:()=>setView("toets")},{id:"life",icon:"🎬",run:()=>{location.href="./learn-life.html"}},{id:"clock",icon:"🕒",run:openClock},
+  {id:"free",icon:"🗂️",run:()=>{setView("lesson");newRound()}},{id:"settings",icon:"⚙️",run:()=>$("settingsBtn").click()}]});
+}
+function openProfile(){
+ const G=LerenGuided,p=G.profile(localStorage),n=G.name(localStorage);
+ LerenToday.profile({lang:uiLang,name:n.name,forAI:n.forAI,goals:p.goals,pace:p.pace,goal:goalMin(),
+  onSave:d=>{G.setName(localStorage,d.name,d.forAI);G.saveProfile(localStorage,{goals:d.goals,pace:d.pace,namePrompt:"done"});lsSet("leren_goal_min",d.goal);updateStats();if(learningPath)learningPath.refresh()},
+  onDeleteName:()=>{G.clearName(localStorage);if(learningPath)learningPath.refresh()}});
+}
+function startGuidedOnboarding(){
+ const G=LerenGuided;
+ LerenToday.onboarding({lang:uiLang,langs:UI_LANGS.map(l=>[l,LANG_NAMES[l]||l]),setLang:l=>{changeUiLang(l);const p=$("uiLangPicker");if(p)p.value=uiLang;return uiLang},
+  onDone:d=>{
+   lsSet("leren_welcome_seen",true);lsSet("leren_level_asked",true);lsSet("leren_goal_min",[5,10,15,20].includes(d.goal)?d.goal:10);
+   if(d.name)G.setName(localStorage,d.name,d.forAI);
+   G.saveProfile(localStorage,{goals:d.goals,pace:d.pace,onboarded:G.day(),source:"new",namePrompt:d.nameAsked?"done":null});
+   if(d.start!=="self")lsSet(START_KEY,d.start==="zero"?"zero":"words");
+   // Straight into learning: the session (review → lesson → practice), the 12-question level check, or the course map.
+   setView("path");setTimeout(()=>{if(!learningPath)initLearningPath();if(!learningPath)return;
+    if(d.start==="test")learningPath.startPlacement();else if(d.start==="self")openLearn();else{learningPath.start();renderDock()}},60);
+  }});
+}
 function renderDock(){
  const u=navU(),wrap=$("modeButtons");if(!wrap)return;wrap.replaceChildren();
+ if(guidedOn()){
+  const L=LerenToday.tr(uiLang).nav,active=guidedTab();wrap.classList.add("td-dock");
+  [["today","today",openToday],["learn","lesson",openLearn],["lexi","chat",()=>{aiStart();renderDock()}],["games","games",()=>setView("games")],["more","more",openMore]].forEach(([id,icon,run])=>{
+   const b=el("button",id===active?"primary":"");b.type="button";b.dataset.tab=id;b.dataset.view=id;if(id===active)b.setAttribute("aria-current","page");
+   b.append(ico(icon,"dock-ic"),el("span","dock-tx",L[id]));b.onclick=run;wrap.appendChild(b)});
+  return;
+ }
+ wrap.classList.remove("td-dock");
  [["lesson",u.lesson],["games",gU().games],["toets",u.toets],["dict",u.dict],["progress",u.progress]].forEach(([v,label])=>{
   const b=el("button",v===view||(v==="lesson"&&view==="path")?"primary":"");b.type="button";b.title=label;b.dataset.view=v;
   if(v===view||(v==="lesson"&&view==="path"))b.setAttribute("aria-current","page");
@@ -5872,7 +5915,8 @@ function syncLine(){const u=acctU(),st=syncStatus(),at=Number(lsGet("leren_sync_
  if(st==="pending")return u.pending;return u.synced+(at?" "+new Date(at).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):"")}
 // Per-device keys never leave the device. The AI memory stays on this device only (see privacy.html).
 const SYNC_SKIP=new Set(["leren_banner_last","leren_device_id","leren_sync_uid","leren_backup_at","leren_persist_asked","leren_ai_endpoint","leren_ai_device","leren_push","leren_rate","leren_twa","leren_voice_force_tts","leren_sync_at","leren_acct","leren_acct_email",
- "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1"]);
+ "leren_sync_base","leren_sync_backup","leren_ai_memory","leren_ai_memrev","leren_del_pending","leren_del_after_link","leren_path_talk_v1",
+ "leren_learner_name","leren_today_v1"]); // TEST-050: the learner's name stays on this device (not in the account, not in backups)
 const syncable=k=>/^(poly_|leren_)/.test(k)&&!SYNC_SKIP.has(k)&&!k.startsWith("leren_voice_"); // voices and push are per device
 function syncSnapshot(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(syncable(k))o[k]=localStorage.getItem(k)}return o}
 // Three-way merge: base = the copy both sides last agreed on, local = this device, cloud = the account.
@@ -6090,6 +6134,9 @@ function initLearningPath(){
   // Peter's first piece of advice for the home screen (not the review, the route's warm-up covers it).
   advice:()=>{const r=adviceFor();const it=r.items.find(x=>x.kind!=="due");return it?{text:LerenInsights.say(it,uiLang,r.strong),label:LerenInsights.label(it,uiLang),run:()=>runAdvice(it.action)}:null},
   complete:recordPathResult,rewards:()=>setView("progress"),
+  // TEST-050 Guided Learning: on/off, an existing learner (for the one-time name question), Lexi reachable (local check, no request).
+  guided:()=>guidedOn(),existing:()=>hasLearningHistory(),learn:()=>openLearn(),tests:()=>setView("toets"),
+  lexiAvailable:()=>{try{const L=lexi();return !!L&&L.availability().ok}catch(e){return false}},
   // Writing practice of an A1.2 topic: tasks from the A1.2 exam data, opened in the exam editor with "back to the lesson".
   writeTasks:(ch,lang)=>{const ids=(window.EXAM12_DATA&&EXAM12_DATA.TOPIC_WRITE[ch])||[];if(!window.EXAM12)return [];return ids.map(id=>EXAM12.tasks().find(w=>w.id===id)).filter(Boolean).map(w=>({id:w.id,title:w.title[lang]||w.title.en,best:EXAM12.writeBest(w.id)}))},
   openWrite:(id,ch)=>{if(!window.EXAM12)return;setView("toets");EXAM12.writeTask(id,()=>{setView("path");if(learningPath)learningPath.chapter(ch)})},
@@ -6216,7 +6263,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="264";
+const RELEASE_VERSION="270";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";
@@ -6421,4 +6468,4 @@ $("helpBtn").addEventListener("click",()=>{closeSheet("settingsSheet");setTimeou
 function updateHelpBtn(){}
 if(targetLang!=="nl")setTimeout(firstRun,600);
 // The Dutch route has its own home (next lesson, "I already know some Dutch"), so brand-new learners only get the welcome screen: no level question, no legacy tour.
-else setTimeout(()=>{if(lsGet("leren_welcome_seen",false)||lsGet("leren_tour_done",false)||hasLearningHistory())return;welcomeNl(1)},600);
+else setTimeout(()=>{if(lsGet("leren_welcome_seen",false)||lsGet("leren_tour_done",false)||hasLearningHistory())return;if(guidedOn())startGuidedOnboarding();else welcomeNl(1)},600);
