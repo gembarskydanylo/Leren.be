@@ -16,6 +16,14 @@
   const conversation=talkOk?LerenLessonConversation.create(course,{getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)}):null;
   const talkText=key=>talkOk?LerenLessonConversation.tr(key,lang):'';
   const talkView=talkOk?LerenLessonConversation.createView(conversation,{...bridge,render:()=>render(),lessonWords:id=>(model.lesson(id)?.ids||[]).map(id=>course.cards.get(id).nl),nextLesson(){if(guidedPracticeDone())return;const s=model.state.session;if(s&&s.kind==='lesson'&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}const l=model.continueRoute();go(l?'intro':'home')}}):{cancel(){},clear(){},render(){}};
+  // TEST-050 RC: a conversation is offered only when the learner already knows most of its words (A1.1 beginners must not get
+  // phrases far above their level). Known = Dutch words of the cards in finished lessons plus the lesson just played; offline.
+  const TALK_READY=0.7,talkWords=s=>String(s||'').toLowerCase().replace(/[^a-zà-ÿ' ]/g,' ').split(/\s+/).filter(w=>w.length>1);
+  function talkCoverage(id){const l=model.lesson(id),turns=l&&talkOk&&LerenLessonConversation.SCENARIOS?.[l.chapter];if(!turns||!turns.length)return 0;
+   const known=new Set(),add=lid=>{for(const c of model.lesson(lid)?.ids||[])for(const w of talkWords(course.cards.get(c)?.nl))known.add(w)};
+   for(const lid of Object.keys(model.state.completed))add(lid);add(id);
+   const words=[...new Set(turns.flatMap(t=>talkWords(t.q+' '+t.sample)))];return words.length?words.filter(w=>known.has(w)).length/words.length:0}
+  const talkReady=id=>talkCoverage(id)>=TALK_READY;
   function beginTalk(id){if(!talkOk||!model.lesson(id))return;if(conversation.state.lesson===id&&conversation.state.index<3)conversation.resume();else conversation.begin(id);talkView.clear();go('talk')}
   // A started but unfinished conversation (left for another screen or closed the app) is offered on the home screen.
   const talkOpen=()=>talkOk&&!!model.lesson(conversation.state.lesson)&&conversation.state.index<3&&!conversation.state.completed.includes(conversation.state.lesson);
@@ -68,7 +76,8 @@
   const todayState=()=>{const st=G.today(store);return st&&st.course===model.course?st:null};
   const earnedBadges=()=>{try{const raw=JSON.parse(localStorage.getItem('leren_achievements_v1')||'{}');return Object.keys(raw&&raw.earned||{})}catch{return []}};
   function draftPlan(){const prof=G.profile(store),stats=bridge.stats?.()||{},due=bridge.due?bridge.due():[],paused=pausedLesson();
-   return G.plan({review:!paused&&model.warmupDue(due)?model.warmupIds(due).length:0,paused:paused?.id||null,goal:stats.goal,pace:prof.pace,practice:talkOk})}
+   const upcoming=paused||model.recommended();
+   return G.plan({review:!paused&&model.warmupDue(due)?model.warmupIds(due).length:0,paused:paused?.id||null,goal:stats.goal,pace:prof.pace,practice:talkOk&&!!upcoming&&talkReady(upcoming.id)})} // practice only when its words are mostly known
   function stepLabel(step,first){const tt=TD.tr(lang);if(step.kind==='review')return tt.review(step.words||3);if(step.kind==='practice')return tt.practice;const l=step.lesson?model.lesson(step.lesson):first?pausedLesson()||model.recommended():null;return l?tt.lesson(lessonTitle(l)):tt.lessonNext}
   function guidedScreen(){stepView?.cancel();stepView=null;talkView.cancel();bridge.stop();feedback=null;screen='guided';shell()}
   // TEST-050: a learner who chose English or French at the first run gets the same Today screen for that course;
@@ -80,7 +89,7 @@
    const steps=info.allDone?[]:[{kind:'lesson',label:info.label,min:6,done:false,current:mode==='resume'}];
    TD.home(root,{lang,name:nm.name,topic:info.topic,steps,minutes:steps.length?6:0,mode,position:mode==='resume'?{index:0,total:1}:null,review:0,lessonLabel:info.label,
     stats:{streak:stats.streak,min:stats.min,goal:stats.goal,pct:info.total?Math.round(info.done/info.total*100):0,course:info.name+' '+info.level},
-    lexi:{available:bridge.lexiAvailable?.()!==false,onOpen:()=>bridge.chat?.()},ask:null,
+    lexi:{available:bridge.lexiAvailable?.()!==false,onOpen:()=>bridge.chat?.()},ask:null,note:info.beta?TD.tr(lang).betaNote(info.total,info.levels):'',
     onStart:()=>{P.open(id,lang,{start:true,onClose:()=>render()})},onLearn:()=>{P.open(id,lang,{onClose:()=>render()})}});
    return true;
   }
@@ -91,7 +100,8 @@
    let first=true;const items=steps.map((s,i)=>{const done=mode==='resume'&&s.done,label=s.kind==='lesson'?stepLabel(s,first&&!done):stepLabel(s);if(s.kind==='lesson'&&!done)first=false;return {kind:s.kind,label,min:s.min,done,current:mode==='resume'&&i===position.index}});
    const stats=bridge.stats?.()||{},cs=model.courseStats(model.course),nm=G.name(store),ch=next&&chapter(next);
    TD.home(root,{lang,name:nm.name,topic:ch?title(ch):'',steps:items,minutes:steps.filter(s=>!(mode==='resume'&&s.done)).reduce((a,s)=>a+s.min,0),mode,position,
-    review:steps.find(s=>s.kind==='review')?.words||0,lessonLabel:next?lessonTitle(next):'',
+    review:steps.find(s=>s.kind==='review')?.words||0,lessonLabel:next?lessonTitle(next):'',paused:mode==='start'&&!!pausedLesson(),advice:mode!=='placing'&&bridge.advice?bridge.advice():null, // TEST-050: priority 1 — an unfinished lesson is offered as «Продовжити урок»
+    
     stats:{streak:stats.streak,min:stats.min,goal:stats.goal,pct:cs.total?Math.round(cs.done/cs.total*100):0,course:model.course},
     lexi:{available:bridge.lexiAvailable?.()!==false,onOpen:()=>bridge.chat?.()},
     ask:G.askName(store,bridge.existing?.())?{onSave:(n,ai)=>{G.setName(store,n,ai);G.saveProfile(store,{namePrompt:'done'});render()},onLater:()=>{G.saveProfile(store,{namePrompt:'later'});render()}}:null,
@@ -105,7 +115,7 @@
    runStep(st);
   }
   function runStep(st){
-   const step=G.current(st);if(!step){go('home');return}
+   const step=G.current(st);if(!step){if(G.finished(st))guidedResult(st);else go('home');return} // all done (e.g. the lesson was finished before the app closed): the summary, never a silent home
    const skip=()=>{G.complete(store,st,step.id,{});runStep(st)};
    if(step.kind==='review'){if(model.state.session?.kind==='review'){go('lesson');return}if(model.beginWarmup(bridge.due?bridge.due():[])){go('lesson');return}skip();return}
    if(step.kind==='lesson'){
@@ -115,7 +125,7 @@
     begin(l,true);return;
    }
    const last=[...st.steps].reverse().find(x=>x.kind==='lesson'&&x.done&&x.lesson)?.lesson;
-   if(!talkOk||!last||!model.lesson(last)){skip();return}
+   if(!talkOk||!last||!model.lesson(last)||!talkReady(last)){skip();return} // not ready yet: the step is skipped, never forced
    beginTalk(last);
   }
   // After a finished lesson or review: true when it was the current step of today's session (then the session screens take over).
@@ -230,7 +240,7 @@
    if(!mapChapter){const levels=node('div','fh-levels');levels.setAttribute('aria-label',f.levelHint);for(const level of model.levels){const b=LerenFocus.button(level,()=>{if(pickCourse(level))render()},'fh-level');b.setAttribute('aria-pressed',String(mapLevel===level));levels.appendChild(b)}root.appendChild(levels);const grid=node('div','fh-topic-grid');for(const ch of course.chapters.filter(c=>c.level===mapLevel))grid.appendChild(topicTile(ch));root.appendChild(grid);root.appendChild(LerenFocus.button(f.newPlace,()=>{model.place();go('placement')}));return}
    const ch=course.chapters.find(c=>c.id===mapChapter),st=model.stats(ch.id),summary=node('div','fh-chapter-summary');summary.append(LerenFocus.meter(st.done,st.total,title(ch)),node('span','lp-caption',st.done+' / '+st.total+' '+f.lessons));root.appendChild(summary);
    const list=node('ol','fh-lesson-list');for(const l of ch.lessons){const done=Object.hasOwn(model.state.completed,l.id),active=model.recommended()?.id===l.id,state=done?'done':active?'current':'ahead',li=node('li','is-'+state),b=button('',()=>begin(l));b.className='fh-lesson-row';const label=node('span','fh-lesson-copy');label.append(node('strong','',lessonTitle(l)),node('small','',done&&!model.mastered(l.id)?t('review'):f[state]));b.append(node('span','fh-lesson-marker',done?'✓':String(ch.lessons.indexOf(l)+1)),label,node('span','fh-lesson-end',done?'✓':active?'→':f.time));if(active)b.setAttribute('aria-current','step');li.appendChild(b);list.appendChild(li)}root.appendChild(list);
-   if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last)root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
+   if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last&&talkReady(last.id))root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
    writeBlock(ch.id);
    if(st.done===st.total)root.appendChild(button(t('openTest'),()=>bridge.assess(ch.id),true));
   }
@@ -316,7 +326,7 @@
     box.appendChild(node('p','',t('learned')));const list=node('ul');s.ids.forEach(id=>list.appendChild(node('li','',word(id).nl+' — '+translation(word(id)))));box.appendChild(list);
     if(model.mistakes().length)box.appendChild(button(t('reviewBtn'),()=>{model.beginReview();go('lesson')}));
     if(result.kind==='lesson'){const ch=chapter(model.lesson(result.id)),stats=model.stats(ch.id);if(stats.done===stats.total){box.append(node('h3','',t('assess')),node('p','',t('assessHint')),button(t('openTest'),()=>bridge.assess(ch.id)))}}
-    if(result.kind==='lesson'&&talkOk)box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
+    if(result.kind==='lesson'&&talkOk&&talkReady(result.id))box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
     if(result.kind==='lesson'){const chId=chapter(model.lesson(result.id)).id,task=writeTasks(chId)[0];if(task){const b=button((WRITE_T[lang]||WRITE_T.uk)[2]+': '+task.title,()=>bridge.openWrite(task.id,chId));b.dataset.write=task.id;box.appendChild(b)}}
     if(!topicCard)box.appendChild(button(t('nextLesson'),()=>{const l=model.continueRoute();go(l?'intro':'home')},result.kind!=='lesson'));
     if(result.kind==='lesson')box.appendChild(button(t('repeat'),()=>begin(model.lesson(result.id))));
@@ -358,7 +368,7 @@
   // TEST-019: first run → the real first lesson (no detour through the home screen), or the optional starting check.
   function startFirst(){if(!pickCourse('A1.1'))return false;if(!model.state.started)model.start();const l=model.recommended();if(!l)return false;model.begin(l.id);go('lesson');return true}
   function startPlacement(){if(!pickCourse('A1.1'))return false;model.place();go('placement');return true}
-  render();return {startFirst,startPlacement,refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation,
+  render();return {talkCoverage,talkReady,startFirst,startPlacement,refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation,
    // TEST-050: the bottom navigation opens «Today» or «Learn» (the course map), and can start today's session.
    today(){go('home')},map(){openMap()},start(){if(guidedOn())guidedStart()},get screen(){return screen}};
  }

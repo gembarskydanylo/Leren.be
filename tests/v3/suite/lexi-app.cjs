@@ -38,7 +38,7 @@ const CHAT_FIX = {reply: 'Ah, in Gent! Werk je daar ook?', translation: 'А, у 
      const alt = [{transcript: window.__srText, confidence: .9}]; alt.isFinal = true; this.onresult && this.onresult({results: [alt], resultIndex: 0}); setTimeout(() => this.onend && this.onend(), 30) }, 30) }
     stop() { setTimeout(() => this.onend && this.onend(), 10) } abort() { setTimeout(() => this.onend && this.onend(), 10) } };
   }, [rel, endpoint]);
-  await page.goto(B); await page.waitForSelector('.hv'); await page.waitForFunction(() => !!window.LerenLexi);
+  await page.goto(B); await page.waitForSelector('.td-home'); await page.waitForFunction(() => !!window.LerenLexi);
   await page.evaluate(() => { window.__said = []; say = t => { window.__said.push(t) } }); // the reply is spoken through say()
   return {ctx, page, errors, outside};
  }
@@ -62,9 +62,9 @@ const CHAT_FIX = {reply: 'Ah, in Gent! Werk je daar ook?', translation: 'А, у 
   console.log('PASS: exam A1.1 with AI on — the AI coach is Lexi (name and picture), no page error');
 
   // ---- old route: «talk to AI» with an id still opens Lexi and leaves the teacher / voice choice alone
-  queue.push({status: 200, body: CHAT_OK}); await page.evaluate(() => setView('path')); await page.waitForSelector('.hv');
+  queue.push({status: 200, body: CHAT_OK}); await page.evaluate(() => setView('path')); await page.waitForSelector('.td-home');
   // the real «talk to AI» buttons still pass an old tutor id (learning-path tile: 'peter'); the bridge ignores it
-  const tile = await page.evaluate(() => { const t = document.querySelector('.fh-more-tile[data-more="chat"]') || [...document.querySelectorAll('.hs-button')].find(x => /AI/.test(x.textContent)); if (!t) return ''; t.click(); return t.className });
+  const tile = await page.evaluate(() => { const t = document.querySelector('.td-lexi [data-action=lexi]'); /* TEST-050: «Поговорити з Lexi» on «Сьогодні» */ if (!t) return ''; t.click(); return t.className });
   assert(tile, 'a «talk to AI» button exists on the home');
   await page.waitForSelector('.lexi-host >> .ai-chat-card'); assert.match(await page.textContent('.lexi-host >> #prog'), /Lexi/);
   assert.equal(await page.evaluate(() => localStorage.getItem('leren_char')), '"peter"', 'leren_char unchanged');

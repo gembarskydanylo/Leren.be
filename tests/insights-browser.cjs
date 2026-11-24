@@ -72,9 +72,9 @@ function oldData(){
     await page.screenshot({path:path.join(SHOTS,`insights-${name}-peter.png`)});
     await tip.locator('button').click();await page.waitForSelector('#card .om-line');assert.equal(await page.evaluate(()=>view),'games');
     // The same advice on the home screen, with its own button.
-    await page.evaluate(()=>setView('path'));const adv=page.locator('#learningPath .fh-advice');await adv.waitFor();assert.match(await adv.innerText(),/omdat/);
+    await page.evaluate(()=>openToday());const adv=page.locator('#learningPath .td-advice');await adv.waitFor();assert.match(await adv.innerText(),/omdat/); // TEST-050: Lexi's advice on «Сьогодні»
     await page.screenshot({path:path.join(SHOTS,`insights-${name}-home-advice.png`)});
-    await adv.locator('.fh-advice-btn').click();await page.waitForSelector('#card .om-line');
+    await adv.locator('.td-advice-btn').click();await page.waitForSelector('#card .om-line');
     // Playing the exercise is recorded: right answers make the advice go away.
     await page.evaluate(()=>{lsSet('leren_slips_v1',{a11:{omdat:'010010'+'1'.repeat(14)}})});
     // Weak listening → the listening exercise of the topic; due words → review in the route; weak test → that test.

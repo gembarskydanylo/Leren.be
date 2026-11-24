@@ -67,24 +67,26 @@ const server=http.createServer((req,res)=>{const file=path.join(root,decodeURICo
     const store={};ids.forEach((id,i)=>store[id]={seen:2,correct:1,wrong:i===4?3:0,streak:i===4?0:1,due:Date.now()-864e5,known:false});localStorage.setItem('poly_progress',JSON.stringify(store));
     localStorage.setItem('leren_path_v1',JSON.stringify({version:1,started:true,entry:'comm:basis:0',completed:{'comm:basis:0':5},mistakes:[],session:null,placement:null}));sessionStorage.setItem('seeded','1')},[release,course.lessons.filter(l=>l.chapter==='comm').flatMap(l=>l.ids).slice(0,6)]);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>setView('path'));
-   const plan=page.locator('#learningPath .fh-plan');await plan.waitFor();const text=await plan.innerText();
-   assert.match(text,/Peter|Dafna/);assert.match(text,/повторимо 5 слів/,name+': plan '+text);
+   // TEST-050: the plan is Lexi's line on «Сьогодні»; the review is the first step of today's session.
+   const plan=page.locator('#learningPath .td-home .td-bubble').first();await plan.waitFor();const text=await plan.innerText();
+   assert.doesNotMatch(text,/Peter|Dafna/);assert.match(text,/повторимо 5 слів/,name+': plan '+text);
+   assert.equal(await page.locator('#learningPath .td-steps .td-step').first().getAttribute('data-kind'),'review','review first, then the lesson');
    const first=await page.evaluate(()=>learningPath.model.warmupIds(dueItems(curLevel).map(x=>x.id))[0]);
    assert.equal(first,course.lessons.filter(l=>l.chapter==='comm').flatMap(l=>l.ids)[4],'the forgotten word comes first');
    await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),'smart-review-'+name+'-home.png')});
-   await page.locator('#learningPath .fh-primary').click();await page.waitForSelector('#learningPath .lp-options');
+   await page.locator('.td-start').click();await page.waitForSelector('#learningPath .lp-options');
    assert.equal(await page.evaluate(()=>learningPath.model.state.session.kind),'review');
    // Answer all 5 warm-up words right; the words move to their next review date.
    for(let i=0;i<5;i++){await page.evaluate(()=>{const m=learningPath.model,w=m.current(),opt=[...document.querySelectorAll('#learningPath .lp-options button')].find(b=>b.textContent===w.nl);opt.click()});await page.locator('#learningPath .lp-primary').click()}
    const after=await page.evaluate(()=>({due:dueItems(curLevel).length,store:JSON.parse(localStorage.getItem('poly_progress'))}));
    assert.equal(after.due,1,'5 words reviewed, 1 left for later');
-   await page.locator('#learningPath .lp-primary',{hasText:/урок/i}).first().click();await page.waitForFunction(()=>learningPath.model.state.session?.kind==='lesson');
+   await page.locator('#learningPath .td-step-done [data-action=next]').click();await page.waitForFunction(()=>learningPath.model.state.session?.kind==='lesson'); // step done → «Далі: урок …»
    // Back home: no second warm-up today, the plan is gone.
-   await page.evaluate(()=>learningPath.home());assert.equal(await page.locator('#learningPath .fh-plan').count(),0);
+   await page.evaluate(()=>learningPath.home());await page.waitForSelector('#learningPath .td-home');assert.doesNotMatch(await page.locator('#learningPath .td-home').innerText(),/повторимо/,'no second warm-up today');assert.equal(await page.locator('#learningPath .td-step.is-done[data-kind=review]').count(),1,'the review step is done');
    // The free scenario stays on the home screen.
-   assert.equal(await page.locator('#learningPath .fh-free').count(),1);
+   await page.evaluate(()=>openLearn());assert.equal(await page.locator('#learningPath .td-learn-row [data-learn=free]').count(),1,'free practice in «Навчання»');
    assert.deepEqual(errors,[],'No page errors on '+name);await ctx.close();
   }
-  console.log('PASS: browser on phone and desktop: Peter\'s plan, warm-up with the forgotten word first, dates moved, next lesson, once a day, free study still offered');
+  console.log('PASS: browser on phone and desktop: Lexi\'s plan, warm-up with the forgotten word first, dates moved, next lesson, once a day, free study still offered');
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);server.close();process.exit(1)});

@@ -60,7 +60,9 @@ const root = path.join(__dirname, '..');
  }
  const report = [];
  try {
-  // ---- 1 brand-new learner: first run with a name → session (lesson → practice) → result, XP once, resume after reload
+  // ---- 1 brand-new learner: first run with a name → session (lesson only) → result, XP once, resume after reload
+  // RC rule (TEST-050): a conversation is offered only when the learner already knows ≥70 % of its words
+  // (learningPath.talkReady). After 0 finished lessons the first chapter's talk is at ~10 %, so today = one lesson.
   {
    const {ctx, page, errors} = await open(); await page.waitForSelector('dialog.td-onb[data-step="1"]'); await shot(page, '01-first-run');
    assert(await page.evaluate(() => document.querySelector('dialog.td-onb [data-action=next]').getBoundingClientRect().height >= 48), 'big «next» button');
@@ -69,7 +71,8 @@ const root = path.join(__dirname, '..');
    assert.equal(await page.evaluate(() => view), 'path', '«Почати» opens a lesson, not the catalogue');
    assert.deepEqual(JSON.parse(await ls(page, 'leren_learner_name')), {name: 'Марія', forAI: false}, 'name saved locally, no AI consent by default');
    const prof = JSON.parse(await ls(page, 'leren_profile_v1')); assert.deepEqual(prof.goals, ['belgium']); assert.equal(prof.source, 'new'); assert.equal(prof.namePrompt, 'done');
-   let t = await today(page); assert.deepEqual(t.steps.map(s => s.kind), ['lesson', 'practice'], 'new learner, 10 min: lesson + practice (nothing to review yet)');
+   let t = await today(page); assert.deepEqual(t.steps.map(s => s.kind), ['lesson'], 'new learner, 10 min: one lesson; no review yet, talk not ready (talk gate)');
+   assert.equal(await page.evaluate(() => learningPath.talkReady(learningPath.model.recommended().id)), false, 'first conversation is above a brand-new learner');
    // reload in the middle of the lesson → the home says «continue» and goes back to the same lesson
    await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
    assert.equal(await page.locator('dialog.td-onb').count(), 0, 'first run is not shown again');
@@ -77,29 +80,44 @@ const root = path.join(__dirname, '..');
    assert.match(await page.locator('#learningPath .td-hi').textContent(), /Марія/, 'greeting by name');
    await shot(page, '02-home-resume');
    await finishLesson(page);
-   await page.waitForSelector('#learningPath .td-step-done'); await shot(page, '03-step-done');
+   await page.waitForSelector('#learningPath .td-result'); await shot(page, '04-result');
    const xp1 = await page.evaluate(() => score); assert(xp1 > 0, 'lesson XP saved');
    t = await today(page); assert.equal(t.steps[0].done, true); assert.equal(t.paid.length, 1);
-   // the auto-advance moves on to the practice; a reload there keeps XP and position
-   await page.waitForFunction(() => document.querySelector('#learningPath')?.dataset.screen === 'talk', null, {timeout: 6000});
-   await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
-   assert.equal(await page.evaluate(() => score), xp1, 'XP kept after reload'); t = await today(page); assert.equal(t.paid.length, 1, 'no second payment');
-   await page.click('#learningPath [data-action=start]'); await finishTalk(page);
-   await page.waitForSelector('#learningPath .td-result'); await shot(page, '04-result');
    const res = await page.locator('#learningPath .td-result').innerText();
    assert.match(res, /Марія/); assert.match(res, /XP/); assert.match(res, /Перший урок/, 'new achievement shown'); assert.match(res, /Частина 2\/5/, 'next recommended step');
-   assert.equal(await page.evaluate(() => score), xp1, 'practice adds no XP and nothing is paid twice');
-   // «Continue learning» right away: more steps today
-   await page.click('#learningPath .td-result [data-action=more]');
+   assert.equal(await page.locator('#learningPath .td-result [data-action=stop]').count(), 1, '«Завершити на сьогодні» offered');
+   await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
+   assert.equal(await page.evaluate(() => score), xp1, 'XP kept after reload'); t = await today(page); assert.equal(t.paid.length, 1, 'no second payment');
+   // «Continue learning»: more steps today
+   await page.click('#learningPath [data-action=start]');
    await page.waitForFunction(() => document.querySelector('#learningPath')?.dataset.screen === 'lesson', null, {timeout: 10000});
-   t = await today(page); assert.equal(t.round, 2); assert(t.steps.length > 2);
+   t = await today(page); assert.equal(t.round, 2); assert(t.steps.length >= 1);
    assert(await noHScroll(page)); assert.deepEqual(errors, []);
    // name privacy: not in the account snapshot, not in a backup, not in the URL
    const priv = await page.evaluate(() => ({snap: JSON.stringify(syncSnapshot()), url: location.href}));
    assert(!priv.snap.includes('Марія') && !priv.snap.includes('leren_learner_name') && !priv.snap.includes('leren_today_v1'), 'name and session stay on the device');
    assert(!priv.url.includes('%D0') && !priv.url.includes('Марія'));
-   report.push('new learner: first run → lesson → step done → practice → result → continue; resume after 2 reloads; XP ' + xp1 + ' paid once');
+   report.push('new learner: first run → lesson → result (talk gated) → continue; resume after 2 reloads; XP ' + xp1 + ' paid once');
    await ctx.close();
+  }
+  // ---- 1b learner with 3 lessons of the first chapter: talk is ready → lesson → step done → practice → result
+  {
+   const {ctx, page, errors} = await open({seed: {...BASE, leren_profile_v1: '{"v":1,"namePrompt":"done","goals":["belgium"],"source":"new"}', leren_goal_min: '10'}});
+   await page.evaluate(() => { const m = learningPath.model, c = LerenLearningPath.catalog(DATA, LerenCurriculum); for (const l of c.lessons.filter(l => l.chapter === 'comm').slice(0, 3)) m.state.completed[l.id] = l.ids.length; m.state.started = true; m.save(); localStorage.removeItem('leren_today_v1') });
+   await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
+   assert(await page.evaluate(() => learningPath.talkReady(learningPath.model.recommended().id)), 'after 3 lessons the 4th lesson\'s talk is ready');
+   await page.click('#learningPath [data-action=start]');
+   let t = await today(page); assert.deepEqual(t.steps.map(s => s.kind), ['lesson', 'practice'], 'talk ready: lesson + practice');
+   await finishLesson(page);
+   await page.waitForSelector('#learningPath .td-step-done'); await shot(page, '03-step-done');
+   const xp1 = await page.evaluate(() => score);
+   await page.waitForFunction(() => document.querySelector('#learningPath')?.dataset.screen === 'talk', null, {timeout: 6000});
+   await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
+   assert.equal(await page.evaluate(() => score), xp1, 'XP kept after reload'); t = await today(page); assert.equal(t.paid.length, 1, 'no second payment');
+   await page.click('#learningPath [data-action=start]'); await finishTalk(page);
+   await page.waitForSelector('#learningPath .td-result');
+   assert.equal(await page.evaluate(() => score), xp1, 'practice adds no XP and nothing is paid twice');
+   assert.deepEqual(errors, []); report.push('talk ready after 3 lessons: lesson → step done → practice (reload keeps XP) → result'); await ctx.close();
   }
   // ---- 2 skip the first run → still straight into a lesson; nothing personal saved
   {
@@ -116,7 +134,7 @@ const root = path.join(__dirname, '..');
    assert.equal(await page.locator('dialog.td-onb').count(), 0, 'no first run for an existing learner');
    const before = await page.evaluate(() => { const o = {}; for (const k of Object.keys(localStorage)) if (!/^leren_(profile_v1|today_v1|learner_name|release_seen|upd_done|sync|persist)/.test(k)) o[k] = localStorage.getItem(k); return o });
    await page.waitForSelector('#learningPath [data-card=ask-name]'); await shot(page, '05-existing-ask');
-   await page.locator('#learningPath [data-card=ask-name] .td-ghost').click();
+   await page.locator('#learningPath [data-card=ask-name] [data-action=later]').click();
    await page.waitForFunction(() => !document.querySelector('#learningPath [data-card=ask-name]'));
    assert.equal(JSON.parse(await ls(page, 'leren_profile_v1')).namePrompt, 'later');
    await page.reload(); await page.waitForSelector('#learningPath .td-home'); await page.waitForTimeout(700);
@@ -130,7 +148,7 @@ const root = path.join(__dirname, '..');
   {
    const {ctx, page, errors} = await open({seed: EXISTING});
    await page.waitForSelector('#learningPath [data-card=ask-name]');
-   await page.locator('#learningPath [data-card=ask-name] .td-primary').click();
+   await page.locator('#learningPath [data-card=ask-name] [data-action=name]').click();
    await page.locator('#learningPath [data-card=ask-name] input[type=text]').fill('<b>Ola</b>');
    await page.locator('#learningPath [data-card=ask-name] button[type=submit]').click();
    await page.waitForFunction(() => /Ola/.test(document.querySelector('#learningPath .td-hi')?.textContent || ''));
@@ -147,8 +165,8 @@ const root = path.join(__dirname, '..');
    assert.equal(await ls(page, 'leren_learner_name'), null, 'name deleted');
    assert.deepEqual(errors, []); report.push('name: card → saved (cleaned) → edited in Profile → deleted'); await ctx.close();
   }
-  // ---- 5 personalisation: goal 20 + intensive = 3 lessons; goal 5 + calm = 1 lesson, no practice
-  for (const [goal, pace, lessons, practice] of [[20, 'intensive', 3, true], [5, 'calm', 1, false]]) {
+  // ---- 5 personalisation: goal 20 + intensive = 3 lessons; goal 5 + calm = 1 lesson. A new learner gets no practice (talk gate, see 1b)
+  for (const [goal, pace, lessons, practice] of [[20, 'intensive', 3, false], [5, 'calm', 1, false]]) {
    const {ctx, page} = await open(); await firstRun(page, {goal, pace});
    await page.waitForFunction(() => localStorage.getItem('leren_today_v1'));
    const t = await today(page); assert.equal(t.steps.filter(s => s.kind === 'lesson').length, lessons, goal + '/' + pace);

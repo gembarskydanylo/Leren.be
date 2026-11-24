@@ -46,7 +46,7 @@ async function engine() {
   page.on('pageerror', e => errors.push(e.message)); await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
   await page.addInitScript(([rel, ui, target, ai]) => { if (!localStorage.getItem('seeded')) { localStorage.setItem('seeded', '1');
    for (const [k, v] of Object.entries({leren_release_seen: JSON.stringify(rel), poly_ui: ui, poly_target: target, leren_home_v1: 'path', leren_welcome_seen: 'true', leren_onboarding_language_v1: '1', leren_start_known_v1: 'zero', leren_ai_consent18: 'true', leren_char: '"peter"', leren_ai_endpoint: JSON.stringify(ai)})) localStorage.setItem(k, v) } }, [rel, ui, target, AI]);
-  await page.goto(B); await page.waitForSelector('.hv'); await page.waitForFunction(() => !!window.LerenLexi && !!window.LerenLessonHelp);
+  await page.goto(B); await page.waitForSelector('.td-home'); await page.waitForFunction(() => !!window.LerenLexi && !!window.LerenLessonHelp);
   return {ctx, page, errors};
  }
  const LABEL = {uk: 'Запитай Lexi', en: 'Ask Lexi', fr: 'Demande à Lexi', ar: 'اسأل Lexi'};

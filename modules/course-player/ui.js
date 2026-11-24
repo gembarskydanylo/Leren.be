@@ -160,7 +160,8 @@
   const ch=next?course.chapters.find(c=>c.id===next.chapter):null,n=ch?ch.lessons.findIndex(l=>l.id===next.id)+1:0;
   const total=course.lessons.length,done=course.lessons.filter(l=>model.state.completed[l.id]!=null).length;
   return {lang,name:R.name(lang,ui),level:ch?.level||info.levels[0],topic:ch?(pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl):'',label:ch?(pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl)+' · '+C.lesson+' '+n:'',
-   resume:!!next&&!!s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length),allDone:!next,done,total};
+   resume:!!next&&!!s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length),allDone:!next,done,total,
+   levels:levels.length>1?levels[0]+'–'+levels[levels.length-1]:levels[0],beta:true}; // TEST-050 RC: these courses are small and have no review/talk yet
  }
 
  // Entry card on the Dutch route home, preview only: one button per course that is not live yet.

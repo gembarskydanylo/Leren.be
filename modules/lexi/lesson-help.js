@@ -27,9 +27,9 @@
      answer: text(h, '.opt.incorrect') || (answered ? text(h, '.opt.correct') : ''), expected: answered ? text(h, '#feedback strong + p') : ''};
    }},
   {id: 'path',
-   find: d => { const b = q(d, '.lp-exercise'); return b && (q(b, '.lp-options') || q(b, '.fh-study-actions') || q(b, '.lp-feedback')) ? b : null },
+   find: d => { const b = q(d, '.lp-exercise'); return b && (q(b, '.lp-options') || q(b, '.fh-study-actions, .fl-task') || q(b, '.lp-feedback')) ? b : null },
    read: h => {
-    const study = !!q(h, '.fh-study-actions'), listen = !!q(h, '.lp-listen-head') && !q(h, '.lp-check-row'), word = text(h, '.lp-word');
+    const study = !!q(h, '.fh-study-actions, .fl-task'), /* TEST-050 focus lesson: the study card */ listen = !!q(h, '.lp-listen-head') && !q(h, '.lp-check-row'), word = text(h, '.lp-word');
     if (word) last.path = word;
     // After the answer the feedback shows the right word and its translation: send them as the course's sample answer, so
     // Lexi may explain the solution (before the answer the Worker forbids it). The picked option is not on screen any more.

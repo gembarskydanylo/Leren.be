@@ -25,7 +25,7 @@ function size(file){const b=fs.readFileSync(file);
  // LerenBe 3.0 integration: home-v2/ui.js is release 263 (263.1: single-course picker layout) (production course rule, aria-pressed)
  assert(html.includes('./modules/home-v2/ui.js?v=263.1')&&html.includes('./modules/home-v2/style.css?v=6'));
  const lp=read('modules/learning-path/ui.js');assert(lp.includes('globalThis.LerenHomeV2?.top?.(')&&lp.includes('if(!homeTop)courseSwitch')&&lp.includes('!placing&&!homeTop'),'hooked into the existing home, old duplicates hidden');
- const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=263.1','./modules/home-v2/style.css?v=6','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=270'])assert(sw.includes('"'+f+'"'),'offline: '+f);
+ const sw=read('sw.js');for(const f of ['./modules/home-v2/ui.js?v=263.1','./modules/home-v2/style.css?v=6','./img/home/hero-cat-v196-320.webp','./img/home/home-visuals.json','./modules/learning-path/ui.js?v=273'])assert(sw.includes('"'+f+'"'),'offline: '+f);
  assert.equal(sw.match(/leren-be-v(\d+)/)[1],read('app.js').match(/RELEASE_VERSION="(\d+)"/)[1],'cache name matches the release (update check)');
  const ui=read('modules/home-v2/ui.js');assert(!/localStorage\.setItem|leren_path_v1|poly_score\s*=/.test(ui),'home v2 writes no progress');assert(!/fetch\((?!'img\/home\/home-visuals\.json')/.test(ui),'only fetches its own manifest');
  const V=JSON.parse(read('img/home/home-visuals.json')),entries=[];
@@ -60,54 +60,46 @@ function size(file){const b=fs.readFileSync(file);
    await ctx.route('**/img/home/home-visuals.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(vis)}))}
   await page.addInitScript(([r,s])=>{window.__cls=0;try{new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)window.__cls+=e.value}).observe({type:'layout-shift',buffered:true})}catch(e){}
    if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true',leren_onboarding_language_v1:'1',...s}))localStorage.setItem(k,v)},[release,seed]);
-  await page.goto(base+'index.html');await page.waitForSelector('.hv .hv-title',{timeout:20000});await page.waitForTimeout(700);return {ctx,page,errors,outside,missing,heroReq}};
+  await page.goto(base+'index.html');await page.waitForSelector('.td-home',{timeout:20000});await page.waitForTimeout(700);return {ctx,page,errors,outside,missing,heroReq}}; // TEST-050: the home is «Сьогодні з Lexi»
  const report=[];
  try{
   for(const [w,h] of [[360,780],[390,844],[430,932],[1280,800],[1440,900]])for(const art of [false,true]){
    const {ctx,page,errors,outside,missing,heroReq}=await open(w,h,{art,seed:{poly_score:'120'}});
-   assert.match(await page.locator('.hv-title').textContent(),/Вивчай мови для реального життя в Бельгії/);
-   assert.equal(await page.locator('.hv-hero').getAttribute('data-art'),art?'image':'fallback');
-   if(art){const img=page.locator('.hv-hero-art img');assert.equal(await img.getAttribute('width'),'1280');assert.equal(await img.getAttribute('fetchpriority'),'high');assert(((await img.getAttribute('alt'))||'').length>20);assert.equal(await page.locator('.hv-hero-art source').getAttribute('media'),'(min-width: 768px)');
-    const box=await page.evaluate(()=>{const c=document.querySelector('.hv-hero-copy').getBoundingClientRect(),i=document.querySelector('.hv-hero-art').getBoundingClientRect();return {c:[c.left,c.top,c.right,c.bottom],i:[i.left,i.top,i.right,i.bottom]}});
-    if(w<768)assert(box.c[1]>=box.i[3]-1,'phone: text below the picture, characters stay visible');
-    // the right file for the width is really loaded and decoded
-    const got=await page.evaluate(async()=>{const i=document.querySelector('.hv-hero-art img');await i.decode().catch(()=>{});return {src:i.currentSrc,w:i.naturalWidth,h:i.naturalHeight}});
-    assert.deepEqual([got.w,got.h],w<768?[1280,800]:[1920,1080],'HERO file at '+w+': '+got.src);assert.equal(heroReq.length,1,'one HERO file per width: '+heroReq.join(', '));
-    // ПК: текст лежить на спокійній лівій частині; персонажі (праві ~35 % картинки) лишаються правіше за текст
-    if(w>=768){const t=await page.evaluate(()=>{const h=document.querySelector('.hv-hero').getBoundingClientRect();let r=0;for(const e of document.querySelectorAll('.hv-hero-copy > *'))for(const q of e.getClientRects())r=Math.max(r,q.right);return {right:(r-h.left)/h.width}});
-     assert(t.right<=0.6,'desktop: text ends at '+(t.right*100).toFixed(0)+'% of the HERO, characters start after 65%')}}
-   else{assert.equal(await page.locator('.hv-hero picture, .hv-hero-art').count(),0,'no picture when the HERO is marked missing (emoji icons are the app\'s own renderer)');assert.deepEqual(heroReq,[],'missing HERO is not requested')}
-   assert.equal(await page.locator('.hv-cat').count(),1,'orange cat');assert.equal(await page.locator('.hv-course').count(),1,'LerenBe 3.0 integration: Dutch only for learners (English / French / German in preview mode, production rule)');
+   // TEST-050: the HERO showcase is replaced by «Сьогодні з Lexi» (owner decision); home v2 keeps the «Я вчу» picker in «Навчання».
+   assert.equal(await page.locator('.hv-hero, .hv-title').count(),0,'no HERO showcase on «Сьогодні»');assert.deepEqual(heroReq,[],'the HERO picture is never downloaded');
+   assert.equal(await page.locator('#learningPath .td-primary').count(),1,'one main action');
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal scroll at '+w);
    const cls=await page.evaluate(()=>window.__cls);assert(cls<0.1,'layout shift at '+w+(art?' with art':'')+': '+cls.toFixed(3));
-   assert.match(await page.locator('.hv-stats').first().textContent(),/120/,'XP from the app');
+   assert.match(await page.locator('#score').first().textContent(),/120/,'XP from the app');
+   await page.evaluate(()=>openLearn());await page.waitForSelector('#learningPath .hv-pick .hv-pick-btn');assert.deepEqual(await page.$$eval('.hv-pick-panel .hv-course',x=>x.map(e=>e.dataset.course)),['nl','en','fr'],'TEST-050: Dutch, English, French');
    assert.deepEqual(outside,[],'no request leaves the test site');assert.deepEqual(missing.filter(u=>/img\/home\//.test(u)),[],'missing art is never requested');
    assert.deepEqual(errors,[]);if(process.env.SHOTS)await page.screenshot({path:path.join(process.env.SHOTS,`home-v2-${w}-${art?'art':'fallback'}.png`)});
    await ctx.close();report.push(w+(art?'+art':''))}
   // interactions (phone)
   {const {ctx,page,errors,outside}=await open(390,844);
-   // interface language (the app's own picker in the header)
-   await page.locator('#uiLangPicker').selectOption('en',{force:true});await page.waitForFunction(()=>/Learn languages/.test(document.querySelector('.hv-title')?.textContent||''));
-   await page.locator('#uiLangPicker').selectOption('uk',{force:true});await page.waitForFunction(()=>/Вивчай/.test(document.querySelector('.hv-title')?.textContent||''));
-   // Dutch level
-   await page.click('.hv-pick-btn');await page.click('.hv-level[data-level="A1.2"]');await page.waitForSelector('.hv-level.is-active[data-level="A1.2"]',{state:'attached'});
+   // interface language (the app's own picker in the header): «Сьогодні» follows it
+   await page.locator('#uiLangPicker').selectOption('en',{force:true});await page.waitForFunction(()=>/Start learning|Continue/.test(document.querySelector('.td-home .td-start')?.textContent||''));
+   await page.locator('#uiLangPicker').selectOption('uk',{force:true});await page.waitForFunction(()=>/Почати навчання|Продовжити/.test(document.querySelector('.td-home .td-start')?.textContent||''));
+   // Dutch level («Навчання» → «Я вчу»)
+   await page.evaluate(()=>openLearn());await page.click('.hv-pick-btn');await page.click('.hv-level[data-level="A1.2"]');await page.waitForSelector('.hv-level.is-active[data-level="A1.2"]',{state:'attached'});
    await page.click('.hv-pick-btn');await page.click('.hv-level[data-level="A1.1"]');await page.waitForSelector('.hv-level.is-active[data-level="A1.1"]',{state:'attached'});
    // English course player with recorded audio
-   /* LerenBe 3.0 integration: English only in preview mode (?multilang=1), production rule */await page.goto(base+'index.html?multilang=1');await page.waitForSelector('.hv-pick-btn');await page.click('.hv-pick-btn');await page.click('.hv-course[data-course="en"] button');await page.waitForSelector('.cp-stage');await page.waitForTimeout(500);
-   await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word');await page.locator('.cp-sound').first().click();await page.waitForTimeout(300);
+   await page.click('.hv-pick-btn');await page.click('.hv-course[data-course="en"] button');await page.waitForSelector('.cp-stage');await page.waitForTimeout(500);
+   if(!await page.locator('.cp-word').count()){await page.click('.cp-stage .cp-primary');await page.waitForSelector('.cp-word')}await page.locator('.cp-sound').first().click();await page.waitForTimeout(300);
    assert((await page.evaluate(()=>globalThis.__cpRecorded||[])).length>0,'English card plays the recorded voice');await page.click('.cp-close');
-   // rewards → progress view
-   await page.click('.hv-progress .hv-btn');await page.waitForFunction(()=>view==='progress');
-   await page.evaluate(()=>setView('path'));await page.waitForSelector('.hv');
+   await page.evaluate(()=>localStorage.setItem('leren_learn_lang','nl'));await page.goto(base+'index.html');await page.waitForSelector('.td-home');
+   // rewards → progress view («Ще» → «Прогрес і досягнення»)
+   await page.click('#modeButtons [data-tab="more"]');await page.click('dialog.td-more [data-more="progress"]');await page.waitForFunction(()=>view==='progress');
+   await page.evaluate(()=>openToday());await page.waitForSelector('.td-home');
    // continue → a lesson starts
-   assert.equal(await page.locator('.hv-hero .hv-btn').count(),0,'TEST-022: no duplicate buttons in the HERO under the next-lesson card');await page.click('.fh-hero .fh-primary');await page.waitForFunction(()=>document.querySelector('#learningPath')?.dataset.screen==='lesson',null,{timeout:10000});
+   await page.click('.td-home .td-start');await page.waitForFunction(()=>document.querySelector('#learningPath')?.dataset.screen==='lesson',null,{timeout:10000});
    assert.deepEqual(errors,[]);assert.deepEqual(outside,[]);await ctx.close();report.push('language uk⇄en, levels, EN player + audio, rewards, continue')}
-  // LIFE story from the home page, recorded voices
+  // LIFE from «Ще», then a story with recorded voices
   {const {ctx,page,errors}=await open(390,844);const audio=[];page.on('response',r=>{if(/\/audio\/nl(-f)?\/[0-9a-f]{8}\.m4a$/.test(r.url()))audio.push(r.status())});
-   const href=await page.locator('.hv-life').getAttribute('href');assert.equal(href,'./learn-life-story.html?s=first-day');
-   await page.click('.hv-life');await page.waitForSelector('.ls-hero h1');await page.click('.ls-hero .ls-primary');await page.waitForSelector('.ls-bubble');await page.waitForTimeout(1200);
+   await page.click('#modeButtons [data-tab="more"]');await Promise.all([page.waitForURL(/learn-life\.html/),page.click('dialog.td-more [data-more="life"]')]);
+   await page.goto(base+'learn-life-story.html?s=first-day');await page.waitForSelector('.ls-hero h1');await page.click('.ls-hero .ls-primary');await page.waitForSelector('.ls-bubble');await page.waitForTimeout(1200);
    await page.locator('.ls-bubble .ls-icon').first().click();await page.waitForTimeout(800);
-   assert(audio.length&&audio.every(s=>s===200||s===206),'LIFE lines are recorded clips: '+audio.join(','));assert.deepEqual(errors,[]);await ctx.close();report.push('LIFE from home, recorded voice')}
+   assert(audio.length&&audio.every(s=>s===200||s===206),'LIFE lines are recorded clips: '+audio.join(','));assert.deepEqual(errors,[]);await ctx.close();report.push('LIFE from «Ще», recorded voice')}
   console.log('PASS: home v2 in the browser (emulated widths) — '+report.join(', '));
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

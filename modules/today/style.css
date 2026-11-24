@@ -37,6 +37,7 @@
 .td-tile strong{font-size:1.05rem;color:var(--ink)}.td-tile span{font-size:.8rem;color:var(--ink-2)}
 .td-lexi{display:flex;gap:.75rem;align-items:center;background:var(--surface-2);border:2px solid var(--line);border-radius:var(--r-lg);padding:.8rem}
 .td-lexi-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:.45rem}
+.td-advice{display:flex;flex-direction:column;gap:.4rem;border-top:1px solid var(--line);padding-top:.5rem}.td-advice p{margin:0;font-weight:700}
 .td-lexi-text p{margin:0;font-size:.95rem;line-height:1.4;color:var(--ink)}
 .td-lexi .td-btn{align-self:flex-start}
 .td-note{margin:0;font-size:.88rem;line-height:1.4;color:var(--ink-2)}
@@ -100,3 +101,5 @@
 @media (max-width:359px){.td-hi{font-size:1.2rem}.td-step-min{display:none}.td-tiles{gap:.35rem}.td-tile strong{font-size:.95rem}.td-chips.td-goals{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:900px) and (orientation:landscape){.learning-path .td-home{width:min(100%,960px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}.td-home .td-head,.td-home .td-ask{grid-column:1/-1}.td-home .td-today{grid-row:span 2}}
 @media (prefers-reduced-motion:reduce){.td-primary:active{transform:none}}
+/* TEST-050 RC: on narrow phones the dock tabs share the width by their label (long «Навчання», «Aujourd’hui» get more room than «Ще»), so no label is clipped at 320 px. */
+@media (max-width:420px){html body #modeButtons button{flex:1 1 auto;min-width:48px;padding-inline:3px}}

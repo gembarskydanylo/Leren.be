@@ -135,6 +135,9 @@ const root = path.join(__dirname, '..');
   // ---- 4 conversation + Android keyboard (resizes-content: the layout viewport shrinks) and Lexi instead of Peter/Dafna
   {
    const {ctx, page, errors} = await open({w: 360, h: 780, seed: EXISTING});
+   // talk gate: practice is planned only when the learner knows ≥70 % of the conversation's words → 3 lessons of «comm» done first
+   await page.evaluate(() => { const m = learningPath.model, c = LerenLearningPath.catalog(DATA, LerenCurriculum); for (const l of c.lessons.filter(l => l.chapter === 'comm').slice(0, 3)) m.state.completed[l.id] = l.ids.length; m.save(); localStorage.removeItem('leren_today_v1') });
+   await page.reload(); await page.waitForFunction(() => window.learningPath && window.LerenFocusLesson);
    await page.click('.td-start'); await waitScreen(page, 'lesson'); await playLesson(page, {wrongOnce: false});
    await page.waitForSelector('#learningPath [data-action=next]'); await page.click('#learningPath [data-action=next]'); await waitScreen(page, 'talk');
    const text = await page.evaluate(() => document.querySelector('#learningPath').innerText);
@@ -200,7 +203,7 @@ const root = path.join(__dirname, '..');
   // ---- 8 offline: the focus mode, Lexi and a lesson from the Service Worker cache
   {
    const {ctx, page, errors} = await open({w: 360, h: 780, seed: EXISTING, sw: true});
-   await page.waitForFunction(async () => { const ks = await caches.keys(); if (!ks.length) return false; const c = await caches.open(ks[0]); return !!(await c.match('./modules/focus-lesson/style.css?v=1')) && !!(await c.match('./modules/focus-lesson/ui.js?v=1')) }, null, {timeout: 60000});
+   await page.waitForFunction(async () => { const ks = await caches.keys(); if (!ks.length) return false; const c = await caches.open(ks[0]); return !!(await c.match('./modules/focus-lesson/style.css?v=1')) && !!(await c.match('./modules/focus-lesson/ui.js?v=2')) }, null, {timeout: 60000});
    await page.reload(); await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, {timeout: 20000});
    offline = true; await ctx.setOffline(true); await page.reload(); await page.waitForFunction(() => window.learningPath && window.LerenFocusLesson, null, {timeout: 20000});
    await page.click('.td-start'); await waitScreen(page, 'lesson');

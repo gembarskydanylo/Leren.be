@@ -27,7 +27,8 @@ const EYEBROW = {uk: 'Розмовна практика', en: 'Speaking practice
    if (codes.ui.join() !== 'UK,EN,FR,AR') bad.push(ui + ': settings explanation codes ' + codes.ui.join());
    if (codes.target.some(c => c.length !== 2)) bad.push(ui + ': settings learning codes ' + codes.target.join());
    // 4 · the «I'm learning» panel and 5 · hero progress footer
-   await page.evaluate(() => setView('path')); await page.waitForTimeout(300);
+   // TEST-050: the «I'm learning» picker lives in the «Навчання» tab (Today is the home); the hero footer is gone with the old home
+   await page.evaluate(() => { setView('path'); openLearn() }); await page.waitForSelector('.hv-pick-btn', {timeout: 10000}).catch(() => {}); await page.waitForTimeout(300);
    const home = await page.evaluate(() => { const out = {}; const btn = document.querySelector('.hv-pick-btn'); if (!btn) return {missing: true}; btn.click();
     const grid = document.querySelector('.hv-pick-panel .hv-course-grid'), cards = grid ? [...grid.children] : [];
     out.solo = cards.length === 1 ? grid.classList.contains('hv-solo') : null;

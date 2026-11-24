@@ -8,7 +8,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 // LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
 // .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
-const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>openLearn());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}

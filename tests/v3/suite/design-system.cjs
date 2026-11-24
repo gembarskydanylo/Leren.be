@@ -3,7 +3,7 @@
 const fs = require('node:fs'), path = require('node:path'), http = require('node:http');
 const assert = require('node:assert/strict'), {chromium} = require('playwright');
 const repo = path.resolve(__dirname, '..'), read = f => fs.readFileSync(path.join(repo, f), 'utf8');
-const versions = {tokens:1, foundation:2, /* TEST-044 header */ home:2, /* owner test 2026-11-22: hero progress footer */ learning:263, /* LerenBe 3.0 integration: phone listening-step fix */  engagement:3, /* audit 3.0: Arabic dictionary width */ life:263, /* LerenBe 3.0 integration: desktop stage fix */  guides:1};
+const versions = {tokens:2, /* TEST-050 palette A, brighter */ foundation:2, /* TEST-044 header */ home:2, /* owner test 2026-11-22: hero progress footer */ learning:272, /* TEST-050 control outlines */ /* LerenBe 3.0 integration: phone listening-step fix */  engagement:3, /* audit 3.0: Arabic dictionary width */ life:263, /* LerenBe 3.0 integration: desktop stage fix */  guides:1};
 const css = name => 'design-system/' + name + '.css?v=' + versions[name];
 const html = read('app/index.html'), sw = read('app/sw.js');
 for (const name of Object.keys(versions)) {
@@ -13,7 +13,7 @@ for (const name of Object.keys(versions)) {
 for (const name of ['tokens', 'foundation', 'home', 'learning', 'engagement']) assert(html.includes(css(name)));
 for (const file of ['app/learn-life.html', 'app/learn-life-story.html', 'life/learn-life-story.html']) assert(read(file).includes(css('life')), file + ' uses the cached LIFE theme');
 for (const file of fs.readdirSync(path.join(repo, 'app/guides')).filter(f => f.endsWith('.html'))) {
- const s = read('app/guides/' + file); assert(s.includes('noindex,nofollow')); assert(s.includes('design-system/tokens.css?v=1') && s.includes('design-system/guides.css?v=1'));
+ const s = read('app/guides/' + file); assert(s.includes('noindex,nofollow')); assert(s.includes('design-system/tokens.css?v=2') && s.includes('design-system/guides.css?v=1'));
 }
 assert.equal(sw.match(/leren-be-v(\d+)/)[1], read('app/app.js').match(/RELEASE_VERSION="(\d+)"/)[1]);
 console.log('PASS design foundation: shared styles, offline references, no remote assets, robots and release');
@@ -45,32 +45,36 @@ const server = http.createServer((req, res) => {
     assert.deepEqual(info.small,[],width+' '+name+': 44px buttons');
     if (shotDir) await page.screenshot({path:path.join(shotDir,width+'-'+name+'.png'),fullPage:true}); states++;
    }
-   await page.goto(B); await page.waitForSelector('.onb-panel'); await check('onboarding');
-   await page.locator('.onb-next').click(); await page.locator('[data-choice="zero"]').click(); await page.waitForSelector('.lp-exercise'); await check('study');
+   // TEST-050: first run is «Знайомство з Lexi» (5 short steps), the home is «Сьогодні з Lexi», lessons use the focus mode.
+   await page.goto(B); await page.waitForSelector('dialog.td-onb'); await check('onboarding');
+   for (let i=0;i<8&&!await page.locator('dialog.td-onb [data-action=finish]').count();i++) await page.locator('dialog.td-onb [data-action=next]').click();
+   await page.locator('dialog.td-onb [data-value=zero]').click().catch(()=>{}); while (!await page.locator('dialog.td-onb [data-action=finish]').count()) await page.locator('dialog.td-onb [data-action=next]').click();
+   await page.locator('dialog.td-onb [data-action=finish]').click(); await page.waitForSelector('.lp-exercise'); await check('study');
    // Actual first lesson: UI answers; no completed progress or XP is injected.
    let wrong = false;
-   for (let n=0;n<70 && !await page.locator('.lp-result').count();n++) {
+   for (let n=0;n<70 && !await page.locator('.lp-result, .td-step-done, .td-result').count();n++) {
     if (await page.locator('.lp-feedback').count()) {await page.locator('#learningPath .lp-primary').last().click();continue}
     const x = await page.evaluate(() => ({s:learningPath.model.state.session,w:learningPath.model.current()}));
+    if (!x.s) continue;
     if (x.s.index===x.s.ids.length) {await page.locator('#learningPath .lp-primary').last().click();continue}
-    if (x.s.phase===0) {await page.locator('.fh-study-actions button').click();continue}
+    if (x.s.phase===0) {await page.locator('#learningPath .fl-actions .lp-primary').click();continue}
     const opts = page.locator('.lp-options button'), texts = await opts.allTextContents(), target = x.s.phase===1?x.w.uk:x.w.nl;
     let i = texts.indexOf(target); if (!wrong && x.s.phase===2) {i=texts.findIndex(t=>t!==target);wrong=true}
     if (x.s.index===0) await check(x.s.phase===1?'audio':'quiz');
     await opts.nth(i).click();
    }
-   await page.waitForSelector('.lp-result'); await check('result');
+   await page.waitForSelector('.td-step-done, .td-result'); // TEST-050 talk gate: a new learner's session is one lesson → its summary await page.locator('.td-step-done [data-action=pause]').click().catch(()=>{}); await check('result');
    const saved = await page.evaluate(() => ({xp:localStorage.getItem('poly_score'),done:Object.keys(learningPath.model.state.completed).length}));
    assert(+saved.xp>0 && saved.done===1,'real result and XP');
-   await page.locator('#learningPath button').filter({hasText:'Повторити мої помилки'}).click(); await check('review');
-   await page.locator('.fh-back').click(); await page.waitForSelector('.fh-hero'); await check('home');
-   await page.locator('.hv-route summary').click(); await check('map');
-   await page.locator('.hv-stop-button').first().click(); await check('chapter');
-   await page.locator('.fh-back').click(); await page.locator('.fh-back').click();
-   await page.reload(); await page.waitForSelector('.fh-hero');
+   await page.locator('.td-step-done [data-action=stop], .td-result [data-action=stop]').click(); await page.waitForSelector('.td-home'); await check('home');
+   await page.evaluate(() => openLearn()); await page.waitForSelector('#learningPath .fh-topic'); await check('map');
+   await page.locator('#learningPath [data-learn=mistakes]').click(); await page.waitForSelector('.lp-options'); await check('review');
+   await page.locator('#learningPath .fl-exit').click(); await page.evaluate(() => openLearn());
+   await page.locator('#learningPath .fh-topic').first().click(); await check('chapter');
+   await page.reload(); await page.waitForSelector('.td-home');
    assert.equal(await page.evaluate(() => localStorage.getItem('poly_score')),saved.xp,'XP reload');
-   assert.equal(await page.locator('.onb-panel').count(),0,'no repeated onboarding');
-   await page.locator('.hv-pick-btn').click(); await check('courses'); await page.locator('.hv-pick-btn').click();
+   assert.equal(await page.locator('dialog.td-onb').count(),0,'no repeated onboarding');
+   await page.evaluate(() => openLearn()); await page.locator('.hv-pick-btn').click(); await check('courses'); await page.locator('.hv-pick-btn').click();
    await page.evaluate(() => setView('progress')); await check('progress');
    await page.locator('#settingsBtn').focus(); await page.keyboard.press('Enter'); await check('settings'); await page.keyboard.press('Escape');
    if (width===390 || width===1440) {
@@ -90,9 +94,9 @@ const server = http.createServer((req, res) => {
     for(const [name,ratio] of ratios) assert(ratio>=4.5,theme+' '+name+' contrast '+ratio);
     assert(await page.evaluate(()=>{const s=getComputedStyle(document.documentElement);return s.getPropertyValue('--surface').trim()===s.getPropertyValue('--lb-surface').trim()}),'legacy surfaces follow the selected palette');
     if(theme==='dark' && (width===390 || width===1440)) {
-     const pair=await page.evaluate(()=>{const t=document.querySelector('.hv-title'),b=document.querySelector('.hv-hero-copy');return [getComputedStyle(t).color,getComputedStyle(b).backgroundColor]});
+     const pair=await page.evaluate(()=>{openToday();const t=document.querySelector('.td-home .td-bubble');let b=t;while(b&&/rgba\(0, 0, 0, 0\)|transparent/.test(getComputedStyle(b).backgroundColor))b=b.parentElement;return [getComputedStyle(t).color,getComputedStyle(b||document.body).backgroundColor]});
      const lum=c=>{const x=c.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*x[0]+.7152*x[1]+.0722*x[2]};
-     const a=lum(pair[0]),b=lum(pair[1]);assert((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,'actual dark HERO foreground/background contrast');
+     const a=lum(pair[0]),b=lum(pair[1]);assert((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,'actual dark «Сьогодні» Lexi line foreground/background contrast');
     }
    }
    for (const f of ['index','niderlandska-dlia-ukraintsiv-belhiia','nt2-dlia-pochatkivtsiv','niderlandska-povsiakdenne-zhyttia','movna-pidhotovka-intehratsiia-belhiia']) {await page.goto(B+'guides/'+f+'.html');await check('guide-'+f)}

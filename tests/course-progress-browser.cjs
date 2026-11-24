@@ -11,7 +11,7 @@ const L1='en_hello:en_greet:0',L2='en_hello:en_greet:5';
 const DUTCH={leren_path_v1:'{"version":1,"started":true,"completed":{"comm:t_greet:0":4},"mistakes":[]}',leren_path_rewards_v1:'{"comm:t_greet:0":4}'};
 // LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
 // .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
-const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>openLearn());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  // 5. Offline: every file of the new courses is in the service worker's precache, with the version index.html loads.
  const sw=read('sw.js'),html=read('index.html');

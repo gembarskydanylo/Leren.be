@@ -24,11 +24,11 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    const wide=()=>page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
    // Route lesson: listening and checking steps.
    await page.evaluate(()=>{setView('path');const m=learningPath.model,l=m.recommended();m.begin(l.id);while(m.state.session.index<m.state.session.ids.length)m.advance(m.current().id,true);m.nextPhase();learningPath.open()});
-   await page.locator('#learningPath .fh-primary').click();await page.waitForSelector('#learningPath .lp-listen-row');
+   await page.locator('.td-start').click();await page.waitForSelector('#learningPath .lp-listen-row');
    for(const step of ['listen','check']){
-    if(step==='check'){await page.evaluate(()=>{const m=learningPath.model,s=m.state.session;while(s.index<s.ids.length)m.advance(m.current().id,true);m.nextPhase();learningPath.open()});await page.locator('#learningPath .fh-primary').click();await page.waitForSelector('#learningPath .lp-check-row')}
+    if(step==='check'){await page.evaluate(()=>{const m=learningPath.model,s=m.state.session;while(s.index<s.ids.length)m.advance(m.current().id,true);m.nextPhase();learningPath.open()});await page.locator('.td-start').click();await page.waitForSelector('#learningPath .lp-check-row')}
     const r=await page.evaluate(()=>{const root=document.getElementById('learningPath'),pic=root.querySelector('.lp-listen-pic'),opts=[...root.querySelectorAll('.lp-options button')],dock=document.getElementById('modeButtons');scrollTo(0,0);
-     return {pic:pic.getBoundingClientRect().height,sound:root.querySelectorAll('.lp-sound').length,last:Math.max(...opts.map(o=>o.getBoundingClientRect().bottom)),navTop:dock.getBoundingClientRect().top}});
+     return {pic:pic.getBoundingClientRect().height,sound:root.querySelectorAll('.lp-sound').length,last:Math.max(...opts.map(o=>o.getBoundingClientRect().bottom)),navTop:getComputedStyle(dock).display==='none'?innerHeight:dock.getBoundingClientRect().top}}); // TEST-050: dock hidden in the focus lesson
     assert(r.pic<=80,tag+' '+step+': small picture '+r.pic);assert.equal(r.sound,0);if(h>=800)assert(r.last<=r.navTop,tag+' '+step+': all answers above the nav');
    }
    assert(await wide()<=0,tag+': no horizontal scroll in lessons');

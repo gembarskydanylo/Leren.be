@@ -3943,7 +3943,9 @@ function openMore(){
  LerenToday.more({lang:uiLang,items:[
   {id:"profile",icon:"👤",run:openProfile},{id:"dict",icon:"🔎",run:()=>setView("dict")},{id:"progress",icon:"🏆",run:()=>setView("progress")},
   {id:"tests",icon:"📝",run:()=>setView("toets")},{id:"life",icon:"🎬",run:()=>{location.href="./learn-life.html"}},{id:"clock",icon:"🕒",run:openClock},
-  {id:"free",icon:"🗂️",run:()=>{setView("lesson");newRound()}},{id:"settings",icon:"⚙️",run:()=>$("settingsBtn").click()}]});
+  {id:"free",icon:"🗂️",run:()=>{setView("lesson");newRound()}},{id:"settings",icon:"⚙️",run:()=>$("settingsBtn").click()},
+  // TEST-050 RC: the old home's footer links (guides, about) live here now; «Мої подарунки» = «Прогрес і досягнення»
+  {id:"guides",icon:"📘",run:()=>{location.href="./guides/"}},{id:"about",icon:"ℹ️",run:()=>{try{LerenFocus.about(uiLang)}catch(e){}}}]});
 }
 function openProfile(){
  const G=LerenGuided,p=G.profile(localStorage),n=G.name(localStorage);
@@ -3953,14 +3955,16 @@ function openProfile(){
 }
 // The courses offered at the first run: Dutch first, then the other live courses that have lessons on this device.
 function guidedCourses(){
- const R=window.LerenCourses,sub={nl:"A1.1 – A2",en:"1.1 – 1.2",fr:"1.1 – 1.2"};
+ const R=window.LerenCourses;
  let list=["nl"];try{if(R)list=R.available(localStorage).map(c=>c.id).filter(id=>id==="nl"||(window.LerenCourseData&&window.LerenCourseData[id]))}catch(e){}
- return list.map(id=>[id,R?R.name(id,uiLang):id,sub[id]||""]);
+ // TEST-050 RC: English and French are honest about their size (counted from the course data, never hard-coded).
+ const sub=id=>{if(id==="nl")return "A1.1 – A2";try{const st=window.LerenCoursePlayer.status(id,uiLang);return LerenToday.tr(uiLang).betaChip(st.total,st.levels)}catch(e){return ""}};
+ return list.map(id=>[id,R?R.name(id,uiLang):id,sub(id)]);
 }
 function startGuidedOnboarding(){
  const G=LerenGuided;
  LerenToday.onboarding({lang:uiLang,langs:UI_LANGS.map(l=>[l,LANG_NAMES[l]||l]),setLang:l=>{changeUiLang(l);const p=$("uiLangPicker");if(p)p.value=uiLang;return uiLang},
-  courses:guidedCourses(),
+  courses:()=>guidedCourses(), // names in the current interface language (step 1 can switch it)
   onDone:d=>{
    lsSet("leren_welcome_seen",true);lsSet("leren_level_asked",true);lsSet("leren_goal_min",[5,10,15,20].includes(d.goal)?d.goal:10);
    if(d.name)G.setName(localStorage,d.name,d.forAI);
@@ -6277,7 +6281,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="271";
+const RELEASE_VERSION="273";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

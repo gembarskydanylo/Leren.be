@@ -49,8 +49,17 @@
 
  // ---- focus on / off: hides the header, dock and footer; watches text fields for the on-screen keyboard.
  let typingWatch=false;
+ // Android / browser «Back» inside a lesson works like ✕ (back to Today, the place is saved) instead of leaving the app:
+ // one history entry {fl:1} while the focus mode is on (the Lexi window adds its own {lexi:1} on top and pops it itself).
+ const flState=()=>{try{return !!history.state?.fl}catch{return false}};
+ let historyWatch=false;
  function enter(on){
-  const html=document.documentElement;html.classList.toggle('lp-focus',!!on);if(!on)html.classList.remove('fl-typing');
+  const html=document.documentElement,was=html.classList.contains('lp-focus');html.classList.toggle('lp-focus',!!on);if(!on)html.classList.remove('fl-typing');
+  try{
+   if(on&&!was&&!flState())history.pushState({fl:1},'');
+   if(!on&&was&&flState())history.back(); // left with ✕ or the end of the lesson: drop our entry
+   if(on&&!historyWatch){historyWatch=true;addEventListener('popstate',()=>{if(html.classList.contains('lp-focus')&&!flState())document.querySelector('#learningPath .fl-exit')?.click()})}
+  }catch{}
   if(on&&!typingWatch){typingWatch=true;
    const isField=e=>e&&e.matches?.('textarea,input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit])')&&!!e.closest?.('#learningPath,.cp-stage');
    document.addEventListener('focusin',e=>{if(!html.classList.contains('lp-focus')||!isField(e.target))return;html.classList.add('fl-typing');

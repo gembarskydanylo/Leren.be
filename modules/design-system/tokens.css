@@ -1,6 +1,4 @@
-/* LerenBe 3.0 — shared semantic tokens. No course, storage or engine dependencies.
-   TEST-050 palette A: the same colours, a little brighter (brand #c0440e: 5.15:1 under white text; yellow #f9cf3f:
-   10.3:1 under dark text) and --lb-control for the outline of options and fields (≥ 3:1, WCAG 1.4.11). */
+/* LerenBe 3.0 — shared semantic tokens. Palette A (TEST-050): docs/test-050/PALETTE-A.md */
 :root{
  --lb-brand:#c0440e;--lb-brand-hover:#9a360b;--lb-brand-soft:#fff0e6;
  --lb-teal:#17483f;--lb-yellow:#f9cf3f;--lb-canvas:#f7f6f1;--lb-surface:#fff;

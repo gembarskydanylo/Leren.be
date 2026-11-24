@@ -20,7 +20,7 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
   {const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
    await seed(page,{leren_goal_min:'10',leren_minutes_v1:JSON.stringify({days:{[today()]:240}})});
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>setView('path'));
-   await page.locator('#learningPath .fh-primary').click();await page.locator('#learningPath .lp-primary').click(); // start → intro → begin
+   await page.evaluate(()=>learningPath.chapter(learningPath.model.recommended().chapter));await page.locator('#learningPath .fh-lesson-row[aria-current]').click();await page.waitForFunction(()=>document.getElementById('learningPath').dataset.screen==='intro');await page.locator('#learningPath .lp-primary').click();await page.waitForFunction(()=>document.getElementById('learningPath').dataset.screen==='lesson'); // TEST-050: home is «Сьогодні з Lexi»; a lesson picked on the map keeps the classic result
    log('lesson');for(let i=0;i<80;i++){
     const step=await page.evaluate(()=>{const root=document.getElementById('learningPath'),m=learningPath.model,s=m.state.session;
      if(root.querySelector('.lp-done'))return 'done';
