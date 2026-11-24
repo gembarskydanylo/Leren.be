@@ -21,7 +21,7 @@ const root = path.join(__dirname, '..'), read = f => fs.readFileSync(path.join(r
  assert(!/інтеграці|integration exam|inburgering/i.test(fh + lp), 'no level is tied to an integration exam');
  assert(/START_KEY="leren_start_known_v1"/.test(app) && !/localStorage\.clear|removeItem\("poly_score"|removeItem\("leren_path_v1"/.test(app.slice(app.indexOf('const ONB_UI'), app.indexOf('function firstRun'))), 'first run only adds its own key, removes nothing');
  const sw = read('sw.js'), html = read('index.html');
- for (const f of ['./modules/learning-path/ui.js?v=270', './modules/focused-home/ui.js?v=209', './modules/focused-home/style.css?v=263', './app.js?v=270']) { assert(sw.includes('"' + f + '"'), 'offline: ' + f); assert(html.includes(f), 'index: ' + f) }
+ for (const f of ['./modules/learning-path/ui.js?v=271', './modules/focused-home/ui.js?v=209', './modules/focused-home/style.css?v=263', './app.js?v=271']) { assert(sw.includes('"' + f + '"'), 'offline: ' + f); assert(html.includes(f), 'index: ' + f) }
  assert.equal(sw.match(/leren-be-v(\d+)/)[1], app.match(/RELEASE_VERSION="(\d+)"/)[1]);
  console.log('PASS: TEST-019 static — 3-step first run in 4 languages, start API, plain-words levels + CEFR, no exam link, versions');
 

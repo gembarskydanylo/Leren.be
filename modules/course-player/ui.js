@@ -49,11 +49,13 @@
  // false only when the device lists its voices and none speaks this language (then the text would be read in another accent).
  function voiceFor(lang){try{const vs=globalThis.speechSynthesis?.getVoices?.()||[];if(!vs.length)return true;const code=(globalThis.LerenCourses?.VOICE?.[lang]||lang).slice(0,2);return vs.some(v=>v.lang&&v.lang.slice(0,2).toLowerCase()===code)}catch{return true}}
 
- function open(lang,ui='uk'){
+ /* opts.start: go straight into the next lesson (resume an open one) — TEST-050 «Почати навчання» and the first run.
+    opts.onClose: called after ✕ (the Today screen refreshes its plan). */
+ function open(lang,ui='uk',opts={}){
   const R=globalThis.LerenCourses,C=COPY[ui]||COPY.uk,info=R?.COURSES?.[lang];if(!info)return null;
   document.querySelector('.cp-stage')?.remove();
   const stage=node('section','cp-stage');stage.setAttribute('role','dialog');stage.setAttribute('aria-modal','true');stage.dir=ui==='ar'?'rtl':'ltr';stage.lang=ui;stage.dataset.lang=lang;
-  const head=node('div','cp-head'),title=node('h2','cp-title',info.flag+' '+R.name(lang,ui)+' '+info.levels[0]),close=button('✕',()=>{try{globalThis.speechSynthesis?.cancel()}catch{}stage.remove();document.documentElement.classList.remove('cp-open')},'cp-close');
+  const head=node('div','cp-head'),title=node('h2','cp-title',info.flag+' '+R.name(lang,ui)+' '+info.levels[0]),close=button('✕',()=>{try{globalThis.speechSynthesis?.cancel()}catch{}stage.remove();document.documentElement.classList.remove('cp-open');try{opts.onClose?.()}catch{}},'cp-close');
   close.setAttribute('aria-label',C.close);head.append(title,close);const body=node('div','cp-body');stage.append(head,body);
   document.body.appendChild(stage);document.documentElement.classList.add('cp-open');
   const pack=globalThis.LerenCourseData?.[lang];
@@ -104,7 +106,9 @@
    const others=shuffle(same.length>=3?same:pool).slice(0,3);return shuffle([w,...others]).map(x=>({text:showTarget?target(x):tr(x),ok:x.id===w.id}));
   }
 
-  function lesson(){
+  // TEST-050: the main action of each lesson screen is marked (.cp-main) and fixed at the bottom by the focus styles.
+  function lesson(){drawLesson();const m=body.querySelector(':scope>.cp-primary');if(m)m.classList.add('cp-main')}
+  function drawLesson(){
    body.replaceChildren();const s=model.state.session;if(!s){home();return}
    const l=course.lessons.find(x=>x.id===s.lesson),steps=node('ol','cp-steps');
    STEPS.forEach((k,i)=>{const li=node('li',i===s.phase?'is-active':i<s.phase?'is-done':'',(i<s.phase?'✓ ':(i+1)+'. ')+C[k]);steps.appendChild(li)});
@@ -144,8 +148,19 @@
    for(const o of list){const b=button(o.text,()=>{feedback={id:w.id,ok:o.ok,picked:o.text,opts:list};if(o.ok&&!listen)speak(target(w),lang);lesson()},'cp-opt');if(!listen){b.lang=lang;b.dir='ltr'}opts.appendChild(b)}
    body.appendChild(opts);
   }
-  home();
+  const nx=opts.start?nextLesson():null,cur=model.state.session;
+  if(nx){if(!(cur&&cur.kind==='lesson'&&cur.lesson===nx.id&&!(cur.phase===2&&cur.index===cur.ids.length)))model.begin(nx.id);lesson()}else home();
   return stage;
+ }
+ /* Today screen data for a non-Dutch course, without opening it: the next lesson, a lesson in progress, progress. */
+ function status(lang,ui='uk'){
+  const R=globalThis.LerenCourses,C=COPY[ui]||COPY.uk,info=R?.COURSES?.[lang],pack=globalThis.LerenCourseData?.[lang];if(!info||!pack)return null;
+  const core=globalThis.LerenLearningPath,course=core.catalog(pack.data,pack.curriculum,{text:pack.text}),model=core.create(course,storage,{key:R.key('leren_path_v1',lang)});
+  const levels=[...new Set(course.chapters.map(c=>c.level))],next=model.recommended()||levels.map(lv=>lv===model.state.course?null:model.recommended(lv)).find(Boolean)||null,s=model.state.session;
+  const ch=next?course.chapters.find(c=>c.id===next.chapter):null,n=ch?ch.lessons.findIndex(l=>l.id===next.id)+1:0;
+  const total=course.lessons.length,done=course.lessons.filter(l=>model.state.completed[l.id]!=null).length;
+  return {lang,name:R.name(lang,ui),level:ch?.level||info.levels[0],topic:ch?(pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl):'',label:ch?(pack.curriculum.chapterNames?.[ch.id]?.[ui]||ch.nl)+' · '+C.lesson+' '+n:'',
+   resume:!!next&&!!s&&s.kind==='lesson'&&s.lesson===next.id&&!(s.phase===2&&s.index===s.ids.length),allDone:!next,done,total};
  }
 
  // Entry card on the Dutch route home, preview only: one button per course that is not live yet.
@@ -156,5 +171,5 @@
   for(const c of Object.values(R.COURSES))if(c.status!=='live'){const b=button(c.flag+' '+R.name(c.id,ui)+' '+c.levels[0],()=>open(c.id,ui),'cp-btn');b.dataset.course=c.id;row.appendChild(b)}
   box.appendChild(row);return box;
  }
- globalThis.LerenCoursePlayer={open,previewCard,speak,COPY};
+ globalThis.LerenCoursePlayer={open,status,previewCard,speak,COPY};
 })();

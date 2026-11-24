@@ -18,7 +18,7 @@
    ask:'Привіт! Ми вже знайомі, але я ще не знаю, як тебе звати. Як мені до тебе звертатися?',enter:'Ввести ім’я',later:'Пізніше',nameLabel:'Ім’я',save:'Зберегти',
    nameNote:'Ім’я зберігається лише на цьому пристрої. Змінити або видалити його можна в «Ще → Профіль».',
    forAI:'Дозволити Lexi звертатися на ім’я і в AI-розмові. Без цієї згоди ім’я не надсилається AI-сервісу.',
-   step:k=>'Крок '+k+' з 5',meetT:'Привіт! Я Lexi',meetX:'Я вестиму тебе нідерландською крок за кроком: щодня скажу, що вчити, і поясню помилки.',langLabel:'Мова пояснень',meet:'Познайомимось',skipStart:'Пропустити й почати урок',
+   step:k=>'Крок '+k+' з 5',meetT:'Привіт! Я Lexi',meetX:'Я вестиму тебе крок за кроком: щодня скажу, що вчити, і поясню помилки.',courseQ:'Яку мову вивчаємо?',langLabel:'Мова пояснень',meet:'Познайомимось',skipStart:'Пропустити й почати урок',
    nameQ:'Як я можу до тебе звертатися?',next:'Далі',skip:'Пропустити',back:'Назад',
    goalsQ:'Навіщо тобі нідерландська?',goalsHint:'Можна обрати кілька. Від цього залежать приклади й поради Lexi.',
    goals:{belgium:'Життя в Бельгії',work:'Робота',study:'Навчання',social:'Спілкування',travel:'Подорожі',self:'Для себе'},
@@ -45,7 +45,7 @@
    ask:'Hi! We’ve met before, but I don’t know your name yet. What should I call you?',enter:'Enter my name',later:'Later',nameLabel:'Name',save:'Save',
    nameNote:'Your name stays on this device only. Change or delete it in More → Profile.',
    forAI:'Let Lexi use my name in the AI chat too. Without this consent the name is never sent to the AI service.',
-   step:k=>'Step '+k+' of 5',meetT:'Hi! I’m Lexi',meetX:'I’ll guide you through Dutch step by step: every day I’ll tell you what to learn and explain your mistakes.',langLabel:'Explanation language',meet:'Let’s get started',skipStart:'Skip and start a lesson',
+   step:k=>'Step '+k+' of 5',meetT:'Hi! I’m Lexi',meetX:'I’ll guide you step by step: every day I’ll tell you what to learn and explain your mistakes.',courseQ:'Which language are we learning?',langLabel:'Explanation language',meet:'Let’s get started',skipStart:'Skip and start a lesson',
    nameQ:'What should I call you?',next:'Next',skip:'Skip',back:'Back',
    goalsQ:'Why are you learning Dutch?',goalsHint:'Pick as many as you like. Lexi uses them for examples and tips.',
    goals:{belgium:'Life in Belgium',work:'Work',study:'Studies',social:'Talking to people',travel:'Travel',self:'For myself'},
@@ -72,7 +72,7 @@
    ask:'Salut ! On se connaît déjà, mais je ne connais pas encore ton prénom. Comment dois-je t’appeler ?',enter:'Saisir mon prénom',later:'Plus tard',nameLabel:'Prénom',save:'Enregistrer',
    nameNote:'Ton prénom reste uniquement sur cet appareil. Modifie-le ou supprime-le dans Plus → Profil.',
    forAI:'Autoriser Lexi à utiliser mon prénom aussi dans le chat IA. Sans cet accord, le prénom n’est jamais envoyé au service d’IA.',
-   step:k=>'Étape '+k+' sur 5',meetT:'Bonjour ! Je suis Lexi',meetX:'Je te guide en néerlandais pas à pas : chaque jour, je te dis quoi apprendre et je t’explique tes erreurs.',langLabel:'Langue des explications',meet:'Faisons connaissance',skipStart:'Passer et commencer une leçon',
+   step:k=>'Étape '+k+' sur 5',meetT:'Bonjour ! Je suis Lexi',meetX:'Je te guide pas à pas : chaque jour, je te dis quoi apprendre et je t’explique tes erreurs.',courseQ:'Quelle langue apprenons-nous ?',langLabel:'Langue des explications',meet:'Faisons connaissance',skipStart:'Passer et commencer une leçon',
    nameQ:'Comment dois-je t’appeler ?',next:'Suivant',skip:'Passer',back:'Retour',
    goalsQ:'Pourquoi apprends-tu le néerlandais ?',goalsHint:'Choisis-en plusieurs si tu veux. Lexi s’en sert pour les exemples et les conseils.',
    goals:{belgium:'Vivre en Belgique',work:'Travail',study:'Études',social:'Parler aux gens',travel:'Voyages',self:'Pour moi'},
@@ -99,7 +99,7 @@
    ask:'مرحباً! نحن نعرف بعضنا، لكني لا أعرف اسمك بعد. بماذا أناديك؟',enter:'أدخل اسمي',later:'لاحقاً',nameLabel:'الاسم',save:'حفظ',
    nameNote:'يبقى اسمك على هذا الجهاز فقط. يمكنك تغييره أو حذفه من «المزيد ← الملف الشخصي».',
    forAI:'اسمح لـ Lexi باستخدام اسمي في محادثة الذكاء الاصطناعي أيضاً. دون هذه الموافقة لا يُرسل الاسم إلى خدمة الذكاء الاصطناعي.',
-   step:k=>'الخطوة '+k+' من 5',meetT:'مرحباً! أنا Lexi',meetX:'سأرشدك في الهولندية خطوة بخطوة: كل يوم أخبرك بما تتعلّمه وأشرح أخطاءك.',langLabel:'لغة الشرح',meet:'لنتعارف',skipStart:'تخطَّ وابدأ درساً',
+   step:k=>'الخطوة '+k+' من 5',meetT:'مرحباً! أنا Lexi',meetX:'سأرشدك خطوة بخطوة: كل يوم أخبرك بما تتعلّمه وأشرح أخطاءك.',courseQ:'أي لغة سنتعلّم؟',langLabel:'لغة الشرح',meet:'لنتعارف',skipStart:'تخطَّ وابدأ درساً',
    nameQ:'بماذا أناديك؟',next:'التالي',skip:'تخطٍّ',back:'رجوع',
    goalsQ:'لماذا تتعلّم الهولندية؟',goalsHint:'يمكنك اختيار أكثر من هدف. يستخدمها Lexi للأمثلة والنصائح.',
    goals:{belgium:'الحياة في بلجيكا',work:'العمل',study:'الدراسة',social:'التواصل مع الناس',travel:'السفر',self:'لنفسي'},
@@ -206,9 +206,10 @@
  function dialog(lang,cls,label){const d=styled(node('dialog','td-dialog '+cls));d.lang=lang;d.dir=dirOf(lang);d.setAttribute('aria-label',label);document.body.appendChild(d);d.addEventListener('close',()=>d.remove());try{d.showModal()}catch{d.setAttribute('open','')}return d}
 
  /* First run for a new learner: 5 short screens. opts: {lang, langs:[[code,label]], setLang(code)→code, onDone(data)}.
-    data: {name, forAI, goals, start:'zero'|'test'|'basics'|'self', goal, pace, skipped:boolean}. Skip on any screen keeps what was chosen. */
+    data: {course:'nl'|'en'|'fr', name, forAI, goals, start:'zero'|'test'|'basics'|'self', goal, pace, skipped:boolean}. Skip on any screen keeps what was chosen.
+    opts.courses: [[id, name, subtitle]] — the courses the learner may pick (the first one is the default). */
  function onboarding(opts){
-  let lang=opts.lang;const st={name:'',forAI:false,goals:[],start:'zero',goal:10,pace:'balanced'};let step=1,some=false;
+  let lang=opts.lang;const courses=Array.isArray(opts.courses)&&opts.courses.length?opts.courses:[['nl','Nederlands','']];const st={course:courses[0][0],name:'',forAI:false,goals:[],start:'zero',goal:10,pace:'balanced'};let step=1,some=false;
   const d=dialog(lang,'td-onb',tr(lang).meetT);d.addEventListener('cancel',e=>e.preventDefault());
   const finish=skipped=>{if(!d.open&&!d.isConnected)return;try{d.close()}catch{d.remove()}opts.onDone({...st,skipped})};
   function chips(list,isOn,toggle,role='group',label=''){const g=node('div','td-chips');g.setAttribute('role',role);if(label)g.setAttribute('aria-label',label);list.forEach(([id,text,sub])=>{const b=btn('',()=>{toggle(id);draw()},'td-chip'+(isOn(id)?' is-on':''));b.dataset.value=id;b.append(node('strong','',text));if(sub)b.append(node('small','',sub));b.setAttribute('aria-pressed',String(isOn(id)));g.appendChild(b)});return g}
@@ -217,7 +218,9 @@
    const box=node('div','td-onb-body');box.append(node('p','td-onb-step',t.step(step)));
    const nav=node('div','td-onb-nav'),next=(label,fn)=>{const b=btn(label,fn,'td-btn td-primary');b.dataset.action='next';return b},skip=label=>{const b=btn(label||t.skip,()=>finish(true),'td-link');b.dataset.action='skip';return b};
    if(step>1){const b=btn(t.back,()=>{step--;draw()},'td-link td-back');b.dataset.action='back';box.prepend(b)}
-   if(step===1){const img=avatar(120);img.alt='Lexi';img.removeAttribute('aria-hidden');box.append(img,node('h2','',t.meetT),node('p','td-onb-text',t.meetX));
+   if(step===1){const img=avatar(courses.length>1?72:120);img.alt='Lexi';img.removeAttribute('aria-hidden');box.append(img,node('h2','',t.meetT),node('p','td-onb-text',t.meetX));
+    // TEST-050: the course first. The choice decides the course and the first lesson (Dutch is never started for English/French).
+    if(courses.length>1){box.classList.add('has-courses');box.append(node('h3','td-course-q',t.courseQ));const g=chips(courses.map(([id,name,sub])=>[id,name,sub]),id=>st.course===id,id=>{st.course=id;if(id!=='nl'&&st.start==='test')st.start='basics'},'radiogroup',t.courseQ);g.classList.add('td-courses');[...g.children].forEach(c=>{c.setAttribute('role','radio');c.setAttribute('aria-checked',c.getAttribute('aria-pressed'));c.removeAttribute('aria-pressed')});box.append(g)}
     const label=node('label','td-label',t.langLabel),sel=node('select','td-input');sel.id='tdOnbLang';label.htmlFor=sel.id;opts.langs.forEach(([code,text])=>{const o=node('option','',text);o.value=code;sel.appendChild(o)});sel.value=lang;
     sel.onchange=()=>{lang=opts.setLang(sel.value)||sel.value;draw()};box.append(label,sel);nav.append(next(t.meet,()=>{step=2;draw()}),skip(t.skipStart))}
    else if(step===2){const say=node('div','td-say');say.append(avatar(48));const q=node('h2','td-bubble',t.nameQ);say.append(q);box.append(say);
@@ -230,7 +233,7 @@
    else if(step===4){box.append(node('h2','',t.levelQ),node('p','td-note',t.levelHint));
     const opt=(id,title,sub,on)=>{const b=btn('',()=>{if(id==='some'){some=true;if(st.start!=='test')st.start='basics'}else{some=false;st.start=id}draw()},'td-option'+(on?' is-on':''));b.dataset.value=id;b.setAttribute('aria-pressed',String(on));b.append(node('strong','',title),node('small','',sub));return b};
     box.append(opt('zero',t.zero,t.zeroS,st.start==='zero'&&!some),opt('some',t.some,t.someS,some));
-    if(some){const sub=chips([['test',t.test],['basics',t.basics]],id=>st.start===id,id=>{st.start=id},'radiogroup',t.some);sub.classList.add('td-sub');[...sub.children].forEach(c=>{c.setAttribute('role','radio');c.setAttribute('aria-checked',c.getAttribute('aria-pressed'));c.removeAttribute('aria-pressed')});box.append(sub)}
+    if(some){const sub=chips((st.course==='nl'?[['test',t.test],['basics',t.basics]]:[['basics',t.basics]]),id=>st.start===id,id=>{st.start=id},'radiogroup',t.some);sub.classList.add('td-sub');[...sub.children].forEach(c=>{c.setAttribute('role','radio');c.setAttribute('aria-checked',c.getAttribute('aria-pressed'));c.removeAttribute('aria-pressed')});box.append(sub)}
     box.append(opt('self',t.self,t.selfS,st.start==='self'));nav.append(next(t.next,()=>{step=5;draw()}),skip())}
    else{box.append(node('h2','',t.timeQ));
     const g=chips([5,10,15,20].map(m=>[String(m),m+' '+t.min]),id=>String(st.goal)===id,id=>{st.goal=Number(id)},'radiogroup',t.timeQ);g.classList.add('td-goals');[...g.children].forEach(c=>{c.setAttribute('role','radio');c.setAttribute('aria-checked',c.getAttribute('aria-pressed'));c.removeAttribute('aria-pressed')});box.append(g);

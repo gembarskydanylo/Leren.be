@@ -16,7 +16,7 @@
 .lp-exercise .lp-listen-row{border:1px solid var(--lb-line);background:var(--lb-subtle);border-radius:16px;padding:16px;gap:16px;min-height:112px}
 .lp-exercise .lp-listen-row .fh-sound{min-height:64px;min-width:64px;flex:1;background:var(--lb-brand);color:var(--lb-on-brand);border:0;border-radius:14px;font-size:1.0625rem;box-shadow:none}
 .lp-check-row .lp-word{font-size:1.5rem;margin:0}
-.lp-options{gap:12px;margin-block:20px}.lp-options .lp-button{min-height:64px;font-size:1rem;text-align:start;justify-content:flex-start;padding:16px 18px;border:1px solid var(--lb-line);border-radius:14px;background:var(--lb-surface);color:var(--lb-ink);box-shadow:none}
+.lp-options{gap:12px;margin-block:20px}.lp-options .lp-button{min-height:64px;font-size:1rem;text-align:start;justify-content:flex-start;padding:16px 18px;border:1.5px solid var(--lb-control,var(--lb-line));border-radius:14px;background:var(--lb-surface);color:var(--lb-ink);box-shadow:none}
 .lp-options .lp-button:hover{background:var(--lb-brand-soft);border-color:var(--lb-brand)}
 .lp-feedback{padding:20px;border:1px solid var(--lb-line);background:var(--lb-subtle);color:var(--lb-ink)}
 .lp-feedback.lp-correct{background:var(--lb-success-soft);border-color:var(--lb-success)}.lp-feedback.lp-wrong{background:var(--lb-danger-soft);border-color:var(--lb-danger)}
@@ -37,7 +37,7 @@ main[data-view=lesson] #lessonModes{background:var(--lb-surface);border:1px soli
 main[data-view=lesson] .lesson-head{background:var(--lb-surface);border-inline:1px solid var(--lb-line);box-shadow:none;border-radius:0;padding-inline:24px}
 main[data-view=lesson] #card{background:var(--lb-surface);border:1px solid var(--lb-line);border-top:0;border-radius:0 0 24px 24px;box-shadow:var(--lb-shadow);padding:24px 24px calc(var(--lb-dock) + 24px)}
 #card .q h2{font:900 var(--lb-word)/1.2 var(--lb-heading);letter-spacing:-.03em}#card .q>p{font-size:1.25rem;color:var(--lb-ink)}
-#card .opt{min-height:64px;padding:16px 18px;border:1px solid var(--lb-line);border-radius:14px;background:var(--lb-surface);color:var(--lb-ink);box-shadow:none;font-size:1rem;text-align:start}
+#card .opt{min-height:64px;padding:16px 18px;border:1.5px solid var(--lb-control,var(--lb-line));border-radius:14px;background:var(--lb-surface);color:var(--lb-ink);box-shadow:none;font-size:1rem;text-align:start}
 #card .opt.correct{background:var(--lb-success-soft);border:2px solid var(--lb-success);color:var(--lb-ink)}#card .opt.incorrect{background:var(--lb-danger-soft);border:2px solid var(--lb-danger);color:var(--lb-ink)}
 #card .opt:disabled{opacity:1}.feedback strong{font-size:1.125rem}.feedback .example{font-size:1rem;line-height:1.6}
 .cp-stage{background:var(--lb-canvas);color:var(--lb-ink)}.cp-head{border-color:var(--lb-line);background:var(--lb-surface)}.cp-body{max-width:780px;padding:24px;gap:16px}.cp-card{padding:24px;border-radius:20px}.cp-steps li{border-radius:10px;background:var(--lb-subtle)}.cp-steps li.is-active{background:var(--lb-brand-soft);color:var(--lb-brand)}.cp-opt{min-height:64px;border-radius:14px;border-color:var(--lb-line);background:var(--lb-surface);color:var(--lb-ink);box-shadow:none}

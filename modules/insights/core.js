@@ -108,7 +108,7 @@
    test:(t,b,n)=>'тест «'+t+'» поки на '+b+' з '+n,testPlan:'Пройдемо його ще раз.',
    speak:n=>'ти ще мало говориш уголос ('+n+' '+ukN(n,'усна відповідь','усні відповіді','усних відповідей')+')',speakPlan:'Сьогодні скажемо кілька відповідей у мікрофон.',
    go:{slip:'Тренувати правило →',skill:'Почати вправу →',write:'Написати →',due:'Повторити слова →',test:'Пройти тест →',speak:'Говорити →'},
-   title:'Пітер радить',none:'Поки все добре. Продовжуй маршрут — я підкажу, коли щось варто повторити.',noneBtn:'Продовжити маршрут →'},
+   title:'Lexi радить',none:'Поки все добре. Продовжуй маршрут — я підкажу, коли щось варто повторити.',noneBtn:'Продовжити маршрут →'},
   en:{but:'but',strong:{lezen:'You read well',luisteren:'You understand spoken Dutch well',schrijven:'You write well'},
    slip:{omdat:'you often slip in sentences with omdat',perfectum:'the past tense (ben / heb + ge…) still trips you up',meervoud:'plural nouns still trip you up',vergelijking:'after a comparison you write «als» instead of «dan»',scheidbaar:'separable verbs still trip you up',werkwoorden:'you mix up verb forms',klinkers:'you mix up short and long vowels',spelling:'you make spelling mistakes',grammatica:'grammar exercises still trip you up'},
    slipPlan:'Today we practise this rule.',
@@ -119,7 +119,7 @@
    test:(t,b,n)=>'the test «'+t+'» is at '+b+' of '+n,testPlan:'Let’s take it again.',
    speak:n=>'you have spoken very little so far ('+n+' spoken answers)',speakPlan:'Today we say a few answers into the microphone.',
    go:{slip:'Practise the rule →',skill:'Start the exercise →',write:'Write →',due:'Review words →',test:'Take the test →',speak:'Speak →'},
-   title:'Peter suggests',none:'All good so far. Keep following the route — I’ll tell you when something needs review.',noneBtn:'Continue the route →'},
+   title:'Lexi suggests',none:'All good so far. Keep following the route — I’ll tell you when something needs review.',noneBtn:'Continue the route →'},
   fr:{but:'mais',strong:{lezen:'Tu lis bien',luisteren:'Tu comprends bien à l’oral',schrijven:'Tu écris bien'},
    slip:{omdat:'tu te trompes souvent dans les phrases avec omdat',perfectum:'le passé composé (ben / heb + ge…) te pose encore problème',meervoud:'le pluriel des noms te pose encore problème',vergelijking:'après une comparaison tu écris « als » au lieu de « dan »',scheidbaar:'les verbes séparables te posent encore problème',werkwoorden:'tu confonds les formes des verbes',klinkers:'tu confonds voyelles courtes et longues',spelling:'tu fais des fautes d’orthographe',grammatica:'les exercices de grammaire te posent encore problème'},
    slipPlan:'Aujourd’hui, on travaille cette règle.',
@@ -130,7 +130,7 @@
    test:(t,b,n)=>'le test « '+t+' » est à '+b+' sur '+n,testPlan:'Refaisons-le.',
    speak:n=>'tu as encore peu parlé à voix haute ('+n+' réponses orales)',speakPlan:'Aujourd’hui, on dit quelques réponses au micro.',
    go:{slip:'Travailler la règle →',skill:'Commencer l’exercice →',write:'Écrire →',due:'Réviser les mots →',test:'Passer le test →',speak:'Parler →'},
-   title:'Peter te conseille',none:'Tout va bien. Continue le parcours — je te dirai quand il faut réviser.',noneBtn:'Continuer le parcours →'},
+   title:'Lexi te conseille',none:'Tout va bien. Continue le parcours — je te dirai quand il faut réviser.',noneBtn:'Continuer le parcours →'},
   ar:{but:'لكن',strong:{lezen:'أنت تقرأ جيداً',luisteren:'أنت تفهم السماع جيداً',schrijven:'أنت تكتب جيداً'},
    slip:{omdat:'تخطئ كثيراً في الجمل مع omdat',perfectum:'الماضي التام (ben / heb + ge…) ما زال صعباً عليك',meervoud:'جمع الأسماء ما زال صعباً عليك',vergelijking:'بعد المقارنة تكتب «als» بدل «dan»',scheidbaar:'الأفعال المنفصلة ما زالت صعبة عليك',werkwoorden:'تخلط بين تصريفات الأفعال',klinkers:'تخلط بين الحروف المتحركة القصيرة والطويلة',spelling:'ترتكب أخطاء إملائية',grammatica:'تمارين القواعد ما زالت صعبة عليك'},
    slipPlan:'اليوم نتدرّب على هذه القاعدة.',
@@ -141,7 +141,7 @@
    test:(t,b,n)=>'اختبار «'+t+'» ما زال '+b+' من '+n,testPlan:'لنُعِده مرة أخرى.',
    speak:n=>'تحدثت بصوت عالٍ قليلاً حتى الآن ('+n+' إجابات شفهية)',speakPlan:'اليوم نقول بعض الإجابات في الميكروفون.',
    go:{slip:'تدرّب على القاعدة ←',skill:'ابدأ التمرين ←',write:'اكتب ←',due:'راجع الكلمات ←',test:'أجرِ الاختبار ←',speak:'تحدّث ←'},
-   title:'بيتر ينصحك',none:'كل شيء جيد حتى الآن. تابع المسار، وسأخبرك عندما يحتاج شيء إلى مراجعة.',noneBtn:'تابع المسار ←'}};
+   title:'Lexi تنصحك',none:'كل شيء جيد حتى الآن. تابع المسار، وسأخبرك عندما يحتاج شيء إلى مراجعة.',noneBtn:'تابع المسار ←'}};
  const tr=lang=>T[lang]||T.uk;
  const cap=(s,lang)=>lang==='ar'?s:s.charAt(0).toUpperCase()+s.slice(1);
  function why(r,lang){const t=tr(lang);return r.kind==='slip'?t.slip[r.tag]:r.kind==='skill'?t.skill[r.skill](r.pct):r.kind==='write'?t.write(r.pct):r.kind==='due'?t.due(r.n):r.kind==='test'?t.test(r.title,r.best,r.total):t.speak(r.n)}

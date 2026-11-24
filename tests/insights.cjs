@@ -100,7 +100,7 @@ assert.equal(I.goal(undefined),10);assert.equal(I.goal(15),15);assert.equal(I.go
  const lp=read('modules/learning-path/ui.js');assert(lp.indexOf("bridge.goalText(g)")<lp.indexOf("node('h3','',t(result.kind==='lesson'?'result':'resultReview'))"));
  for(const l of ['uk','en','fr','ar']){const u=I.ui(l);assert(u.lessonDone&&u.goalMet&&u.goalLeft(4,10).includes('4'))}
  assert.equal(I.ui('uk').goalLeft(4,10),'Мета дня: 4 з 10 хв. Урок зараховано — решту можна добрати пізніше.');
- assert(!/dailyGoal\(\)/.test(html),'the points goal is gone');assert(html.includes('<script src="./modules/insights/core.js?v=175"></script>'));assert(read('sw.js').includes('"./modules/insights/core.js?v=175"'));
+ assert(!/dailyGoal\(\)/.test(html),'the points goal is gone');assert(html.includes('<script src="./modules/insights/core.js?v=176"></script>'));assert(read('sw.js').includes('"./modules/insights/core.js?v=176"'));
  for(const hook of ['skillLog(mode==="audio"?"luisteren":"lezen",ok)','skillLog("schrijven",good)','slipLog("klinkers",ok)','slipLog("werkwoorden",ok)','slipLog("scheidbaar",ok)','slipLog("omdat",!s.tries)','listenOnce(a=>{skillSpoke();ok(a)}'])assert(html.includes(hook),hook);
  const core=read('modules/exam/exam-core.js');assert(core.includes('examLog(KEY,it,ok)')&&core.includes('examSpoke(KEY)')&&core.includes('practice:part=>'));}
 console.log('PASS: active minutes (hidden, idle, sleep), goal 5–30 min default 10, streak across DST/new year/time zones without losing the best, skills per course (no speaking %), exam grammar points, Peter\'s advice with the omdat example and direct exercises, 9 new badges once with reasons in 4 languages, old badges kept');
