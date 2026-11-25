@@ -32,6 +32,7 @@
 Тому відкат іде на **збірку 274** = код 264 + ці два ключі в `SYNC_SKIP` + власний номер версії (`leren-be-v274`, `app.js?v=274`). Більше нічого не змінено.
 
 - Гілка: `claude/rollback-274` (worktree `/Volumes/Ai_Project/LerenBe-rollback-274-2026-11-25`), поки локально.
+- Коміт 61ade5c0. Повний основний набір на 274: 86 pass / 0 fail.
 - Тест: `tests/rollback-273-274.cjs` — 264 → 273 → 274 → 273 зі справжнім Service Worker, 2 профілі (учень з 264; новий учень, що почав на 273 з ім'ям і незавершеним уроком). Усі пройшли:
   - кожен ключ, залишений 273, збережено байт у байт (значки можуть лише додаватися);
   - XP і пройдені уроки ті самі;
@@ -54,7 +55,7 @@
 git fetch origin
 git switch -c rollback/to-274 origin/main
 git revert -m 1 <SHA злиття 273> --no-edit       # дерево повертається до 264
-git cherry-pick <коміт гілки claude/rollback-274>  # 264 → 274: два ключі лише на пристрої + версія
+git cherry-pick 61ade5c0                       # 264 → 274: два ключі лише на пристрої + версія
 git diff --stat claude/rollback-274 HEAD           # очікувано: порожньо або лише docs/
 git push -u origin rollback/to-274
 gh pr create --base main --head rollback/to-274 --title "Rollback 273 → 274 (код 264)"
