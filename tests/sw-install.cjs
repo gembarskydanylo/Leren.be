@@ -2,7 +2,7 @@
 // Run: node tests/sw-install.cjs
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('sw.js','utf8');
-const critical=['./','./index.html','./app.js?v=264','./modules/lexi/engine.js?v=5','./boot.js?v=193','./course-curriculum.js?v=178','./manifest.webmanifest'];
+const critical=['./','./index.html','./app.js?v=274','./modules/lexi/engine.js?v=5','./boot.js?v=193','./course-curriculum.js?v=178','./manifest.webmanifest'];
 async function simulate(fail){
  const handlers={},added=[],opened=[],deleted=[];
  let waiting=0,claimed=0;
@@ -22,7 +22,7 @@ async function simulate(fail){
   return;
  }
  assert.equal(error,null);assert.equal(waiting,1);
- assert(opened.every(name=>name==='leren-be-v264'));
+ assert(opened.every(name=>name==='leren-be-v274'));
  assert(added.includes('./index.html'));assert(added.includes('./dict/nl.json'));assert(added.includes('./modules/learning-path/invitation.js?v=2'));assert(added.includes('./modules/learning-path/invitation.css?v=1'));
  if(fail==='optional')assert(added.length<1051,'some optional files should fail');
  else if(fail==='quota')assert.equal(added.length,600,'cache quota: the shell and the files that fit are kept, the update still installs');
