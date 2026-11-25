@@ -13,7 +13,7 @@
 
 ## Резервна точка 264
 
-- **Git-тег** `release-264` → 1312d86 (merge PR #65, `sw.js` = `leren-be-v264`). Поки що лише локальний — на GitHub його треба запушити (з вашого дозволу).
+- **Git-тег** `release-264` → 1312d86 (merge PR #65, `sw.js` = `leren-be-v264`). Є на GitHub.
 - **Офлайн-копія** на диску Ai_Project: `/Volumes/Ai_Project/LerenBe-release-264-backup-2026-11-25/`
   - `leren-be-main-264.bundle` — уся історія до 264 (`git clone leren-be-main-264.bundle`);
   - `leren-be-264-site.tar.gz` — файли сайту 264 як є;
@@ -31,7 +31,7 @@
 
 Тому відкат іде на **збірку 274** = код 264 + ці два ключі в `SYNC_SKIP` + власний номер версії (`leren-be-v274`, `app.js?v=274`). Більше нічого не змінено.
 
-- Гілка: `claude/rollback-274` (worktree `/Volumes/Ai_Project/LerenBe-rollback-274-2026-11-25`), поки локально.
+- Гілка: `claude/rollback-274` (worktree `/Volumes/Ai_Project/LerenBe-rollback-274-2026-11-25`), є на GitHub.
 - Коміт 61ade5c0. Повний основний набір на 274: 86 pass / 0 fail.
 - Тест: `tests/rollback-273-274.cjs` — 264 → 273 → 274 → 273 зі справжнім Service Worker, 2 профілі (учень з 264; новий учень, що почав на 273 з ім'ям і незавершеним уроком). Усі пройшли:
   - кожен ключ, залишений 273, збережено байт у байт (значки можуть лише додаватися);
