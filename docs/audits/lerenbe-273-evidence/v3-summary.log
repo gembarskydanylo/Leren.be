@@ -1,0 +1,73 @@
+PASS a2-progress.cjs 2s
+PASS ai-on-regression.cjs 64s
+PASS app-engine.cjs 0s
+PASS content-043.cjs 2s
+PASS design-system.cjs 264s
+PASS design foundation: shared styles, offline references, no remote assets, robots and release
+PASS design browser 320
+PASS design browser 360
+PASS design browser 390
+PASS design browser 430
+PASS design browser 768
+PASS design browser 1024
+PASS design browser 1280
+PASS design browser 1440
+PASS 156 screen checks; UI lesson/XP/reload, maps, settings, contrast, large text, reduced motion, guides and LIFE
+PASS engine-stress-043.cjs 10s
+PASS firebase-isolation.cjs 2s
+PASS firebase-resilience.cjs 2s
+PASS home-art-failure.cjs 1s
+PASS home-v2.cjs 16s
+PASS language-switch.cjs 9s
+PASS layout-overflow-audit.cjs 28s
+PASS learning-map-edges.cjs 3s
+PASS learning-map-seo.cjs 4s
+PASS lesson-help-042.cjs 8s
+PASS lexi-ai-038.cjs 0s
+PASS lexi-app.cjs 2s
+PASS lexi-engine.cjs 0s
+PASS lexi-explain-041.cjs 0s
+PASS lexi-help-context.cjs 11s
+PASS lexi-memory-063.cjs 13s
+PASS lexi-release-063.cjs 13s
+PASS 1 free talk: Lexi persona end to end (no Peter / Dafna), reply shown, no card for has_error false · 2 correction card with the corrected sentence; history sent
+PASS 3 exercise help: the exercise reaches the Worker prompt, explained in Ukrainian · 6 resume: closed and reopened, the conversation and the exercise come back · 8 five more reopenings: one Lexi, same exercise
+PASS 4 explain simply: a French course never has a French interface (production rule), so Lexi explains in Ukrainian; the exam reply «Перекласти українською» shows the translation the Worker sent with the reply (no second request); a same-language request (French / French) gets the Worker rule «very simple French»
+PASS 5 language switch uk → en → fr → ar: every request explains in the new interface language, the exercise is still sent, ar is right-to-left
+PASS 7 offline: nothing sent, a Ukrainian offline message; back online the question goes out with the same exercise and is answered
+PASS 9 long message: the input stops at its limit, the model gets ≤ 400 characters, a forced 5000-character message is refused locally; no page error
+PASS 10 broken answers (model 500, text instead of JSON, an HTML page, empty JSON, a 502 page): error panel + Retry, one request each, the retry keeps the exercise
+PASS lexi-reliability-043.cjs 7s
+PASS lexi-scenarios-264.cjs 70s
+PASS lexi-worker.cjs 0s
+PASS life-i18n.cjs 2s
+PASS life-quality.cjs 33s
+PASS life-visuals.cjs 6s
+PASS memory-043.cjs 48s
+PASS mobile-043.cjs 74s
+PASS mobile-063.cjs 81s
+SKIP mobile-matrix-264.cjs 0s
+PASS mobile-ux-037.cjs 24s
+PASS perf-budget.cjs 0s
+PASS script-preload.cjs 0s
+PASS simple-home.cjs 24s
+PASS sync-merge-app.cjs 0s
+PASS translate-action-042.cjs 0s
+PASS ui-contracts.cjs 2s
+PASS ui-fixes-263.cjs 6s
+PASS unified-teacher-264.cjs 23s
+PASS ux-functional-audit.cjs 24s
+NOT RUN appcheck-verify.cjs — App Check prototype of Leren.be-test (tools/appcheck-verify.mjs); not part of this integration (App Check enforcement stays off)
+NOT RUN beta-daily.cjs — checks the beta snapshot daily marker of Leren.be-test
+NOT RUN lexi-features-033.cjs — tests the design-lab source of the Lexi UI (Codex lab, only in Leren.be-test)
+NOT RUN lexi-integration.cjs — starts with tools/lexi-ui-port.cjs --check against design-lab (only in Leren.be-test); the app side of Lexi is covered by lexi-app, lexi-reliability-043, lesson-help-042, lexi-ai-038
+NOT RUN lexi-keyboard-033.cjs — tests the design-lab source of the Lexi UI (Codex lab, only in Leren.be-test)
+NOT RUN lexi-mobile-033.cjs — tests the design-lab source of the Lexi UI (Codex lab, only in Leren.be-test)
+NOT RUN lexi-test-worker.cjs — checks the separate test Worker config of Leren.be-test (tools/lexi-test-worker.toml, lexi-test-server.cjs)
+NOT RUN personal-coach.cjs — tests the Leren.be-test root beta snapshot (modules/personal-coach, inline script), which is neither the 3.0 app nor production
+NOT RUN rewards.cjs — pins the older rewards copy of the Leren.be-test root beta snapshot (8 badges, inline script); production modules/rewards/core.js is byte-identical to the 3.0 app one (9 badges, incl. the first-exam badge)
+NOT RUN sw-manifests.cjs — compares with origin/main:app/sw.js of Leren.be-test; production chain is tests/v3/upgrade-prod.cjs
+NOT RUN sw-release-chain.cjs — walks the git refs of Leren.be-test (app/sw.js); production chain 226 → 263 is tests/v3/upgrade-prod.cjs
+NOT RUN sw-upgrade.cjs — archives older Leren.be-test refs (app/ + life/); production upgrade is tests/v3/upgrade-prod.cjs
+NOT RUN test-isolation.cjs — checks the Leren.be-test beta snapshot isolation (closed CSP, noindex); production is not isolated by design
+LerenBe 3.0 suite: 41 pass, 0 fail, 1 skip, 13 not run (listed above)

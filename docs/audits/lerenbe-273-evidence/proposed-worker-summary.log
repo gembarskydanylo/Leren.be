@@ -1,0 +1,14 @@
+PASS ai-dialogue-regression.cjs
+PASS ai-dialogue-scenarios.cjs
+PASS ai-explain-language.cjs
+PASS ai-prompt-cache.cjs
+PASS ai-worker-limits.cjs
+PASS code-audit.cjs
+PASS error-reports.cjs
+PASS exam-dates.cjs
+PASS exam12.cjs
+PASS grammar-notes.cjs
+PASS origins: github.io / other sites refused before any model call, lerenbe.com served
+PASS lesson help context: exercise type and the course answer reach the prompt, cleaned and limited; unknown kind dropped
+PASS languages × levels: 120 requests (chat / ask × nl, en, fr × uk, en, fr, ar × a11, a12, a21 + unknown → A1.1), Lexi, right languages and level
+Proposed Worker against the production Worker tests: 10 pass, 0 fail (10 tests + origin check + lesson help context + languages × levels)

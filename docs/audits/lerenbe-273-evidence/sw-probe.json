@@ -1,0 +1,20 @@
+{
+  "partialShell": {
+    "cache": {
+      "keys": [
+        "leren-be-v273"
+      ],
+      "missingCore": true
+    },
+    "errors": [
+      "Cannot set properties of undefined (setting 'mount')",
+      "LerenLearningPath is not defined"
+    ],
+    "app": {
+      "learningPathModel": false,
+      "homeButtons": 0,
+      "core": false,
+      "release": "273"
+    }
+  }
+}

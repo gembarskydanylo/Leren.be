@@ -1,0 +1,447 @@
+[
+  {
+    "file": "ai-coach.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ai-dialogue-regression.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ai-dialogue-scenarios.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ai-explain-language.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ai-prompt-cache.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ai-worker-limits.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "appcheck-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "backup-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "clock.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "code-audit.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "companion.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "course-progress-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "course-progress-panel-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "courses-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "courses.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "csp-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "curriculum.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "deferred-games-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "dialogue-translations.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "dictionary-recovery.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "diphthongs.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "emoji-pack.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "english-course-data.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "english-exam-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "english-exam.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "english-lesson-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "error-reports.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "exam-dates.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "exam12-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "exam12.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "first-lesson.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "focused-home.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "frame-guard-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "french-course-data.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "french-lesson-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "grammar-notes.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "header-language.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "header-mobile.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "home-order-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "insights-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "insights.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "kamer-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "kamer-stage-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "kamer-tap-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "kamer1-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "learn-life.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "learning-path.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "lesson-conversation.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "lexi-ui-fixes.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "life-double-tap-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "life-story-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "life-story.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "listen-step-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "mid-lesson-call.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "multilang-engine.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "pain-art.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "production-companion.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "pronunciation.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "push-permissions.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "q-audit.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "question-illustrations.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "reviews-filter.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "reviews-honest.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "runtime-smoke.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "seo.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "smart-review.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "sw-install.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "sw-partial.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "sync-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "sync-safety.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "sync-v174.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "teacher-voice-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test-library.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test-versions.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test050-focus-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test050-guided-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test050-guided.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "test050-rc-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "text-gaps-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "tg-bot.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "topic-done-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "topic-picker.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "ui-audit-browser.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "upgrade-3-0.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "upgrade-interrupted.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "welcome-progress.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "widgets.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "word-builder.cjs",
+    "code": 0,
+    "skip": false
+  },
+  {
+    "file": "writing-scoring.cjs",
+    "code": 0,
+    "skip": false
+  }
+]

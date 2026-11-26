@@ -1,0 +1,11 @@
+PASS origin: other sites, look-alike hosts, http, null and no Origin get 403 before any model call; CORS never echoes them
+PASS forged Origin from a script is accepted (an HTTP header cannot prove a browser); spend is capped: 12 / device, 40 / network, 300 / everybody per minute
+PASS daily caps: per device and per network, with the scope and Retry-After in the answer
+PASS a failing rate limiter refuses (no model call); AI_OFF=1 stops all model calls
+PASS size: 413 over 64 KB, 400 for non-object JSON; at most 12 messages, 400 / 600 characters each; system / tool roles dropped
+PASS prompt injection: profile, notes and Lesson Help fields are clipped, single-line, without <>{}; the rule precedes them; the key is never sent in the prompt
+PASS model errors, refusal, bad JSON, timeout and network errors → 502 / 504 with a code the app shows; nothing is charged for them
+PASS 226 app request shape (char peter) still served in Dutch, by Lexi; Lexi is the only persona; Lesson Help lesson, exercise and answer in the prompt
+PASS a question about the language in the learner's own language: answered without a «Better:» card; plain own-language messages keep it; informal «ти»
+PASS reply_type / answer_type validated ("" when unknown), explain only for questions about the language and not transliterated; Lesson Help gives no solution before the learner answered
+PASS: proposed Worker security checks

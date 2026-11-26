@@ -1,0 +1,12 @@
+{
+  "coverage": {
+    "completed": {
+      "comm:phrases:0": 0,
+      "comm:phrases:5": 0,
+      "comm:phrases:10": 0
+    },
+    "coverage": 0.8,
+    "ready": true,
+    "testedLesson": "comm:phrases:15"
+  }
+}

@@ -1,0 +1,5 @@
+PASS mobile-matrix-264.cjs 125s
+PASS: full mobile matrix — 312 view states (6 sizes × 4 languages × light / dark × 6 views, + text 150 % at 360 px): no sideways scroll, nothing past the edge, tap targets ≥ 24 px, Arabic RTL, no page errors
+
+
+LerenBe 3.0 suite: 1 pass, 0 fail, 0 skip, 0 not run (listed above)

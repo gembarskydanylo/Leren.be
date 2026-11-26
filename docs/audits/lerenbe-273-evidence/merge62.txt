@@ -1,0 +1,12 @@
+3b1b91aca88bac9db9bf66bbd466437c3ea41b4d
+100644 89c9274d897c0cc6180859cbb92777b5f2fc22fd 1	index.html
+100644 2f01b9cdafc2bc664448c6c3bfd96aae1143ae91 2	index.html
+100644 5771929b1d373ddbed595d97bce60f693e6acf63 3	index.html
+
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Auto-merging learn-life-story.html
+Auto-merging learn-life.html
+Auto-merging privacy.html
+Auto-merging reviews.html
+Auto-merging sitemap.xml

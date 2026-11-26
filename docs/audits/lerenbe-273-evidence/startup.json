@@ -1,0 +1,18 @@
+{
+  "startup": [
+    {
+      "network": "unthrottled localhost",
+      "server": "no-store, uncompressed test server",
+      "buttonReadyMs": 381,
+      "domContentLoadedMs": 302,
+      "completedTransferBytes": 3145516
+    },
+    {
+      "network": "simulated 1.6Mbit/s,150ms RTT,CPU4x",
+      "server": "no-store, uncompressed test server",
+      "buttonReadyMs": 15731,
+      "domContentLoadedMs": 15664,
+      "completedTransferBytes": 2864675
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+FAIL P1: a second open model must preserve another tab’s completed lesson
+  stale tab erased completed lesson a
+
+undefined !== 1
+
+FAIL P1: essential module failure must prevent activation/deletion of the prior cache
+  503 for the required route core still activates v273 and deletes v264
+FAIL P2: an extended daily plan must survive reloading
+  15-step plan written by extend() is rejected by today() after reload
+0 pass / 3 fail

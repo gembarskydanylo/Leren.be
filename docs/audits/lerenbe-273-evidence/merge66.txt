@@ -1,0 +1,12 @@
+766df88e34326c14accc8518f9efa08767cf104f
+100644 1bfdd9cf4e4bdd767e74c2efa2d2048720c111e5 1	sw.js
+100644 3995493e6229f75f223173ab77cc6a3160e2122a 2	sw.js
+100644 09dcc70f4ccf339cd4008f00ed5d8674479607d2 3	sw.js
+100644 01464d0990e01848454985b09a34a9b743085fb5 1	tests/sw-install.cjs
+100644 c7d5fd60969745efd99bcda0448141d8849a77da 2	tests/sw-install.cjs
+100644 cd7860cfedf9a688cdd54cb04823aa8929ef06f0 3	tests/sw-install.cjs
+
+Auto-merging sw.js
+CONFLICT (content): Merge conflict in sw.js
+Auto-merging tests/sw-install.cjs
+CONFLICT (content): Merge conflict in tests/sw-install.cjs

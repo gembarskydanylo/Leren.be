@@ -1,0 +1,291 @@
+{
+  "staleTabs": {
+    "before": {
+      "id": "comm:phrases:0",
+      "gain": 25,
+      "completed": {
+        "comm:phrases:0": 5
+      },
+      "xp": 25
+    },
+    "after": {
+      "completed": {},
+      "xp": "25"
+    }
+  },
+  "coverage": {
+    "completed": {
+      "comm:phrases:0": 0,
+      "comm:phrases:5": 0,
+      "comm:phrases:10": 0
+    },
+    "coverage": 0.8,
+    "ready": true,
+    "testedLesson": "comm:phrases:15"
+  },
+  "mobile": [
+    {
+      "w": 320,
+      "h": 640,
+      "lang": "uk",
+      "theme": "light",
+      "font": 1,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 16,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 576,
+            "w": 296,
+            "h": 52,
+            "bottom": 628
+          }
+        ],
+        "focus": true,
+        "dir": ""
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 360,
+      "h": 780,
+      "lang": "uk",
+      "theme": "light",
+      "font": 1,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 16,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 716,
+            "w": 336,
+            "h": 52,
+            "bottom": 768
+          }
+        ],
+        "focus": true,
+        "dir": ""
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "lang": "uk",
+      "theme": "dark",
+      "font": 1,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 20,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 780,
+            "w": 366,
+            "h": 52,
+            "bottom": 832
+          }
+        ],
+        "focus": true,
+        "dir": ""
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 412,
+      "h": 915,
+      "lang": "ar",
+      "theme": "dark",
+      "font": 1,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 348,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 851,
+            "w": 388,
+            "h": 52,
+            "bottom": 903
+          }
+        ],
+        "focus": true,
+        "dir": "rtl"
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 780,
+      "h": 360,
+      "lang": "uk",
+      "theme": "light",
+      "font": 1,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 114,
+          "y": 2,
+          "w": 44,
+          "h": 44,
+          "bottom": 46
+        },
+        "action": [
+          {
+            "x": 122,
+            "y": 296,
+            "w": 536,
+            "h": 52,
+            "bottom": 348
+          }
+        ],
+        "focus": true,
+        "dir": ""
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 320,
+      "h": 640,
+      "lang": "ar",
+      "theme": "dark",
+      "font": 1.5,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 260,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 570.40625,
+            "w": 296,
+            "h": 57.59375,
+            "bottom": 628
+          }
+        ],
+        "focus": true,
+        "dir": "rtl"
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    },
+    {
+      "w": 360,
+      "h": 780,
+      "lang": "uk",
+      "theme": "light",
+      "font": 2,
+      "first": {
+        "screen": "lesson",
+        "hscroll": false,
+        "exit": {
+          "x": 16,
+          "y": 4,
+          "w": 44,
+          "h": 44,
+          "bottom": 48
+        },
+        "action": [
+          {
+            "x": 12,
+            "y": 699.203125,
+            "w": 336,
+            "h": 68.796875,
+            "bottom": 768
+          }
+        ],
+        "focus": true,
+        "dir": ""
+      },
+      "back": {
+        "screen": "home",
+        "session": 0,
+        "focus": false
+      },
+      "errors": []
+    }
+  ],
+  "partialShell": {
+    "cache": {
+      "keys": [
+        "leren-be-v273"
+      ],
+      "missingCore": true
+    },
+    "errors": [
+      "Cannot set properties of undefined (setting 'mount')",
+      "LerenLearningPath is not defined"
+    ],
+    "app": {
+      "learningPathModel": false,
+      "homeButtons": 0,
+      "core": false,
+      "release": "273"
+    }
+  }
+}
