@@ -1,4 +1,4 @@
-// LerenBe 3.0 integration · real Service Worker upgrade from the current production release (PREV, default origin/main =
+// LerenBe 3.0 integration · real Service Worker upgrade (only when the change needs a release: tests/lib/release-scope.cjs) from the current production release (PREV, default origin/main =
 // release 226) to this tree (LerenBe 3.0), for six learner profiles. Chromium on localhost (emulated phone), no network,
 // no Firebase, no AI. Per profile: install PREV, build the learner's data with PREV's own code, snapshot every leren_* /
 // poly_* key and the visible numbers (XP, finished lessons, LIFE XP); deploy this tree → update bar (no automatic reload) →
@@ -18,7 +18,18 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
  const prevRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'lerenbe-prev-'));
  execSync(`git -C "${repo}" archive ${PREV} | tar -x -C "${prevRoot}"`, {maxBuffer: 1 << 30});
  const prevCache = cacheOf(fs.readFileSync(path.join(prevRoot, 'sw.js'), 'utf8')), curCache = cacheOf(fs.readFileSync(path.join(repo, 'sw.js'), 'utf8'));
- assert.notEqual(prevCache, curCache, 'the new release has its own cache name');
+ // A new release (cache name) is required exactly when a change can reach learners (tests/lib/release-scope.cjs).
+ // Without one (tests, docs, CI, crawler files, pages outside the offline cache) there is nothing to upgrade: the tree
+ // must then still serve PREV's worker byte for byte, so learners keep the release they have.
+ const scope = require('./lib/release-scope.cjs').releaseScope(repo, PREV);
+ if (!scope.app.length) {
+  assert.equal(curCache, prevCache, 'no app file changed, so the cache name stays ' + prevCache + ' (changed: ' + scope.changed.join(', ') + ')');
+  assert.equal(fs.readFileSync(path.join(repo, 'sw.js'), 'utf8'), fs.readFileSync(path.join(prevRoot, 'sw.js'), 'utf8'), 'sw.js unchanged');
+  fs.rmSync(prevRoot, {recursive: true, force: true});
+  console.log(`PASS: no release needed — ${scope.changed.length} changed file(s) never reach the app (${scope.changed.slice(0, 8).join(', ')}${scope.changed.length > 8 ? ', …' : ''}); ${curCache} and sw.js identical to ${PREV}`);
+  return;
+ }
+ assert.notEqual(prevCache, curCache, 'the new release has its own cache name: app files changed (' + scope.app.slice(0, 10).join(', ') + ')');
  assert(+curCache.replace(/\D/g, '') > +prevCache.replace(/\D/g, ''), curCache + ' is above ' + prevCache);
  let root = prevRoot, offline = false;
  const T = {'.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.m4a': 'audio/mp4', '.webmanifest': 'application/manifest+json', '.woff2': 'font/woff2', '.tsv': 'text/plain'};
