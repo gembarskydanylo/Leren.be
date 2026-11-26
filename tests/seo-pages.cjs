@@ -13,7 +13,7 @@ assert(urls.length>=4&&new Set(urls).size===urls.length,'sitemap URLs unique');
 for(const m of sm.matchAll(/<lastmod>([^<]+)<\/lastmod>/g))assert(/^\d{4}-\d{2}-\d{2}$/.test(m[1]),'lastmod format '+m[1]);
 for(const u of urls){
   assert(u.startsWith('https://lerenbe.com/'),'host '+u);
-  const rel=u.slice('https://lerenbe.com/'.length)||'index.html',s=read(rel),head=s.slice(0,s.indexOf('</head>'));
+  const path0=u.slice('https://lerenbe.com/'.length),rel=!path0?'index.html':path0.endsWith('/')?path0+'index.html':path0,s=read(rel),head=s.slice(0,s.indexOf('</head>'));
   assert.equal((s.match(/<h1[\s>]/g)||[]).length,1,rel+': exactly one static h1');
   assert(/<html lang="uk"/.test(s),rel+': html lang');
   assert(/<title>[^<]{10,}<\/title>/.test(head),rel+': title');
@@ -21,7 +21,10 @@ for(const u of urls){
   assert(head.includes('<link rel="canonical" href="'+u+'">'),rel+': canonical equals the sitemap URL');
   assert(/<meta property="og:title" content="[^"]+"/.test(head)&&/<meta property="og:image" content="https:\/\/lerenbe\.com\//.test(head),rel+': Open Graph');
   assert(!/<meta name="robots"[^>]*noindex/i.test(head),rel+': a sitemap page must not be noindex');
-  if(rel!=='index.html')assert(home.includes('href="./'+rel+'"'),rel+': linked from the home page');
+  // Linked by a plain <a href>: top-level pages from the home page, guides from the guides hub (itself linked from home).
+  if(rel==='guides/index.html')assert(home.includes('href="./guides/"'),rel+': linked from the home page');
+  else if(rel.startsWith('guides/'))assert(read('guides/index.html').includes('href="'+rel.slice(7)+'"'),rel+': linked from the guides hub');
+  else if(rel!=='index.html')assert(home.includes('href="./'+rel+'"'),rel+': linked from the home page');
 }
 // Pages that must stay out of the index are not in the sitemap.
 for(const rel of ['reviews.html'])if(fs.existsSync(rel)&&/noindex/i.test(read(rel)))assert(!urls.includes('https://lerenbe.com/'+rel),rel+' is noindex but listed in the sitemap');
