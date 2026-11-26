@@ -31,7 +31,7 @@
    badges:'Нові досягнення',nextT:'Наступний крок',cont:'Продовжити навчання',home:'На головну',
    nav:{today:'Сьогодні',learn:'Навчання',lexi:'Lexi',games:'Ігри',more:'Ще'},
    more:{title:'Ще',dict:'Словник',progress:'Прогрес і досягнення',profile:'Профіль',tests:'Тести й іспити',life:'Історії LIFE',clock:'Годинник',free:'Вільна практика: усі теми',settings:'Налаштування',guides:'Практичні посібники українською',about:'Про lerenbe.com',close:'Закрити'},
-   prof:{title:'Профіль',del:'Видалити ім’я',saved:'Збережено',noName:'Ім’я не вказано'},
+   prof:{title:'Профіль',del:'Видалити ім’я',saved:'Збережено',failed:'Не вдалося зберегти: сховище браузера недоступне. Зміни діють лише до закриття сторінки.',noName:'Ім’я не вказано'},
    learn:{tests:'Тести й іспити',free:'Вільна практика',mistakes:'Повторити мої помилки'}},
   en:{hi:n=>n?'Hi, '+n+'!':'Hi!',todayTopic:t=>'Today: '+t,session:'Today’s session',about:m=>'≈ '+m+' min',
    review:n=>'Review · '+n+' '+(n===1?'word':'words'),lesson:l=>'Lesson · '+l,lessonNext:'Lesson · next on your path',practice:'Practice · a short conversation',
@@ -58,7 +58,7 @@
    badges:'New achievements',nextT:'Next step',cont:'Continue learning',home:'Back to Today',
    nav:{today:'Today',learn:'Learn',lexi:'Lexi',games:'Games',more:'More'},
    more:{title:'More',dict:'Dictionary',progress:'Progress and achievements',profile:'Profile',tests:'Tests and exams',life:'LIFE stories',clock:'Clock',free:'Free practice: all topics',settings:'Settings',guides:'Practical guides (in Ukrainian)',about:'About lerenbe.com',close:'Close'},
-   prof:{title:'Profile',del:'Delete my name',saved:'Saved',noName:'No name set'},
+   prof:{title:'Profile',del:'Delete my name',saved:'Saved',failed:'Could not save: browser storage is unavailable. Changes last only while this page is open.',noName:'No name set'},
    learn:{tests:'Tests and exams',free:'Free practice',mistakes:'Review my mistakes'}},
   fr:{hi:n=>n?'Bonjour, '+n+' !':'Bonjour !',todayTopic:t=>'Aujourd’hui : '+t,session:'La séance du jour',about:m=>'≈ '+m+' min',
    review:n=>'Révision · '+n+' '+(n===1?'mot':'mots'),lesson:l=>'Leçon · '+l,lessonNext:'Leçon · la suivante du parcours',practice:'Pratique · une courte conversation',
@@ -85,7 +85,7 @@
    badges:'Nouveaux succès',nextT:'Étape suivante',cont:'Continuer à apprendre',home:'Retour à Aujourd’hui',
    nav:{today:'Aujourd’hui',learn:'Apprendre',lexi:'Lexi',games:'Jeux',more:'Plus'},
    more:{title:'Plus',dict:'Dictionnaire',progress:'Progrès et succès',profile:'Profil',tests:'Tests et examens',life:'Histoires LIFE',clock:'Horloge',free:'Pratique libre : tous les thèmes',settings:'Réglages',guides:'Guides pratiques (en ukrainien)',about:'À propos de lerenbe.com',close:'Fermer'},
-   prof:{title:'Profil',del:'Supprimer mon prénom',saved:'Enregistré',noName:'Aucun prénom'},
+   prof:{title:'Profil',del:'Supprimer mon prénom',saved:'Enregistré',failed:'Échec de l’enregistrement : stockage indisponible. Les changements durent tant que cette page reste ouverte.',noName:'Aucun prénom'},
    learn:{tests:'Tests et examens',free:'Pratique libre',mistakes:'Revoir mes erreurs'}},
   ar:{hi:n=>n?'مرحباً يا '+n+'!':'مرحباً!',todayTopic:t=>'اليوم: '+t,session:'درس اليوم',about:m=>'≈ '+m+' د',
    review:n=>'مراجعة · '+n+' كلمات',lesson:l=>'درس · '+l,lessonNext:'درس · التالي في مسارك',practice:'تدريب · محادثة قصيرة',
@@ -112,7 +112,7 @@
    badges:'إنجازات جديدة',nextT:'الخطوة التالية',cont:'تابع التعلّم',home:'العودة إلى اليوم',
    nav:{today:'اليوم',learn:'التعلّم',lexi:'Lexi',games:'الألعاب',more:'المزيد'},
    more:{title:'المزيد',dict:'القاموس',progress:'التقدّم والإنجازات',profile:'الملف الشخصي',tests:'الاختبارات والامتحانات',life:'قصص LIFE',clock:'الساعة',free:'تدريب حر: كل المواضيع',settings:'الإعدادات',guides:'أدلة عملية (بالأوكرانية)',about:'حول lerenbe.com',close:'إغلاق'},
-   prof:{title:'الملف الشخصي',del:'احذف اسمي',saved:'تم الحفظ',noName:'لا يوجد اسم'},
+   prof:{title:'الملف الشخصي',del:'احذف اسمي',saved:'تم الحفظ',failed:'تعذّر الحفظ: تخزين المتصفح غير متاح. تبقى التغييرات ما دامت الصفحة مفتوحة.',noName:'لا يوجد اسم'},
    learn:{tests:'الاختبارات والامتحانات',free:'تدريب حر',mistakes:'راجع أخطائي'}}
  };
  const tr=lang=>T[lang]||T.uk;
@@ -267,7 +267,8 @@
     node('h3','',t.paceQ),mk(Object.entries(t.pace).map(([id,[a]])=>[id,a]),id=>st.pace===id,id=>{st.pace=id},'radiogroup',t.paceQ),
     node('h3','',t.timeQ),mk([5,10,15,20,30].map(m=>[String(m),m+' '+t.min]),id=>String(st.goal)===id,id=>{st.goal=Number(id)},'radiogroup',t.timeQ))};
   drawPrefs();const status=node('p','td-note');status.setAttribute('role','status');
-  const save=btn(t.save,()=>{opts.onSave({name:form.querySelector('input[type=text]').value,forAI:form.querySelector('input[type=checkbox]').checked,...st});status.textContent=t.prof.saved},'td-btn td-primary');save.dataset.action='save-profile';
+  // LerenBe 273 (Codex P2-03): «Saved» only when the browser really saved it (onSave returns false when it refused).
+  const save=btn(t.save,()=>{const ok=opts.onSave({name:form.querySelector('input[type=text]').value,forAI:form.querySelector('input[type=checkbox]').checked,...st})!==false;status.textContent=ok?t.prof.saved:t.prof.failed;status.dataset.save=ok?'ok':'failed'},'td-btn td-primary');save.dataset.action='save-profile';
   d.append(save,status);focusHeading(d);return d;
  }
 

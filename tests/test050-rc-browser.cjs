@@ -126,12 +126,18 @@ const root = path.join(__dirname, '..');
    const r = await page.evaluate(() => { const m = learningPath.model, c = LerenLearningPath.catalog(DATA, LerenCurriculum), comm = c.lessons.filter(l => l.chapter === 'comm'), out = [];
     out.push([learningPath.talkCoverage(comm[0].id), learningPath.talkReady(comm[0].id)]);
     comm.slice(0, 3).forEach(l => m.state.completed[l.id] = l.ids.length);
-    out.push([learningPath.talkCoverage(comm[3].id), learningPath.talkReady(comm[3].id)]);
+    out.push([learningPath.talkCoverage(comm[3].id, true), learningPath.talkReady(comm[3].id, true)]); // forecast while planning (release 275)
+    out.push([learningPath.talkCoverage(comm[3].id), learningPath.talkReady(comm[3].id)]); // strict: the 4th lesson is not played yet
+    m.state.completed[comm[3].id] = comm[3].ids.length; out.push([learningPath.talkCoverage(comm[3].id), learningPath.talkReady(comm[3].id)]);
+    m.state.completed[comm[3].id] = 0; out.push([learningPath.talkCoverage(comm[3].id), learningPath.talkReady(comm[3].id)]); // 0/5 does not count (Codex P2-02)
     const samples = LerenLessonConversation.SCENARIOS.comm.map(s => String(s.sample || '').split(/\s+/).filter(Boolean).length);
     return {out, samples} });
    assert.equal(r.out[0][1], false, 'brand-new learner: first conversation not offered (' + r.out[0][0].toFixed(2) + ')');
    assert.equal(r.out[1][1], true, 'after 3 lessons the 4th lesson\'s conversation is ready (' + r.out[1][0].toFixed(2) + ')');
    assert(r.out[1][0] >= 0.7, 'criterion: ≥70 % known words');
+   assert.equal(r.out[2][1], false, 'release 275: an unplayed lesson does not count as known (' + r.out[2][0].toFixed(2) + ')');
+   assert.equal(r.out[3][1], true, 'after the 4th lesson is passed its conversation is ready (' + r.out[3][0].toFixed(2) + ')');
+   assert.equal(r.out[4][1], false, 'the 4th lesson finished with 0 correct is not known (' + r.out[4][0].toFixed(2) + ')');
    assert(Math.max(...r.samples) <= 8, 'A1.1 conversation answers are short phrases (≤ 8 words): ' + r.samples);
    assert.deepEqual(errors, []); report.push(`talk gate: ${Math.round(r.out[0][0] * 100)} % known → no talk; after 3 lessons ${Math.round(r.out[1][0] * 100)} % → talk; A1.1 answers ≤ ${Math.max(...r.samples)} words`); await ctx.close();
   }

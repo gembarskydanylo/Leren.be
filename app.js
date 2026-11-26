@@ -1311,9 +1311,20 @@ function questionPicture(it,context={}){
  const box=iconBox(emoji);box.classList.add("question-picture");return box;
 }
 
+// LerenBe 273 (Codex P1-01, words): a second open tab used to overwrite the word progress with its own older copy. Before a
+// save, what another tab wrote since this tab last read or wrote poly_progress is merged in against that last common copy
+// (LerenMerge.wordsMerge, the rule of account sync: the newer answer decides the schedule, both tabs' new answers count).
+let storeSeen=null,storeBaseText="{}";try{storeSeen=localStorage.getItem("poly_progress");storeBaseText=JSON.stringify(store)}catch(e){}
+function storeAbsorb(){
+ let raw;try{raw=localStorage.getItem("poly_progress")}catch(e){return}if(raw===storeSeen)return;
+ let disk=null,base={};try{disk=JSON.parse(raw||"{}");base=JSON.parse(storeBaseText)}catch(e){}if(!disk||typeof disk!=="object"||Array.isArray(disk))return;
+ for(const [id,w] of Object.entries(LerenMerge.wordsMerge(base,store,disk))){if(store[id]&&typeof store[id]==="object")Object.assign(store[id],w);else store[id]=w}
+}
 function saveStore(){
  try{
-  localStorage.setItem("poly_progress",JSON.stringify(store));
+  try{storeAbsorb()}catch(e){} // merging must never stop the save itself
+  const words=JSON.stringify(store);
+  localStorage.setItem("poly_progress",words);storeSeen=words;storeBaseText=words;
   localStorage.setItem("poly_score",String(score));
   localStorage.setItem("poly_target",targetLang);
   localStorage.setItem("poly_ui",uiLang);
@@ -3950,7 +3961,7 @@ function openMore(){
 function openProfile(){
  const G=LerenGuided,p=G.profile(localStorage),n=G.name(localStorage);
  LerenToday.profile({lang:uiLang,name:n.name,forAI:n.forAI,goals:p.goals,pace:p.pace,goal:goalMin(),
-  onSave:d=>{G.setName(localStorage,d.name,d.forAI);G.saveProfile(localStorage,{goals:d.goals,pace:d.pace,namePrompt:"done"});lsSet("leren_goal_min",d.goal);updateStats();if(learningPath)learningPath.refresh()},
+  onSave:d=>{const named=G.cleanName(d.name)?!!G.setName(localStorage,d.name,d.forAI):(G.clearName(localStorage),true),prof=!!G.saveProfile(localStorage,{goals:d.goals,pace:d.pace,namePrompt:"done"});let goal=true;try{localStorage.setItem("leren_goal_min",JSON.stringify(d.goal))}catch(e){goal=false}updateStats();if(learningPath)learningPath.refresh();return named&&prof&&goal}, // LerenBe 273: false = not saved (the profile says so)
   onDeleteName:()=>{G.clearName(localStorage);if(learningPath)learningPath.refresh()}});
 }
 // The courses offered at the first run: Dutch first, then the other live courses that have lessons on this device.
@@ -6281,7 +6292,7 @@ const UPD_UI={uk:{t:"Вийшла нова версія застосунку",ve
  ar:{t:"يتوفر إصدار جديد من التطبيق",ver:"الإصدار",go:"تحديث",done:"✓ تم تحديث التطبيق إلى الإصدار "}};
 const updU=()=>UPD_UI[uiLang]||UPD_UI.uk;
 // Keep the announcement available after updating, including users who already installed v87.
-const RELEASE_VERSION="273";
+const RELEASE_VERSION="275";
 // The release whose notes RELEASE_UI describes. A small update keeps the notes of the last bigger one: whoever already
 // saw those notes is not shown them again.
 const RELEASE_NOTES_VERSION="176";

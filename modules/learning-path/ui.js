@@ -19,11 +19,15 @@
   // TEST-050 RC: a conversation is offered only when the learner already knows most of its words (A1.1 beginners must not get
   // phrases far above their level). Known = Dutch words of the cards in finished lessons plus the lesson just played; offline.
   const TALK_READY=0.7,talkWords=s=>String(s||'').toLowerCase().replace(/[^a-zà-ÿ' ]/g,' ').split(/\s+/).filter(w=>w.length>1);
-  function talkCoverage(id){const l=model.lesson(id),turns=l&&talkOk&&LerenLessonConversation.SCENARIOS?.[l.chapter];if(!turns||!turns.length)return 0;
-   const known=new Set(),add=lid=>{for(const c of model.lesson(lid)?.ids||[])for(const w of talkWords(course.cards.get(c)?.nl))known.add(w)};
-   for(const lid of Object.keys(model.state.completed))add(lid);add(id);
+  // LerenBe 273 (Codex P2-02): «known» = words of lessons passed with at least 80% (model.mastered), minus the words now on the
+  // mistakes list. A lesson finished with 0/5 used to count, and the lesson asked about counted before it was played.
+  // forecast=true only while drafting today's plan: the next lesson counts as if passed; the practice step checks again when
+  // it comes and is skipped if the words are not known by then.
+  function talkCoverage(id,forecast=false){const l=model.lesson(id),turns=l&&talkOk&&LerenLessonConversation.SCENARIOS?.[l.chapter];if(!turns||!turns.length)return 0;
+   const known=new Set(),wrong=new Set(model.state.mistakes),add=lid=>{for(const c of model.lesson(lid)?.ids||[])if(!wrong.has(c))for(const w of talkWords(course.cards.get(c)?.nl))known.add(w)};
+   for(const lid of Object.keys(model.state.completed))if(model.mastered(lid))add(lid);if(forecast)add(id);
    const words=[...new Set(turns.flatMap(t=>talkWords(t.q+' '+t.sample)))];return words.length?words.filter(w=>known.has(w)).length/words.length:0}
-  const talkReady=id=>talkCoverage(id)>=TALK_READY;
+  const talkReady=(id,forecast=false)=>talkCoverage(id,forecast)>=TALK_READY;
   function beginTalk(id){if(!talkOk||!model.lesson(id))return;if(conversation.state.lesson===id&&conversation.state.index<3)conversation.resume();else conversation.begin(id);talkView.clear();go('talk')}
   // A started but unfinished conversation (left for another screen or closed the app) is offered on the home screen.
   const talkOpen=()=>talkOk&&!!model.lesson(conversation.state.lesson)&&conversation.state.index<3&&!conversation.state.completed.includes(conversation.state.lesson);
@@ -62,9 +66,13 @@
   }
   function shell(){
    root.replaceChildren();root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';root.dataset.screen=screen;
-   FL?.enter(focusOn());if(focusOn()){root.appendChild(focusBar());return}
+   FL?.enter(focusOn());if(focusOn()){root.appendChild(focusBar());saveWarning();return}
    root.appendChild(LerenFocus.tools({lang,backLabel:screen==='map'&&mapChapter?LerenFocus.tr(lang).all:null,back:screen==='home'?null:()=>{if(screen==='map'&&mapChapter){mapChapter=null;render()}else go('home')}}));
+   saveWarning();
   }
+  // LerenBe 273 (Codex P2-03): when the browser refuses to save the route or today's plan, every screen says so (the Focus
+  // mode hides the old .lp-caption note). Inline style: no new CSS on the render-blocking budget.
+  function saveWarning(){if(model.persistent&&G?.saveOk!==false)return;const p=node('p','lp-save-warning',t('memory'));p.setAttribute('role','alert');p.dataset.save='failed';Object.assign(p.style,{margin:'8px 0',padding:'8px 12px',borderRadius:'10px',background:'#fdecea',color:'#7a1d12',fontSize:'14px',lineHeight:'1.4'});root.appendChild(p)}
   function note(){root.appendChild(node('p','lp-caption',t(model.persistent?'saved':'memory')))}
   // ---- TEST-050 Guided Learning («Today with Lexi»). On when the host says so (bridge.guided) and both modules are loaded;
   // otherwise this file behaves exactly as before. The plan only chooses WHICH existing step comes next: the lessons, the
@@ -77,7 +85,7 @@
   const earnedBadges=()=>{try{const raw=JSON.parse(localStorage.getItem('leren_achievements_v1')||'{}');return Object.keys(raw&&raw.earned||{})}catch{return []}};
   function draftPlan(){const prof=G.profile(store),stats=bridge.stats?.()||{},due=bridge.due?bridge.due():[],paused=pausedLesson();
    const upcoming=paused||model.recommended();
-   return G.plan({review:!paused&&model.warmupDue(due)?model.warmupIds(due).length:0,paused:paused?.id||null,goal:stats.goal,pace:prof.pace,practice:talkOk&&!!upcoming&&talkReady(upcoming.id)})} // practice only when its words are mostly known
+   return G.plan({review:!paused&&model.warmupDue(due)?model.warmupIds(due).length:0,paused:paused?.id||null,goal:stats.goal,pace:prof.pace,practice:talkOk&&!!upcoming&&talkReady(upcoming.id,true)})} // practice only when its words are mostly known
   function stepLabel(step,first){const tt=TD.tr(lang);if(step.kind==='review')return tt.review(step.words||3);if(step.kind==='practice')return tt.practice;const l=step.lesson?model.lesson(step.lesson):first?pausedLesson()||model.recommended():null;return l?tt.lesson(lessonTitle(l)):tt.lessonNext}
   function guidedScreen(){stepView?.cancel();stepView=null;talkView.cancel();bridge.stop();feedback=null;screen='guided';shell()}
   // TEST-050: a learner who chose English or French at the first run gets the same Today screen for that course;
@@ -368,6 +376,9 @@
   // TEST-019: first run → the real first lesson (no detour through the home screen), or the optional starting check.
   function startFirst(){if(!pickCourse('A1.1'))return false;if(!model.state.started)model.start();const l=model.recommended();if(!l)return false;model.begin(l.id);go('lesson');return true}
   function startPlacement(){if(!pickCourse('A1.1'))return false;model.place();go('placement');return true}
+  // LerenBe 273 (Codex P1-01): another tab finished a lesson or changed the route → take it in (model.sync never drops this
+  // tab's progress); the home and the map show it at once, a running lesson is not interrupted.
+  root.ownerDocument?.defaultView?.addEventListener('storage',e=>{if(e.key!==null&&e.key!==model.key)return;const busy=focusOn()||screen==='talk';if(model.sync(!busy)&&!busy)render()});
   render();return {talkCoverage,talkReady,startFirst,startPlacement,refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation,
    // TEST-050: the bottom navigation opens «Today» or «Learn» (the course map), and can start today's session.
    today(){go('home')},map(){openMap()},start(){if(guidedOn())guidedStart()},get screen(){return screen}};

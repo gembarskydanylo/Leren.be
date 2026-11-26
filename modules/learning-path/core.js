@@ -54,7 +54,41 @@
    const p=raw.placement;
    if(obj(p)&&Array.isArray(p.answers)&&p.answers.length<=12&&p.answers.every(a=>typeof a==='boolean'))state.placement={answers:p.answers};
   }
-  function save(){try{storage.setItem(key,JSON.stringify(state))}catch{persistent=false}}
+  // LerenBe 273 (Codex P1-01): two open tabs each hold a copy of the route. A save used to write this tab's whole copy, so a
+  // tab opened before a lesson was finished elsewhere erased that lesson. Every save (and sync(), called on a storage event)
+  // first takes in what another tab wrote since this tab last read or wrote the key: finished lessons keep the best result
+  // (they never disappear), mistakes are merged against the last common copy (a fixed mistake stays fixed, a new one is
+  // kept), started/warm-up only move forward, a course start changed elsewhere is taken unless changed here too, the open
+  // lesson follows the stored one unless this tab changed it. The paused lessons of other courses, the active course and a
+  // placement belong to this tab. XP is not here: it is a keyed ledger (app.js addXP).
+  let seen=value,base=null;
+  const snap=()=>({mistakes:[...state.mistakes],entries:{...state.entries},session:JSON.stringify(state.session)});
+  function absorb(r,follow=true){
+   let changed=false;
+   if(obj(r.completed))for(const [id,v] of Object.entries(r.completed))if(byId.has(id)&&Number.isInteger(v)&&v>=0&&v<=byId.get(id).ids.length&&!(state.completed[id]>=v)){state.completed[id]=v;changed=true}
+   if(Array.isArray(r.mistakes)){
+    const disk=[...new Set(r.mistakes.filter(id=>cardIds.has(id)))],had=new Set(base.mistakes),on=new Set(disk);
+    const next=[...new Set([...state.mistakes.filter(id=>!had.has(id)||on.has(id)),...disk.filter(id=>!had.has(id))])];
+    if(next.length!==state.mistakes.length||next.some((id,i)=>id!==state.mistakes[i])){state.mistakes=next;changed=true}
+   }
+   // The open lesson of the same course: a tab that did not change it since it last read or wrote the key takes the stored
+   // one (lesson continued, paused or closed in another tab), so its save never puts back an older copy. A tab that changed
+   // it (it is the one playing) keeps its own. follow=false: a storage event while this tab shows a lesson.
+   const mine=JSON.stringify(state.session);
+   if(follow&&mine===base.session&&!state.placement&&r.course===state.course){
+    const d=validSession(r.session)&&(r.session.kind==='review'||lessonLevel(r.session.lesson)===state.course)?copySession(r.session):null;
+    if(JSON.stringify(d)!==mine){state.session=d;changed=true}
+   }
+   if(r.started===true&&!state.started){state.started=true;changed=true}
+   if(typeof r.warmed==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(r.warmed)&&!(state.warmed>=r.warmed)){state.warmed=r.warmed;changed=true}
+   if(obj(r.entries))for(const [level,id] of Object.entries(r.entries))if(levels.includes(level)&&lessonLevel(id)===level&&id!==base.entries[level]&&state.entries[level]===base.entries[level]&&state.entries[level]!==id){state.entries[level]=id;changed=true}
+   return changed;
+  }
+  // Reads what is stored now; null when nothing changed since this tab last read or wrote it (or it cannot be read).
+  function fresh(){let v;try{v=storage.getItem(key)}catch{return null}if(v===seen)return null;let r=null;try{r=JSON.parse(v||'null')}catch{}seen=v;return obj(r)&&r.version===1?r:null}
+  function sync(follow=true){const r=fresh();if(!r)return false;const changed=absorb(r,follow);base={mistakes:Array.isArray(r.mistakes)?r.mistakes.filter(id=>cardIds.has(id)):[],entries:obj(r.entries)?{...r.entries}:{},session:JSON.stringify(state.session)};return changed}
+  function save(){const r=fresh();if(r)absorb(r);try{const text=JSON.stringify(state);storage.setItem(key,text);seen=text;base=snap()}catch{persistent=false}}
+  base=snap();
   const entryOf=level=>state.entries[level]||courseLessons(level)[0]?.id;
   function recommended(level=state.course){
    if(level===state.course&&state.session?.kind==='lesson'&&lessonLevel(state.session.lesson)===level&&!(state.session.phase===2&&state.session.index===state.session.ids.length))return byId.get(state.session.lesson);
@@ -103,7 +137,7 @@
    const first=answers.indexOf(false),index=first<0?12:first;
    state.entry=course.chapters[index].lessons[0].id;state.course=lessonLevel(state.entry);state.entries[state.course]=state.entry;state.started=true;state.session=null;state.placement=null;save();return true;
   }
-  return {state,course,phases,get persistent(){return persistent},save,recommended,begin,beginReview,current,advance,nextPhase,finish,continueRoute,start,place,placementCard,placementAnswer,acceptPlacement,
+  return {state,course,phases,get persistent(){return persistent},save,sync,key,recommended,begin,beginReview,current,advance,nextPhase,finish,continueRoute,start,place,placementCard,placementAnswer,acceptPlacement,
    home(){state.session=null;save()},cancelPlacement(){state.placement=null;save()},lesson:id=>byId.get(id),
    stats(chapter){const ls=chapter?course.chapters.find(c=>c.id===chapter).lessons:courseLessons(state.course);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
    courseStats(level){const ls=courseLessons(level);return {done:ls.filter(l=>Object.hasOwn(state.completed,l.id)).length,total:ls.length}},
