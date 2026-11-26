@@ -14,7 +14,10 @@
  const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
  const parse=s=>{try{return JSON.parse(s)}catch{return null}};
  const get=(storage,k)=>{try{return storage.getItem(k)}catch{return null}};
- const set=(storage,k,v)=>{try{storage.setItem(k,v);return true}catch{return false}};
+ // LerenBe 273 (Codex P2-03): the result of the last write is kept (saveOk) so the screens can say «not saved» instead of
+ // pretending; a plan that could not be written stays usable in memory for this page (see today()).
+ let lastOk=true,unsaved=null;
+ const set=(storage,k,v)=>{try{storage.setItem(k,v);lastOk=true;return true}catch{lastOk=false;return false}};
  const del=(storage,k)=>{try{storage.removeItem(k)}catch{}};
  const day=(now=new Date())=>now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
 
@@ -61,18 +64,27 @@
   if(input.practice&&!(pace==='calm'&&Number(input.goal)<=5))add('practice');
   return steps;
  }
+ // LerenBe 273 (Codex P2-01): one limit for the writer and the reader. «Continue learning» used to add steps without a limit
+ // while the reader dropped a plan of more than 12, so the day's plan vanished after a reload. Now the reader accepts up to
+ // MAX_STEPS, and extend() folds the finished steps into «carry» (their totals stay in the day's summary) before it
+ // would pass that limit.
+ const MAX_STEPS=60;
+ const count=v=>Math.max(0,Number.isFinite(Number(v))?Math.floor(Number(v)):0);
  function cleanToday(o,date){
-  if(!obj(o)||o.v!==1||o.date!==date||!Array.isArray(o.steps)||!o.steps.length||o.steps.length>12)return null;
+  if(!obj(o)||o.v!==1||o.date!==date||!Array.isArray(o.steps)||!o.steps.length||o.steps.length>MAX_STEPS)return null;
   const steps=o.steps.filter(s=>obj(s)&&typeof s.id==='string'&&['review','lesson','practice'].includes(s.kind)).map(s=>({id:s.id,kind:s.kind,min:Number(s.min)||MINUTES[s.kind],done:s.done===true,
    ...(typeof s.lesson==='string'?{lesson:s.lesson}:{}),...(Number.isFinite(s.words)?{words:s.words}:{}),...(obj(s.result)?{result:{correct:Math.max(0,s.result.correct|0),total:Math.max(0,s.result.total|0),gain:Math.max(0,s.result.gain|0)}}:{})}));
   if(steps.length!==o.steps.length)return null;
-  return {v:1,date,course:typeof o.course==='string'?o.course:'',steps,paid:Array.isArray(o.paid)?o.paid.filter(x=>typeof x==='string'):[],badges:Array.isArray(o.badges)?o.badges.filter(x=>typeof x==='string'):[],round:Math.max(1,o.round|0)};
+  return {v:1,date,course:typeof o.course==='string'?o.course:'',steps,paid:Array.isArray(o.paid)?o.paid.filter(x=>typeof x==='string'):[],badges:Array.isArray(o.badges)?o.badges.filter(x=>typeof x==='string'):[],round:Math.max(1,o.round|0),
+   ...(obj(o.carry)?{carry:{correct:count(o.carry.correct),total:count(o.carry.total),gain:count(o.carry.gain),steps:count(o.carry.steps),minutes:count(o.carry.minutes)}}:{})};
  }
- function today(storage,now){return cleanToday(parse(get(storage,TODAY_KEY)),day(now))}
- function save(storage,state){return set(storage,TODAY_KEY,JSON.stringify(state))}
+ function today(storage,now){if(unsaved&&unsaved.date===day(now))return unsaved;return cleanToday(parse(get(storage,TODAY_KEY)),day(now))}
+ function save(storage,state){const ok=set(storage,TODAY_KEY,JSON.stringify(state));unsaved=ok?null:state;return ok}
  function start(storage,{steps,course='',badges=[],now,round=1}){const state={v:1,date:day(now),course,steps:steps.map(s=>({...s,done:false})),paid:[],badges:[...badges],round};save(storage,state);return state}
  // More of the same session («Continue learning» on the result screen): new steps after the finished ones, same day.
- function extend(storage,state,steps){if(!state)return null;const base=state.steps.length;state.steps.push(...steps.map((s,i)=>({...s,id:state.date+':'+(base+i)+':'+s.kind,done:false})));state.round=(state.round||1)+1;save(storage,state);return state}
+ function extend(storage,state,steps){if(!state)return null;steps=steps.slice(0,MAX_STEPS);
+  if(state.steps.length+steps.length>MAX_STEPS){const sum=summary(state),c={correct:sum.correct,total:sum.total,gain:sum.gain,steps:sum.steps,minutes:sum.minutes};state.carry=c;const keep=state.steps.filter(s=>!s.done);state.paid=state.paid.filter(id=>keep.some(s=>s.id===id));state.steps=keep}
+  steps=steps.slice(0,MAX_STEPS-state.steps.length);const n=(state.carry?.steps||0)+state.steps.length;state.steps.push(...steps.map((s,i)=>({...s,id:state.date+':'+(n+i)+':'+s.kind,done:false})));state.round=(state.round||1)+1;save(storage,state);return state}
  const current=state=>state?state.steps.find(s=>!s.done)||null:null;
  const position=state=>{if(!state)return null;const i=state.steps.findIndex(s=>!s.done);return {index:i<0?state.steps.length:i,total:state.steps.length}};
  const finished=state=>!!state&&state.steps.every(s=>s.done);
@@ -82,8 +94,8 @@
   const s=state?.steps.find(x=>x.id===stepId);if(!s||state.paid.includes(stepId))return false;
   s.done=true;s.result={correct:Math.max(0,result.correct|0),total:Math.max(0,result.total|0),gain:Math.max(0,result.gain|0)};state.paid.push(stepId);save(storage,state);return true;
  }
- function summary(state){const out={correct:0,total:0,gain:0,steps:0,minutes:0};if(!state)return out;for(const s of state.steps)if(s.done){out.steps++;out.minutes+=s.min;if(s.result){out.correct+=s.result.correct;out.total+=s.result.total;out.gain+=s.result.gain}}return out}
- function clear(storage){del(storage,TODAY_KEY)}
+ function summary(state){const out={correct:0,total:0,gain:0,steps:0,minutes:0};if(!state)return out;if(obj(state.carry))for(const k of Object.keys(out))out[k]+=count(state.carry[k]);for(const s of state.steps)if(s.done){out.steps++;out.minutes+=s.min;if(s.result){out.correct+=s.result.correct;out.total+=s.result.total;out.gain+=s.result.gain}}return out}
+ function clear(storage){unsaved=null;del(storage,TODAY_KEY)}
 
- globalThis.LerenGuided={PROFILE_KEY,NAME_KEY,TODAY_KEY,GOALS,PACES,GOAL_MIN,MINUTES,day,cleanName,name,setName,setForAI,clearName,profile,saveProfile,askName,lessonCount,plan,today,start,extend,current,position,finished,bind,complete,summary,clear};
+ globalThis.LerenGuided={PROFILE_KEY,NAME_KEY,TODAY_KEY,GOALS,PACES,GOAL_MIN,MINUTES,day,cleanName,name,setName,setForAI,clearName,profile,saveProfile,askName,lessonCount,plan,today,start,extend,current,position,finished,bind,complete,summary,clear,MAX_STEPS,get saveOk(){return lastOk}};
 })();

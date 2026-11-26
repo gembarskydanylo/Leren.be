@@ -105,7 +105,7 @@ const root = path.join(__dirname, '..');
    const {ctx, page, errors} = await open({seed: {...BASE, leren_profile_v1: '{"v":1,"namePrompt":"done","goals":["belgium"],"source":"new"}', leren_goal_min: '10'}});
    await page.evaluate(() => { const m = learningPath.model, c = LerenLearningPath.catalog(DATA, LerenCurriculum); for (const l of c.lessons.filter(l => l.chapter === 'comm').slice(0, 3)) m.state.completed[l.id] = l.ids.length; m.state.started = true; m.save(); localStorage.removeItem('leren_today_v1') });
    await page.reload(); await page.waitForFunction(() => window.learningPath); await page.waitForSelector('#learningPath .td-home');
-   assert(await page.evaluate(() => learningPath.talkReady(learningPath.model.recommended().id)), 'after 3 lessons the 4th lesson\'s talk is ready');
+   assert(await page.evaluate(() => learningPath.talkReady(learningPath.model.recommended().id, true)), 'after 3 lessons the 4th lesson\'s talk is ready (forecast while planning, release 275)');
    await page.click('#learningPath [data-action=start]');
    let t = await today(page); assert.deepEqual(t.steps.map(s => s.kind), ['lesson', 'practice'], 'talk ready: lesson + practice');
    await finishLesson(page);

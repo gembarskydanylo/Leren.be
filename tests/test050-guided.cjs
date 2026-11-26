@@ -91,7 +91,7 @@ const skip = app.match(/const SYNC_SKIP=new Set\(\[([^\]]*)\]/)[1];
 for (const k of ['leren_learner_name', 'leren_today_v1']) assert(skip.includes('"' + k + '"'), k + ' stays on the device (not synced, not in backups)');
 assert(!skip.includes('"leren_profile_v1"'), 'goals/pace follow the account like other settings');
 const version = app.match(/RELEASE_VERSION="(\d+)"/)[1]; assert.equal(sw.match(/leren-be-v(\d+)/)[1], version, 'cache name = release');
-for (const f of ['./modules/guided/core.js?v=1', './modules/today/ui.js?v=4', './modules/learning-path/ui.js?v=' + version, './app.js?v=' + version]) {
+for (const f of ['./modules/guided/core.js?v=275', './modules/today/ui.js?v=275', './modules/learning-path/ui.js?v=' + version, './app.js?v=' + version]) {
  assert(sw.includes('"' + f + '"'), 'offline: ' + f); assert(html.includes(f), 'index: ' + f);
 }
 assert(sw.includes('"./modules/today/style.css?v=3"') && ui.includes("'./modules/today/style.css?v=3'") && !html.includes('today/style.css'), 'Today styles: cached offline, loaded by today/ui.js, not render-blocking');
