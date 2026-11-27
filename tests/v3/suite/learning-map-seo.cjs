@@ -36,20 +36,19 @@ const root=path.join(__dirname,'../app');
   const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
   await page.addInitScript(release=>{if(sessionStorage.getItem('seed'))return;sessionStorage.setItem('seed','1');for(const [k,v]of Object.entries({leren_release_seen:JSON.stringify(release),poly_ui:'uk',leren_home_v1:'path',leren_welcome_seen:'true',leren_onboarding_language_v1:'1',leren_start_known_v1:'zero',poly_score:'35'}))localStorage.setItem(k,v)},release);
-  await page.goto(base);await page.waitForSelector('.hv-route');
-  assert(await page.locator('.hv-route-empty').isVisible());
+  // TEST-050: the topic map lives in «Навчання» (the home is «Сьогодні з Lexi»); same model equality, read-only, one current topic.
+  const learn=async()=>{await page.waitForSelector('.td-home');await page.evaluate(()=>openLearn());await page.waitForSelector('#learningPath .fh-topic-grid .fh-topic')};
+  await page.goto(base);await learn();
+  assert.equal(await page.locator('#learningPath .fh-topic.is-started, #learningPath .fh-topic.is-done').count(),0,'new learner: no topic started yet');
   // Seed one actual completed lesson; the UI must read it and must never modify it itself.
-  await page.evaluate(()=>{const m=learningPath.model,l=m.recommended();m.state.completed[l.id]=l.ids.length;m.state.started=true;m.save()});await page.reload();await page.waitForSelector('.hv-route');
+  await page.evaluate(()=>{const m=learningPath.model,l=m.recommended();m.state.completed[l.id]=l.ids.length;m.state.started=true;m.save()});await page.reload();await learn();
   const before=await page.evaluate(()=>[localStorage.getItem('leren_path_v1'),localStorage.getItem('poly_score')]);
-  const rows=await page.locator('.hv-stop').evaluateAll(nodes=>nodes.map(n=>({id:n.dataset.chapter,value:n.querySelector('progress').value,max:n.querySelector('progress').max})));
-  const expected=await page.evaluate(ids=>ids.map(id=>learningPath.model.stats(id)),rows.map(r=>r.id));rows.forEach((r,i)=>assert.deepEqual([r.value,r.max],[expected[i].done,expected[i].total]));assert(rows.some(r=>r.value>0));
-  assert.equal(await page.locator('[aria-current="step"]').count(),1);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  if(process.env.SHOTS&&[390,1440].includes(width)){await page.locator('.hv-route').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(process.env.SHOTS,'map-'+width+'.png')})}
-  await page.locator('.hv-route summary').click();await page.locator('.hv-route summary').click();
-  // TEST-022 calm home: with fewer than three lessons the topic list starts folded; unfold it before tapping a stop.
-  if(!await page.locator('.hv-route details').evaluate(d=>d.open))await page.locator('.hv-route summary').click();
+  const rows=await page.locator('#learningPath .fh-topic').evaluateAll(nodes=>nodes.map(n=>({id:(n.querySelector('img').getAttribute('src').match(/topics\/([^/]+)\.svg/)||[])[1],value:n.querySelector('progress').value,max:n.querySelector('progress').max})));
+  const expected=await page.evaluate(ids=>ids.map(id=>learningPath.model.stats(id)),rows.map(r=>r.id));rows.forEach((r,i)=>assert.deepEqual([r.value,r.max],[expected[i].done,Math.max(1,expected[i].total)],'topic '+r.id));assert(rows.some(r=>r.value>0));
+  assert.equal(await page.locator('#learningPath [aria-current="step"]').count(),1);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  if(process.env.SHOTS&&[390,1440].includes(width)){await page.screenshot({path:path.join(process.env.SHOTS,'map-'+width+'.png')})}
   assert.deepEqual(await page.evaluate(()=>[localStorage.getItem('leren_path_v1'),localStorage.getItem('poly_score')]),before);
-  await page.locator('.hv-stop-button').first().click();await page.waitForFunction(()=>document.querySelector('#learningPath')?.dataset.screen==='map');
+  await page.locator('#learningPath .fh-topic').first().click();await page.waitForFunction(()=>document.querySelector('#learningPath')?.dataset.screen==='map'&&!!document.querySelector('#learningPath .fh-lesson-row'));
   for(const file of files){await page.goto(base+'/guides/'+file);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.locator('summary').click();assert(await page.locator('details p').isVisible());
    if(process.env.SHOTS&&[390,1440].includes(width)&&file===files[0])await page.screenshot({path:path.join(process.env.SHOTS,'guide-'+width+'.png')});
    const broken=await page.locator('a[href^="."]').evaluateAll(a=>a.map(x=>x.href));for(const url of broken){const response=await context.request.get(url);assert.equal(response.status(),200,url)}

@@ -10,8 +10,9 @@ const load=(...files)=>{const c=vm.createContext({console});vm.runInContext(read
 // 1. Registry
 {const c=load('modules/courses/registry.js'),R=c.LerenCourses;
  const s=mem();assert.equal(R.current(s),'nl','Dutch by default');
- assert.deepEqual([...R.available(s).map(x=>x.id)],['nl'],'English and French are not offered yet');
- assert.equal(R.choose(s,'en'),false,'cannot pick a planned course');s.setItem('leren_learn_lang','en');assert.equal(R.current(s),'nl','a planned course falls back to Dutch');
+ // TEST-050: English and French are live (first-run course choice); German stays planned.
+ assert.deepEqual([...R.available(s).map(x=>x.id)],['nl','en','fr'],'Dutch, English and French are offered');
+ assert.equal(R.choose(s,'de'),false,'cannot pick a planned course');s.setItem('leren_learn_lang','de');assert.equal(R.current(s),'nl','a planned course falls back to Dutch');
  s.setItem('leren_learn_lang','xx');assert.equal(R.current(s),'nl','unknown falls back to Dutch');
  const p=mem({leren_multilang:'1'});assert.deepEqual([...R.available(p).map(x=>x.id)],['nl','en','fr','de'],'preview shows the planned courses');assert.equal(R.choose(p,'fr'),true);assert.equal(R.current(p),'fr');
  assert.equal(R.key('leren_path_v1','nl'),'leren_path_v1','Dutch keeps its key');assert.equal(R.key('leren_path_v1'),'leren_path_v1');
@@ -54,6 +55,6 @@ const load=(...files)=>{const c=vm.createContext({console});vm.runInContext(read
   assert.equal(bad.ok,false,'a broken English route makes the backup invalid, like a broken Dutch one');
   const good=await M.readBackup(JSON.stringify(await M.buildBackup({'leren_path_v1@en':route({x:2}),leren_path_v1:route({y:1})})),k=>/^(poly_|leren_)/.test(k));
   assert.equal(good.ok,true,JSON.stringify(good));
-  console.log('PASS: multilingual engine step 1 — registry (Dutch default, planned courses hidden), Dutch route and storage unchanged, per-language keys, sync/backup rules for @en/@fr');
+  console.log('PASS: multilingual engine step 1 — registry (Dutch default, English/French live, German hidden), Dutch route and storage unchanged, per-language keys, sync/backup rules for @en/@fr');
  })().catch(e=>{console.error(e);process.exit(1)});
 }

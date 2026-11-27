@@ -7,7 +7,7 @@ const server=http.createServer((req,res)=>{const file=path.join(root,decodeURICo
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 // LerenBe 3.0 integration: the course switcher (.fh-courses) moved into the home «Я вчу» picker (home-v2): one button at the
 // top opens the Dutch levels as .hv-level rows (aria-pressed on the active one). The checks below are the same, on that picker.
-const openPick=async page=>{await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.waitForSelector('#hvPickPanel .hv-level')};
+const openPick=async page=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>openLearn());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.waitForSelector('#hvPickPanel .hv-level')};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
  let browser;try{browser=await chromium.launch()}catch(e){console.log('SKIP: no Chromium ('+e.message.split('\n')[0]+')');server.close();return}
@@ -24,7 +24,7 @@ const openPick=async page=>{await page.waitForSelector('.hv-pick-btn');if(await 
     if(theme==='dark')await page.evaluate(()=>{document.documentElement.dataset.theme='dark'});
     // The switcher is the first thing under the header, with three cards.
     const cards=page.locator('#hvPickPanel .hv-level');assert.equal(await cards.count(),3);
-    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),vis=[...r.children].filter(e=>!e.hidden&&e.offsetHeight>0);return vis[0]?.classList.contains('hv-pick')&&vis[1]?.classList.contains('fh-hero')});assert(first,'LerenBe 3.0: the «Я вчу» course picker at the very top, then «Your next lesson»');
+    const first=await page.evaluate(()=>{const r=document.getElementById('learningPath'),vis=[...r.children].filter(e=>!e.hidden&&e.offsetHeight>0&&!e.classList.contains('fh-tools'));return vis[0]?.classList.contains('hv-pick')&&vis[1]?.classList.contains('td-learn-row')});assert(first,'TEST-050: the «Я вчу» course picker at the very top of «Навчання», then the learn actions');
     assert.equal(await cards.nth(0).getAttribute('aria-pressed'),'true');
     const a21=cards.nth(2);assert(!(await a21.isDisabled()),'A2 can be opened');assert.match(await a21.innerText(),/A2/);assert.doesNotMatch(await a21.innerText(),/Незабаром/);
     const width=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);assert(width,'No horizontal scroll on '+name);
@@ -32,20 +32,21 @@ const openPick=async page=>{await page.waitForSelector('.hv-pick-btn');if(await 
     await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),`courses-${name}-${theme}-a11.png`)});
     // A1.1 → A1.2 in one tap: highlighted, lessons and topics of A1.2, saved.
     await cards.nth(1).click();await page.waitForFunction(()=>document.querySelector('#hvPickPanel .hv-level[data-level="A1.2"]')?.getAttribute('aria-pressed')==='true');
-    assert.match(await page.locator('.fh-eyebrow').first().innerText(),/A1\.2/);
+    assert.equal(await page.locator('#learningPath .fh-levels .fh-level[aria-pressed="true"]').innerText(),'A1.2','TEST-050: the map in «Навчання» follows the picked course');
     assert.equal(await page.evaluate(()=>localStorage.getItem('poly_level')),'a12');
-    const titles=await page.locator('.hv-stop b').allTextContents();assert(titles.length>=1,'A1.2 topics on the route');
+    const titles=await page.locator('#learningPath .fh-topic-grid .fh-topic').allTextContents();assert(titles.length>=1,'A1.2 topics on the map');
+    await page.evaluate(()=>openToday());assert.match(await page.locator('.td-tile[data-tile=course]').innerText(),/A1\.2/,'«Сьогодні» shows the A1.2 course');
     await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),`courses-${name}-${theme}-a12.png`)});
     // Reload keeps A1.2.
     await page.reload();await openPick(page);assert.equal(await page.locator('#hvPickPanel .hv-level[data-level="A1.2"]').getAttribute('aria-pressed'),'true');
     // Start an A1.2 lesson, answer one card, then switch back to A1.1 and again to A1.2: the A1.2 lesson resumes.
-    await page.locator('.fh-primary').first().click();await page.waitForSelector('.lp-card');
+    await page.evaluate(()=>openToday());await page.locator('.td-start').click();await page.waitForSelector('.lp-card');
     assert.equal(await page.evaluate(()=>document.getElementById('learningPath').dataset.screen),'lesson','TEST-019: the main button opens the lesson itself');
-    await page.waitForSelector('.fh-study-actions .lp-primary');await page.locator('.fh-study-actions .lp-primary').click();
+    await page.waitForSelector('#learningPath .fl-actions .lp-primary');await page.locator('#learningPath .fl-actions .lp-primary').click(); // TEST-050: focus lesson, main action in the bottom bar
     const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_path_v1')));assert.equal(saved.course,'A1.2');assert.equal(saved.session.index,1);
-    await page.evaluate(()=>learningPath.home());await openPick(page);
+    await page.evaluate(()=>openLearn());await openPick(page);
     await page.locator('#hvPickPanel .hv-level[data-level="A1.1"]').click();await page.waitForFunction(()=>document.querySelector('#hvPickPanel .hv-level[data-level="A1.1"]')?.getAttribute('aria-pressed')==='true');
-    assert.equal(await page.evaluate(()=>localStorage.getItem('poly_level')),'a11');assert.equal(await page.locator('#hvPickPanel .hv-level[data-level="A1.1"]').getAttribute('aria-pressed'),'true');assert.doesNotMatch(await page.locator('.fh-eyebrow').first().innerText(),/A1/,'TEST-019: no level code for A1.1 beginners');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('poly_level')),'a11');assert.equal(await page.locator('#hvPickPanel .hv-level[data-level="A1.1"]').getAttribute('aria-pressed'),'true');await page.evaluate(()=>openToday());assert.match(await page.locator('.td-tile[data-tile=course]').innerText(),/A1\.1/,'TEST-050: «Сьогодні» follows the switch back to A1.1');
     await openPick(page);await page.locator('#hvPickPanel .hv-level[data-level="A1.2"]').click();await page.waitForFunction(()=>document.querySelector('#hvPickPanel .hv-level[data-level="A1.2"]')?.getAttribute('aria-pressed')==='true');
     const back=await page.evaluate(()=>JSON.parse(localStorage.getItem('leren_path_v1')));assert.equal(back.session.index,1,'Switching courses keeps the paused A1.2 lesson');
     // Games follow the course: A1.2 hides the two A1.1 stories, spell-the-word uses A1.2 words.

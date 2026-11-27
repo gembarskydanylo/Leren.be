@@ -9,18 +9,18 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
 const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VERSION="(\d+)"/)[1];
 // LerenBe 3.0 integration: courses are chosen in the home «Я вчу» picker (home-v2, #hvPickPanel) instead of the old
 // .cp-preview card of the course player; the steps after it (course page, lessons, progress) are unchanged.
-const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>{setView('path');learningPath.home()});await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
+const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count())await page.evaluate(()=>openLearn());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');await page.click(`#hvPickPanel .hv-course[data-course="${id}"] button`)};
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port+'/index.html';
  let browser;try{browser=await chromium.launch()}catch{console.log('SKIP: no Chromium');server.close();return}
  const open=async(query,ui='uk')=>{const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}),page=await ctx.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
   await page.addInitScript(([r,u])=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:u,leren_home_v1:'path',leren_welcome_seen:'true',leren_path_v1:'{"version":1,"started":true,"completed":{"x":3},"mistakes":[]}'}))localStorage.setItem(k,v)},[release,ui]);
-  await page.goto(base+query);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>{setView('path');learningPath.open()});await page.waitForTimeout(300);return{ctx,page,errors}};
+  await page.goto(base+query);await page.waitForFunction(()=>window.learningPath);await page.evaluate(()=>openLearn());await page.waitForTimeout(300);return{ctx,page,errors}}; // TEST-050: the course picker lives in «Навчання»
  const report=[];
  try{
   // 1. Without preview: nothing new for learners.
-  {const {ctx,page,errors}=await open('');assert.equal(await page.locator('.cp-preview').count(),0,'no preview card for learners');assert.deepEqual(await page.locator('#hvPickPanel .hv-course').evaluateAll(b=>b.map(x=>x.dataset.course)),['nl'],'only Dutch in the home picker for learners');assert.deepEqual(errors,[]);await ctx.close()}
+  {const {ctx,page,errors}=await open('');assert.equal(await page.locator('.cp-preview').count(),0,'no preview card for learners');assert.deepEqual(await page.locator('#hvPickPanel .hv-course').evaluateAll(b=>b.map(x=>x.dataset.course)),['nl','en','fr'],'TEST-050: Dutch, English and French in the picker for learners (German stays hidden)');assert.deepEqual(errors,[]);await ctx.close()}
   // 2. Preview: play a whole English lesson.
   {const {ctx,page,errors}=await open('?multilang=1');
    const btns=await page.locator('#hvPickPanel .hv-course:not([data-course="nl"])').evaluateAll(b=>b.map(x=>x.dataset.course));assert.deepEqual(btns,['en','fr','de'],'English, French, German in preview');
@@ -54,7 +54,7 @@ const pickCourse=async(page,id)=>{if(!await page.locator('.hv-pick-btn').count()
    assert.equal(await page.locator('.cp-lessons li.is-done').count(),1);assert.match(await page.locator('.cp-stage .cp-primary').textContent(),/Продовжити/);
    // French and German: coming soon
    // LerenBe 3.0: German has no lesson pack yet; the picker shows it with a disabled «soon» button instead of a soon page
-   for(const l of ['de']){await page.click('.cp-close');await page.evaluate(()=>learningPath.home());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');assert.equal(await page.locator(`#hvPickPanel .hv-course[data-course="${l}"] button`).isDisabled(),true,l+' soon');}
+   for(const l of ['de']){await page.click('.cp-close');await page.evaluate(()=>openLearn());await page.waitForSelector('.hv-pick-btn');if(await page.locator('#hvPickPanel').isHidden())await page.click('.hv-pick-btn');assert.equal(await page.locator(`#hvPickPanel .hv-course[data-course="${l}"] button`).isDisabled(),true,l+' soon');}
    assert.deepEqual(errors,[]);await ctx.close();report.push('uk phone: full lesson 5/5, saved in @en, Dutch untouched, de soon')}
   // 2a. English 1.1 finished: the course moves on to 1.2 (title, open chapter, first 1.2 lesson), 1.1 results kept.
   {const {ctx,page,errors}=await open('?multilang=1');

@@ -39,6 +39,15 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
      const m = LerenLearningPath.create(c, localStorage, {key: LerenCourses.key('leren_path_v1', lang)}); m.start(); for (const l of c.lessons.slice(0, lang === 'en' ? 7 : 3)) m.state.completed[l.id] = (l.ids || [1]).length; m.save() } }))},
   'damaged storage': {seed: {...BASE, poly_score: 'abc', leren_xp_v2: '{bad json', leren_path_v1: 'null', poly_progress: '[1,2', leren_life_xp_v1: '"x"', leren_skills_v2: '<img src=x onerror=alert(1)>', leren_minutes_v2: '-5'}, act: async () => {}},
   'studied offline': {voice: 'm', seed: {...BASE, poly_ui: 'fr', leren_char: '"peter"'}, offline: true, act: async p => p.evaluate(() => { for (let i = 0; i < 8; i++) addXP(10, 'off:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const l = m.recommended(); m.state.completed[l.id] = l.ids.length; m.save() })},
+  // TEST-050 RC (264 → 27x): a lesson left half-way in 264 is offered as «Продовжити урок» and resumes at the same place;
+  // dark theme, English course choice and voice are kept
+  'unfinished lesson': {voice: 'm', seed: {...BASE, poly_theme: 'dark', leren_rec_voice: '"m"', leren_learn_lang: 'nl'}, after: 'resume',
+   act: async p => p.evaluate(() => { for (let i = 0; i < 5; i++) addXP(10, 'u:' + i); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons;
+    m.state.completed[ls[0].id] = ls[0].ids.length; m.state.session = {kind: 'lesson', lesson: ls[1].id, ids: [...ls[1].ids], phase: 1, index: 2, answers: [true, false]}; m.save() })},
+  // a session the new release cannot use (lesson id no longer in the course): safe recovery, finished lessons kept
+  'incompatible session': {seed: {...BASE}, after: 'recover',
+   act: async p => p.evaluate(() => { addXP(10, 'i:0'); setView('path'); learningPath.open(); const m = learningPath.model; m.start(); const ls = LerenLearningPath.catalog(DATA, LerenCurriculum).lessons;
+    for (const l of ls.slice(0, 3)) m.state.completed[l.id] = l.ids.length; m.save(); const raw = JSON.parse(localStorage.getItem('leren_path_v1')); raw.session = {kind: 'lesson', lesson: 'gone:old-lesson:9', ids: ['nope-1', 'nope-2'], phase: 2, index: 1, answers: [true]}; localStorage.setItem('leren_path_v1', JSON.stringify(raw)) })},
   'back after a long break': {seed: {...BASE, poly_ui: 'ar', leren_release_seen: '"150"', poly_streak: '4', poly_daily: JSON.stringify({d: '2026-01-05', n: 3}), leren_week: JSON.stringify({w: '2026-01-05', d: [1, 1, 0]})}, act: async p => p.evaluate(() => { for (let i = 0; i < 30; i++) addXP(10, 'old:' + i) })},
  };
  const snap = page => page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^(leren_|poly_)/.test(k)) o[k] = localStorage.getItem(k) } return o });
@@ -86,6 +95,26 @@ const CHANGES = /^(leren_release_seen|leren_upd_done|leren_sync_at|leren_sync_ba
    if (P.voice) { assert.equal(await page.evaluate(() => recVoice()), P.voice, name + ': recorded voice after the upgrade'); assert.equal(after.leren_char, before.leren_char, name + ': story guide kept');
     await page.reload(); await page.waitForFunction(() => typeof recVoice === 'function', null, {timeout: 30000}); assert.equal(await page.evaluate(() => recVoice()), P.voice, name + ': voice stays after a reload') }
    await page.waitForFunction(n => caches.keys().then(k => k.length === 1 && k[0] === n), curCache, {timeout: 30000});
+   // TEST-050: the new interface is shown (Today), not a cached 264 home; old caches are gone (checked above)
+   if (+curCache.replace(/\D/g, '') >= 271 && name !== 'new learner') {
+    await page.evaluate(() => { setView('path'); learningPath.home() }); await page.waitForSelector('#learningPath .td-home .td-start', {timeout: 15000});
+    assert.equal(await page.locator('#learningPath .fh-hero').count(), 0, name + ': no old home after the upgrade');
+    if (P.after === 'resume') {
+     assert.match(await page.locator('#learningPath .td-start').textContent(), /Продовжити урок/, name + ': «Продовжити урок» for the lesson left in 264');
+     const s0 = JSON.parse(before.leren_path_v1).session; await page.click('#learningPath .td-start');
+     await page.waitForFunction(() => learningPath.model.state.session?.kind === 'lesson' && document.querySelector('#learningPath')?.dataset.screen === 'lesson', null, {timeout: 10000});
+     const s1 = await page.evaluate(() => learningPath.model.state.session); assert.deepEqual([s1.lesson, s1.phase, s1.index], [s0.lesson, s0.phase, s0.index], name + ': same lesson, same place');
+     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme || localStorage.getItem('poly_theme')), 'dark', name + ': dark theme kept');
+    }
+    if (P.after === 'recover') {
+     const done = Object.keys(JSON.parse(before.leren_path_v1).completed); await page.click('#learningPath .td-start');
+     await page.waitForFunction(() => ['lesson', 'intro', 'guided', 'talk'].includes(document.querySelector('#learningPath')?.dataset.screen), null, {timeout: 10000});
+     const st = await page.evaluate(() => ({lesson: learningPath.model.state.session?.lesson, valid: !!learningPath.model.lesson(learningPath.model.state.session?.lesson || ''), done: Object.keys(learningPath.model.state.completed)}));
+     assert(st.valid && st.lesson !== 'gone:old-lesson:9', name + ': a valid lesson opens instead of the broken one');
+     for (const id of done) assert(st.done.includes(id), name + ': finished lesson kept: ' + id);
+    }
+    await page.evaluate(() => { const lp = document.querySelector('#learningPath .fl-exit'); if (lp) lp.click() });
+   }
    // offline after the upgrade: home and a lesson
    offline = true; await ctx.setOffline(true); await page.reload(); await page.waitForFunction(() => typeof setView === 'function', null, {timeout: 30000});
    await page.evaluate(() => { lessonMode = 'quiz'; mode = 'quiz'; setView('lesson'); buildNav(); newRound() }); await page.waitForSelector('#card .opt', {timeout: 15000});

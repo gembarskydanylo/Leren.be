@@ -24,7 +24,7 @@ const UI_KEYS = new Set(['poly_ui', 'poly_target', 'poly_tab', 'poly_cat', 'lere
  const data = () => page.evaluate(keys => Object.fromEntries(Object.keys(localStorage).filter(k => !keys.includes(k)).sort().map(k => [k, localStorage.getItem(k)])), [...UI_KEYS]);
 // every learner key of the settled snapshot keeps its exact value; new keys may appear only for one-time interface flags
  const same = async label => { const d = await data(); for (const k of Object.keys(want)) assert.equal(d[k], want[k], label + ': ' + k); for (const k of Object.keys(d)) if (!(k in want)) assert.doesNotMatch(k, /score|xp|progress|path|life|skill|review|achiev|daily/, label + ': new data key ' + k) };
- const home = async () => { await page.waitForSelector('.hv', {timeout: 20000}); await page.waitForTimeout(300) };
+ const home = async () => { await page.waitForSelector('.td-home', {timeout: 20000}); await page.waitForTimeout(300) };
  let want; try {
   await page.goto(B); await home();
   // a finished A1.1 lesson on top of the old save, then a settled snapshot (whatever the app writes on its own start-up)

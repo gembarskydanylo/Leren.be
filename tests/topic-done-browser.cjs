@@ -24,7 +24,9 @@ const setup=chapter=>{setView('path');const m=learningPath.model,cat=LerenLearni
    await page.addInitScript(([r,l,t])=>{if(sessionStorage.getItem('seeded'))return;localStorage.clear();for(const [k,v] of Object.entries({leren_release_seen:JSON.stringify(r),poly_ui:l,poly_theme:t,leren_home_v1:'path'}))localStorage.setItem(k,v);sessionStorage.setItem('seeded','1')},[release,lang,theme]);
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);return{ctx,page,errors}};
   // Answer the last question right and open the result screen.
-  const finishLast=async page=>{await page.locator('#learningPath .fh-primary').click();await page.waitForSelector('#learningPath .lp-options button');
+  // TEST-050: the home is «Сьогодні з Lexi»; a lesson chosen on the map (outside today's session) keeps the classic result card.
+  const finishLast=async page=>{await page.evaluate(()=>{const m=learningPath.model,l=LerenLearningPath.catalog(DATA,LerenCurriculum).lessons.find(x=>x.id===m.state.session.lesson);learningPath.chapter(l.chapter)});
+   await page.locator('#learningPath .fh-lesson-row[aria-current]').click();await page.waitForSelector('#learningPath .lp-options button');
    await page.evaluate(()=>{const w=learningPath.model.current();[...document.querySelectorAll('#learningPath .lp-options button')].find(b=>b.textContent===w.nl).click()});
    await page.locator('#learningPath .lp-primary').last().click();await page.waitForSelector('#learningPath .lp-result')};
   const T={uk:['Тема пройдена!','Анкети й документи','Мій звичайний день','Почати наступну тему'],en:['Topic complete!','Forms and documents','My daily routine','Start the next topic'],

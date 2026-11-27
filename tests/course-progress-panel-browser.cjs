@@ -13,16 +13,16 @@ const server=http.createServer((req,res)=>{let f=path.join(root,decodeURICompone
   await page.addInitScript(()=>{if(sessionStorage.getItem('seeded'))return;sessionStorage.setItem('seeded','1');localStorage.clear();localStorage.setItem('poly_ui','uk')});
   // LerenBe 3.0 integration: the progress panel of the old course card (.fh-course-panel) is replaced by the home «Я вчу»
   // picker (active level with its lesson count and progress bar), the route (current topic) and the «Your next lesson» button.
-  await page.goto(base);await page.waitForSelector('.hv-pick-btn');
+  await page.goto(base);await page.click('[data-tab=learn]');await page.waitForSelector('.hv-pick-btn'); // TEST-050: the picker lives in the «Навчання» tab
   assert.equal(await page.locator('#hvPickPanel').isVisible(),false,'panel is closed at first');
   await page.click('.hv-pick-btn');await page.waitForSelector('#hvPickPanel:not([hidden])');
   assert.equal(await page.getAttribute('.hv-pick-btn','aria-expanded'),'true');
   const txt=await page.locator('#hvPickPanel .hv-level.is-active').innerText();
   assert.match(txt,/A1\.1/);assert.match(txt,/0 \/ \d+/);assert.equal(await page.getAttribute('#hvPickPanel .hv-level.is-active','aria-pressed'),'true');
   assert.equal(await page.locator('#hvPickPanel .hv-level.is-active .hv-bar').count(),1,'progress bar of the active level');
-  assert.equal(await page.locator('.hv-stop[data-state="current"]').count(),1,'the current topic is marked on the route');
+  assert.equal(await page.locator('#learningPath .fh-topic.is-current[aria-current="step"]').count(),1,'the current topic is marked on the map (TEST-050: the route moved from the old home to «Навчання»)');
   await page.click('.hv-pick-btn');assert.equal(await page.locator('#hvPickPanel').isVisible(),false,'second tap closes it');
-  await page.locator('.fh-hero .fh-primary').first().click();
+  await page.click('[data-tab=today]');await page.locator('.td-start').click(); // TEST-050: «Почати навчання» on «Сьогодні»
   await page.waitForFunction(()=>document.getElementById('learningPath').dataset.screen&&document.getElementById('learningPath').dataset.screen!=='home');
   assert.deepEqual(errors,[]);console.log('PASS: course progress (LerenBe 3.0 picker) opens/closes, shows the active level with its progress and the current topic; Continue starts the lesson');
  }finally{await browser.close();server.close()}

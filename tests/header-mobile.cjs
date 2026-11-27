@@ -22,8 +22,8 @@ const repo = path.join(__dirname, '..'), root = repo;
    const ctx = await browser.newContext({viewport: {width: w, height: 800}, serviceWorkers: 'block'}), page = await ctx.newPage(), errors = [];
    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort()); page.on('pageerror', e => errors.push(e.message));
    await page.addInitScript(l => { try { localStorage.setItem('poly_ui', l) } catch {} }, lang);
-   await page.goto(B); await page.waitForSelector('.onb-panel .tour-skip:not(.onb-back)'); await page.click('.onb-panel .tour-skip:not(.onb-back)'); await page.waitForSelector('.fh-hero'); await page.waitForTimeout(400);
-   const tag = lang + '@' + w, s = await page.evaluate(() => {
+   await page.goto(B); await page.waitForSelector('dialog.td-onb [data-action=skip]'); await page.click('dialog.td-onb [data-action=skip]'); await page.waitForFunction(() => window.learningPath && !document.querySelector('dialog[open]')); await page.waitForTimeout(300); await page.evaluate(() => openToday()); await page.waitForSelector('.td-home'); // TEST-050: first run is «Знайомство з Lexi»; skipping starts the first lesson (focus mode hides the header), the header is checked on «Сьогодні» await page.waitForTimeout(400);
+   const tag = lang + '@' + w; process.env.DBG && console.log('at', tag); const s = await page.evaluate(() => {
     const R = e => { const r = e.getBoundingClientRect(); return {l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height} };
     const hdr = document.querySelector('main>header, header'), h1 = document.querySelector('#appTitle'), brand = document.querySelector('.brand'), box = document.querySelector('.hl-box'), face = document.querySelector('#headerLangFace');
     const parts = {brand: R(h1), lang: R(box), streak: R(document.querySelector('#streakPill')), score: R(document.querySelector('#score')), settings: R(document.querySelector('#settingsBtn'))};
@@ -44,7 +44,7 @@ const repo = path.join(__dirname, '..'), root = repo;
    assert.equal(s.face.code, lang.toUpperCase(), tag + ': code'); assert.equal(s.face.flag, FLAG[lang], tag + ': flag'); assert(!s.face.clipped, tag + ': switcher text is not clipped'); assert.equal(s.face.dir, 'ltr', tag + ': switcher reads LTR even in Arabic');
    assert.deepEqual(s.select.options, ['uk', 'en', 'fr', 'ar']); assert.equal(s.select.value, lang); assert(Math.abs(s.select.r.w - s.boxR.w) < 1 && Math.abs(s.select.r.h - s.boxR.h) < 1, tag + ': select covers the switcher'); assert.equal(s.label, 'headerUiLangPicker');
    // tap targets ≥ 44 px (pills keep an invisible touch area, so only height is required there)
-   assert(s.boxR.h >= 44 && s.parts.settings.h >= 44 && s.parts.settings.w >= 44 && s.parts.streak.h >= 44 && s.parts.score.h >= 44, tag + ': header controls ≥ 44 px');
+   assert(s.boxR.h >= 44 && s.parts.settings.h >= 44 && s.parts.settings.w >= 44 && s.parts.streak.h >= 44 && s.parts.score.h >= 44, tag + ': header controls ≥ 44 px ' + JSON.stringify({box: s.boxR.h, set: s.parts.settings, st: s.parts.streak.h, sc: s.parts.score.h, focus: s.focus}));
    // RTL: Arabic mirrors the header (brand on the right, settings on the left); other languages keep brand left
    if (lang === 'ar') { assert.equal(s.dir, 'rtl'); assert.equal(s.rtl, 'rtl'); assert(s.parts.brand.l > s.parts.settings.r, tag + ': RTL brand is right of settings') } else { assert.equal(s.dir, null); assert(s.parts.brand.r < s.parts.settings.l, tag + ': LTR brand is left of settings') }
    // 3.0: the route button (761–999 px) must be readable on the light header and stay one row (it used to be white on white)

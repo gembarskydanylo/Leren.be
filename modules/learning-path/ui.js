@@ -15,7 +15,19 @@
   const talkOk=!!globalThis.LerenLessonConversation?.createView;
   const conversation=talkOk?LerenLessonConversation.create(course,{getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)}):null;
   const talkText=key=>talkOk?LerenLessonConversation.tr(key,lang):'';
-  const talkView=talkOk?LerenLessonConversation.createView(conversation,{...bridge,render:()=>render(),lessonWords:id=>(model.lesson(id)?.ids||[]).map(id=>course.cards.get(id).nl),nextLesson(){const s=model.state.session;if(s&&s.kind==='lesson'&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}const l=model.continueRoute();go(l?'intro':'home')}}):{cancel(){},clear(){},render(){}};
+  const talkView=talkOk?LerenLessonConversation.createView(conversation,{...bridge,render:()=>render(),lessonWords:id=>(model.lesson(id)?.ids||[]).map(id=>course.cards.get(id).nl),nextLesson(){if(guidedPracticeDone())return;const s=model.state.session;if(s&&s.kind==='lesson'&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}const l=model.continueRoute();go(l?'intro':'home')}}):{cancel(){},clear(){},render(){}};
+  // TEST-050 RC: a conversation is offered only when the learner already knows most of its words (A1.1 beginners must not get
+  // phrases far above their level). Known = Dutch words of the cards in finished lessons plus the lesson just played; offline.
+  const TALK_READY=0.7,talkWords=s=>String(s||'').toLowerCase().replace(/[^a-zà-ÿ' ]/g,' ').split(/\s+/).filter(w=>w.length>1);
+  // LerenBe 273 (Codex P2-02): «known» = words of lessons passed with at least 80% (model.mastered), minus the words now on the
+  // mistakes list. A lesson finished with 0/5 used to count, and the lesson asked about counted before it was played.
+  // forecast=true only while drafting today's plan: the next lesson counts as if passed; the practice step checks again when
+  // it comes and is skipped if the words are not known by then.
+  function talkCoverage(id,forecast=false){const l=model.lesson(id),turns=l&&talkOk&&LerenLessonConversation.SCENARIOS?.[l.chapter];if(!turns||!turns.length)return 0;
+   const known=new Set(),wrong=new Set(model.state.mistakes),add=lid=>{for(const c of model.lesson(lid)?.ids||[])if(!wrong.has(c))for(const w of talkWords(course.cards.get(c)?.nl))known.add(w)};
+   for(const lid of Object.keys(model.state.completed))if(model.mastered(lid))add(lid);if(forecast)add(id);
+   const words=[...new Set(turns.flatMap(t=>talkWords(t.q+' '+t.sample)))];return words.length?words.filter(w=>known.has(w)).length/words.length:0}
+  const talkReady=(id,forecast=false)=>talkCoverage(id,forecast)>=TALK_READY;
   function beginTalk(id){if(!talkOk||!model.lesson(id))return;if(conversation.state.lesson===id&&conversation.state.index<3)conversation.resume();else conversation.begin(id);talkView.clear();go('talk')}
   // A started but unfinished conversation (left for another screen or closed the app) is offered on the home screen.
   const talkOpen=()=>talkOk&&!!model.lesson(conversation.state.lesson)&&conversation.state.index<3&&!conversation.state.completed.includes(conversation.state.lesson);
@@ -23,8 +35,11 @@
   const t=k=>copy[lang][k],word=id=>course.cards.get(id),translation=w=>w[lang]||w.uk,title=ch=>(names[ch.id]||['📖',ch.nl,ch.nl,ch.nl,ch.nl])[languages.indexOf(lang)+1],icon=ch=>(names[ch.id]||['📖'])[0];
   const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
   const button=(label,fn,primary=false)=>{const b=node('button',primary?'lp-button lp-primary':'lp-button',label);b.type='button';b.onclick=fn;return b};
+  // TEST-050: a random LIFE call must not interrupt an active lesson. The module stays loaded (its own tests, later Smart
+  // Calls after the dependency audit), but while the focus mode is on it is never active.
+  const CALLS_IN_LESSON=!globalThis.LerenFocusLesson;
   const midLessonCall=globalThis.LerenMidLessonCall?.create({
-   active:()=>screen==='lesson'&&model.state.session?.kind==='lesson',
+   active:()=>CALLS_IN_LESSON&&screen==='lesson'&&model.state.session?.kind==='lesson',
    eligible:()=>Object.keys(model.state.completed).some(id=>model.state.completed[id]>0),
    boundary:()=>{const s=model.state.session;return screen==='lesson'&&!feedback&&s?.kind==='lesson'&&s.index>0&&s.index<s.ids.length},
    level:()=>model.course,language:()=>lang,speak:text=>bridge.speak(text)
@@ -36,11 +51,122 @@
   function syncCourse(){const host=bridge.level?.();if(host&&host!==model.course&&model.levels.includes(host))model.setCourse(host)}
   function pickCourse(level){if(level===model.course)return true;if(bridge.setLevel&&bridge.setLevel(level)===false)return false;model.setCourse(level);mapLevel=level;return true}
   function begin(l,direct=false){if(chapter(l).level!==model.course&&!pickCourse(chapter(l).level))return;const s=model.state.session;if(s?.kind==='lesson'&&s.lesson===l.id&&(s.phase<2||s.index<s.ids.length)){go('lesson');return}model.begin(l.id);go(direct?'lesson':'intro')} // direct: the home's main button opens the lesson itself (TEST-019)
+  // ---- TEST-050 «Фокус»: on these screens the header, the dock and the footer are hidden (modules/focus-lesson).
+  const FL=globalThis.LerenFocusLesson,FOCUS_SCREENS=new Set(['lesson','intro','talk','placement','guided']);
+  const focusOn=()=>!!FL&&FOCUS_SCREENS.has(screen);
+  function exitFocus(){stepView?.cancel?.();stepView=null;go('home')}
+  function focusBar(){
+   const s=model.state.session,base={lang,xp:bridge.xp?.(),onExit:exitFocus};
+   if(screen==='talk')return FL.bar({...base,kind:'talk',index:Math.min(conversation?.state.index||0,3),total:3});
+   if(screen==='placement'){const p=model.state.placement;return FL.bar({...base,kind:'placement',index:p?.index||0,total:p?.ids?.length||12})}
+   if(screen==='guided'){const st=G&&todayState();return FL.bar({...base,kind:'session',index:st?st.steps.filter(x=>x.done).length:0,total:st?st.steps.length:1})}
+   if(!s)return FL.bar({...base,kind:'session',index:0,total:1});
+   if(s.kind==='lesson')return FL.bar({...base,kind:'lesson',phase:screen==='intro'?0:s.phase,index:screen==='intro'?0:s.index,total:s.ids.length});
+   return FL.bar({...base,kind:'review',index:s.index,total:s.ids.length});
+  }
   function shell(){
    root.replaceChildren();root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';root.dataset.screen=screen;
+   FL?.enter(focusOn());if(focusOn()){root.appendChild(focusBar());saveWarning();return}
    root.appendChild(LerenFocus.tools({lang,backLabel:screen==='map'&&mapChapter?LerenFocus.tr(lang).all:null,back:screen==='home'?null:()=>{if(screen==='map'&&mapChapter){mapChapter=null;render()}else go('home')}}));
+   saveWarning();
   }
+  // LerenBe 273 (Codex P2-03): when the browser refuses to save the route or today's plan, every screen says so (the Focus
+  // mode hides the old .lp-caption note). Inline style: no new CSS on the render-blocking budget.
+  function saveWarning(){if(model.persistent&&G?.saveOk!==false)return;const p=node('p','lp-save-warning',t('memory'));p.setAttribute('role','alert');p.dataset.save='failed';Object.assign(p.style,{margin:'8px 0',padding:'8px 12px',borderRadius:'10px',background:'#fdecea',color:'#7a1d12',fontSize:'14px',lineHeight:'1.4'});root.appendChild(p)}
   function note(){root.appendChild(node('p','lp-caption',t(model.persistent?'saved':'memory')))}
+  // ---- TEST-050 Guided Learning («Today with Lexi»). On when the host says so (bridge.guided) and both modules are loaded;
+  // otherwise this file behaves exactly as before. The plan only chooses WHICH existing step comes next: the lessons, the
+  // warm-up review, the offline conversation and the XP rules (personal best per lesson, no XP for review) are unchanged.
+  const G=globalThis.LerenGuided,TD=globalThis.LerenToday,store={getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)};
+  const guidedOn=()=>!!(G&&TD&&bridge.guided?.());
+  let stepView=null;
+  const pausedLesson=()=>{const s=model.state.session;return s?.kind==='lesson'&&(s.phase<2||s.index<s.ids.length)&&chapter(model.lesson(s.lesson)).level===model.course?model.lesson(s.lesson):null};
+  const todayState=()=>{const st=G.today(store);return st&&st.course===model.course?st:null};
+  const earnedBadges=()=>{try{const raw=JSON.parse(localStorage.getItem('leren_achievements_v1')||'{}');return Object.keys(raw&&raw.earned||{})}catch{return []}};
+  function draftPlan(){const prof=G.profile(store),stats=bridge.stats?.()||{},due=bridge.due?bridge.due():[],paused=pausedLesson();
+   const upcoming=paused||model.recommended();
+   return G.plan({review:!paused&&model.warmupDue(due)?model.warmupIds(due).length:0,paused:paused?.id||null,goal:stats.goal,pace:prof.pace,practice:talkOk&&!!upcoming&&talkReady(upcoming.id,true)})} // practice only when its words are mostly known
+  function stepLabel(step,first){const tt=TD.tr(lang);if(step.kind==='review')return tt.review(step.words||3);if(step.kind==='practice')return tt.practice;const l=step.lesson?model.lesson(step.lesson):first?pausedLesson()||model.recommended():null;return l?tt.lesson(lessonTitle(l)):tt.lessonNext}
+  function guidedScreen(){stepView?.cancel();stepView=null;talkView.cancel();bridge.stop();feedback=null;screen='guided';shell()}
+  // TEST-050: a learner who chose English or French at the first run gets the same Today screen for that course;
+  // «Start learning» opens the course player straight in the next lesson. The Dutch route is not touched.
+  function otherCourse(){try{const c=globalThis.LerenCourses?.current?.(localStorage);return c&&c!=='nl'&&globalThis.LerenCoursePlayer?.status?c:null}catch{return null}}
+  function otherTodayHome(id){
+   const P=globalThis.LerenCoursePlayer,info=P.status(id,lang);if(!info){return false}
+   const stats=bridge.stats?.()||{},nm=G.name(store),mode=info.allDone?'allDone':info.resume?'resume':'start';
+   const steps=info.allDone?[]:[{kind:'lesson',label:info.label,min:6,done:false,current:mode==='resume'}];
+   TD.home(root,{lang,name:nm.name,topic:info.topic,steps,minutes:steps.length?6:0,mode,position:mode==='resume'?{index:0,total:1}:null,review:0,lessonLabel:info.label,
+    stats:{streak:stats.streak,min:stats.min,goal:stats.goal,pct:info.total?Math.round(info.done/info.total*100):0,course:info.name+' '+info.level},
+    lexi:{available:bridge.lexiAvailable?.()!==false,onOpen:()=>bridge.chat?.()},ask:null,note:info.beta?TD.tr(lang).betaNote(info.total,info.levels):'',
+    onStart:()=>{P.open(id,lang,{start:true,onClose:()=>render()})},onLearn:()=>{P.open(id,lang,{onClose:()=>render()})}});
+   return true;
+  }
+  function todayHome(){
+   {const oc=otherCourse();if(oc&&otherTodayHome(oc))return}
+   const st=todayState(),placing=!!model.state.placement,next=pausedLesson()||model.recommended();let mode,steps=[],position=null;
+   if(placing)mode='placing';else if(st&&!G.finished(st)){mode='resume';steps=st.steps;position=G.position(st)}else if(!next)mode='allDone';else{mode=st?'done':'start';steps=draftPlan()}
+   let first=true;const items=steps.map((s,i)=>{const done=mode==='resume'&&s.done,label=s.kind==='lesson'?stepLabel(s,first&&!done):stepLabel(s);if(s.kind==='lesson'&&!done)first=false;return {kind:s.kind,label,min:s.min,done,current:mode==='resume'&&i===position.index}});
+   const stats=bridge.stats?.()||{},cs=model.courseStats(model.course),nm=G.name(store),ch=next&&chapter(next);
+   TD.home(root,{lang,name:nm.name,topic:ch?title(ch):'',steps:items,minutes:steps.filter(s=>!(mode==='resume'&&s.done)).reduce((a,s)=>a+s.min,0),mode,position,
+    review:steps.find(s=>s.kind==='review')?.words||0,lessonLabel:next?lessonTitle(next):'',paused:mode==='start'&&!!pausedLesson(),advice:mode!=='placing'&&bridge.advice?bridge.advice():null, // TEST-050: priority 1 — an unfinished lesson is offered as «Продовжити урок»
+    
+    stats:{streak:stats.streak,min:stats.min,goal:stats.goal,pct:cs.total?Math.round(cs.done/cs.total*100):0,course:model.course},
+    lexi:{available:bridge.lexiAvailable?.()!==false,onOpen:()=>bridge.chat?.()},
+    ask:G.askName(store,bridge.existing?.())?{onSave:(n,ai)=>{G.setName(store,n,ai);G.saveProfile(store,{namePrompt:'done'});render()},onLater:()=>{G.saveProfile(store,{namePrompt:'later'});render()}}:null,
+    onStart:()=>{if(placing){go('placement');return}guidedStart()},onLearn:()=>bridge.learn?bridge.learn():openMap()});
+  }
+  // «Start learning»: resume today's unfinished session, or plan a new one (a finished one is extended the same day).
+  function guidedStart(){
+   let st=todayState();
+   if(!st||G.finished(st)){const steps=draftPlan();st=st?G.extend(store,st,steps):G.start(store,{steps,course:model.course,badges:earnedBadges()})}
+   if(!model.state.started)model.start();
+   runStep(st);
+  }
+  function runStep(st){
+   const step=G.current(st);if(!step){if(G.finished(st))guidedResult(st);else go('home');return} // all done (e.g. the lesson was finished before the app closed): the summary, never a silent home
+   const skip=()=>{G.complete(store,st,step.id,{});runStep(st)};
+   if(step.kind==='review'){if(model.state.session?.kind==='review'){go('lesson');return}if(model.beginWarmup(bridge.due?bridge.due():[])){go('lesson');return}skip();return}
+   if(step.kind==='lesson'){
+    let l=step.lesson?model.lesson(step.lesson):null;const s=model.state.session;
+    if(l&&Object.hasOwn(model.state.completed,l.id)&&!(s?.kind==='lesson'&&s.lesson===l.id)){skip();return} // finished, but the app closed before the step was marked
+    if(!l){l=pausedLesson()||model.recommended();if(!l){skip();return}G.bind(store,st,step.id,l.id)}
+    begin(l,true);return;
+   }
+   const last=[...st.steps].reverse().find(x=>x.kind==='lesson'&&x.done&&x.lesson)?.lesson;
+   if(!talkOk||!last||!model.lesson(last)||!talkReady(last)){skip();return} // not ready yet: the step is skipped, never forced
+   beginTalk(last);
+  }
+  // After a finished lesson or review: true when it was the current step of today's session (then the session screens take over).
+  function guidedFinished(result,gain,topic){
+   if(!guidedOn())return false;const st=todayState(),step=G.current(st);if(!step)return false;
+   const match=step.kind==='review'?result.kind==='review':step.kind==='lesson'&&result.kind==='lesson'&&(!step.lesson||step.lesson===result.id);if(!match)return false;
+   if(step.kind==='lesson'&&!step.lesson)G.bind(store,st,step.id,result.id);
+   G.complete(store,st,step.id,{correct:result.correct,total:result.total,gain});guidedScreen();guidedAfter(st,{correct:result.correct,all:result.total,gain,topic});return true;
+  }
+  function guidedPracticeDone(){
+   if(!guidedOn())return false;const st=todayState(),step=G.current(st);if(step?.kind!=='practice')return false;
+   conversation.pause();G.complete(store,st,step.id,{});guidedScreen();guidedAfter(st,{correct:0,all:0,gain:0});return true;
+  }
+  function guidedAfter(st,r){
+   if(G.finished(st)){guidedResult(st);return}
+   const done=st.steps.filter(s=>s.done).length;
+   stepView=TD.stepDone(root,{lang,index:done,total:st.steps.length,...r,nextLabel:stepLabel(G.current(st),true),onNext:()=>{stepView?.cancel();const fresh=todayState();if(fresh)runStep(fresh);else go('home')},onStop:()=>go('home'),autoMs:bridge.autoNextMs?.()??3000});
+  }
+  function guidedResult(st){
+   const sum=G.summary(st),stats=bridge.stats?.()||{},before=new Set(st.badges),fresh=earnedBadges().filter(id=>!before.has(id)),nxt=pausedLesson()||model.recommended();
+   const names=fresh.map(id=>{try{return globalThis.LerenRewards?.name?LerenRewards.name({id},lang):''}catch{return ''}}).filter(Boolean);
+   TD.result(root,{lang,name:G.name(store).name,correct:sum.correct,all:sum.total,gain:sum.gain,min:stats.min||0,goal:stats.goal||10,badges:names,nextLabel:nxt?lessonTitle(nxt):'',onMore:()=>guidedStart(),onHome:()=>go('home')});
+  }
+  // TEST-022 language + level choice («Я вчу …»); in the guided mode it lives at the top of the «Learn» tab.
+  function levelChoices(){return [['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level])=>({level,active:level===model.course,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0}),pick:()=>{if(pickCourse(level))render()}}))}
+  function learnHub(){
+   if(globalThis.LerenHomeV2?.picker)root.appendChild(LerenHomeV2.picker({lang,levels:levelChoices()}));
+   const L=TD.tr(lang).learn,row=node('div','td-learn-row');
+   const b=(label,fn,id)=>{const x=button(label,fn);x.dataset.learn=id;row.appendChild(x)};
+   if(bridge.tests)b(L.tests,()=>bridge.tests(),'tests');b(L.free,()=>{bridge.stop();bridge.free()},'free');
+   if(model.mistakes().length)b(L.mistakes,()=>{model.beginReview();go('lesson')},'mistakes');
+   root.appendChild(row);
+  }
   function openMap(ch=null){mapChapter=ch;if(ch)mapLevel=course.chapters.find(c=>c.id===ch)?.level||mapLevel;go('map')}
   function topicTile(ch){const stats=model.stats(ch.id);return LerenFocus.topic({chapter:ch,title:title(ch),lang,...stats,done:stats.done,total:stats.total,current:model.recommended()?.chapter===ch.id,onOpen:()=>openMap(ch.id)})}
   function courseSwitch(detail){
@@ -48,6 +174,7 @@
    root.appendChild(LerenFocus.courses({lang,active:model.course,items,detail,onPick(level){if(pickCourse(level))render()}}));
   }
   function hero(){
+   if(guidedOn()){todayHome();return}
    const session=model.state.session,paused=session?.kind==='lesson'&&(session.phase<2||session.index<session.ids.length)&&chapter(model.lesson(session.lesson)).level===model.course?model.lesson(session.lesson):null,next=paused||model.recommended(),placing=!!model.state.placement,stats=model.stats(),started=placing||!!paused||stats.done>0||model.state.started&&model.course===model.levels[0],f=LerenFocus.tr(lang),ch=next&&chapter(next);
    const beginNext=()=>{if(placing){go('placement');return}if(warm&&model.beginWarmup(due)){go('lesson');return}if(next){if(!model.state.started)model.start();begin(next,true)}};
    function panelContent(){
@@ -64,7 +191,7 @@
    // progress: «Continue learning»); the HERO, courses and levels, games and AI follow below — nothing is hidden.
    const labels=START[lang]||START.uk;
    // TEST-022: the language and level choice is one button at the very top of the home («Я вчу …»).
-   const levelList=[['A1.1','a11'],['A1.2','a12'],['A2','a21']].map(([level])=>({level,active:level===model.course,soon:!model.levels.includes(level),...(model.levels.includes(level)?model.courseStats(level):{done:0,total:0}),pick:()=>{if(pickCourse(level))render()}}));
+   const levelList=levelChoices();
    const hasPicker=!!globalThis.LerenHomeV2?.picker;
    if(hasPicker)root.appendChild(LerenHomeV2.picker({lang,levels:levelList}));
    root.appendChild(LerenFocus.hero({lang,started,lesson:next?(bridge.lessonLabel(next.tab,lang)||next.tab):'',chapter:ch?title(ch):'',chapterId:ch?.id,part:next?.part,totalParts:next?.parts,placing,allDone:!next&&!placing,level:ch?.level||model.course,done:stats.done,total:stats.total,plan:warm?warmPlan(warm):'',planBy:bridge.person?.().name,goal:goalLine(),startLabel:labels[0],resumeLabel:labels[1],onBegin:beginNext,onPlacement:model.course===model.levels[0]?()=>{model.place();go('placement')}:null,onMap:()=>openMap(),onFree(){bridge.stop();bridge.free()},freeLabel:t('free')}));
@@ -116,11 +243,12 @@
   const WARM={uk:n=>'Спершу повторимо '+n+' '+(n<5?'слова':'слів')+', які ти починаєш забувати, потім — новий урок.',en:n=>'First we review '+n+' words you are starting to forget, then a new lesson.',fr:n=>'D’abord on révise '+n+' mots que tu commences à oublier, puis une nouvelle leçon.',ar:n=>'أولاً نراجع '+n+' كلمات بدأت تنساها، ثم درس جديد.'};
   const warmPlan=n=>(WARM[lang]||WARM.uk)(n);
   function courseMap(){
+   if(guidedOn()&&!mapChapter)learnHub();
    const f=LerenFocus.tr(lang),head=node('div','fh-map-heading');head.append(node('p','fh-eyebrow',f.course+' '+((mapChapter?course.chapters.find(c=>c.id===mapChapter)?.level:mapLevel)==='A2'?'A2.1':'A1')),node('h2','',mapChapter?title(course.chapters.find(c=>c.id===mapChapter)):f.map),node('p','lp-caption',f.mapHint));root.appendChild(head);
    if(!mapChapter){const levels=node('div','fh-levels');levels.setAttribute('aria-label',f.levelHint);for(const level of model.levels){const b=LerenFocus.button(level,()=>{if(pickCourse(level))render()},'fh-level');b.setAttribute('aria-pressed',String(mapLevel===level));levels.appendChild(b)}root.appendChild(levels);const grid=node('div','fh-topic-grid');for(const ch of course.chapters.filter(c=>c.level===mapLevel))grid.appendChild(topicTile(ch));root.appendChild(grid);root.appendChild(LerenFocus.button(f.newPlace,()=>{model.place();go('placement')}));return}
    const ch=course.chapters.find(c=>c.id===mapChapter),st=model.stats(ch.id),summary=node('div','fh-chapter-summary');summary.append(LerenFocus.meter(st.done,st.total,title(ch)),node('span','lp-caption',st.done+' / '+st.total+' '+f.lessons));root.appendChild(summary);
    const list=node('ol','fh-lesson-list');for(const l of ch.lessons){const done=Object.hasOwn(model.state.completed,l.id),active=model.recommended()?.id===l.id,state=done?'done':active?'current':'ahead',li=node('li','is-'+state),b=button('',()=>begin(l));b.className='fh-lesson-row';const label=node('span','fh-lesson-copy');label.append(node('strong','',lessonTitle(l)),node('small','',done&&!model.mastered(l.id)?t('review'):f[state]));b.append(node('span','fh-lesson-marker',done?'✓':String(ch.lessons.indexOf(l)+1)),label,node('span','fh-lesson-end',done?'✓':active?'→':f.time));if(active)b.setAttribute('aria-current','step');li.appendChild(b);list.appendChild(li)}root.appendChild(list);
-   if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last)root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
+   if(talkOk&&st.done){const last=[...ch.lessons].reverse().find(l=>Object.hasOwn(model.state.completed,l.id));if(last&&talkReady(last.id))root.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(last.id)))}
    writeBlock(ch.id);
    if(st.done===st.total)root.appendChild(button(t('openTest'),()=>bridge.assess(ch.id),true));
   }
@@ -129,7 +257,10 @@
   const writeTasks=chId=>bridge.writeTasks?bridge.writeTasks(chId,lang):[];
   function writeBlock(chId){const tasks=writeTasks(chId);if(!tasks.length)return;const w=WRITE_T[lang]||WRITE_T.uk,box=node('section','fh-write');box.append(node('h3','',w[0]),node('p','lp-caption',w[1]));
    for(const task of tasks){const b=button((task.best>=100?'✓ ':'')+task.title+(task.best!=null?' · ★ '+task.best+'%':''),()=>bridge.openWrite(task.id,chId));b.classList.add('fh-write-task');b.dataset.write=task.id;box.appendChild(b)}root.appendChild(box)}
-  function intro(){const s=model.state.session,l=model.lesson(s.lesson),ch=chapter(l),box=node('div','lp-card');box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),node('p','',t('goalText')));
+  function intro(){const s=model.state.session,l=model.lesson(s.lesson),ch=chapter(l),box=node('div','lp-card');
+   if(focusOn()){const L=FL.tr(lang);box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),FL.lexi(L.plan(l.ids.length)));
+    const list=node('ul','lp-preview-list fl-chips');l.ids.forEach(id=>{const w=word(id),li=node('li','',w.nl+' — '+translation(w));list.appendChild(li)});box.appendChild(list);root.append(box,FL.actions(button(t('begin'),()=>go('lesson'),true)));return}
+   box.append(node('span','lp-eyebrow',ch.level+' · '+title(ch)),node('h2','',lessonTitle(l)),node('p','',t('goalText')));
    const list=node('ul','lp-preview-list');l.ids.forEach(id=>{const w=word(id);list.appendChild(node('li','',w.nl+' — '+translation(w)))});box.append(list,node('p','lp-caption',t('minutes')),button(t('begin'),()=>go('lesson'),true));root.appendChild(box);note()}
   function listenButton(text){const b=button('▶ '+t('sound'),()=>bridge.speak(text,b));b.classList.add('listen','fh-sound');b.setAttribute('aria-label',t('sound')+' · '+text);return b}
   function illustration(w){
@@ -157,7 +288,12 @@
    if(s.kind==='lesson'){const l=model.lesson(s.lesson),ch=chapter(l),lt=lessonTitle(l),words=x=>new Set(x.toLowerCase().split(/[^\p{L}]+/u).filter(w=>w.length>=3)),a=words(lt),b=words(title(ch)),same=b.size>0&&[...b].filter(w=>a.has(w)).length/b.size>=.6;box.append(node('span','lp-eyebrow',ch.level+(same?'':' · '+title(ch))),node('h2','',lt))}else box.appendChild(node('h2','',t('review')));
    const steps=node('ol','lp-steps');['study','listen','check'].forEach((key,i)=>{const li=node('li',i===s.phase?'lp-active':'',(i<s.phase?'✓ ':i+1+'. ')+t(key));if(i===s.phase)li.setAttribute('aria-current','step');steps.appendChild(li)});box.appendChild(steps);
    if(feedback){
-    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));const w=word(feedback.id);fb.append(node('strong','',t(feedback.ok?'right':'wrong')),illustration(w));fb.append(node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl));
+    const fb=node('div','lp-feedback '+(feedback.ok?'lp-correct':'lp-wrong'));fb.setAttribute('role','status');const w=word(feedback.id);
+    if(focusOn()){
+     // Lexi: praise after a right answer, the answer and a reason to keep going after a mistake (local texts, offline).
+     const L=FL.tr(lang);fb.appendChild(FL.lexi(feedback.ok?FL.pick(L.right,s.index):L.wrong(w.nl),{tone:feedback.ok?'right':'wrong'}));
+     const row=node('div','fl-answer'),txt=node('div','fl-answer-text'),nlw=node('p','lp-word',w.nl);nlw.lang='nl';nlw.dir='ltr';txt.append(node('strong','',t(feedback.ok?'right':'wrong')),nlw,node('p','',translation(w)));row.append(illustration(w),txt,listenButton(w.nl));fb.appendChild(row);
+    }else{fb.appendChild(LerenCompanion.feedback(feedback.ok,lang,s.index));fb.append(node('strong','',t(feedback.ok?'right':'wrong')),illustration(w));fb.append(node('p','lp-word',w.nl),node('p','',translation(w)),listenButton(w.nl))}
     if(!feedback.ok){
      if(!feedback.practice)fb.appendChild(button(LerenCompanion.tr(lang).retry,()=>{feedback.practice=true;render()}));
      else{const practice=node('div','comp-practice');practice.appendChild(node('p','',LerenCompanion.tr(lang).practice));
@@ -165,13 +301,18 @@
       else{const choices=node('div','lp-options');for(const o of options(w,false)){const choice=button(o.text,()=>{if(o.ok){feedback.practiceDone=true;render()}else{choice.disabled=true;choice.classList.add('lp-wrong')}});choice.lang='nl';choice.dir='ltr';choices.appendChild(choice)}practice.appendChild(choices)}fb.appendChild(practice);
      }
     }
-    const next=button(t('nextQ'),()=>{feedback=null;render()},true);box.append(fb,next);root.appendChild(box);next.focus({preventScroll:true});return;
+    const next=button(t('nextQ'),()=>{feedback=null;render()},true);
+    if(focusOn()){box.appendChild(fb);root.append(box,FL.actions(next));FL.toTask();next.focus({preventScroll:true});return}
+    box.append(fb,next);root.appendChild(box);next.focus({preventScroll:true});return;
    }
    if(s.index===s.ids.length){
-    if(s.phase<2){box.append(node('h3','',t('stepDone')),node('p','',t('phaseHint')[s.phase+1]),button(t('nextStep')+' → '+t(['study','listen','check'][s.phase+1]),()=>{model.nextPhase();render()},true));root.appendChild(box);return}
+    if(s.phase<2){const nx=button(t('nextStep')+' → '+t(['study','listen','check'][s.phase+1]),()=>{model.nextPhase();render()},true);
+     if(focusOn()){box.append(FL.lexi(FL.tr(lang).phaseDone[s.phase],{live:true,tone:'right'}),node('h3','',t('stepDone')),node('p','',t('phaseHint')[s.phase+1]));root.append(box,FL.actions(nx));FL.toTask();return}
+     box.append(node('h3','',t('stepDone')),node('p','',t('phaseHint')[s.phase+1]),nx);root.appendChild(box);return}
     // Was the lesson's topic already complete before this finish? Then the "topic complete" card is not shown again (repeat, page reload).
     const ch0=s.kind==='lesson'?chapter(model.lesson(s.lesson)):null,st0=ch0?model.stats(ch0.id):null,wasDone=!!st0&&st0.done===st0.total;
     const result=model.finish(),gain=result.kind==='lesson'?bridge.complete(result.id,result.correct,result.total):0;
+    if(guidedFinished(result,gain,result.kind==='lesson'&&ch0&&!wasDone&&model.stats(ch0.id).done===model.stats(ch0.id).total?title(ch0):''))return;
     // Topic complete: a celebration card on top with the next topic and one clear next step. Last topic of a level = block complete.
     let topicCard=false;
     if(result.kind==='lesson'&&ch0&&!wasDone){const st1=model.stats(ch0.id);if(st1.done===st1.total){topicCard=true;
@@ -186,13 +327,14 @@
     // A finished lesson is a success on its own; the daily goal (minutes) is only shown as information.
     if(result.kind==='lesson'&&bridge.goal){const g=bridge.goal(),c=bridge.goalText(g),ok=node('div','lp-done');ok.setAttribute('role','status');ok.append(node('strong','',c.done),node('span','lp-goal-note',c.goal));box.appendChild(ok)}
     // With the topic card on top, «Урок пройдено!» would be a third heading: keep only the score.
+    if(focusOn()){const L=FL.tr(lang);box.prepend(FL.lexi(L.result(result.correct,result.total)+' '+(model.mistakes().length?L.nextReview:L.nextLesson),{live:true,tone:'right'}))}
     if(!topicCard)box.appendChild(node('h3','',t(result.kind==='lesson'?'result':'resultReview')));
     box.append(node('p','lp-result',result.correct+' / '+result.total),node('p','',t(result.correct/result.total>=.8?'good':'help')));
     if(gain)box.appendChild(node('p','lp-points','+'+gain+' '+t('points')));
     box.appendChild(node('p','',t('learned')));const list=node('ul');s.ids.forEach(id=>list.appendChild(node('li','',word(id).nl+' — '+translation(word(id)))));box.appendChild(list);
     if(model.mistakes().length)box.appendChild(button(t('reviewBtn'),()=>{model.beginReview();go('lesson')}));
     if(result.kind==='lesson'){const ch=chapter(model.lesson(result.id)),stats=model.stats(ch.id);if(stats.done===stats.total){box.append(node('h3','',t('assess')),node('p','',t('assessHint')),button(t('openTest'),()=>bridge.assess(ch.id)))}}
-    if(result.kind==='lesson'&&talkOk)box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
+    if(result.kind==='lesson'&&talkOk&&talkReady(result.id))box.appendChild(button('💬 '+talkText('talk'),()=>beginTalk(result.id),true));
     if(result.kind==='lesson'){const chId=chapter(model.lesson(result.id)).id,task=writeTasks(chId)[0];if(task){const b=button((WRITE_T[lang]||WRITE_T.uk)[2]+': '+task.title,()=>bridge.openWrite(task.id,chId));b.dataset.write=task.id;box.appendChild(b)}}
     if(!topicCard)box.appendChild(button(t('nextLesson'),()=>{const l=model.continueRoute();go(l?'intro':'home')},result.kind!=='lesson'));
     if(result.kind==='lesson')box.appendChild(button(t('repeat'),()=>begin(model.lesson(result.id))));
@@ -202,18 +344,22 @@
    // Listening: the counter and the task on one line, then the picture and the yellow "Listen" button side by side,
    // so all four answers fit on a phone screen without scrolling (no big headphones icon above the button).
    // Checking: the same compact row with the small picture and the word to translate.
+   const F=focusOn(),L=F?FL.tr(lang):null;
+   if(F)box.appendChild(FL.lexi(s.phase===0?L.study:s.phase===1?L.listen:L.check));
    if(s.phase>0){const head=node('p','lp-caption lp-listen-head');head.append(node('strong','',(s.index+1)+' / '+s.ids.length),' · '+t('phaseHint')[s.phase]);const row=node('div','lp-listen-row'+(listen?'':' lp-check-row')),art=illustration(w);art.classList.add('lp-listen-pic');
     if(listen){const play=listenButton(w.nl);play.textContent='🎧 '+t('sound');row.append(art,play)}else row.append(art,node('p','lp-word',translation(w)));box.append(head,row)}
-   else box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]),illustration(w));
-   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);box.append(row,node('p','lp-meaning',translation(w)));
+   else if(F){}else box.append(node('p','lp-caption',(s.index+1)+' / '+s.ids.length),node('p','',t('phaseHint')[s.phase]),illustration(w));
+   if(s.phase===0){const text=node('p','lp-word',w.nl);text.lang='nl';text.dir='ltr';const row=node('div','fh-word-row'),say=button('🔊',()=>bridge.speak(w.nl,say));say.classList.add('listen','fh-say');say.setAttribute('aria-label',t('sound')+' · '+w.nl);row.append(text,say);
+    const task=F?node('div','fl-task'):box;if(F){task.appendChild(illustration(w));box.appendChild(task)}task.append(row,node('p','lp-meaning',translation(w)));
     // Say each new word once by itself; the learner already tapped to get here, and the voice setting decides.
     const said=(s.lesson||'review')+':'+s.index;if(autoSaid!==said&&bridge.autoSpeak&&typeof setTimeout==='function'){autoSaid=said;setTimeout(()=>{if(say.isConnected)bridge.autoSpeak(w.nl,say)},250)}
-    if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));box.appendChild(examples)}
-    const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));box.appendChild(actions);
+    if(w.ex_nl){const examples=node('details','fh-example'),heading=node('summary','',LerenFocus.tr(lang).example),example=node('p','lp-example',w.ex_nl);example.lang='nl';example.dir='ltr';examples.append(heading,example);if(w['ex_'+lang])examples.appendChild(node('p','',w['ex_'+lang]));task.appendChild(examples)}
+    const actions=node('div','fh-study-actions');actions.append(button(t('remember'),()=>{model.advance(w.id,true);render()},true));
+    if(F){root.append(box,FL.actions(actions));FL.toTask();return}box.appendChild(actions);
    }else{
     const choices=node('div','lp-options');for(const o of options(w,listen)){const b=button(o.text,()=>{if(model.advance(w.id,o.ok)){feedback={id:w.id,ok:o.ok};bridge.answer(w.id,o.ok,s.phase===2,listen);render()}});if(!listen){b.lang='nl';b.dir='ltr'}choices.appendChild(b)}box.appendChild(choices);
    }
-   root.appendChild(box);note();
+   root.appendChild(box);if(F){FL.toTask();return}note();
   }
   function placement(){
    const box=node('div','lp-card lp-placement'),p=model.state.placement;if(!p){go('home');return}
@@ -226,11 +372,16 @@
    }
    const skip=button(t('skip'),()=>{model.start();begin(course.lessons[0])});skip.classList.add('lp-skip');box.appendChild(skip);root.appendChild(box);
   }
-  function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';syncCourse();if(screen!=='map'||!mapChapter)mapLevel=model.course;shell();if(screen==='home')hero();else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk)talkView.render(root,lang);else exercises();globalThis.LerenEmoji?.enhance(root)}
+  function render(){talkView.cancel();bridge.stop();lang=languages.includes(lang)?lang:'uk';syncCourse();if(screen!=='map'||!mapChapter)mapLevel=model.course;shell();if(screen==='home')hero();else if(screen==='guided'){screen='home';shell();hero()}else if(screen==='intro')intro();else if(screen==='placement')placement();else if(screen==='map')courseMap();else if(screen==='talk'&&talkOk){if(focusOn()&&conversation.state.stage==='question'&&!conversation.state.hint)root.appendChild(FL.lexi(conversation.state.index===0?FL.tr(lang).talkIntro:FL.tr(lang).talkNext));talkView.render(root,lang);if(focusOn())FL.toTask()}else exercises();globalThis.LerenEmoji?.enhance(root)}
   // TEST-019: first run → the real first lesson (no detour through the home screen), or the optional starting check.
   function startFirst(){if(!pickCourse('A1.1'))return false;if(!model.state.started)model.start();const l=model.recommended();if(!l)return false;model.begin(l.id);go('lesson');return true}
   function startPlacement(){if(!pickCourse('A1.1'))return false;model.place();go('placement');return true}
-  render();return {startFirst,startPlacement,refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation};
+  // LerenBe 273 (Codex P1-01): another tab finished a lesson or changed the route → take it in (model.sync never drops this
+  // tab's progress); the home and the map show it at once, a running lesson is not interrupted.
+  root.ownerDocument?.defaultView?.addEventListener('storage',e=>{if(e.key!==null&&e.key!==model.key)return;const busy=focusOn()||screen==='talk';if(model.sync(!busy)&&!busy)render()});
+  render();return {talkCoverage,talkReady,startFirst,startPlacement,refresh(){lang=bridge.language();render()},home(){go('home')},chapter(id){if(course.chapters.some(c=>c.id===id))openMap(id)},open(){go(talkOpen()&&screen==='talk'?'talk':'home')},review(ids){if(!model.reviewWords(ids))return false;go('lesson');return true},pauseSpeech(){talkView.cancel();bridge.stop()},model,conversation,
+   // TEST-050: the bottom navigation opens «Today» or «Learn» (the course map), and can start today's session.
+   today(){go('home')},map(){openMap()},start(){if(guidedOn())guidedStart()},get screen(){return screen}};
  }
  globalThis.LerenLearningPath.mount=mount;
 })();

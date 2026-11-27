@@ -18,14 +18,14 @@ const release=require(__dirname+'/lib/app-source.cjs')().match(/const RELEASE_VE
    await page.goto(base);await page.waitForFunction(()=>window.learningPath);
    // Lesson "Дні й години роботи", listening step, second word (like the reported screen).
    await page.evaluate(()=>{setView('path');const m=learningPath.model,l=LerenLearningPath.catalog(DATA,LerenCurriculum).lessons.find(x=>x.chapter==='opening');m.begin(l.id);m.state.session.phase=1;m.advance(m.current().id,true);m.save();learningPath.open()});
-   await page.locator('#learningPath .fh-primary').click(); // "Продовжити урок" opens the paused listening step
+   await page.locator('.td-start').click(); // "Продовжити урок" opens the paused listening step
    await page.waitForSelector('#learningPath .lp-listen-row');
    const r=await page.evaluate(()=>{const root=document.getElementById('learningPath'),row=root.querySelector('.lp-listen-row'),pic=row.querySelector('.lp-listen-pic'),btn=row.querySelector('button'),opts=[...root.querySelectorAll('.lp-options button')],dock=document.getElementById('modeButtons');
-    window.scrollTo(0,0);const dockTop=dock&&getComputedStyle(dock).position==='fixed'?dock.getBoundingClientRect().top:innerHeight;
+    window.scrollTo(0,0);const dockTop=dock&&getComputedStyle(dock).display!=='none'&&getComputedStyle(dock).position==='fixed'?dock.getBoundingClientRect().top:innerHeight; // TEST-050: the dock is hidden during a lesson
     return {sound:root.querySelectorAll('.lp-sound').length,pic:pic.getBoundingClientRect().height,btnBg:getComputedStyle(btn).backgroundColor,btnText:btn.textContent,btnOneLine:btn.getBoundingClientRect().height<70,btnIcon:!!btn.querySelector('img,.lbe-emoji')||btn.textContent.includes('🎧'),sameRow:Math.abs(pic.getBoundingClientRect().top+pic.getBoundingClientRect().height/2-(btn.getBoundingClientRect().top+btn.getBoundingClientRect().height/2))<4,
      head:root.querySelector('.lp-listen-head').textContent,opts:opts.length,lastBottom:Math.max(...opts.map(o=>o.getBoundingClientRect().bottom)),dockTop,eyebrow:root.querySelector('.lp-eyebrow').textContent,h2:root.querySelector('h2').textContent}});
    const tag=w+'x'+h+'/'+theme;
-   assert.equal(r.sound,0,tag+': no big headphones');assert(r.pic<=80,tag+': picture '+r.pic);assert.equal(r.btnBg,theme==='dark'?'rgb(255, 177, 140)':'rgb(184, 70, 22)',tag+': Listen button in the LerenBe 3.0 brand colour --lb-brand (production 226: yellow #fdda24)');assert(r.btnIcon&&/Послухати/.test(r.btnText),tag+': 🎧 Послухати');assert(r.sameRow,tag+': picture and button in one row');
+   assert.equal(r.sound,0,tag+': no big headphones');assert(r.pic<=80,tag+': picture '+r.pic);assert.equal(r.btnBg,theme==='dark'?'rgb(255, 176, 138)':'rgb(192, 68, 14)',tag+': Listen button in the LerenBe 3.0 brand colour --lb-brand (TEST-050 palette A, brighter; production 226: yellow #fdda24)');assert(r.btnIcon&&/Послухати/.test(r.btnText),tag+': 🎧 Послухати');assert(r.sameRow,tag+': picture and button in one row');
    assert.match(r.head,/^\d \/ \d · /,tag+': counter and task on one line');assert.equal(r.opts,4);assert.equal(r.eyebrow,'A1.1',tag+': topic name not repeated above the lesson title');assert(r.btnOneLine,tag+': button text on one line');
    if(w===390)assert(r.lastBottom<=r.dockTop,tag+': all answers visible without scrolling ('+r.lastBottom+' > '+r.dockTop+')');
    await page.screenshot({path:path.join(process.env.SHOTS||require('node:os').tmpdir(),`listen-step-${w}x${h}-${theme}.png`)});

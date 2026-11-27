@@ -8,13 +8,14 @@
    account sync and backups take them as they are, and modules/sync/merge.js applies the rule of the base key. */
 (() => {
  'use strict';
+ // TEST-050 test build: English and French are 'live' so the first run can offer them (production keeps them 'planned').
  // status: 'live' = shown to learners; 'planned' = built behind the flag only (leren_multilang = "1"), not offered yet.
  // levels follow the Flemish adult-education profiles: Dutch NT2 (A1.1, A1.2, A2); English and French
  // "Europese talen groep 1, Richtgraad 1": 1.1 Breakthrough (A1) and 1.2 Waystage (A2), 120 lesson hours each.
  const COURSES={
   nl:{id:'nl',flag:'🇳🇱',status:'live',levels:['A1.1','A1.2','A2'],names:{uk:'Нідерландська',en:'Dutch',fr:'Néerlandais',ar:'الهولندية'}},
-  en:{id:'en',flag:'🇬🇧',status:'planned',levels:['1.1','1.2'],names:{uk:'Англійська',en:'English',fr:'Anglais',ar:'الإنجليزية'}},
-  fr:{id:'fr',flag:'🇫🇷',status:'planned',levels:['1.1','1.2'],names:{uk:'Французька',en:'French',fr:'Français',ar:'الفرنسية'}},
+  en:{id:'en',flag:'🇬🇧',status:'live',levels:['1.1','1.2'],names:{uk:'Англійська',en:'English',fr:'Anglais',ar:'الإنجليزية'}},
+  fr:{id:'fr',flag:'🇫🇷',status:'live',levels:['1.1','1.2'],names:{uk:'Французька',en:'French',fr:'Français',ar:'الفرنسية'}},
   // German: architecture only (same Flemish profile "Europese talen groep 1"); no course data yet.
   de:{id:'de',flag:'🇩🇪',status:'planned',levels:['1.1','1.2'],names:{uk:'Німецька',en:'German',fr:'Allemand',ar:'الألمانية'}}
  };

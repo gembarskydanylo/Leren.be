@@ -43,7 +43,7 @@ for (const f of fs.readdirSync(path.join(L, 'tests')).filter(f => f.endsWith('.c
  const out = (r.stdout || '') + (r.stderr || ''), st = r.status === 0 ? (/^SKIP/m.test(out) && !/^PASS/m.test(out) ? 'SKIP' : 'PASS') : 'FAIL';
  res.push([st, f, ((Date.now() - t0) / 1000).toFixed(0) + 's', st === 'FAIL' ? [...out.split('\n').filter(l => /^(\S*Error|AssertionError|FAIL)/.test(l)).slice(0, 3), ...out.trim().split('\n').slice(-12)].join('\n   ') : out.trim().split('\n').filter(l => /^(PASS|SKIP)/.test(l)).slice(0, 3).join(' | ').slice(0, 300)]);
  console.log(res.at(-1).slice(0, 3).join(' '));
- if (st === 'FAIL' && process.env.V3_VERBOSE) console.log(out);
+ if ((st === 'FAIL' && process.env.V3_VERBOSE) || process.env.V3_VERBOSE === 'all') console.log(out);
 }
 for (const [st, f, why] of res.filter(r => r[0] === 'NOT RUN')) console.log(st, f, '—', why);
 const n = s => res.filter(r => r[0] === s).length;

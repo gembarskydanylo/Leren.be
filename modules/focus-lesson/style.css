@@ -1,0 +1,137 @@
+/* TEST-050 «Фокус» lesson mode (modules/focus-lesson/ui.js). Loaded by the module, not render-blocking.
+   Budget on a 320×640 phone: bar 52 + Lexi 44 + task ≤ 330 + actions 76 → every task fits without scrolling. */
+html.lp-focus main>header,html.lp-focus #modeButtons,html.lp-focus main>footer,html.lp-focus #learningPath>.lp-tools,
+html.lp-focus #learningPath>.lp-caption,html.lp-focus .install-banner,html.lp-focus #releaseNote{display:none!important}
+html.lp-focus body{padding-bottom:0!important}
+html.lp-focus main{padding-top:0!important;padding-bottom:0!important;margin-top:0!important}
+html.lp-focus #learningPath{max-width:560px;margin:0 auto!important;padding:0 12px calc(88px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box}
+
+/* ---- top bar: ✕, progress, XP */
+.fl-bar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;min-height:52px;margin:0 -12px 4px;padding:max(2px,env(safe-area-inset-top,0px)) 12px 2px 4px;background:var(--lb-canvas,#f7f6f1);color:var(--lb-ink,#1b2724)}
+.fl-bar[dir=rtl]{padding-inline:4px 12px}
+.fl-exit{flex:0 0 44px;width:44px;height:44px;border:0;border-radius:12px;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.fl-exit:focus-visible{outline:3px solid var(--lb-focus,#215fc0);outline-offset:2px}
+.fl-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.fl-progress{display:flex;gap:4px}
+.fl-seg{flex:1;height:8px;border-radius:4px;background:var(--lb-line,#d7ded6);overflow:hidden}
+.fl-seg i{display:block;height:100%;background:var(--lb-brand,#c0440e);border-radius:4px;transition:width .2s ease}
+.fl-label{margin:0;font:800 .8125rem/1.2 var(--lb-font,system-ui);color:var(--lb-muted,#46574f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl-xp{flex:0 0 auto;font:900 .875rem/1 var(--lb-font,system-ui);background:var(--lb-yellow,#f9cf3f);color:#1b2724;border-radius:999px;padding:6px 10px}
+
+/* ---- Lexi line */
+.fl-lexi{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px}
+.fl-av{flex:0 0 36px;width:36px;height:36px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid var(--lb-yellow,#f9cf3f)}
+.fl-bubble{margin:0;background:var(--lb-surface,#fff);border:1px solid var(--lb-line,#d7ded6);border-radius:4px 16px 16px 16px;padding:7px 12px;font:700 .9375rem/1.35 var(--lb-font,system-ui);color:var(--lb-ink,#1b2724)}
+[dir=rtl] .fl-bubble{border-radius:16px 4px 16px 16px}
+.fl-lexi.is-right .fl-bubble{background:var(--lb-success-soft,#eaf5ed);border-color:var(--lb-success,#216344)}
+.fl-lexi.is-wrong .fl-bubble{background:var(--lb-warning-soft,#fff3d7);border-color:var(--lb-warning,#765214)}
+
+/* ---- fixed main action, above the Android navigation bar; with resizes-content it also sits above the keyboard */
+.fl-actions{position:fixed;inset-inline:0;bottom:0;z-index:7;display:flex;flex-direction:column;gap:6px;padding:10px max(12px,calc((100vw - 536px)/2)) calc(12px + env(safe-area-inset-bottom,0px));background:var(--lb-canvas,#f7f6f1);border-top:1px solid var(--lb-line,#d7ded6)}
+.fl-actions .lp-button,.fl-actions .lp-primary{width:100%;margin:0!important;min-height:52px;border-radius:14px;font-size:1.0625rem;font-weight:900}
+.fl-actions .lp-primary{background:var(--lb-brand,#c0440e);color:var(--lb-on-brand,#fff);border:0}
+html.fl-typing .fl-actions{position:static;border-top:0;padding-inline:0;background:transparent}
+
+/* ---- the task card: no outer frame, compact rhythm */
+html.lp-focus #learningPath .lp-card{padding:0;border:0;background:transparent;box-shadow:none;margin:0}
+html.lp-focus #learningPath .lp-exercise>h2,html.lp-focus #learningPath .lp-card>h2{font-size:1rem;line-height:1.25;margin:0 0 2px;color:var(--lb-ink)}
+html.lp-focus #learningPath .lp-eyebrow{font-size:.75rem;margin:0}
+html.lp-focus #learningPath .lp-exercise>.lp-eyebrow,html.lp-focus #learningPath .lp-exercise>h2{display:none}
+html.lp-focus #learningPath .lp-steps{display:none}
+html.lp-focus #learningPath .fl-task{background:var(--lb-surface,#fff);border:1px solid var(--lb-line,#d7ded6);border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+html.lp-focus #learningPath .lp-word-art{margin:0;width:88px;height:88px;min-height:0;display:flex;align-items:center;justify-content:center;background:transparent;padding:0}
+html.lp-focus #learningPath .lp-word-art img,html.lp-focus #learningPath .lp-word-art svg{max-width:88px;max-height:88px;width:auto;height:auto}
+html.lp-focus #learningPath .lp-word-art.lp-drawn{font-size:0}
+html.lp-focus #learningPath .fh-word-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:0}
+html.lp-focus #learningPath .lp-word{font-size:clamp(1.6rem,8vw,2.1rem);line-height:1.15;margin:0}
+html.lp-focus #learningPath .lp-meaning{font-size:1.15rem;margin:0;color:var(--lb-muted)}
+html.lp-focus #learningPath .fh-say{min-width:44px;min-height:44px;width:44px;height:44px;padding:0;border-radius:14px}
+html.lp-focus #learningPath details.fh-example{width:100%;margin:4px 0 0;text-align:start;font-size:.9375rem}
+html.lp-focus #learningPath details.fh-example summary{min-height:44px;display:flex;align-items:center;padding:0 12px;border-radius:12px;background:var(--lb-subtle,#efefe8);cursor:pointer}
+html.lp-focus #learningPath details.fh-example p{margin:6px 12px}
+html.lp-focus #learningPath .fh-study-actions{margin:0}
+
+/* listen / check: one row with the small picture and the sound button or the word to translate */
+html.lp-focus #learningPath .lp-listen-head{display:none}
+html.lp-focus #learningPath .lp-exercise .lp-listen-row{min-height:0;padding:10px 12px;gap:12px;border-radius:18px;margin:0;background:var(--lb-surface,#fff);display:flex;align-items:center}
+html.lp-focus #learningPath .lp-listen-row .lp-listen-pic,html.lp-focus #learningPath .lp-listen-row .lp-word-art{width:56px;height:56px;flex:0 0 56px}
+html.lp-focus #learningPath .lp-listen-row .lp-word-art img,html.lp-focus #learningPath .lp-listen-row .lp-word-art svg{max-width:56px;max-height:56px}
+html.lp-focus #learningPath .lp-listen-row .lp-word{font-size:1.35rem;text-align:start}
+html.lp-focus #learningPath .lp-exercise .lp-listen-row .fh-sound{min-height:52px}
+html.lp-focus #learningPath .lp-options{display:flex;flex-direction:column;gap:8px;margin:10px 0 0}
+html.lp-focus #learningPath .lp-options .lp-button{min-height:52px;padding:8px 16px;font-size:1.0625rem;font-weight:800;border-radius:14px}
+html.lp-focus #learningPath .lp-options .lp-button.lp-wrong{border-color:var(--lb-danger);background:var(--lb-danger-soft)}
+
+/* feedback after an answer: Lexi's line, the word once more, the next step at the bottom */
+html.lp-focus #learningPath .lp-feedback{padding:0;border:0;background:transparent;display:flex;flex-direction:column;gap:8px}
+html.lp-focus #learningPath .fl-answer{display:flex;align-items:center;gap:12px;background:var(--lb-surface,#fff);border:2px solid var(--lb-success,#216344);border-radius:18px;padding:10px 12px;text-align:start}
+html.lp-focus #learningPath .lp-wrong .fl-answer{border-color:var(--lb-control,#7d8a83)}
+html.lp-focus #learningPath .fl-answer .lp-word-art{width:56px;height:56px;flex:0 0 56px}
+html.lp-focus #learningPath .fl-answer .lp-word-art img,html.lp-focus #learningPath .fl-answer .lp-word-art svg{max-width:56px;max-height:56px}
+html.lp-focus #learningPath .fl-answer-text{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+html.lp-focus #learningPath .fl-answer-text strong{font-size:.8125rem;line-height:1.2;color:var(--lb-muted,#46574f)}
+html.lp-focus #learningPath .fl-answer .lp-word{font-size:1.35rem;line-height:1.2;overflow-wrap:normal;word-break:normal}
+html.lp-focus #learningPath .fl-answer-text p{margin:0}
+html.lp-focus #learningPath .fl-answer .fh-sound{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 10px;border-radius:12px;font-size:.875rem;white-space:nowrap}
+@media (max-width:360px){html.lp-focus #learningPath .fl-answer{flex-wrap:wrap}html.lp-focus #learningPath .fl-answer-text{flex-basis:calc(100% - 80px)}html.lp-focus #learningPath .fl-answer .fh-sound{flex:1 1 100%}}
+html.lp-focus #learningPath .comp-practice{margin:0;padding:10px 12px;border-radius:16px;background:var(--lb-surface);border:1px solid var(--lb-line)}
+html.lp-focus #learningPath .comp-practice .lp-options{margin-top:6px}
+html.lp-focus #learningPath .lp-feedback>.lp-button:not(.lp-primary){min-height:48px}
+
+/* end of a step, intro, result */
+html.lp-focus #learningPath .fl-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0;padding:0;list-style:none}
+html.lp-focus #learningPath .fl-chips li{background:var(--lb-surface);border:1px solid var(--lb-line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9375rem}
+html.lp-focus #learningPath .lp-card h3{margin:6px 0 4px;font-size:1.15rem}
+
+/* the conversation after a lesson */
+html.lp-focus #learningPath .lc-coach{display:none}
+html.lp-focus #learningPath .lc-card>.lp-caption{margin:0 0 6px;font-size:.8125rem}
+html.lp-focus #learningPath .lc-card>.lp-caption:nth-of-type(2){display:none}
+html.lp-focus #learningPath .lc-bubble+p:not([class]){display:none} /* the question's instruction: Lexi says it above */
+html.lp-focus #learningPath .lc-limits{display:none}
+html.lp-focus #learningPath .lc-bubble{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:10px 12px;border-radius:16px;background:var(--lb-surface);border:1px solid var(--lb-line)}
+html.lp-focus #learningPath .lc-bubble .lp-word{font-size:1.3rem;flex:1}
+html.lp-focus #learningPath .lc-hints{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+html.lp-focus #learningPath .lc-hints .lp-button{min-height:44px;padding:4px 10px;font-size:.8125rem;flex:1 1 auto}
+html.lp-focus #learningPath .lc-bubble .lp-button{min-height:44px;padding:0 10px;font-size:.875rem}
+html.lp-focus #learningPath .lc-form{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+html.lp-focus #learningPath .lc-form textarea{width:100%;box-sizing:border-box;min-height:56px;font-size:1.0625rem;border:2px solid var(--lb-control,#7d8a83);border-radius:12px;padding:8px 10px}
+html.lp-focus #learningPath .lc-form textarea:focus{border-color:var(--lb-brand)}
+html.lp-focus #learningPath .lc-form .lp-primary{min-height:52px}
+/* keyboard open: only the question, the field and its button stay */
+html.fl-typing #learningPath .fl-lexi,html.fl-typing #learningPath .lc-card>.lp-caption,html.fl-typing #learningPath .lc-card>p:not(.lp-caption),html.fl-typing #learningPath .lc-hints,html.fl-typing #learningPath .lc-help{display:none}
+html.fl-typing #learningPath{padding-bottom:12px!important}
+
+/* today's session screens (step done, result) inside the focus mode */
+html.lp-focus #learningPath .td-step-done,html.lp-focus #learningPath .td-result{margin-top:0}
+
+/* English / French course player: the same rules on its full-screen layer */
+.cp-stage .cp-body .cp-art{font-size:56px;line-height:1;margin:4px 0}
+.cp-stage .cp-body .cp-word{font-size:clamp(1.6rem,8vw,2.1rem);margin:4px 0}
+.cp-stage .cp-body .cp-options{gap:8px}
+.cp-stage .cp-body .cp-opt{min-height:52px;border:1.5px solid var(--lb-control,#7d8a83)}
+.cp-stage .cp-body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.cp-stage .cp-body{gap:8px}
+.cp-stage .cp-body>.cp-main{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;min-height:52px;z-index:3;margin:0;box-shadow:0 -10px 0 10px var(--lb-canvas,#f7f6f1)}
+
+/* first run: the course choice fits a 320×640 screen together with Lexi */
+.td-onb-body.has-courses>.td-av{width:64px;height:64px}
+.td-onb-body.has-courses .td-onb-text{font-size:.95rem}
+.td-onb .td-courses{gap:.4rem}
+.td-onb .td-courses .td-chip{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:48px;padding:.45rem .9rem;text-align:start}
+.td-onb .td-courses .td-chip small{white-space:nowrap}
+.td-course-q{margin:.25rem 0 0;font-size:1.05rem}
+/* small phones and landscape: the picture shrinks first, text sizes stay */
+@media (max-height:700px){
+ html.lp-focus #learningPath .lp-word-art{width:72px;height:72px}
+ html.lp-focus #learningPath .lp-word-art img,html.lp-focus #learningPath .lp-word-art svg{max-width:72px;max-height:72px}
+ html.lp-focus #learningPath .lp-options .lp-button{min-height:48px}
+ .fl-actions .lp-button,.fl-actions .lp-primary{min-height:48px}
+ .fl-bubble{font-size:.875rem;padding:6px 10px}
+}
+@media (max-height:480px){
+ html.lp-focus #learningPath .fl-task .lp-word-art,html.lp-focus #learningPath .fl-lexi .fl-av{display:none}
+ html.lp-focus #learningPath .lp-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .fl-bar{min-height:44px}
+}
+@media (prefers-reduced-motion:reduce){.fl-seg i{transition:none}}
